@@ -48,7 +48,7 @@ const Home: React.FC = () => {
   }
 
   function handleSubmit() {
-    Alert.alert('Submit!');
+    navigation.navigate('Dashboard');
   }
 
   return (
