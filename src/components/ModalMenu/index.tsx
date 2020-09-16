@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
 import {Platform, View} from 'react-native';
 
 import {
@@ -29,6 +30,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
   onRequestClose,
   children,
 }) => {
+  const navigation = useNavigation();
+
+  function handleLogout() {
+    navigation.navigate('Home');
+  }
   return (
     <Container
       visible={visible}
@@ -59,7 +65,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
               <FavoritesButtonText>Favoritos</FavoritesButtonText>
               <View />
             </MenuButton>
-            <SignOutButton onPress={() => {}}>
+            <SignOutButton onPress={() => handleLogout()}>
               <SignOutButtonText>Sair</SignOutButtonText>
             </SignOutButton>
             {children}

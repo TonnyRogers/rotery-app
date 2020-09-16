@@ -1,7 +1,8 @@
 import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
-import {Alert} from 'react-native';
+
+import api from '../../services/api';
 
 import {
   Container,
@@ -33,10 +34,14 @@ import {
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Highlight from '../../components/Highlight';
 import Input from '../../components/Input';
+import Alert from '../../components/Alert';
+import {Text} from 'react-native';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
   const [loginVisible, setLoginVisible] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailRef = useRef();
@@ -47,8 +52,41 @@ const Home: React.FC = () => {
     navigation.navigate('SignUp');
   }
 
+  function openAlert(message: string) {
+    setAlertVisible(true);
+    setAlertMessage(message);
+  }
+
+  function closeAlert() {
+    setAlertVisible(false);
+    setAlertMessage('');
+  }
+
   function handleSubmit() {
-    navigation.navigate('Dashboard');
+    async function logUser() {
+      try {
+        const response = await api.post('/sessions', {
+          email,
+          password,
+        });
+
+        const {token} = response.data;
+
+        if (token) {
+          setEmail('');
+          setPassword('');
+          setLoginVisible(false);
+          navigation.navigate('Dashboard');
+        }
+      } catch (error) {
+        openAlert('Email ou senha incorreto.');
+      }
+    }
+
+    if (!email || !password) {
+      return;
+    }
+    logUser();
   }
 
   return (
@@ -108,7 +146,7 @@ const Home: React.FC = () => {
           />
           <Actions>
             <RowGroup>
-              <LoginButton>
+              <LoginButton onPress={() => handleSubmit()}>
                 <LoginButtonText>Logar</LoginButtonText>
               </LoginButton>
               <ForgotPasswordButton>
@@ -126,6 +164,16 @@ const Home: React.FC = () => {
           </Actions>
         </LoginContent>
       </LoginHover>
+      <Alert
+        icon="clipboard-alert-outline"
+        iconColor="#3dc77b"
+        visible={alertVisible}
+        title="Eita!"
+        message={alertMessage}
+        onCancel={closeAlert}
+        onRequestClose={() => closeAlert}>
+        <Text>{alertMessage}</Text>
+      </Alert>
     </Container>
   );
 };

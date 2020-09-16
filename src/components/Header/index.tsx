@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
 
 import {
   Container,
@@ -21,6 +22,7 @@ import Notification from '../Notification';
 import ModalMenu from '../ModalMenu';
 
 const Header: React.FC<HeaderProps> = ({notifications}) => {
+  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -32,11 +34,15 @@ const Header: React.FC<HeaderProps> = ({notifications}) => {
     setMenuVisible(!menuVisible);
   }
 
+  function toProfileScreen() {
+    navigation.navigate('Profile');
+  }
+
   return (
     <>
       <Container>
         <Menu>
-          <ProfileButton onPress={() => {}}>
+          <ProfileButton onPress={() => toProfileScreen()}>
             <Icon name="account-box-outline" size={24} color="#FFF" />
           </ProfileButton>
           <NotificationsButton onPress={toggleModal}>

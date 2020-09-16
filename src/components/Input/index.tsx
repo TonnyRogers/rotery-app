@@ -4,14 +4,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Container, Label, Field, Content} from './styles';
 
 interface InputProps {
-  label: string;
-  placeholder: string;
+  label?: string;
+  placeholder?: string;
   value: any;
-  icon: string;
+  icon?: string;
   onChange: any;
   secureTextEntry?: boolean;
   returnKeyType?: string;
-  onSubmitEditing?: Function;
+  onSubmitEditing?(): void;
 }
 
 const Input: React.FC<InputProps> = (
@@ -29,7 +29,7 @@ const Input: React.FC<InputProps> = (
           ref={ref}
           {...props}
         />
-        <Icon name={icon} color="#808080" size={24} />
+        {icon && <Icon name={icon} color="#808080" size={24} />}
       </Content>
     </Container>
   );
