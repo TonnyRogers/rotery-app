@@ -1,7 +1,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
 import {Platform, View} from 'react-native';
+import {useDispatch} from 'react-redux';
+
+import {logout} from '../../store/modules/auth/actions';
 
 import {
   Container,
@@ -30,11 +32,12 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
   onRequestClose,
   children,
 }) => {
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  function handleLogout() {
-    navigation.navigate('Home');
+  async function handleLogout() {
+    dispatch(logout());
   }
+
   return (
     <Container
       visible={visible}

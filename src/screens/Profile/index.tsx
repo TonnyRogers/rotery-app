@@ -16,13 +16,6 @@ import {
   SubmitButtonText,
   DeleteAccountButton,
   DeleteAccountButtonText,
-  AlertContent,
-  AlertActions,
-  ConfirmButton,
-  CancelButton,
-  ButtonText,
-  AlertText,
-  BaseBlock,
 } from './styles';
 import Header from '../../components/Header';
 

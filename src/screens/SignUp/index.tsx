@@ -1,6 +1,8 @@
 import React, {useState, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {Alert} from 'react-native';
+import {useDispatch} from 'react-redux';
+
+import {registerRequest} from '../../store/modules/auth/actions';
 
 import {
   Container,
@@ -15,13 +17,17 @@ import {
   Title,
 } from './styles';
 import Input from '../../components/Input';
+import Alert from '../../components/Alert';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
 const SignUp: React.FC = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const usernameRef = useRef();
   const emailRef = useRef();
@@ -31,8 +37,22 @@ const SignUp: React.FC = () => {
     navigation.goBack();
   }
 
-  function handleSubmit() {
-    Alert.alert('Submit!');
+  function openAlert(message: string) {
+    setAlertVisible(true);
+    setAlertMessage(message);
+  }
+
+  function closeAlert() {
+    setAlertVisible(false);
+  }
+
+  async function handleSubmit() {
+    if (!username || !email || !password) {
+      return;
+    }
+
+    dispatch(registerRequest(username, email, password));
+    // openAlert(error.response.data[0].message);
   }
 
   return (
@@ -78,10 +98,19 @@ const SignUp: React.FC = () => {
         <BackButton onPress={navigateBack}>
           <BackButtonText>Ja sou cadastrado</BackButtonText>
         </BackButton>
-        <SubmitButton>
+        <SubmitButton onPress={handleSubmit}>
           <SubmitButtonText>Cadastrar-se</SubmitButtonText>
         </SubmitButton>
       </Actions>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        title="Eita!"
+        icon="clipboard-alert-outline"
+        iconColor="#3dc77b"
+        onCancel={closeAlert}
+        onRequestClose={closeAlert}
+      />
     </Container>
   );
 };

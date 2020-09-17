@@ -1,8 +1,9 @@
 import React, {useState, useRef} from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch} from 'react-redux';
 
-import api from '../../services/api';
+import {loginRequest} from '../../store/modules/auth/actions';
 
 import {
   Container,
@@ -39,6 +40,7 @@ import {Text} from 'react-native';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [loginVisible, setLoginVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -62,31 +64,12 @@ const Home: React.FC = () => {
     setAlertMessage('');
   }
 
-  function handleSubmit() {
-    async function logUser() {
-      try {
-        const response = await api.post('/sessions', {
-          email,
-          password,
-        });
-
-        const {token} = response.data;
-
-        if (token) {
-          setEmail('');
-          setPassword('');
-          setLoginVisible(false);
-          navigation.navigate('Dashboard');
-        }
-      } catch (error) {
-        openAlert('Email ou senha incorreto.');
-      }
-    }
-
+  async function handleLogin() {
     if (!email || !password) {
       return;
     }
-    logUser();
+    dispatch(loginRequest(email, password));
+    // openAlert('Email ou senha incorreto.');
   }
 
   return (
@@ -142,11 +125,11 @@ const Home: React.FC = () => {
             secureTextEntry
             ref={passwordRef}
             returnKeyType="send"
-            onSubmitEditing={() => handleSubmit()}
+            onSubmitEditing={() => handleLogin()}
           />
           <Actions>
             <RowGroup>
-              <LoginButton onPress={() => handleSubmit()}>
+              <LoginButton onPress={() => handleLogin()}>
                 <LoginButtonText>Logar</LoginButtonText>
               </LoginButton>
               <ForgotPasswordButton>
