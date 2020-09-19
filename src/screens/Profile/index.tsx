@@ -1,5 +1,8 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {updateProfileRequest} from '../../store/modules/profile/actions';
 
 import {
   Container,
@@ -22,16 +25,21 @@ import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
+import DateInput from '../../components/DateInput';
 
 const Profile: React.FC = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [cpf, setCpf] = useState('');
+  const dispatch = useDispatch();
+  const {user} = useSelector((state) => state.auth);
+  const {data} = useSelector((state) => state.profile);
+
+  const [name, setName] = useState(data.name);
+  const [email, setEmail] = useState(user.email);
+  const [phone, setPhone] = useState(data.phone);
+  const [cpf, setCpf] = useState(data.cpf);
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [profission, setProfission] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [profission, setProfission] = useState(data.profission);
+  const [birthDate, setBirthDate] = useState(new Date(data.birth));
   const [alertVisible, setAlertVisible] = useState(false);
 
   const nameRef = useRef();
@@ -45,6 +53,10 @@ const Profile: React.FC = () => {
 
   function alertToggle() {
     setAlertVisible(!alertVisible);
+  }
+
+  function updateProfileHandle() {
+    dispatch(updateProfileRequest(name, birthDate, cpf, profission, phone));
   }
 
   return (
@@ -62,7 +74,7 @@ const Profile: React.FC = () => {
           <ChangeAvatarButton>
             <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
           </ChangeAvatarButton>
-          <UserName>Tony Amaral</UserName>
+          <UserName>{user.username}</UserName>
           <Reputation>
             <Icon name="star" size={24} color="#3dc77b" />
             <Icon name="star" size={24} color="#3dc77b" />
@@ -70,7 +82,7 @@ const Profile: React.FC = () => {
             <Icon name="star" size={24} color="#3dc77b" />
             <Icon name="star-outline" size={24} color="#3dc77b" />
           </Reputation>
-          <Joined>Ativo desde 10 Jun 2004</Joined>
+          <Joined>Ativo desde {user.created_at}</Joined>
         </User>
       </Card>
       <Card>
@@ -94,6 +106,7 @@ const Profile: React.FC = () => {
             onChange={setEmail}
             returnKeyType="next"
             onSubmitEditing={() => phoneRef.current.focus()}
+            keyboardType="email-address"
           />
           <Input
             icon="cellphone-iphone"
@@ -104,6 +117,7 @@ const Profile: React.FC = () => {
             onChange={setPhone}
             returnKeyType="next"
             onSubmitEditing={() => cpfRef.current.focus()}
+            keyboardType="number-pad"
           />
           <Input
             icon="fingerprint"
@@ -114,6 +128,7 @@ const Profile: React.FC = () => {
             onChange={setCpf}
             returnKeyType="next"
             onSubmitEditing={() => stateRef.current.focus()}
+            keyboardType="number-pad"
           />
           <Input
             label="Estado"
@@ -141,21 +156,11 @@ const Profile: React.FC = () => {
             value={profission}
             onChange={setProfission}
             returnKeyType="next"
-            onSubmitEditing={() => birthDateRef.current.focus()}
           />
-          <Input
-            icon="calendar-today"
-            label="Data de Nascimento"
-            placeholder="Queremos saber usa idade"
-            ref={birthDateRef}
-            value={birthDate}
-            onChange={setBirthDate}
-            returnKeyType="send"
-            onSubmitEditing={() => {}}
-          />
+          <DateInput date={birthDate} onChange={setBirthDate} />
         </InputContent>
         <ActionContent>
-          <SubmitButton>
+          <SubmitButton onPress={() => updateProfileHandle()}>
             <SubmitButtonText>Atualizar</SubmitButtonText>
           </SubmitButton>
         </ActionContent>

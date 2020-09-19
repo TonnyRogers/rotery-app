@@ -1,3 +1,5 @@
+import {UserProps} from './reducer';
+
 export function loginRequest(email: string, password: string) {
   return {
     type: '@auth/LOGIN_REQUEST',
@@ -5,10 +7,10 @@ export function loginRequest(email: string, password: string) {
   };
 }
 
-export function loginSuccess(token: string) {
+export function loginSuccess(token: string, user: UserProps) {
   return {
     type: '@auth/LOGIN_SUCCESS',
-    payload: {token},
+    payload: {token, user},
   };
 }
 

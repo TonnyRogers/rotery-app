@@ -1149,6 +1149,13 @@
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
 
+"@react-native-community/datetimepicker@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-3.0.2.tgz#6e52cda7fa46ecebfb216f5520cfbf2754348299"
+  integrity sha512-NLcV3HLrjtvyYM4CU4O+nWJ+LsjB4XnkUiXjK52PgnlRrg5i3hJQHcp/GsrHQbB62UC+Zn96+Hy+jiw4K5Rw/w==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native-community/eslint-config@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-config/-/eslint-config-1.1.0.tgz#2dacad06dd44d13e778510864473fc6091f080c0"
@@ -2477,6 +2484,11 @@ data-urls@^1.1.0:
     abab "^2.0.0"
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
+
+date-fns@^2.0.0-beta.5:
+  version "2.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-beta.5.tgz#90885db3772802d55519cd12acd49de56aca1059"
+  integrity sha512-GS5yi964NDFNoja9yOdWFj9T97T67yLrUeJZgddHaVfc/6tHWtX7RXocuubmZkNzrZUZ9BqBOW7jTR5OoWjJ1w==
 
 dayjs@^1.8.15:
   version "1.8.35"

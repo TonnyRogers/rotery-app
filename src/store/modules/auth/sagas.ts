@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
 
 import api from '../../../services/api';
+
 import {
   loginRequest,
   loginSuccess,
@@ -11,6 +12,7 @@ import {
   registerSuccess,
   registerFailure,
 } from './actions';
+import {getProfileRequest} from '../profile/actions';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -18,7 +20,8 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const response = yield call(api.post, '/sessions', {email, password});
 
-    const {token} = response.data;
+    const {token} = response.data.token;
+    const {user} = response.data;
 
     if (!token) {
       Alert.alert('Email ou senha incorreto.');
@@ -29,10 +32,23 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield call([AsyncStorage, 'setItem'], '@auth:token', token);
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
-    yield put(loginSuccess(token));
+    yield put(loginSuccess(token, user));
+    yield put(getProfileRequest(user.id));
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());
+  }
+}
+
+export function* setToken({payload}: any) {
+  if (!payload) {
+    return;
+  }
+
+  const {token} = payload.auth;
+
+  if (token) {
+    api.defaults.headers.Authorization = `Bearer ${token}`;
   }
 }
 
@@ -68,6 +84,7 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
 }
 
 export default all([
+  takeLatest('persist/REHYDRATE', setToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),
