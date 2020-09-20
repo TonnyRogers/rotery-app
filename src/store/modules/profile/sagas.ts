@@ -29,13 +29,14 @@ export function* updateProfile({
   payload,
 }: ReturnType<typeof updateProfileRequest>) {
   try {
-    const {name, birth, cpf, profission, phone} = payload;
+    const {name, birth, cpf, profission, phone, fileId} = payload;
     const response = yield call(api.put, '/profile', {
       name,
       birth,
       cpf,
       profission,
       phone,
+      file_id: fileId > 0 ? fileId : null,
     });
 
     yield put(updateProfileSuccess(response.data));

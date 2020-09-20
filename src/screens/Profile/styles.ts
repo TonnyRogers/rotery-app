@@ -14,6 +14,9 @@ export const Avatar = styled.Image`
   height: 114px;
   width: 114px;
   border-radius: 8px;
+  background: #f8f8f8;
+  border-color: #cfcfcf;
+  border-width: 1px;
 `;
 
 export const ChangeAvatarButton = styled.TouchableOpacity`

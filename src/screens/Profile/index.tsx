@@ -1,6 +1,9 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
+import DocumentPicker from 'react-native-document-picker';
+
+import api from '../../services/api';
 
 import {updateProfileRequest} from '../../store/modules/profile/actions';
 
@@ -38,9 +41,11 @@ const Profile: React.FC = () => {
   const [cpf, setCpf] = useState(data.cpf);
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
+  const [fileId, setfileId] = useState(0);
   const [profission, setProfission] = useState(data.profission);
   const [birthDate, setBirthDate] = useState(new Date(data.birth));
   const [alertVisible, setAlertVisible] = useState(false);
+  const [profileImage, setProfileImage] = useState({});
 
   const nameRef = useRef();
   const emailRef = useRef();
@@ -56,7 +61,47 @@ const Profile: React.FC = () => {
   }
 
   function updateProfileHandle() {
-    dispatch(updateProfileRequest(name, birthDate, cpf, profission, phone));
+    dispatch(
+      updateProfileRequest(name, birthDate, cpf, profission, phone, fileId),
+    );
+  }
+
+  async function pickFile() {
+    try {
+      const fileResponse = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+
+      const customFile = {
+        name: fileResponse.name,
+        type: fileResponse.type,
+        uri: fileResponse.uri,
+        size: fileResponse.size,
+      };
+
+      setProfileImage(customFile);
+
+      const formData = new FormData();
+      formData.append('file', customFile);
+
+      const response = await api.post('/profile/avatar', formData);
+
+      const {id} = response.data;
+
+      if (!id) {
+        setProfileImage({});
+        return;
+      }
+
+      setfileId(id);
+    } catch (error) {
+      if (DocumentPicker.isCancel(error)) {
+        console.tron.log('DocumentPicker', error); // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        setProfileImage({});
+        console.tron.log(error);
+      }
+    }
   }
 
   return (
@@ -64,14 +109,8 @@ const Profile: React.FC = () => {
       <Header />
       <Card icon="chevron-left">
         <User>
-          <Avatar
-            source={{
-              uri:
-                'https://f6s-public.s3.amazonaws.com/profiles/2187188_original.jpg',
-            }}
-            resizeMode="cover"
-          />
-          <ChangeAvatarButton>
+          <Avatar source={{uri: `${profileImage.uri}`}} resizeMode="cover" />
+          <ChangeAvatarButton onPress={pickFile}>
             <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
           </ChangeAvatarButton>
           <UserName>{user.username}</UserName>

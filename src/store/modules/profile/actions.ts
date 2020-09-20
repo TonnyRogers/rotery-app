@@ -26,10 +26,11 @@ export function updateProfileRequest(
   cpf: number,
   profission: string,
   phone: number,
+  fileId?: number,
 ) {
   return {
     type: '@profile/UPDATE_PROFILE_REQUEST',
-    payload: {name, birth, cpf, profission, phone},
+    payload: {name, birth, cpf, profission, phone, fileId: fileId || 0},
   };
 }
 
