@@ -8,16 +8,17 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label} from './styles';
 
-interface DateInputProps {
+interface DateTimeInputProps {
   date: Date;
-  onChange: (date: any) => {};
+  onChange: (date: Date) => {};
 }
 
-const DateInput: React.FC<DateInputProps> = ({date, onChange}) => {
+const DataTimeInput: React.FC<DateTimeInputProps> = ({date, onChange}) => {
   const [show, setShow] = useState(false);
+  const [showTime, setShowTime] = useState(false);
 
   const dateFormatted = useMemo(
-    () => format(date, "dd 'de' MMMM 'de' yyyy", {locale: pt}),
+    () => format(date, "dd 'de' MMMM 'de' yyyy 'as' HH:mm", {locale: pt}),
     [date],
   );
 
@@ -25,6 +26,15 @@ const DateInput: React.FC<DateInputProps> = ({date, onChange}) => {
     try {
       const currentDate = selectDate || date;
       setShow(Platform.OS === 'ios');
+      onChange(currentDate);
+      setShowTime(true);
+    } catch (error) {}
+  };
+
+  const onChangeTime = (event: any, selectDate: any): void => {
+    try {
+      const currentDate = selectDate || date;
+      setShowTime(Platform.OS === 'ios');
       onChange(currentDate);
     } catch (error) {}
   };
@@ -48,8 +58,16 @@ const DateInput: React.FC<DateInputProps> = ({date, onChange}) => {
           onChange={onChangeDate}
         />
       )}
+      {showTime && (
+        <DateTimePicker
+          value={date}
+          mode="time"
+          display="spinner"
+          onChange={onChangeTime}
+        />
+      )}
     </Container>
   );
 };
 
-export default DateInput;
+export default DataTimeInput;
