@@ -4,8 +4,6 @@ import {Alert} from 'react-native';
 
 import api from '../../../services/api';
 
-let userId: number = 0;
-
 import {
   loginRequest,
   loginSuccess,

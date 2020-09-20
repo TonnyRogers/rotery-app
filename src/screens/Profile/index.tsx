@@ -1,11 +1,16 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import DocumentPicker from 'react-native-document-picker';
+import {format, parse} from 'date-fns';
+import pt from 'date-fns/locale/pt';
 
 import api from '../../services/api';
 
-import {updateProfileRequest} from '../../store/modules/profile/actions';
+import {
+  updateProfileRequest,
+  updateProfileImageRequest,
+} from '../../store/modules/profile/actions';
 
 import {
   Container,
@@ -41,11 +46,12 @@ const Profile: React.FC = () => {
   const [cpf, setCpf] = useState(data.cpf);
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [fileId, setfileId] = useState(0);
   const [profission, setProfission] = useState(data.profission);
   const [birthDate, setBirthDate] = useState(new Date(data.birth));
   const [alertVisible, setAlertVisible] = useState(false);
-  const [profileImage, setProfileImage] = useState({});
+  const [profileImage, setProfileImage] = useState({
+    uri: data.file_id && data.file ? data.file.url : '',
+  });
 
   const nameRef = useRef();
   const emailRef = useRef();
@@ -56,14 +62,22 @@ const Profile: React.FC = () => {
   const profissionRef = useRef();
   const birthDateRef = useRef();
 
+  const useSinceDate = useMemo(
+    () =>
+      format(
+        parse(user.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
+        "MMMM 'de' yyyy",
+        {locale: pt},
+      ),
+    [user],
+  );
+
   function alertToggle() {
     setAlertVisible(!alertVisible);
   }
 
   function updateProfileHandle() {
-    dispatch(
-      updateProfileRequest(name, birthDate, cpf, profission, phone, fileId),
-    );
+    dispatch(updateProfileRequest(name, birthDate, cpf, profission, phone));
   }
 
   async function pickFile() {
@@ -89,17 +103,16 @@ const Profile: React.FC = () => {
       const {id} = response.data;
 
       if (!id) {
-        setProfileImage({});
+        setProfileImage({uri: ''});
         return;
       }
 
-      setfileId(id);
+      dispatch(updateProfileImageRequest(id));
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
         console.tron.log('DocumentPicker', error); // User cancelled the picker, exit any dialogs or menus and move on
       } else {
-        setProfileImage({});
-        console.tron.log(error);
+        setProfileImage({uri: ''});
       }
     }
   }
@@ -109,7 +122,7 @@ const Profile: React.FC = () => {
       <Header />
       <Card icon="chevron-left">
         <User>
-          <Avatar source={{uri: `${profileImage.uri}`}} resizeMode="cover" />
+          <Avatar source={{uri: profileImage.uri}} resizeMode="cover" />
           <ChangeAvatarButton onPress={pickFile}>
             <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
           </ChangeAvatarButton>
@@ -121,7 +134,7 @@ const Profile: React.FC = () => {
             <Icon name="star" size={24} color="#3dc77b" />
             <Icon name="star-outline" size={24} color="#3dc77b" />
           </Reputation>
-          <Joined>Ativo desde {user.created_at}</Joined>
+          <Joined>Ativo desde {useSinceDate}</Joined>
         </User>
       </Card>
       <Card>

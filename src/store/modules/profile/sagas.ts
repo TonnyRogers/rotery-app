@@ -10,6 +10,9 @@ import {
   updateProfileRequest,
   updateProfileSuccess,
   updateProfileFailure,
+  updateProfileImageRequest,
+  updateProfileImageSuccess,
+  updateProfileImageFailure,
 } from './actions';
 
 export function* getProfile({payload}: ReturnType<typeof getProfileRequest>) {
@@ -29,24 +32,42 @@ export function* updateProfile({
   payload,
 }: ReturnType<typeof updateProfileRequest>) {
   try {
-    const {name, birth, cpf, profission, phone, fileId} = payload;
+    const {name, birth, cpf, profission, phone} = payload;
     const response = yield call(api.put, '/profile', {
       name,
       birth,
       cpf,
       profission,
       phone,
-      file_id: fileId > 0 ? fileId : null,
     });
 
     yield put(updateProfileSuccess(response.data));
   } catch (error) {
+    console.tron.log(error);
     Alert.alert('Erro ao atualizar dados');
     yield put(updateProfileFailure());
   }
 }
 
+export function* updateProfileImage({
+  payload,
+}: ReturnType<typeof updateProfileImageRequest>) {
+  try {
+    const {file_id} = payload;
+    const response = yield call(api.put, '/profile/image', {
+      file_id,
+    });
+
+    yield put(updateProfileImageSuccess(response.data));
+  } catch (error) {
+    console.tron.log(error);
+    Alert.alert('Erro ao atualizar imagem');
+    yield put(updateProfileImageFailure());
+  }
+}
+
 export default all([
+  takeLatest('@profile/UPDATE_PROFILE_IMAGE_REQUEST', updateProfileImage),
   takeLatest('@profile/UPDATE_PROFILE_REQUEST', updateProfile),
   takeLatest('@profile/GET_PROFILE_REQUEST', getProfile),
 ]);

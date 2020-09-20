@@ -11,6 +11,9 @@ export interface ProfileProps {
   created_at: string;
   updated_at: string;
   file_id: number | null;
+  file: {
+    url: string;
+  };
 }
 
 interface InitialStateProps {
@@ -56,6 +59,19 @@ export default function profile(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case '@profile/UPDATE_PROFILE_FAILURE': {
+        draft.loading = false;
+        break;
+      }
+      case '@profile/UPDATE_PROFILE_IMAGE_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@profile/UPDATE_PROFILE_IMAGE_SUCCESS': {
+        draft.loading = false;
+        draft.data = action.payload.profile;
+        break;
+      }
+      case '@profile/UPDATE_PROFILE_IMAGE_FAILURE': {
         draft.loading = false;
         break;
       }

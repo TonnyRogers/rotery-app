@@ -26,11 +26,10 @@ export function updateProfileRequest(
   cpf: number,
   profission: string,
   phone: number,
-  fileId?: number,
 ) {
   return {
     type: '@profile/UPDATE_PROFILE_REQUEST',
-    payload: {name, birth, cpf, profission, phone, fileId: fileId || 0},
+    payload: {name, birth, cpf, profission, phone},
   };
 }
 
@@ -44,5 +43,25 @@ export function updateProfileSuccess(profile: ProfileProps) {
 export function updateProfileFailure() {
   return {
     type: '@profile/UPDATE_PROFILE_FAILURE',
+  };
+}
+
+export function updateProfileImageRequest(file_id: number) {
+  return {
+    type: '@profile/UPDATE_PROFILE_IMAGE_REQUEST',
+    payload: {file_id},
+  };
+}
+
+export function updateProfileImageSuccess(profile: ProfileProps) {
+  return {
+    type: '@profile/UPDATE_PROFILE_IMAGE_SUCCESS',
+    payload: {profile},
+  };
+}
+
+export function updateProfileImageFailure() {
+  return {
+    type: '@profile/UPDATE_PROFILE_IMAGE_FAILURE',
   };
 }
