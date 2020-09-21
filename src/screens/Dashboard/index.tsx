@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
 
 import {
   Container,
@@ -20,6 +21,8 @@ import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 
 const Dashboard: React.FC = () => {
+  const navigation = useNavigation();
+
   return (
     <Container>
       <Header />
@@ -71,7 +74,8 @@ const Dashboard: React.FC = () => {
           <Itinerary />
         </ItineraryList>
         <FloatContent>
-          <NewItineraryButton>
+          <NewItineraryButton
+            onPress={() => navigation.navigate('NewItinerary')}>
             <Icon name="plus-box-outline" size={24} color="#FFF" />
           </NewItineraryButton>
         </FloatContent>

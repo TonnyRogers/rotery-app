@@ -15,7 +15,7 @@ const Card: React.FC<CardProps> = ({icon, title, children}) => {
   return (
     <Container>
       <CardHeader>
-        <BackButton onPress={() => navigation.goBack()}>
+        <BackButton onPress={() => navigation.navigate('Dashboard')}>
           {icon && <Icon name={icon} size={24} color="#3dc77b" />}
         </BackButton>
         <Title>{title}</Title>
