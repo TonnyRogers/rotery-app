@@ -1,4 +1,5 @@
 import React, {useState, useRef} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   Container,
@@ -13,11 +14,19 @@ import {
   BackgroundCover,
   SIcon,
   Title,
+  DataContent,
+  DataContentHeader,
+  RowGroup,
+  ContentTitle,
+  IconHolder,
+  AddTransportButton,
 } from './styles';
 
 import Header from '../../components/Header';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
+import TextArea from '../../components/TextArea';
+import DateTimeInput from '../../components/DateTimeInput';
 
 const images = [
   {
@@ -51,8 +60,26 @@ const images = [
 
 const NewItinerary: React.FC = () => {
   const [name, setName] = useState('');
+  const [dateOut, setDateOut] = useState(new Date());
+  const [dateReturn, setDateReturn] = useState(new Date());
+  const [dateLimit, setDateLimit] = useState(new Date());
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [locationDescription, setLocationDescription] = useState('');
+  const [vacancies, setVacancies] = useState(0);
+  const [transports, setTransports] = useState([]);
+  const [transportType, setTransportType] = useState('');
+  const [transportPrice, setTransportPrice] = useState('');
+  const [transportDescription, setTransportDescription] = useState('');
 
+  const descriptionRef = useRef();
   const nameRef = useRef();
+  const locationRef = useRef();
+  const locationDescriptionRef = useRef();
+  const vacanciesRef = useRef();
+  const transportTypeRef = useRef();
+  const transportPriceRef = useRef();
+  const transportDescriptionRef = useRef();
 
   return (
     <Container>
@@ -92,6 +119,95 @@ const NewItinerary: React.FC = () => {
                 </ImageButton>
               )}
             />
+            <Input
+              label="Limite de Vagas"
+              placeholder="numero máximo de vagas"
+              value={vacancies}
+              ref={vacanciesRef}
+              onChange={setVacancies}
+              keyboardType="number-pad"
+            />
+            <TextArea
+              label="Descrição"
+              placeholder="infomações adicionais sobre o roteiro"
+              value={description}
+              ref={descriptionRef}
+              onChange={setDescription}
+            />
+            <DataContent>
+              <DataContentHeader>
+                <Icon name="calendar-blank-outline" color="#4885FD" size={24} />
+                <ContentTitle>Datas</ContentTitle>
+              </DataContentHeader>
+              <DateTimeInput
+                label="Saida"
+                date={dateOut}
+                onChange={setDateOut}
+              />
+              <DateTimeInput
+                label="Retorno"
+                date={dateReturn}
+                onChange={setDateReturn}
+              />
+              <DateTimeInput
+                label="Limite para inscrição"
+                date={dateLimit}
+                onChange={setDateLimit}
+              />
+            </DataContent>
+            <DataContent>
+              <DataContentHeader>
+                <Icon name="map-check-outline" color="#4885FD" size={24} />
+                <ContentTitle>Destino</ContentTitle>
+              </DataContentHeader>
+              <Input
+                label="Endereço"
+                placeholder="endereço completo"
+                value={location}
+                ref={locationRef}
+                onChange={setLocation}
+              />
+              <TextArea
+                label="Informações"
+                placeholder="infomações adicionais..."
+                value={locationDescription}
+                ref={locationDescriptionRef}
+                onChange={setLocationDescription}
+              />
+            </DataContent>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="car" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Transporte</ContentTitle>
+            </RowGroup>
+            <DataContent>
+              <Input
+                label="Tipo"
+                placeholder="nome do tipo de transporte"
+                value={transportType}
+                ref={transportTypeRef}
+                onChange={setTransportType}
+              />
+              <Input
+                label="Preço"
+                placeholder="preço por pessoa"
+                value={transportPrice}
+                ref={transportPriceRef}
+                onChange={setTransportPrice}
+                keyboardType="number-pad"
+              />
+              <TextArea
+                label="Descrição"
+                placeholder="infomações adicionais.."
+                value={transportDescription}
+                ref={transportDescriptionRef}
+                onChange={setTransportDescription}
+              />
+            </DataContent>
+            <AddTransportButton>
+              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+            </AddTransportButton>
           </CardContent>
           <CardActions>
             <SubmitButton>

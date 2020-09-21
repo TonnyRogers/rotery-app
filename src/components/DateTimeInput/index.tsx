@@ -9,11 +9,16 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Container, DateButton, DateText, Label} from './styles';
 
 interface DateTimeInputProps {
+  label: string;
   date: Date;
   onChange: (date: Date) => {};
 }
 
-const DataTimeInput: React.FC<DateTimeInputProps> = ({date, onChange}) => {
+const DateTimeInput: React.FC<DateTimeInputProps> = ({
+  label,
+  date,
+  onChange,
+}) => {
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
 
@@ -45,7 +50,7 @@ const DataTimeInput: React.FC<DateTimeInputProps> = ({date, onChange}) => {
 
   return (
     <Container>
-      <Label>Data de Nascimento</Label>
+      <Label>{label}</Label>
       <DateButton onPress={showDatePicker}>
         <DateText>{dateFormatted}</DateText>
         <Icon name="calendar-today" color="#808080" size={24} />
@@ -70,4 +75,4 @@ const DataTimeInput: React.FC<DateTimeInputProps> = ({date, onChange}) => {
   );
 };
 
-export default DataTimeInput;
+export default DateTimeInput;
