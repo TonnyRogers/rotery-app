@@ -2,6 +2,7 @@ import React, {useState, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
+import {Text} from 'react-native';
 
 import {loginRequest} from '../../store/modules/auth/actions';
 
@@ -36,7 +37,7 @@ const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Highlight from '../../components/Highlight';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
-import {Text} from 'react-native';
+import SplashScreen from '../../components/SplashScreen';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
@@ -77,6 +78,7 @@ const Home: React.FC = () => {
       <Header>
         <Logo source={horizontalLogo} resizeMode="contain" />
       </Header>
+
       <Title>Destaques {'&'} Informações</Title>
       <HighlightList>
         <Highlight background="https://nerdymates.com/static/img/regular/shutterstock_1044339595.jpg">

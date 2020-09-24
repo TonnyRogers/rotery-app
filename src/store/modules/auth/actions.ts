@@ -7,10 +7,14 @@ export function loginRequest(email: string, password: string) {
   };
 }
 
-export function loginSuccess(token: string, user: UserProps) {
+export function loginSuccess(
+  token: string,
+  refreshToken: string,
+  user: UserProps,
+) {
   return {
     type: '@auth/LOGIN_SUCCESS',
-    payload: {token, user},
+    payload: {token, refreshToken, user},
   };
 }
 
@@ -36,14 +40,35 @@ export function registerRequest(
     payload: {username, email, password},
   };
 }
+
 export function registerSuccess(id: number) {
   return {
     type: '@auth/REGISTER_SUCCESS',
     payload: {id},
   };
 }
+
 export function registerFailure() {
   return {
     type: '@auth/REGISTER_FAILURE',
+  };
+}
+
+export function refreshTokenRequest() {
+  return {
+    type: '@auth/REFRESH_TOKEN_REQUEST',
+  };
+}
+
+export function refreshTokenSuccess(token: string, refreshToken: string) {
+  return {
+    type: '@auth/REFRESH_TOKEN_SUCCESS',
+    payload: {token, refreshToken},
+  };
+}
+
+export function refreshTokenFailure() {
+  return {
+    type: '@auth/REFRESH_TOKEN_FAILURE',
   };
 }

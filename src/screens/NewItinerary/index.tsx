@@ -1,7 +1,11 @@
 import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {LogBox} from 'react-native';
+import {useDispatch} from 'react-redux';
 
+import {createItineraryRequest} from '../../store/modules/itineraries/actions';
+
+LogBox.ignoreAllLogs(true);
 import {
   Container,
   Content,
@@ -34,16 +38,35 @@ import {
   AddImageButton,
 } from './styles';
 
-LogBox.ignoreAllLogs(true);
-
 import Header from '../../components/Header';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import DateTimeInput from '../../components/DateTimeInput';
 import FileInput from '../../components/FileInput';
+import PickerInput from '../../components/PickerInput';
+
+const options = [
+  {
+    id: 1,
+    name: 'Carro',
+  },
+  {
+    id: 2,
+    name: 'Bicicleta',
+  },
+  {
+    id: 3,
+    name: 'Ônibus',
+  },
+  {
+    id: 4,
+    name: 'A Pé',
+  },
+];
 
 const NewItinerary: React.FC = () => {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [dateOut, setDateOut] = useState(new Date());
   const [dateReturn, setDateReturn] = useState(new Date());
@@ -51,45 +74,23 @@ const NewItinerary: React.FC = () => {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [locationDescription, setLocationDescription] = useState('');
-  const [vacancies, setVacancies] = useState(0);
+  const [vacancies, setVacancies] = useState('');
   const [transports, setTransports] = useState([]);
   const [transportType, setTransportType] = useState('');
   const [transportPrice, setTransportPrice] = useState('');
-  const [transportCapacity, setTransportCapacity] = useState(0);
+  const [transportCapacity, setTransportCapacity] = useState('');
   const [transportDescription, setTransportDescription] = useState('');
   const [lodgings, setLodgings] = useState([]);
   const [lodgingType, setLodgingType] = useState('');
   const [lodgingPrice, setLodgingPrice] = useState('');
-  const [lodgingCapacity, setLodgingCapacity] = useState(0);
+  const [lodgingCapacity, setLodgingCapacity] = useState('');
   const [lodgingDescription, setLodgingDescription] = useState('');
   const [activities, setActivities] = useState([]);
   const [activityType, setActivityType] = useState('');
   const [activityPrice, setActivityPrice] = useState('');
-  const [activityCapacity, setActivityCapacity] = useState(0);
+  const [activityCapacity, setActivityCapacity] = useState('');
   const [activityDescription, setActivityDescription] = useState('');
-  const [images, setImages] = useState([
-    {
-      id: 1,
-      uri:
-        'https://images.theconversation.com/files/271799/original/file-20190430-136810-1mceagq.jpg',
-      name: 'file',
-      size: '2mb',
-    },
-    {
-      id: 2,
-      uri:
-        'https://s29081.pcdn.co/wp-content/uploads/2017/10/untitled-0183.jpg.optimal.jpg',
-      name: 'file',
-      size: '2mb',
-    },
-    {
-      id: 3,
-      uri:
-        'https://thirdeyetraveller.com/wp-content/uploads/2017/12/slider1.jpg',
-      name: 'file',
-      size: '2mb',
-    },
-  ]);
+  const [images, setImages] = useState([]);
 
   const descriptionRef = useRef();
   const nameRef = useRef();
@@ -109,13 +110,22 @@ const NewItinerary: React.FC = () => {
   const activityCapacityRef = useRef();
   const activityDescriptionRef = useRef();
 
+  function addImages(imageList: []) {
+    setImages([...images, ...imageList]);
+  }
+
+  function removeImages(index: number) {
+    images.splice(index, 1);
+    setImages([...images]);
+  }
+
   function addLodgingItem() {
     if (!lodgingType || !lodgingPrice || !lodgingDescription) {
       return;
     }
 
     const newItem = {
-      type: lodgingType,
+      lodging_id: lodgingType,
       price: lodgingPrice,
       capacity: lodgingCapacity,
       description: lodgingDescription,
@@ -140,7 +150,7 @@ const NewItinerary: React.FC = () => {
     }
 
     const newItem = {
-      type: transportType,
+      transport_id: transportType,
       price: transportPrice,
       capacity: transportCapacity,
       description: transportDescription,
@@ -165,7 +175,7 @@ const NewItinerary: React.FC = () => {
     }
 
     const newItem = {
-      type: activityType,
+      activity_id: activityType,
       price: activityPrice,
       capacity: activityCapacity,
       description: activityDescription,
@@ -184,6 +194,35 @@ const NewItinerary: React.FC = () => {
     setActivities([...activities]);
   }
 
+  function handleSubmit() {
+    if (
+      !name ||
+      !vacancies ||
+      !dateOut ||
+      !dateReturn ||
+      !dateLimit ||
+      !location
+    ) {
+      return;
+    }
+
+    dispatch(
+      createItineraryRequest(
+        name,
+        vacancies,
+        description,
+        dateOut,
+        dateReturn,
+        dateLimit,
+        location,
+        images,
+        activities,
+        lodgings,
+        transports,
+      ),
+    );
+  }
+
   return (
     <Container>
       <Header />
@@ -200,7 +239,7 @@ const NewItinerary: React.FC = () => {
             <Title>Imagens</Title>
             <ImageList>
               {images.map((item, index) => (
-                <ImageButton key={index}>
+                <ImageButton key={index} onPress={() => removeImages(index)}>
                   <Background
                     resizeMode="cover"
                     source={{
@@ -216,7 +255,7 @@ const NewItinerary: React.FC = () => {
                   </BackgroundCover>
                 </ImageButton>
               ))}
-              <FileInput onSelect={setImages}>
+              <FileInput onSelect={addImages}>
                 <AddImageButton>
                   <SIcon name="image-plus" color="#D9D8D8" size={30} />
                 </AddImageButton>
@@ -298,7 +337,7 @@ const NewItinerary: React.FC = () => {
                   </HeaderActions>
                   <ColumnGroup>
                     <FieldTitle>Tipo</FieldTitle>
-                    <FieldValue>{item.type}</FieldValue>
+                    <FieldValue>{item.transport_id}</FieldValue>
                   </ColumnGroup>
                   <ColumnGroup>
                     <FieldTitle>Preço</FieldTitle>
@@ -315,12 +354,12 @@ const NewItinerary: React.FC = () => {
                 </DataContent>
               ))}
               <DataContent>
-                <Input
+                <PickerInput
                   label="Tipo"
-                  placeholder="nome do tipo de transporte"
                   value={transportType}
                   ref={transportTypeRef}
                   onChange={setTransportType}
+                  options={options}
                 />
                 <Input
                   label="Preço"
@@ -370,7 +409,7 @@ const NewItinerary: React.FC = () => {
                   </HeaderActions>
                   <ColumnGroup>
                     <FieldTitle>Tipo</FieldTitle>
-                    <FieldValue>{item.type}</FieldValue>
+                    <FieldValue>{item.lodging_id}</FieldValue>
                   </ColumnGroup>
                   <ColumnGroup>
                     <FieldTitle>Preço</FieldTitle>
@@ -387,12 +426,12 @@ const NewItinerary: React.FC = () => {
                 </DataContent>
               ))}
               <DataContent>
-                <Input
+                <PickerInput
                   label="Tipo"
-                  placeholder="tipo de hospedagem"
                   value={lodgingType}
                   ref={lodgingTypeRef}
                   onChange={setLodgingType}
+                  options={options}
                 />
                 <Input
                   label="Preço"
@@ -442,7 +481,7 @@ const NewItinerary: React.FC = () => {
                   </HeaderActions>
                   <ColumnGroup>
                     <FieldTitle>Tipo</FieldTitle>
-                    <FieldValue>{item.type}</FieldValue>
+                    <FieldValue>{item.activity_id}</FieldValue>
                   </ColumnGroup>
                   <ColumnGroup>
                     <FieldTitle>Preço</FieldTitle>
@@ -459,12 +498,12 @@ const NewItinerary: React.FC = () => {
                 </DataContent>
               ))}
               <DataContent>
-                <Input
+                <PickerInput
                   label="Tipo"
-                  placeholder="tipo de atividade"
                   value={activityType}
                   ref={activityTypeRef}
                   onChange={setActivityType}
+                  options={options}
                 />
                 <Input
                   label="Preço"
@@ -496,7 +535,7 @@ const NewItinerary: React.FC = () => {
             </AddActivityButton>
           </CardContent>
           <CardActions>
-            <SubmitButton>
+            <SubmitButton onPress={handleSubmit}>
               <SubmitButtonText>Salvar</SubmitButtonText>
             </SubmitButton>
           </CardActions>

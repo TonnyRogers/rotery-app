@@ -11,6 +11,9 @@ import {
   registerRequest,
   registerSuccess,
   registerFailure,
+  refreshTokenRequest,
+  refreshTokenSuccess,
+  refreshTokenFailure,
 } from './actions';
 import {getProfileRequest} from '../profile/actions';
 
@@ -20,7 +23,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const response = yield call(api.post, '/sessions', {email, password});
 
-    const {token} = response.data.token;
+    const {token, refreshToken} = response.data.token;
     const {user} = response.data;
 
     if (!token) {
@@ -30,9 +33,10 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     }
 
     yield call([AsyncStorage, 'setItem'], '@auth:token', token);
+    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
-    yield put(loginSuccess(token, user));
+    yield put(loginSuccess(token, refreshToken, user));
     yield put(getProfileRequest(user.id));
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
@@ -50,6 +54,8 @@ export function* setToken({payload}: any) {
   if (token) {
     api.defaults.headers.Authorization = `Bearer ${token}`;
   }
+
+  yield put(refreshTokenRequest());
 }
 
 export function* logout() {
@@ -83,8 +89,41 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   }
 }
 
+export function* refreshToken() {
+  try {
+    setTimeout(() => {}, 2000);
+    const response = yield call(api.get, '/sessions');
+
+    if (response.status === 401) {
+      const refreshTokenSTR = yield call(
+        [AsyncStorage, 'getItem'],
+        '@auth:refreshToken',
+      );
+
+      const renewToken = yield call(api.put, '/sessions', {
+        refresh_token: refreshTokenSTR,
+      });
+
+      const {token, refreshToken} = renewToken.data;
+
+      yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
+      yield call([AsyncStorage, 'removeItem'], '@auth:token');
+
+      yield call([AsyncStorage, 'setItem'], '@auth:token', token);
+      yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
+
+      yield put(refreshTokenSuccess(token, refreshToken));
+    } else {
+      yield put(refreshTokenFailure());
+    }
+  } catch (error) {
+    yield put(refreshTokenFailure());
+  }
+}
+
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
+  takeLatest('@auth/REFRESH_TOKEN_REQUEST', refreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),

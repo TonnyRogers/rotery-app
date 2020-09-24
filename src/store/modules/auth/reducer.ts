@@ -8,6 +8,7 @@ export interface UserProps {
 
 interface InitialStateProps {
   token: string | null;
+  refreshToken: string | null;
   loading: boolean;
   authChecked: boolean;
   signed: boolean;
@@ -17,6 +18,7 @@ interface InitialStateProps {
 const INITIAL_STATE: InitialStateProps = {
   authChecked: false,
   token: null,
+  refreshToken: null,
   signed: false,
   loading: false,
   user: null,
@@ -26,6 +28,7 @@ export interface ActionProps {
   type: string;
   payload: {
     token: string;
+    refreshToken: string;
     user: UserProps;
   };
 }
@@ -40,6 +43,7 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
       case '@auth/LOGIN_SUCCESS': {
         draft.loading = false;
         draft.token = action.payload.token;
+        draft.refreshToken = action.payload.refreshToken;
         draft.user = action.payload.user;
         draft.signed = true;
         break;
@@ -50,6 +54,7 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
       }
       case '@auth/LOGOUT': {
         draft.token = null;
+        draft.refreshToken = null;
         draft.signed = false;
         break;
       }
@@ -62,6 +67,20 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case '@auth/REGISTER_FAILURE': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/REFRESH_TOKEN_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@auth/REFRESH_TOKEN_SUCCESS': {
+        draft.loading = false;
+        draft.token = action.payload.token;
+        draft.refreshToken = action.payload.refreshToken;
+        break;
+      }
+      case '@auth/REFRESH_TOKEN_FAILURE': {
         draft.loading = false;
         break;
       }

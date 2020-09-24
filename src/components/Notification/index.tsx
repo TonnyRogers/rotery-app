@@ -32,6 +32,7 @@ const Notification: React.FC<NotificationProps> = ({
     <Container
       visible={visible}
       animationType="fade"
+      transparent
       onRequestClose={() => onRequestClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

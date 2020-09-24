@@ -10,13 +10,14 @@ import SignUp from '../screens/SignUp';
 import Dashboard from '../screens/Dashboard';
 import Profile from '../screens/Profile';
 import NewItinerary from '../screens/NewItinerary';
+import SplashScreen from '../components/SplashScreen';
 
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
 
 const Routes = () => {
-  const {signed} = useSelector((state) => state.auth);
+  const {signed, loading} = useSelector((state) => state.auth);
 
   return (
     <NavigationContainer>
@@ -38,6 +39,7 @@ const Routes = () => {
           </>
         )}
       </Stack.Navigator>
+      <SplashScreen visible={loading} />
     </NavigationContainer>
   );
 };

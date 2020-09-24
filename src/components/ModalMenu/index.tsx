@@ -42,6 +42,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
     <Container
       visible={visible}
       animationType="fade"
+      transparent
       onRequestClose={() => onRequestClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

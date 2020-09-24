@@ -6,7 +6,7 @@ import {Container, Label, Field, Content} from './styles';
 interface InputProps {
   label?: string;
   placeholder?: string;
-  value: any;
+  value: number | string;
   icon?: string;
   onChange: any;
   secureTextEntry?: boolean;
@@ -23,7 +23,7 @@ const Input: React.FC<InputProps> = (
       <Label>{label}</Label>
       <Content>
         <Field
-          value={value}
+          value={String(value)}
           placeholder={placeholder}
           onChangeText={onChange}
           ref={ref}
