@@ -5,6 +5,10 @@ export const Container = styled.ScrollView`
   flex: 1;
 `;
 
+export const CardHeader = styled.View``;
+
+export const BackButton = styled.TouchableOpacity``;
+
 export const User = styled.View`
   align-items: center;
   justify-content: center;

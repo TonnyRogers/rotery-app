@@ -10,6 +10,15 @@ export const Content = styled.ScrollView`
   flex: 1;
 `;
 
+export const CardHeader = styled.View``;
+
+export const BackButton = styled.TouchableOpacity``;
+
+export const User = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
 export const CardContent = styled.View`
   width: 100%;
 `;
@@ -67,16 +76,6 @@ export const SIcon = styled(Icon)`
   position: relative;
 `;
 
-// export const AddImageButton = styled.TouchableOpacity`
-//   width: 103px;
-//   height: 76px;
-//   justify-content: center;
-//   align-items: center;
-//   background: #565;
-//   border-radius: 10px;
-//   margin: 2px;
-// `;
-
 export const DataContent = styled.View`
   background: #fff;
   padding: 10px;
@@ -94,6 +93,13 @@ export const DataContentHeader = styled.View`
 export const RowGroup = styled.View`
   flex-direction: row;
   align-items: center;
+  margin: 10px 0;
+`;
+
+export const RowGroupSpaced = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   margin: 10px 0;
 `;
 

@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({notifications}) => {
           <Icon name="chevron-up" size={24} color="#808080" />
         </CloseButton>
       </Notification>
-      <ModalMenu visible={menuVisible} onRequestClose={() => toggleMenu}>
+      <ModalMenu visible={menuVisible} onRequestClose={toggleMenu}>
         <CloseButton onPress={toggleMenu}>
           <Icon name="chevron-up" size={24} color="#808080" />
         </CloseButton>

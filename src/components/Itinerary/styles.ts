@@ -59,7 +59,7 @@ export const Badge = styled.View`
   width: 48px;
   height: 40px;
   background: #4885fd;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   border-radius: 8px;
   margin-right: 8px;
@@ -68,7 +68,7 @@ export const Badge = styled.View`
 
 export const Quantity = styled.Text`
   font-family: 'Roboto';
-  font-size: 18px;
+  font-size: 10px;
   color: #fff;
 `;
 

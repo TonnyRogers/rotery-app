@@ -72,3 +72,15 @@ export function refreshTokenFailure() {
     type: '@auth/REFRESH_TOKEN_FAILURE',
   };
 }
+
+export function setLoadingTrue() {
+  return {
+    type: '@auth/SET_LOADING_TRUE',
+  };
+}
+
+export function setLoadingFalse() {
+  return {
+    type: '@auth/SET_LOADING_FALSE',
+  };
+}

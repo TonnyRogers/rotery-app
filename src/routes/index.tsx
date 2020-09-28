@@ -10,6 +10,8 @@ import SignUp from '../screens/SignUp';
 import Dashboard from '../screens/Dashboard';
 import Profile from '../screens/Profile';
 import NewItinerary from '../screens/NewItinerary';
+import Itineraries from '../screens/Itineraries';
+import ItineraryDetails from '../screens/ItineraryDetails';
 import SplashScreen from '../components/SplashScreen';
 
 interface RoutesProps {
@@ -31,6 +33,11 @@ const Routes = () => {
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="NewItinerary" component={NewItinerary} />
+            <Stack.Screen name="Itineraries" component={Itineraries} />
+            <Stack.Screen
+              name="ItineraryDetails"
+              component={ItineraryDetails}
+            />
           </>
         ) : (
           <>

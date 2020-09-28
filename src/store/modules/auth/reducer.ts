@@ -84,6 +84,14 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
         draft.loading = false;
         break;
       }
+      case '@auth/SET_LOADING_TRUE': {
+        draft.loading = true;
+        break;
+      }
+      case '@auth/SET_LOADING_FALSE': {
+        draft.loading = false;
+        break;
+      }
       default:
     }
   });

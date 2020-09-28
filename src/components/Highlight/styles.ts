@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
+export const Container = styled.View.attrs({})`
   border-radius: 8px;
   width: 320px;
   height: 400px;
@@ -14,7 +14,9 @@ export const Background = styled.Image`
   border-top-right-radius: 8px;
 `;
 
-export const Info = styled.View`
+export const Info = styled.View.attrs({
+  elevation: 3,
+})`
   background: #fff;
   height: 100px;
   border-bottom-left-radius: 8px;

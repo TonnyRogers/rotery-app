@@ -29,13 +29,14 @@ const PickerInput: React.FC<PickerInputProps> = (
           ref={ref}
           mode="dropdown">
           <SPickerInput.Item label="Selecione" value="" />
-          {options.map((option) => (
-            <SPickerInput.Item
-              key={option.id}
-              label={option.name}
-              value={option.id}
-            />
-          ))}
+          {options &&
+            options.map((option) => (
+              <SPickerInput.Item
+                key={option.id}
+                label={option.name}
+                value={option.id}
+              />
+            ))}
         </SPickerInput>
       </Content>
     </Container>

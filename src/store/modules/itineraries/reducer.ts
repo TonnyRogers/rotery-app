@@ -1,5 +1,59 @@
 import produce from 'immer';
 
+interface OwnerProps {
+  id: number;
+  username: string;
+  person: {
+    file?: {
+      url?: string;
+    };
+  };
+}
+
+export interface QuestionProps {
+  id: number;
+  question: string;
+  anwser: string | null;
+  itinerary_id: number;
+  created_at: string;
+  updated_at: string;
+  owner: {
+    username: string;
+    person: {
+      file?: {
+        url?: string;
+      };
+    };
+  };
+}
+
+export interface MemberProps {
+  id: number;
+  username: string;
+  email: string;
+  person: {
+    file?: {
+      url?: string;
+    };
+  };
+  pivot: {
+    itinerary_id: number;
+    is_admin: boolean;
+    accepted: boolean;
+    created_at: string;
+  };
+}
+
+interface ItemProps {
+  id: number;
+  name: string;
+  pivot: {
+    capacity: number;
+    price: number;
+    description: string;
+  };
+}
+
 export interface ItineraryProps {
   id: number;
   owner_id: number;
@@ -12,9 +66,13 @@ export interface ItineraryProps {
   location: string;
   created_at: string;
   updated_at: string;
-  activities: [];
-  lodgings: [];
-  transports: [];
+  activities: ItemProps[];
+  lodgings: ItemProps[];
+  transports: ItemProps[];
+  photos: [];
+  questions: QuestionProps[];
+  members: MemberProps[];
+  owner: OwnerProps;
 }
 
 interface InitialStateProps {
@@ -60,7 +118,6 @@ export default function itineraries(
       }
       case '@itineraries/CREATE_ITINERARY_SUCCESS': {
         draft.loading = false;
-        draft.itineraries = [...draft.itineraries, action.payload.itinerary];
         break;
       }
       case '@itineraries/CREATE_ITINERARY_FAILURE': {

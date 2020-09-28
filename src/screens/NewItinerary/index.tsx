@@ -1,11 +1,16 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {LogBox} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 import {createItineraryRequest} from '../../store/modules/itineraries/actions';
+import {
+  getActivitiesRequest,
+  getLodgingsRequest,
+  getTransportsRequest,
+} from '../../store/modules/options/actions';
+import {InitialStateProps} from '../../store/modules/options/reducer';
 
-LogBox.ignoreAllLogs(true);
 import {
   Container,
   Content,
@@ -22,6 +27,7 @@ import {
   DataContent,
   DataContentHeader,
   RowGroup,
+  RowGroupSpaced,
   ContentTitle,
   IconHolder,
   AddTransportButton,
@@ -36,6 +42,8 @@ import {
   ActivityList,
   AddActivityButton,
   AddImageButton,
+  CardHeader,
+  BackButton,
 } from './styles';
 
 import Header from '../../components/Header';
@@ -46,27 +54,17 @@ import DateTimeInput from '../../components/DateTimeInput';
 import FileInput from '../../components/FileInput';
 import PickerInput from '../../components/PickerInput';
 
-const options = [
-  {
-    id: 1,
-    name: 'Carro',
-  },
-  {
-    id: 2,
-    name: 'Bicicleta',
-  },
-  {
-    id: 3,
-    name: 'Ônibus',
-  },
-  {
-    id: 4,
-    name: 'A Pé',
-  },
-];
-
 const NewItinerary: React.FC = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    dispatch(getActivitiesRequest());
+    dispatch(getLodgingsRequest());
+    dispatch(getTransportsRequest());
+  }, [dispatch]);
+
+  const options: InitialStateProps = useSelector((state) => state.options);
   const [name, setName] = useState('');
   const [dateOut, setDateOut] = useState(new Date());
   const [dateReturn, setDateReturn] = useState(new Date());
@@ -124,17 +122,22 @@ const NewItinerary: React.FC = () => {
       return;
     }
 
+    const optionItem = options.lodgings?.find(
+      (option) => option.id === Number(lodgingType),
+    );
+
     const newItem = {
-      lodging_id: lodgingType,
+      id: lodgingType,
       price: lodgingPrice,
       capacity: lodgingCapacity,
       description: lodgingDescription,
+      name: optionItem?.name,
     };
 
     setLodgings([...lodgings, newItem]);
     setLodgingType('');
     setLodgingPrice('');
-    setLodgingCapacity(0);
+    setLodgingCapacity('');
     setLodgingDescription('');
   }
 
@@ -149,17 +152,22 @@ const NewItinerary: React.FC = () => {
       return;
     }
 
+    const optionItem = options.transports?.find(
+      (option) => option.id === Number(transportType),
+    );
+
     const newItem = {
-      transport_id: transportType,
+      id: transportType,
       price: transportPrice,
       capacity: transportCapacity,
       description: transportDescription,
+      name: optionItem?.name,
     };
 
     setTransports([...transports, newItem]);
     setTransportType('');
     setTransportPrice('');
-    setTransportCapacity(0);
+    setTransportCapacity('');
     setTransportDescription('');
   }
 
@@ -174,17 +182,22 @@ const NewItinerary: React.FC = () => {
       return;
     }
 
+    const optionItem = options.activities?.find(
+      (option) => option.id === Number(activityType),
+    );
+
     const newItem = {
-      activity_id: activityType,
+      id: activityType,
       price: activityPrice,
       capacity: activityCapacity,
       description: activityDescription,
+      name: optionItem?.name,
     };
 
     setActivities([...activities, newItem]);
     setActivityType('');
     setActivityPrice('');
-    setActivityCapacity(0);
+    setActivityCapacity('');
     setActivityDescription('');
   }
 
@@ -221,6 +234,15 @@ const NewItinerary: React.FC = () => {
         transports,
       ),
     );
+
+    setName('');
+    setVacancies('');
+    setDescription('');
+    setLocation('');
+    setImages([]);
+    setActivities([]);
+    setLodgings([]);
+    setTransports([]);
   }
 
   return (
@@ -228,6 +250,11 @@ const NewItinerary: React.FC = () => {
       <Header />
       <Content>
         <Card icon="chevron-left">
+          <CardHeader>
+            <BackButton onPress={() => navigation.navigate('Dashboard')}>
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </BackButton>
+          </CardHeader>
           <CardContent>
             <Input
               label="Nome do Roteiro"
@@ -243,7 +270,7 @@ const NewItinerary: React.FC = () => {
                   <Background
                     resizeMode="cover"
                     source={{
-                      uri: item.uri,
+                      uri: item.url,
                     }}
                   />
                   <BackgroundCover>
@@ -335,22 +362,18 @@ const NewItinerary: React.FC = () => {
                       />
                     </RemoveButton>
                   </HeaderActions>
-                  <ColumnGroup>
-                    <FieldTitle>Tipo</FieldTitle>
-                    <FieldValue>{item.transport_id}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Preço</FieldTitle>
-                    <FieldValue>{item.price}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Capacitdade</FieldTitle>
-                    <FieldValue>{item.capacity}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Descrição</FieldTitle>
-                    <FieldValue>{item.description}</FieldValue>
-                  </ColumnGroup>
+                  <FieldTitle>{item.name}</FieldTitle>
+                  <FieldValue>{item.description}</FieldValue>
+                  <RowGroupSpaced>
+                    <ColumnGroup>
+                      <FieldTitle>Capacidade</FieldTitle>
+                      <FieldValue>{item.capacity}</FieldValue>
+                    </ColumnGroup>
+                    <ColumnGroup>
+                      <FieldTitle>Preço</FieldTitle>
+                      <FieldValue>{item.price}</FieldValue>
+                    </ColumnGroup>
+                  </RowGroupSpaced>
                 </DataContent>
               ))}
               <DataContent>
@@ -359,7 +382,7 @@ const NewItinerary: React.FC = () => {
                   value={transportType}
                   ref={transportTypeRef}
                   onChange={setTransportType}
-                  options={options}
+                  options={options.transports}
                 />
                 <Input
                   label="Preço"
@@ -407,22 +430,18 @@ const NewItinerary: React.FC = () => {
                       />
                     </RemoveButton>
                   </HeaderActions>
-                  <ColumnGroup>
-                    <FieldTitle>Tipo</FieldTitle>
-                    <FieldValue>{item.lodging_id}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Preço</FieldTitle>
-                    <FieldValue>{item.price}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Capacitdade</FieldTitle>
-                    <FieldValue>{item.capacity}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Descrição</FieldTitle>
-                    <FieldValue>{item.description}</FieldValue>
-                  </ColumnGroup>
+                  <FieldTitle>{item.name}</FieldTitle>
+                  <FieldValue>{item.description}</FieldValue>
+                  <RowGroupSpaced>
+                    <ColumnGroup>
+                      <FieldTitle>Capacidade</FieldTitle>
+                      <FieldValue>{item.capacity}</FieldValue>
+                    </ColumnGroup>
+                    <ColumnGroup>
+                      <FieldTitle>Preço</FieldTitle>
+                      <FieldValue>{item.price}</FieldValue>
+                    </ColumnGroup>
+                  </RowGroupSpaced>
                 </DataContent>
               ))}
               <DataContent>
@@ -431,7 +450,7 @@ const NewItinerary: React.FC = () => {
                   value={lodgingType}
                   ref={lodgingTypeRef}
                   onChange={setLodgingType}
-                  options={options}
+                  options={options.lodgings}
                 />
                 <Input
                   label="Preço"
@@ -479,22 +498,18 @@ const NewItinerary: React.FC = () => {
                       />
                     </RemoveButton>
                   </HeaderActions>
-                  <ColumnGroup>
-                    <FieldTitle>Tipo</FieldTitle>
-                    <FieldValue>{item.activity_id}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Preço</FieldTitle>
-                    <FieldValue>{item.price}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Capacitdade</FieldTitle>
-                    <FieldValue>{item.capacity}</FieldValue>
-                  </ColumnGroup>
-                  <ColumnGroup>
-                    <FieldTitle>Descrição</FieldTitle>
-                    <FieldValue>{item.description}</FieldValue>
-                  </ColumnGroup>
+                  <FieldTitle>{item.name}</FieldTitle>
+                  <FieldValue>{item.description}</FieldValue>
+                  <RowGroupSpaced>
+                    <ColumnGroup>
+                      <FieldTitle>Capacidade</FieldTitle>
+                      <FieldValue>{item.capacity}</FieldValue>
+                    </ColumnGroup>
+                    <ColumnGroup>
+                      <FieldTitle>Preço</FieldTitle>
+                      <FieldValue>{item.price}</FieldValue>
+                    </ColumnGroup>
+                  </RowGroupSpaced>
                 </DataContent>
               ))}
               <DataContent>
@@ -503,7 +518,7 @@ const NewItinerary: React.FC = () => {
                   value={activityType}
                   ref={activityTypeRef}
                   onChange={setActivityType}
-                  options={options}
+                  options={options.activities}
                 />
                 <Input
                   label="Preço"

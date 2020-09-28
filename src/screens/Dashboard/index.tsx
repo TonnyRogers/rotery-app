@@ -68,11 +68,7 @@ const Dashboard: React.FC = () => {
             </Activity>
           </ActivityList>
         </FilterContent>
-        <ItineraryList>
-          <Itinerary />
-          <Itinerary />
-          <Itinerary />
-        </ItineraryList>
+        <ItineraryList>{/* <Itinerary /> */}</ItineraryList>
         <FloatContent>
           <NewItineraryButton
             onPress={() => navigation.navigate('NewItinerary')}>

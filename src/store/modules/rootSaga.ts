@@ -3,7 +3,8 @@ import {all} from 'redux-saga/effects';
 import auth from './auth/sagas';
 import profile from './profile/sagas';
 import itineraries from './itineraries/sagas';
+import options from './options/sagas';
 
 export default function* rootSaga() {
-  return yield all([auth, profile, itineraries]);
+  return yield all([auth, profile, itineraries, options]);
 }

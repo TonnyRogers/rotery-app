@@ -17,6 +17,12 @@ import {
 } from './actions';
 import {getProfileRequest} from '../profile/actions';
 
+import {
+  getActivitiesRequest,
+  getLodgingsRequest,
+  getTransportsRequest,
+} from '../options/actions';
+
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
     const {email, password} = payload;
@@ -38,6 +44,9 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     yield put(loginSuccess(token, refreshToken, user));
     yield put(getProfileRequest(user.id));
+    yield put(getActivitiesRequest());
+    yield put(getLodgingsRequest());
+    yield put(getTransportsRequest());
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());
@@ -91,33 +100,34 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
 
 export function* refreshToken() {
   try {
-    setTimeout(() => {}, 2000);
     const response = yield call(api.get, '/sessions');
 
     if (response.status === 401) {
-      const refreshTokenSTR = yield call(
-        [AsyncStorage, 'getItem'],
-        '@auth:refreshToken',
-      );
-
-      const renewToken = yield call(api.put, '/sessions', {
-        refresh_token: refreshTokenSTR,
-      });
-
-      const {token, refreshToken} = renewToken.data;
-
-      yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
-      yield call([AsyncStorage, 'removeItem'], '@auth:token');
-
-      yield call([AsyncStorage, 'setItem'], '@auth:token', token);
-      yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
-
-      yield put(refreshTokenSuccess(token, refreshToken));
-    } else {
       yield put(refreshTokenFailure());
     }
-  } catch (error) {
+
     yield put(refreshTokenFailure());
+  } catch (error) {
+    const refreshTokenSTR = yield call(
+      [AsyncStorage, 'getItem'],
+      '@auth:refreshToken',
+    );
+
+    const renewToken = yield call(api.put, '/sessions', {
+      refresh_token: refreshTokenSTR,
+    });
+
+    const {token, refreshToken} = renewToken.data;
+
+    yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
+    yield call([AsyncStorage, 'removeItem'], '@auth:token');
+
+    yield call([AsyncStorage, 'setItem'], '@auth:token', token);
+    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
+
+    yield put(refreshTokenSuccess(token, refreshToken));
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
   }
 }
 

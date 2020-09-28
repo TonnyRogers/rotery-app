@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform, View} from 'react-native';
 import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 import {logout} from '../../store/modules/auth/actions';
 
@@ -24,7 +25,7 @@ import {
 
 interface ModalMenuProps {
   visible: boolean;
-  onRequestClose: () => {};
+  onRequestClose(): void;
 }
 
 const ModalMenu: React.FC<ModalMenuProps> = ({
@@ -33,9 +34,15 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
   children,
 }) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   async function handleLogout() {
     dispatch(logout());
+  }
+
+  function toItineraries() {
+    onRequestClose();
+    navigation.navigate('Itineraries');
   }
 
   return (
@@ -59,7 +66,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
                 <Counter>8</Counter>
               </CounterContent>
             </MenuButton>
-            <MenuButton onPress={() => {}}>
+            <MenuButton onPress={toItineraries}>
               <Icon name="map-outline" size={24} color="#FFF" />
               <ItinerariesButtonText>Seus Roteiros</ItinerariesButtonText>
               <View />

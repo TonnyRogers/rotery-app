@@ -1,10 +1,12 @@
 import React from 'react';
 import DocumentPicker from 'react-native-document-picker';
 
+import api from '../../services/api';
+
 import {Container, SelectFilesButton} from './styles';
 
 interface FileInputProps {
-  onSelect(): [];
+  onSelect(data: []): [];
 }
 
 const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
@@ -14,35 +16,43 @@ const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
         type: [DocumentPicker.types.images],
       });
 
-      // const customFile = {
-      //   name: fileResponse.name,
-      //   type: fileResponse.type,
-      //   uri: fileResponse.uri,
-      //   size: fileResponse.size,
-      // };
+      const formData = new FormData();
 
-      // setProfileImage(customFile);
+      let response;
 
-      // const formData = new FormData();
-      // formData.append('file', fileResponse);
+      if (fileResponse[1]) {
+        fileResponse.forEach((file) => {
+          formData.append('files', file);
+        });
 
-      // const response = await api.post('/profile/avatar', formData);
+        response = await api.post('/multiple-files', formData);
 
-      // const {id} = response.data;
+        const {id} = response.data[0];
 
-      // if (!id) {
-      //   setProfileImage({uri: ''});
-      //   return;
-      // }
+        if (!id) {
+          return;
+        }
+      } else {
+        formData.append('file', fileResponse[0]);
 
-      // dispatch(updateProfileImageRequest(id));
+        response = await api.post('/files', formData);
 
-      onSelect(fileResponse);
+        const {id} = response.data;
+
+        response.data = [response.data];
+
+        if (!id) {
+          return;
+        }
+      }
+
+      const images = response.data;
+
+      onSelect(images);
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
-        console.tron.log('DocumentPicker', error); // User cancelled the picker, exit any dialogs or menus and move on
+        console.tron.log('DocumentPicker', error);
       } else {
-        // setProfileImage({uri: ''});
       }
     }
   }

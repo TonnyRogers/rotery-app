@@ -1,11 +1,12 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
+export const Container = styled.View.attrs({
+  elevation: 3,
+})`
   background: #fff;
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
-  elevation: 3;
 `;
 
 export const CardHeader = styled.View`
@@ -22,7 +23,4 @@ export const BackButton = styled.TouchableOpacity`
 
 export const Title = styled.Text``;
 
-export const CardContent = styled.View`
-  align-items: center;
-  justify-content: center;
-`;
+export const CardContent = styled.View``;

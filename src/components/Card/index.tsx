@@ -14,12 +14,12 @@ const Card: React.FC<CardProps> = ({icon, title, children}) => {
 
   return (
     <Container>
-      <CardHeader>
+      {/* <CardHeader>
         <BackButton onPress={() => navigation.navigate('Dashboard')}>
           {icon && <Icon name={icon} size={24} color="#3dc77b" />}
         </BackButton>
         <Title>{title}</Title>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>{children}</CardContent>
     </Container>
   );

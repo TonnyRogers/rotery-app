@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import DocumentPicker from 'react-native-document-picker';
 import {format, parse} from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import {useNavigation} from '@react-navigation/native';
 
 import api from '../../services/api';
 
@@ -27,6 +28,8 @@ import {
   SubmitButtonText,
   DeleteAccountButton,
   DeleteAccountButtonText,
+  CardHeader,
+  BackButton,
 } from './styles';
 import Header from '../../components/Header';
 
@@ -36,6 +39,7 @@ import Alert from '../../components/Alert';
 import DateInput from '../../components/DateInput';
 
 const Profile: React.FC = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const {user} = useSelector((state) => state.auth);
   const {data} = useSelector((state) => state.profile);
@@ -120,7 +124,12 @@ const Profile: React.FC = () => {
   return (
     <Container>
       <Header />
-      <Card icon="chevron-left">
+      <Card>
+        <CardHeader>
+          <BackButton onPress={() => navigation.navigate('Dashboard')}>
+            <Icon name="chevron-left" size={24} color="#3dc77b" />
+          </BackButton>
+        </CardHeader>
         <User>
           <Avatar source={{uri: profileImage.uri}} resizeMode="cover" />
           <ChangeAvatarButton onPress={pickFile}>
