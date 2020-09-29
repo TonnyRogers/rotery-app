@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector} from 'react-redux';
 
+import {navigationRef} from '../RootNavigation';
 const Stack = createStackNavigator();
 
 import Home from '../screens/Home';
@@ -12,17 +13,19 @@ import Profile from '../screens/Profile';
 import NewItinerary from '../screens/NewItinerary';
 import Itineraries from '../screens/Itineraries';
 import ItineraryDetails from '../screens/ItineraryDetails';
+import EditItinerary from '../screens/EditItinerary';
 import SplashScreen from '../components/SplashScreen';
 
+import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
 
 const Routes = () => {
-  const {signed, loading} = useSelector((state) => state.auth);
+  const {signed, loading} = useSelector((state: RootStateProps) => state.auth);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -38,6 +41,7 @@ const Routes = () => {
               name="ItineraryDetails"
               component={ItineraryDetails}
             />
+            <Stack.Screen name="EditItinerary" component={EditItinerary} />
           </>
         ) : (
           <>

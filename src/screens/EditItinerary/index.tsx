@@ -1,98 +1,128 @@
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {createItineraryRequest} from '../../store/modules/itineraries/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {
   getActivitiesRequest,
   getLodgingsRequest,
   getTransportsRequest,
 } from '../../store/modules/options/actions';
-import {InitialStateProps} from '../../store/modules/options/reducer';
+import {updateItineraryRequest} from '../../store/modules/itineraries/actions';
+import {InitialStateProps as OptionsProps} from '../../store/modules/options/reducer';
+import {
+  InitialStateProps as ItinerariesProps,
+  ItineraryProps,
+} from '../../store/modules/itineraries/reducer';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
   Content,
+  RowGroup,
+  RowGroupSpaced,
+  IconHolder,
+  CardHeader,
+  BackButton,
   CardContent,
-  CardActions,
-  SubmitButton,
-  SubmitButtonText,
+  Title,
   ImageList,
   ImageButton,
   Background,
   BackgroundCover,
   SIcon,
-  Title,
+  AddImageButton,
   DataContent,
   DataContentHeader,
-  RowGroup,
-  RowGroupSpaced,
   ContentTitle,
-  IconHolder,
-  AddTransportButton,
   TransportList,
-  ColumnGroup,
+  HeaderActions,
+  RemoveButton,
   FieldTitle,
   FieldValue,
-  RemoveButton,
-  HeaderActions,
+  ColumnGroup,
+  AddTransportButton,
   LodgingList,
   AddLodginButton,
   ActivityList,
   AddActivityButton,
-  AddImageButton,
-  CardHeader,
-  BackButton,
+  CardActions,
+  SubmitButton,
+  SubmitButtonText,
 } from './styles';
-
-import Header from '../../components/Header';
-import Input from '../../components/Input';
 import Card from '../../components/Card';
-import TextArea from '../../components/TextArea';
 import DateTimeInput from '../../components/DateTimeInput';
 import FileInput from '../../components/FileInput';
+import Header from '../../components/Header';
+import Input from '../../components/Input';
 import PickerInput from '../../components/PickerInput';
+import TextArea from '../../components/TextArea';
 
 interface TransportProps {
   id: number;
   name?: string;
-  description: string | null;
-  price: number | null;
-  capacity: number;
+  pivot: {
+    description: string | null;
+    price: number | null;
+    capacity: number;
+  };
 }
 
 interface LodgingProps {
   id: number;
   name?: string;
-  description: string | null;
-  price: number | null;
-  capacity: number;
+  pivot: {
+    description: string | null;
+    price: number | null;
+    capacity: number;
+  };
 }
 
 interface ActivityProps {
   id: number;
   name?: string;
-  description: string | null;
-  price: number | null;
-  capacity: number;
+  pivot: {
+    description: string | null;
+    price: number | null;
+    capacity: number;
+  };
 }
 
-const NewItinerary: React.FC = () => {
+const EditItinerary: React.FC = ({route}) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const {id} = route.params;
+
+  const {itineraries}: ItinerariesProps = useSelector(
+    (state: RootStateProps) => state.itineraries,
+  );
+
+  const itinerary: ItineraryProps = itineraries?.find(
+    (item: ItineraryProps) => item.id === id,
+  );
 
   useEffect(() => {
     dispatch(getActivitiesRequest());
     dispatch(getLodgingsRequest());
     dispatch(getTransportsRequest());
-  }, [dispatch]);
 
-  const options: InitialStateProps = useSelector(
+    setName(itinerary.name);
+    setDateOut(new Date(itinerary.begin));
+    setDateReturn(new Date(itinerary.end));
+    setDateLimit(new Date(itinerary.deadline_for_join));
+    setDescription(itinerary.description);
+    setLocation(itinerary.location);
+    setVacancies(String(itinerary.capacity));
+    setLodgings([...itinerary.lodgings]);
+    setActivities([...itinerary.activities]);
+    setTransports([...itinerary.transports]);
+    setImages([...itinerary.photos]);
+  }, [dispatch, itinerary]);
+
+  const options: OptionsProps = useSelector(
     (state: RootStateProps) => state.options,
   );
 
+  const navigation = useNavigation();
   const [name, setName] = useState('');
   const [dateOut, setDateOut] = useState(new Date());
   const [dateReturn, setDateReturn] = useState(new Date());
@@ -154,17 +184,17 @@ const NewItinerary: React.FC = () => {
       (option) => option.id === Number(lodgingType),
     );
 
-    const newItem: LodgingProps = {
-      id: Number(lodgingType),
-      price: Number(lodgingPrice),
-      capacity: Number(lodgingCapacity),
-      description: lodgingDescription,
+    const newItem = {
+      id: lodgingType,
       name: optionItem?.name,
+      pivot: {
+        price: lodgingPrice,
+        capacity: lodgingCapacity,
+        description: lodgingDescription,
+      },
     };
 
-    lodgings.push(newItem);
-
-    setLodgings(lodgings);
+    setLodgings([...lodgings, newItem]);
     setLodgingType('');
     setLodgingPrice('');
     setLodgingCapacity('');
@@ -186,17 +216,17 @@ const NewItinerary: React.FC = () => {
       (option) => option.id === Number(transportType),
     );
 
-    const newItem: TransportProps = {
-      id: Number(transportType),
-      price: Number(transportPrice),
-      capacity: Number(transportCapacity),
-      description: transportDescription,
+    const newItem = {
+      id: transportType,
       name: optionItem?.name,
+      pivot: {
+        price: transportPrice,
+        capacity: transportCapacity,
+        description: transportDescription,
+      },
     };
 
-    transports.push(newItem);
-
-    setTransports(transports);
+    setTransports([...transports, newItem]);
     setTransportType('');
     setTransportPrice('');
     setTransportCapacity('');
@@ -218,17 +248,17 @@ const NewItinerary: React.FC = () => {
       (option) => option.id === Number(activityType),
     );
 
-    const newItem: ActivityProps = {
-      id: Number(activityType),
-      price: Number(activityPrice),
-      capacity: Number(activityCapacity),
-      description: activityDescription,
+    const newItem = {
+      id: activityType,
       name: optionItem?.name,
+      pivot: {
+        price: activityPrice,
+        capacity: activityCapacity,
+        description: activityDescription,
+      },
     };
 
-    activities.push(newItem);
-
-    setActivities(activities);
+    setActivities([...activities, newItem]);
     setActivityType('');
     setActivityPrice('');
     setActivityCapacity('');
@@ -242,19 +272,9 @@ const NewItinerary: React.FC = () => {
   }
 
   function handleSubmit() {
-    if (
-      !name ||
-      !vacancies ||
-      !dateOut ||
-      !dateReturn ||
-      !dateLimit ||
-      !location
-    ) {
-      return;
-    }
-
     dispatch(
-      createItineraryRequest(
+      updateItineraryRequest(
+        id,
         name,
         Number(vacancies),
         description,
@@ -268,15 +288,6 @@ const NewItinerary: React.FC = () => {
         transports,
       ),
     );
-
-    setName('');
-    setVacancies('');
-    setDescription('');
-    setLocation('');
-    setImages([]);
-    setActivities([]);
-    setLodgings([]);
-    setTransports([]);
   }
 
   return (
@@ -299,23 +310,24 @@ const NewItinerary: React.FC = () => {
             />
             <Title>Imagens</Title>
             <ImageList>
-              {images.map((item: {url: string}, index: number) => (
-                <ImageButton key={index} onPress={() => removeImages(index)}>
-                  <Background
-                    resizeMode="cover"
-                    source={{
-                      uri: item.url,
-                    }}
-                  />
-                  <BackgroundCover>
-                    <SIcon
-                      name="delete-forever-outline"
-                      color="#F57373"
-                      size={30}
+              {images &&
+                images.map((item: {url: string}, index: number) => (
+                  <ImageButton key={index} onPress={() => removeImages(index)}>
+                    <Background
+                      resizeMode="cover"
+                      source={{
+                        uri: item.url,
+                      }}
                     />
-                  </BackgroundCover>
-                </ImageButton>
-              ))}
+                    <BackgroundCover>
+                      <SIcon
+                        name="delete-forever-outline"
+                        color="#F57373"
+                        size={30}
+                      />
+                    </BackgroundCover>
+                  </ImageButton>
+                ))}
               <FileInput onSelect={addImages}>
                 <AddImageButton>
                   <SIcon name="image-plus" color="#D9D8D8" size={30} />
@@ -385,31 +397,32 @@ const NewItinerary: React.FC = () => {
               <ContentTitle>Transporte</ContentTitle>
             </RowGroup>
             <TransportList>
-              {transports.map((item: TransportProps, index: number) => (
-                <DataContent key={index}>
-                  <HeaderActions>
-                    <RemoveButton onPress={() => removeTransportItem(index)}>
-                      <Icon
-                        name="delete-forever-outline"
-                        color="#F57373"
-                        size={24}
-                      />
-                    </RemoveButton>
-                  </HeaderActions>
-                  <FieldTitle>{item.name}</FieldTitle>
-                  <FieldValue>{item.description}</FieldValue>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <FieldTitle>Capacidade</FieldTitle>
-                      <FieldValue>{item.capacity}</FieldValue>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.price}</FieldValue>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </DataContent>
-              ))}
+              {transports &&
+                transports?.map((item: TransportProps, index: number) => (
+                  <DataContent key={index}>
+                    <HeaderActions>
+                      <RemoveButton onPress={() => removeTransportItem(index)}>
+                        <Icon
+                          name="delete-forever-outline"
+                          color="#F57373"
+                          size={24}
+                        />
+                      </RemoveButton>
+                    </HeaderActions>
+                    <FieldTitle>{item.name}</FieldTitle>
+                    <FieldValue>{item.pivot.description}</FieldValue>
+                    <RowGroupSpaced>
+                      <ColumnGroup>
+                        <FieldTitle>Capacidade</FieldTitle>
+                        <FieldValue>{item.pivot.capacity}</FieldValue>
+                      </ColumnGroup>
+                      <ColumnGroup>
+                        <FieldTitle>Preço</FieldTitle>
+                        <FieldValue>{item.pivot.price}</FieldValue>
+                      </ColumnGroup>
+                    </RowGroupSpaced>
+                  </DataContent>
+                ))}
               <DataContent>
                 <PickerInput
                   label="Tipo"
@@ -453,31 +466,32 @@ const NewItinerary: React.FC = () => {
               <ContentTitle>Hospedagem</ContentTitle>
             </RowGroup>
             <LodgingList>
-              {lodgings.map((item: LodgingProps, index: number) => (
-                <DataContent key={index}>
-                  <HeaderActions>
-                    <RemoveButton onPress={() => removeLodgingItem(index)}>
-                      <Icon
-                        name="delete-forever-outline"
-                        color="#F57373"
-                        size={24}
-                      />
-                    </RemoveButton>
-                  </HeaderActions>
-                  <FieldTitle>{item.name}</FieldTitle>
-                  <FieldValue>{item.description}</FieldValue>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <FieldTitle>Capacidade</FieldTitle>
-                      <FieldValue>{item.capacity}</FieldValue>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.price}</FieldValue>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </DataContent>
-              ))}
+              {lodgings &&
+                lodgings.map((item: LodgingProps, index: number) => (
+                  <DataContent key={index}>
+                    <HeaderActions>
+                      <RemoveButton onPress={() => removeLodgingItem(index)}>
+                        <Icon
+                          name="delete-forever-outline"
+                          color="#F57373"
+                          size={24}
+                        />
+                      </RemoveButton>
+                    </HeaderActions>
+                    <FieldTitle>{item.name}</FieldTitle>
+                    <FieldValue>{item.pivot.description}</FieldValue>
+                    <RowGroupSpaced>
+                      <ColumnGroup>
+                        <FieldTitle>Capacidade</FieldTitle>
+                        <FieldValue>{item.pivot.capacity}</FieldValue>
+                      </ColumnGroup>
+                      <ColumnGroup>
+                        <FieldTitle>Preço</FieldTitle>
+                        <FieldValue>{item.pivot.price}</FieldValue>
+                      </ColumnGroup>
+                    </RowGroupSpaced>
+                  </DataContent>
+                ))}
               <DataContent>
                 <PickerInput
                   label="Tipo"
@@ -533,15 +547,15 @@ const NewItinerary: React.FC = () => {
                     </RemoveButton>
                   </HeaderActions>
                   <FieldTitle>{item.name}</FieldTitle>
-                  <FieldValue>{item.description}</FieldValue>
+                  <FieldValue>{item.pivot.description}</FieldValue>
                   <RowGroupSpaced>
                     <ColumnGroup>
                       <FieldTitle>Capacidade</FieldTitle>
-                      <FieldValue>{item.capacity}</FieldValue>
+                      <FieldValue>{item.pivot.capacity}</FieldValue>
                     </ColumnGroup>
                     <ColumnGroup>
                       <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.price}</FieldValue>
+                      <FieldValue>{item.pivot.price}</FieldValue>
                     </ColumnGroup>
                   </RowGroupSpaced>
                 </DataContent>
@@ -585,7 +599,7 @@ const NewItinerary: React.FC = () => {
           </CardContent>
           <CardActions>
             <SubmitButton onPress={handleSubmit}>
-              <SubmitButtonText>Salvar</SubmitButtonText>
+              <SubmitButtonText>Atualizar</SubmitButtonText>
             </SubmitButton>
           </CardActions>
         </Card>
@@ -594,4 +608,4 @@ const NewItinerary: React.FC = () => {
   );
 };
 
-export default NewItinerary;
+export default EditItinerary;

@@ -2,6 +2,7 @@ import {Alert} from 'react-native';
 import {takeLatest, put, call, all} from 'redux-saga/effects';
 
 import api from '../../../services/api';
+import * as RootNavigation from '../../../RootNavigation';
 import {
   getItinerariesRequest,
   getItinerariesSuccess,
@@ -11,6 +12,9 @@ import {
   deleteItineraryRequest,
   deleteItinerarySuccess,
   deleteItineraryFailure,
+  updateItineraryRequest,
+  updateItinerarySuccess,
+  updateItineraryFailure,
   replyQuestionRequest,
   replyQuestionSuccess,
   replyQuestionFailure,
@@ -29,6 +33,12 @@ import {
 } from './actions';
 
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
+interface UpdateItemProps {
+  id: number;
+  capacity: number;
+  description: string | null;
+  price: number | null;
+}
 
 export function* getItineraries() {
   try {
@@ -84,10 +94,12 @@ export function* createItinerary({
 
     yield put(createItinerarySuccess(response.data));
     yield put(setLoadingFalse());
+    yield put(getItinerariesRequest());
+    RootNavigation.navigate('Itineraries', {});
   } catch (error) {
-    Alert.alert('Erro ao criar roteiro.');
     yield put(createItineraryFailure());
     yield put(setLoadingFalse());
+    Alert.alert('Erro ao criar roteiro.');
   }
 }
 
@@ -103,11 +115,94 @@ export function* deleteItinerary({
     yield put(deleteItinerarySuccess());
     yield put(getItinerariesRequest());
     yield put(setLoadingFalse());
+    RootNavigation.navigate('Itineraries', {});
     Alert.alert('Roteiro deletado.');
   } catch (error) {
     Alert.alert('Não foi possivel deletar roteiro.');
     yield put(deleteItineraryFailure());
     yield put(setLoadingFalse());
+  }
+}
+
+export function* updateItinerary({
+  payload,
+}: ReturnType<typeof updateItineraryRequest>) {
+  try {
+    const {
+      itineraryId,
+      name,
+      dateBegin,
+      dateEnd,
+      dateLimit,
+      location,
+      capacity,
+      description,
+      images,
+      lodgings,
+      activities,
+      transports,
+    } = payload;
+
+    const imageArray: {id: number}[] = [];
+    const transportArray: UpdateItemProps[] = [];
+    const lodgingArray: UpdateItemProps[] = [];
+    const activityArray: UpdateItemProps[] = [];
+
+    images?.forEach((image) => {
+      imageArray.push({id: image.id});
+    });
+
+    transports?.forEach((transport) => {
+      transportArray.push({
+        id: transport.id,
+        capacity: transport.pivot.capacity,
+        description: transport.pivot.description,
+        price: transport.pivot.price,
+      });
+    });
+
+    lodgings?.forEach((lodging) => {
+      lodgingArray.push({
+        id: lodging.id,
+        capacity: lodging.pivot.capacity,
+        description: lodging.pivot.description,
+        price: lodging.pivot.price,
+      });
+    });
+
+    activities?.forEach((activity) => {
+      activityArray.push({
+        id: activity.id,
+        capacity: activity.pivot.capacity,
+        description: activity.pivot.description,
+        price: activity.pivot.price,
+      });
+    });
+
+    yield put(setLoadingTrue());
+    yield call(api.put, `/itineraries/${itineraryId}`, {
+      name,
+      description,
+      dateBegin,
+      dateEnd,
+      dateLimit,
+      capacity,
+      location,
+      lodgings: lodgingArray,
+      activities: activityArray,
+      transports: transportArray,
+      photos: imageArray,
+    });
+
+    yield put(updateItinerarySuccess());
+    yield put(setLoadingFalse());
+    yield put(getItinerariesRequest());
+    RootNavigation.navigate('Itineraries', {});
+    Alert.alert('Roteiro atualizado.');
+  } catch (error) {
+    yield put(updateItineraryFailure());
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao atualizar roteiro.');
   }
 }
 
@@ -262,6 +357,7 @@ export function* removeMember({
 }
 
 export default all([
+  takeLatest('@itineraries/UPDATE_ITINERARY_REQUEST', updateItinerary),
   takeLatest('@itineraries/DELETE_ITINERARY_REQUEST', deleteItinerary),
   takeLatest('@itineraries/REMOVE_MEMBER_REQUEST', removeMember),
   takeLatest('@itineraries/ACCEPT_MEMBER_REQUEST', acceptMember),

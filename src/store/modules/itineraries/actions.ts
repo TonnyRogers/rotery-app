@@ -4,11 +4,21 @@ interface ImageListProps {
   id: number;
 }
 
-interface LodgingListProps {
+interface CreateItemListProps {
   id: number;
   capacity: number;
   description?: string;
   price: number;
+}
+
+interface UpdateItemListProps {
+  id: number;
+  name?: string;
+  pivot: {
+    description: string | null;
+    price: number | null;
+    capacity: number;
+  };
 }
 
 export function getItinerariesRequest() {
@@ -38,10 +48,10 @@ export function createItineraryRequest(
   dateEnd: Date,
   dateLimit: Date,
   location: string,
-  images?: [ImageListProps],
-  activities?: [LodgingListProps],
-  lodgings?: [LodgingListProps],
-  transports?: [LodgingListProps],
+  images?: ImageListProps[],
+  activities?: CreateItemListProps[],
+  lodgings?: CreateItemListProps[],
+  transports?: CreateItemListProps[],
 ) {
   return {
     type: '@itineraries/CREATE_ITINERARY_REQUEST',
@@ -90,6 +100,51 @@ export function deleteItinerarySuccess() {
 export function deleteItineraryFailure() {
   return {
     type: '@itineraries/DELETE_ITINERARY_FAILURE',
+  };
+}
+
+export function updateItineraryRequest(
+  itineraryId: number,
+  name: string,
+  capacity: number,
+  description: string,
+  dateBegin: Date,
+  dateEnd: Date,
+  dateLimit: Date,
+  location: string,
+  images?: ImageListProps[],
+  activities?: UpdateItemListProps[],
+  lodgings?: UpdateItemListProps[],
+  transports?: UpdateItemListProps[],
+) {
+  return {
+    type: '@itineraries/UPDATE_ITINERARY_REQUEST',
+    payload: {
+      itineraryId,
+      name,
+      images,
+      capacity,
+      description,
+      dateBegin,
+      dateEnd,
+      dateLimit,
+      location,
+      activities,
+      lodgings,
+      transports,
+    },
+  };
+}
+
+export function updateItinerarySuccess() {
+  return {
+    type: '@itineraries/UPDATE_ITINERARY_SUCCESS',
+  };
+}
+
+export function updateItineraryFailure() {
+  return {
+    type: '@itineraries/UPDATE_ITINERARY_FAILURE',
   };
 }
 

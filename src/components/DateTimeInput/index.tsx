@@ -11,7 +11,7 @@ import {Container, DateButton, DateText, Label} from './styles';
 interface DateTimeInputProps {
   label: string;
   date: Date;
-  onChange: (date: Date) => {};
+  onChange(date: Date): any;
 }
 
 const DateTimeInput: React.FC<DateTimeInputProps> = ({

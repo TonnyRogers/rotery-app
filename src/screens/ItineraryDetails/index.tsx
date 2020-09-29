@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {NavigationProp} from '@react-navigation/native';
 
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 import {deleteItineraryRequest} from '../../store/modules/itineraries/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -53,7 +53,7 @@ interface ItineraryDetailsProps {
   route: {
     params: {id: number};
   };
-  navigation: NavigationProp;
+  navigation: any;
 }
 
 const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
@@ -61,11 +61,13 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   navigation,
 }) => {
   const {id} = route.params;
-  const {itineraries} = useSelector((state) => state.itineraries);
+  const {itineraries} = useSelector(
+    (state: RootStateProps) => state.itineraries,
+  );
   const [alertVisible, setAlertVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const itinerary: ItineraryProps = itineraries.find(
+  const itinerary: ItineraryProps = itineraries?.find(
     (item: ItineraryProps) => item.id === id,
   );
 
@@ -91,7 +93,8 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             <BackButton onPress={() => navigation.goBack()}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
-            <EditButton>
+            <EditButton
+              onPress={() => navigation.navigate('EditItinerary', {id})}>
               <Icon name="pencil-outline" size={24} color="#4885FD" />
             </EditButton>
           </CardHeader>

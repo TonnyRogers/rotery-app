@@ -11,6 +11,7 @@ interface InputProps {
   onChange: any;
   secureTextEntry?: boolean;
   returnKeyType?: string;
+  keyboardType?: string;
   onSubmitEditing?(): void;
 }
 

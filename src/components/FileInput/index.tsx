@@ -6,7 +6,7 @@ import api from '../../services/api';
 import {Container, SelectFilesButton} from './styles';
 
 interface FileInputProps {
-  onSelect(data: []): [];
+  onSelect(data: []): any;
 }
 
 const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {

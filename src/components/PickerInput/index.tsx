@@ -9,10 +9,10 @@ interface OptionProps {
 
 interface PickerInputProps {
   ref: number | any;
-  options: [OptionProps];
+  options: OptionProps[];
   label: string;
   value: string | number;
-  onChange(returnValue: number): void;
+  onChange(returnValue: any): any;
 }
 
 const PickerInput: React.FC<PickerInputProps> = (

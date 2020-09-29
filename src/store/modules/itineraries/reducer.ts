@@ -76,7 +76,7 @@ export interface ItineraryProps {
 }
 
 interface InitialStateProps {
-  itineraries: [] | null;
+  itineraries: ItineraryProps[] | null;
   loading: boolean;
 }
 
