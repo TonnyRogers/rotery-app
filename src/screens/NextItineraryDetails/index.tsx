@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 import {deleteItineraryRequest} from '../../store/modules/itineraries/actions';
+import {makeQuestionRequest} from '../../store/modules/nextItineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
@@ -12,7 +13,6 @@ import {
   Content,
   CardHeader,
   BackButton,
-  EditButton,
   CardContent,
   Name,
   RowGroup,
@@ -41,12 +41,15 @@ import {
   DataPriceValue,
   DeleteItineraryButton,
   DeleteItineraryButtonText,
+  SendButton,
+  SendButtonText,
 } from './styles';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
 import ItineraryMember from '../../components/ItineraryMember';
 import ItineraryQuestion from '../../components/ItineraryQuestion';
+import TextArea from '../../components/TextArea';
 import Alert from '../../components/Alert';
 
 interface ItineraryDetailsProps {
@@ -56,15 +59,18 @@ interface ItineraryDetailsProps {
   navigation: any;
 }
 
-const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
+const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   route,
   navigation,
 }) => {
   const {id} = route.params;
   const {itineraries} = useSelector(
-    (state: RootStateProps) => state.itineraries,
+    (state: RootStateProps) => state.nextItineraries,
   );
   const [alertVisible, setAlertVisible] = useState(false);
+  const [question, setQuestion] = useState('');
+
+  const questionRef = useRef();
   const dispatch = useDispatch();
 
   const itinerary: ItineraryProps = itineraries?.find(
@@ -84,6 +90,11 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     navigation.goBack();
   }
 
+  function handleMakeQuestion() {
+    dispatch(makeQuestionRequest(itinerary.id, question));
+    setQuestion('');
+  }
+
   return (
     <Container>
       <Header />
@@ -93,10 +104,6 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             <BackButton onPress={() => navigation.goBack()}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
-            <EditButton
-              onPress={() => navigation.navigate('EditItinerary', {id})}>
-              <Icon name="pencil-outline" size={24} color="#4885FD" />
-            </EditButton>
           </CardHeader>
           <CardContent>
             <RowGroupSpaced>
@@ -239,8 +246,20 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
           </CardHeader>
           <CardContent>
             {itinerary.questions.map((question) => (
-              <ItineraryQuestion question={question} key={question.id} owner />
+              <ItineraryQuestion question={question} key={question.id} />
             ))}
+            <>
+              <TextArea
+                placeholder="faça uma pergunta..."
+                value={question}
+                ref={questionRef}
+                onChange={setQuestion}
+              />
+              <SendButton onPress={handleMakeQuestion}>
+                <Icon name="send-outline" size={24} color="#FFF" />
+                <SendButtonText>Perguntar</SendButtonText>
+              </SendButton>
+            </>
           </CardContent>
         </Card>
 
@@ -255,18 +274,18 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
           </CardHeader>
           <CardContent>
             {itinerary.members.map((member) => (
-              <ItineraryMember member={member} key={member.id} owner />
+              <ItineraryMember member={member} key={member.id} />
             ))}
           </CardContent>
         </Card>
         <DeleteItineraryButton onPress={showAlert}>
           <Icon name="delete-forever-outline" size={24} color="#FFF" />
-          <DeleteItineraryButtonText>Excluir Roteiro</DeleteItineraryButtonText>
+          <DeleteItineraryButtonText>Sair do Roteiro</DeleteItineraryButtonText>
         </DeleteItineraryButton>
       </Content>
       <Alert
         title="Ops!"
-        message="você deseja realmente excluir este roteiro?"
+        message="você deseja realmente sair deste roteiro?"
         visible={alertVisible}
         onCancel={hideAlert}
         onRequestClose={hideAlert}
@@ -276,4 +295,4 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   );
 };
 
-export default ItineraryDetails;
+export default NextItineraryDetails;

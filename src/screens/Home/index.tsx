@@ -37,7 +37,6 @@ const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Highlight from '../../components/Highlight';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
-import SplashScreen from '../../components/SplashScreen';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
@@ -116,7 +115,7 @@ const Home: React.FC = () => {
             onChange={setEmail}
             ref={emailRef}
             returnKeyType="next"
-            onSubmitEditing={() => passwordRef.current.focus()}
+            onSubmitEditing={() => passwordRef.current?.focus()}
           />
           <Input
             value={password}

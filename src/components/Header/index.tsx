@@ -23,11 +23,11 @@ import ModalMenu from '../ModalMenu';
 
 const Header: React.FC<HeaderProps> = ({notifications}) => {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [notificationVisible, setNotificationVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  function toggleModal() {
-    setModalVisible(!modalVisible);
+  function toggleNotifications() {
+    setNotificationVisible(!notificationVisible);
   }
 
   function toggleMenu() {
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({notifications}) => {
           <ProfileButton onPress={() => toProfileScreen()}>
             <Icon name="account-box-outline" size={24} color="#FFF" />
           </ProfileButton>
-          <NotificationsButton onPress={toggleModal}>
+          <NotificationsButton onPress={toggleNotifications}>
             {notifications && (
               <Notifications>
                 <Counter>{notifications}</Counter>
@@ -60,11 +60,11 @@ const Header: React.FC<HeaderProps> = ({notifications}) => {
       </Container>
       <Notification
         title="Notificações"
-        visible={modalVisible}
-        onRequestClose={() => toggleModal}
+        visible={notificationVisible}
+        onRequestClose={() => toggleNotifications}
         icon="bell-ring-outline"
         iconColor="#3dc77b">
-        <CloseButton onPress={toggleModal}>
+        <CloseButton onPress={toggleNotifications}>
           <Icon name="chevron-up" size={24} color="#808080" />
         </CloseButton>
       </Notification>

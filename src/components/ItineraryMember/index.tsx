@@ -27,9 +27,10 @@ import {MemberProps} from '../../store/modules/itineraries/reducer';
 
 interface ItineraryMemberProps {
   member: MemberProps;
+  owner?: boolean;
 }
 
-const ItineraryMember: React.FC<ItineraryMemberProps> = ({member}) => {
+const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
   const dispatch = useDispatch();
 
   function handlePromoteMember(memberId: number) {
@@ -63,27 +64,29 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member}) => {
             <JoinDate>{member.pivot.created_at}</JoinDate>
           </ColumnGroup>
         </MemberDetails>
-        <MemberActions>
-          {member.pivot.is_admin ? (
-            <AdminButton onPress={() => handleDemoteMember(member.id)}>
-              <Icon name="label-off-outline" color="#FFF" size={24} />
-            </AdminButton>
-          ) : (
-            <AdminButton onPress={() => handlePromoteMember(member.id)}>
-              <Icon name="label-outline" color="#FFF" size={24} />
-            </AdminButton>
-          )}
+        {owner && (
+          <MemberActions>
+            {member.pivot.is_admin ? (
+              <AdminButton onPress={() => handleDemoteMember(member.id)}>
+                <Icon name="label-off-outline" color="#FFF" size={24} />
+              </AdminButton>
+            ) : (
+              <AdminButton onPress={() => handlePromoteMember(member.id)}>
+                <Icon name="label-outline" color="#FFF" size={24} />
+              </AdminButton>
+            )}
 
-          {member.pivot.accepted ? (
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
-              <Icon name="delete-forever-outline" color="#FFF" size={24} />
-            </RejectButtonButton>
-          ) : (
-            <AcceptButtonButton onPress={() => handleAcceptMember(member.id)}>
-              <Icon name="check" color="#FFF" size={24} />
-            </AcceptButtonButton>
-          )}
-        </MemberActions>
+            {member.pivot.accepted ? (
+              <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+                <Icon name="delete-forever-outline" color="#FFF" size={24} />
+              </RejectButtonButton>
+            ) : (
+              <AcceptButtonButton onPress={() => handleAcceptMember(member.id)}>
+                <Icon name="check" color="#FFF" size={24} />
+              </AcceptButtonButton>
+            )}
+          </MemberActions>
+        )}
       </RowGroupSpaced>
     </Container>
   );

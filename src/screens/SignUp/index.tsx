@@ -70,7 +70,7 @@ const SignUp: React.FC = () => {
           value={username}
           onChange={setUsername}
           returnKeyType="next"
-          onSubmitEditing={() => emailRef.current.focus()}
+          onSubmitEditing={() => emailRef.current?.focus()}
         />
         <Input
           icon="email-outline"
@@ -80,7 +80,7 @@ const SignUp: React.FC = () => {
           value={email}
           onChange={setEmail}
           returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current.focus()}
+          onSubmitEditing={() => passwordRef.current?.focus()}
         />
         <Input
           icon="lock-outline"

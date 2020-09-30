@@ -8,11 +8,13 @@ const Stack = createStackNavigator();
 
 import Home from '../screens/Home';
 import SignUp from '../screens/SignUp';
-import Dashboard from '../screens/Dashboard';
+import Feed from '../screens/Feed';
 import Profile from '../screens/Profile';
 import NewItinerary from '../screens/NewItinerary';
 import Itineraries from '../screens/Itineraries';
 import ItineraryDetails from '../screens/ItineraryDetails';
+import NextItineraries from '../screens/NextItineraries';
+import NextItineraryDetails from '../screens/NextItineraryDetails';
 import EditItinerary from '../screens/EditItinerary';
 import SplashScreen from '../components/SplashScreen';
 
@@ -30,13 +32,18 @@ const Routes = () => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName={signed ? 'Dashboard' : 'Home'}>
+        initialRouteName={signed ? 'Feed' : 'Home'}>
         {signed ? (
           <>
-            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Feed" component={Feed} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="NewItinerary" component={NewItinerary} />
             <Stack.Screen name="Itineraries" component={Itineraries} />
+            <Stack.Screen name="NextItineraries" component={NextItineraries} />
+            <Stack.Screen
+              name="NextItineraryDetails"
+              component={NextItineraryDetails}
+            />
             <Stack.Screen
               name="ItineraryDetails"
               component={ItineraryDetails}

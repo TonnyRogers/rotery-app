@@ -3,22 +3,22 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {getItinerariesRequest} from '../../store/modules/itineraries/actions';
+import {getNextItinerariesRequest} from '../../store/modules/nextItineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {Container, Content, Title, ContentHeader, BackButton} from './styled';
 import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 
-const Itineraries: React.FC = () => {
+const NextItineraries: React.FC = () => {
   const {itineraries} = useSelector(
-    (state: RootStateProps) => state.itineraries,
+    (state: RootStateProps) => state.nextItineraries,
   );
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getItinerariesRequest());
+    dispatch(getNextItinerariesRequest());
   }, [dispatch]);
 
   function toFeed() {
@@ -26,7 +26,7 @@ const Itineraries: React.FC = () => {
   }
 
   function itineraryDetail(itineraryId: number) {
-    navigation.navigate('ItineraryDetails', {id: itineraryId});
+    navigation.navigate('NextItineraryDetails', {id: itineraryId});
   }
 
   return (
@@ -37,7 +37,7 @@ const Itineraries: React.FC = () => {
           <BackButton onPress={toFeed}>
             <Icon name="chevron-left" size={24} color="#3dc77b" />
           </BackButton>
-          <Title>Seus Roteiros</Title>
+          <Title>Próximos Roteiros</Title>
         </ContentHeader>
 
         {itineraries &&
@@ -45,7 +45,6 @@ const Itineraries: React.FC = () => {
             <Itinerary
               itinerary={item}
               key={item.id}
-              owner
               detailButtonAction={() => itineraryDetail(item.id)}
             />
           ))}
@@ -54,4 +53,4 @@ const Itineraries: React.FC = () => {
   );
 };
 
-export default Itineraries;
+export default NextItineraries;

@@ -45,6 +45,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
     navigation.navigate('Itineraries');
   }
 
+  function toNextItineraries() {
+    onRequestClose();
+    navigation.navigate('NextItineraries');
+  }
+
   return (
     <Container
       visible={visible}
@@ -68,12 +73,22 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
             </MenuButton>
             <MenuButton onPress={toItineraries}>
               <Icon name="map-outline" size={24} color="#FFF" />
-              <ItinerariesButtonText>Seus Roteiros</ItinerariesButtonText>
+              <ItinerariesButtonText>Meus Roteiros</ItinerariesButtonText>
+              <View />
+            </MenuButton>
+            <MenuButton onPress={toNextItineraries}>
+              <Icon name="map-check" size={24} color="#FFF" />
+              <ItinerariesButtonText>Próximos Roteiros</ItinerariesButtonText>
               <View />
             </MenuButton>
             <MenuButton onPress={() => {}}>
               <Icon name="heart-outline" size={24} color="#FFF" />
               <FavoritesButtonText>Favoritos</FavoritesButtonText>
+              <View />
+            </MenuButton>
+            <MenuButton onPress={() => navigation.navigate('Feed')}>
+              <Icon name="format-list-text" size={24} color="#FFF" />
+              <FavoritesButtonText>Feed</FavoritesButtonText>
               <View />
             </MenuButton>
             <SignOutButton onPress={() => handleLogout()}>

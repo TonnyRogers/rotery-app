@@ -6,7 +6,13 @@ export default (reducers: any) => {
     {
       key: '9344f8941ea861b246189658d327c7f2',
       storage: AsyncStorage,
-      whitelist: ['auth', 'profile', 'itineraries', 'options'],
+      whitelist: [
+        'auth',
+        'profile',
+        'itineraries',
+        'options',
+        'nextItineraries',
+      ],
     },
     reducers,
   );

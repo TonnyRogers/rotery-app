@@ -126,7 +126,7 @@ const Profile: React.FC = () => {
       <Header />
       <Card>
         <CardHeader>
-          <BackButton onPress={() => navigation.navigate('Dashboard')}>
+          <BackButton onPress={() => navigation.navigate('Feed')}>
             <Icon name="chevron-left" size={24} color="#3dc77b" />
           </BackButton>
         </CardHeader>

@@ -18,9 +18,8 @@ import {
 } from './styles';
 
 import Header from '../../components/Header';
-import Itinerary from '../../components/Itinerary';
 
-const Dashboard: React.FC = () => {
+const Feed: React.FC = () => {
   const navigation = useNavigation();
 
   return (
@@ -80,4 +79,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Feed;

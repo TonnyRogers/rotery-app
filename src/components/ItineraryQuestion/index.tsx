@@ -24,9 +24,13 @@ import {QuestionProps} from '../../store/modules/itineraries/reducer';
 
 interface ItineraryQuestionProps {
   question: QuestionProps;
+  owner?: boolean;
 }
 
-const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({question}) => {
+const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
+  question,
+  owner,
+}) => {
   const dispatch = useDispatch();
   const [anwser, setAnwser] = useState('');
   const anwserRef = useRef();
@@ -55,24 +59,33 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({question}) => {
         </ColumnGroup>
       </OwnerDetails>
       <Question>{question.question}</Question>
-      {question.anwser ? (
-        <AnwserContent>
-          <AnwserDate>{question.updated_at}</AnwserDate>
-          <Anwser>{question.anwser}</Anwser>
-        </AnwserContent>
+      {owner ? (
+        question.anwser ? (
+          <AnwserContent>
+            <AnwserDate>{question.updated_at}</AnwserDate>
+            <Anwser>{question.anwser}</Anwser>
+          </AnwserContent>
+        ) : (
+          <>
+            <TextArea
+              placeholder="sua resposta..."
+              value={anwser}
+              ref={anwserRef}
+              onChange={setAnwser}
+            />
+            <SendButton onPress={() => handleSubmitAnwser(question.id)}>
+              <Icon name="send-outline" size={24} color="#FFF" />
+              <SendButtonText>Responder</SendButtonText>
+            </SendButton>
+          </>
+        )
       ) : (
-        <>
-          <TextArea
-            placeholder="sua resposta..."
-            value={anwser}
-            ref={anwserRef}
-            onChange={setAnwser}
-          />
-          <SendButton onPress={() => handleSubmitAnwser(question.id)}>
-            <Icon name="send-outline" size={24} color="#FFF" />
-            <SendButtonText>Responder</SendButtonText>
-          </SendButton>
-        </>
+        question.anwser && (
+          <AnwserContent>
+            <AnwserDate>{question.updated_at}</AnwserDate>
+            <Anwser>{question.anwser}</Anwser>
+          </AnwserContent>
+        )
       )}
     </Container>
   );

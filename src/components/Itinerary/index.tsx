@@ -1,6 +1,5 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
 // import {format} from 'date-fns';
 // import pt from 'date-fns/locale/pt';
 
@@ -25,17 +24,16 @@ import ImageCarousel from '../ImageCarousel';
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 
 interface ItineraryItemProps {
-  owner: boolean;
+  owner?: boolean;
   itinerary: ItineraryProps;
+  detailButtonAction(): any;
 }
 
-const Itinerary: React.FC<ItineraryItemProps> = ({itinerary, owner}) => {
-  const navigation = useNavigation();
-
-  function itineraryDetail(itineraryId: number) {
-    navigation.navigate('ItineraryDetails', {id: itineraryId});
-  }
-
+const Itinerary: React.FC<ItineraryItemProps> = ({
+  itinerary,
+  owner,
+  detailButtonAction,
+}) => {
   return (
     <Container>
       <ItineraryHeader>
@@ -52,10 +50,8 @@ const Itinerary: React.FC<ItineraryItemProps> = ({itinerary, owner}) => {
             </FavoriteButton>
           )}
         </RowGroup>
-        <RowGroup>
-          <Location>{itinerary.location}</Location>
-          <Date>{itinerary.begin}</Date>
-        </RowGroup>
+        <Location>{itinerary.location}</Location>
+        <Date>{itinerary.begin}</Date>
       </ItineraryHeader>
       <Description>{itinerary.description}</Description>
       <Actions>
@@ -77,7 +73,7 @@ const Itinerary: React.FC<ItineraryItemProps> = ({itinerary, owner}) => {
             <Quantity>{itinerary.photos.length}</Quantity>
           </Badge>
         </Badges>
-        <DetailsButton onPress={() => itineraryDetail(itinerary.id)}>
+        <DetailsButton onPress={detailButtonAction}>
           <DetailsButtonText>Detalhes</DetailsButtonText>
         </DetailsButton>
       </Actions>

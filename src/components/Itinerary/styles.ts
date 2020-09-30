@@ -22,10 +22,13 @@ export const Name = styled.Text`
   font-weight: bold;
 `;
 
-export const Location = styled.Text`
+export const Location = styled.Text.attrs({
+  numberOfLines: 1,
+})`
   font-family: 'Roboto';
   font-size: 14px;
   color: #9d9d9d;
+  max-width: 200px;
 `;
 
 export const Date = styled.Text`
@@ -36,7 +39,9 @@ export const Date = styled.Text`
 
 export const FavoriteButton = styled.TouchableOpacity``;
 
-export const Description = styled.Text`
+export const Description = styled.Text.attrs({
+  numberOfLines: 3,
+})`
   font-family: 'Roboto';
   font-size: 14px;
   color: #545454;
