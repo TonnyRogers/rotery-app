@@ -9,10 +9,11 @@ const Stack = createStackNavigator();
 import Home from '../screens/Home';
 import SignUp from '../screens/SignUp';
 import Feed from '../screens/Feed';
+import FeedItineraryDetails from '../screens/FeedItineraryDetails';
 import Profile from '../screens/Profile';
 import NewItinerary from '../screens/NewItinerary';
-import Itineraries from '../screens/Itineraries';
-import ItineraryDetails from '../screens/ItineraryDetails';
+import MyItineraries from '../screens/MyItineraries';
+import MyItineraryDetails from '../screens/MyItineraryDetails';
 import NextItineraries from '../screens/NextItineraries';
 import NextItineraryDetails from '../screens/NextItineraryDetails';
 import EditItinerary from '../screens/EditItinerary';
@@ -36,17 +37,21 @@ const Routes = () => {
         {signed ? (
           <>
             <Stack.Screen name="Feed" component={Feed} />
+            <Stack.Screen
+              name="FeedItineraryDetails"
+              component={FeedItineraryDetails}
+            />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="NewItinerary" component={NewItinerary} />
-            <Stack.Screen name="Itineraries" component={Itineraries} />
+            <Stack.Screen name="MyItineraries" component={MyItineraries} />
             <Stack.Screen name="NextItineraries" component={NextItineraries} />
             <Stack.Screen
               name="NextItineraryDetails"
               component={NextItineraryDetails}
             />
             <Stack.Screen
-              name="ItineraryDetails"
-              component={ItineraryDetails}
+              name="MyItineraryDetails"
+              component={MyItineraryDetails}
             />
             <Stack.Screen name="EditItinerary" component={EditItinerary} />
           </>

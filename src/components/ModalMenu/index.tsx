@@ -42,7 +42,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
 
   function toItineraries() {
     onRequestClose();
-    navigation.navigate('Itineraries');
+    navigation.navigate('MyItineraries');
   }
 
   function toNextItineraries() {

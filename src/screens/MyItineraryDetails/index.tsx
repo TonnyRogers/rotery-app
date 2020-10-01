@@ -49,14 +49,14 @@ import ItineraryMember from '../../components/ItineraryMember';
 import ItineraryQuestion from '../../components/ItineraryQuestion';
 import Alert from '../../components/Alert';
 
-interface ItineraryDetailsProps {
+interface MyItineraryDetailsProps {
   route: {
     params: {id: number};
   };
   navigation: any;
 }
 
-const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
+const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   route,
   navigation,
 }) => {
@@ -276,4 +276,4 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   );
 };
 
-export default ItineraryDetails;
+export default MyItineraryDetails;

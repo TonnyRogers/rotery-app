@@ -9,11 +9,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Container, DateButton, DateText, Label} from './styles';
 
 interface DateInputProps {
+  label?: string;
   date: Date;
   onChange: (date: any) => {};
 }
 
-const DateInput: React.FC<DateInputProps> = ({date, onChange}) => {
+const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
   const [show, setShow] = useState(false);
 
   const dateFormatted = useMemo(
@@ -35,7 +36,7 @@ const DateInput: React.FC<DateInputProps> = ({date, onChange}) => {
 
   return (
     <Container>
-      <Label>Data de Nascimento</Label>
+      <Label>{label}</Label>
       <DateButton onPress={showDatePicker}>
         <DateText>{dateFormatted}</DateText>
         <Icon name="calendar-today" color="#808080" size={24} />

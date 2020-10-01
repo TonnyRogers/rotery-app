@@ -12,7 +12,7 @@ interface InitialStateProps {
   loading: boolean;
   authChecked: boolean;
   signed: boolean;
-  user: UserProps | null;
+  user: UserProps | any;
 }
 
 const INITIAL_STATE: InitialStateProps = {
@@ -21,7 +21,7 @@ const INITIAL_STATE: InitialStateProps = {
   refreshToken: null,
   signed: false,
   loading: false,
-  user: null,
+  user: [],
 };
 
 export interface ActionProps {

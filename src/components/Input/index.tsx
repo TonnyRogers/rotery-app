@@ -21,7 +21,7 @@ const Input: React.FC<InputProps> = (
 ) => {
   return (
     <Container>
-      <Label>{label}</Label>
+      {label && <Label>{label}</Label>}
       <Content>
         <Field
           value={String(value)}

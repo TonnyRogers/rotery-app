@@ -14,11 +14,11 @@ export const Title = styled.Text`
   font-size: 18px;
 `;
 
-export const Filter = styled.View`
+export const FilterButton = styled.TouchableOpacity`
   background: #fff;
   height: 44px;
-  flex-direction: row;
   align-items: center;
+  justify-content: center;
   padding: 0 10px;
   border-radius: 45px;
   elevation: 1;
@@ -53,7 +53,7 @@ export const ActivityName = styled.Text`
 export const ItineraryList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  height: 410px;
+  max-height: 435px;
 `;
 
 export const FloatContent = styled.View``;
@@ -68,4 +68,11 @@ export const NewItineraryButton = styled.TouchableOpacity`
   margin-top: -20px;
   elevation: 3;
   align-self: center;
+`;
+
+export const RowGroupSpaced = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 10px;
 `;

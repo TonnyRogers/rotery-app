@@ -10,7 +10,7 @@ import {Container, Content, Title, ContentHeader, BackButton} from './styled';
 import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 
-const Itineraries: React.FC = () => {
+const MyItineraries: React.FC = () => {
   const {itineraries} = useSelector(
     (state: RootStateProps) => state.itineraries,
   );
@@ -26,7 +26,7 @@ const Itineraries: React.FC = () => {
   }
 
   function itineraryDetail(itineraryId: number) {
-    navigation.navigate('ItineraryDetails', {id: itineraryId});
+    navigation.navigate('MyItineraryDetails', {id: itineraryId});
   }
 
   return (
@@ -54,4 +54,4 @@ const Itineraries: React.FC = () => {
   );
 };
 
-export default Itineraries;
+export default MyItineraries;
