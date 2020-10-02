@@ -19,11 +19,13 @@ import {
   FloatContent,
   RowGroupSpaced,
   FilterButton,
+  ColumnGroup,
 } from './styles';
 
 import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 import FilterInput from '../../components/FilterInput';
+import Card from '../../components/Card';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
@@ -36,12 +38,31 @@ const Feed: React.FC = () => {
 
   const {itineraries} = useSelector((state: RootStateProps) => state.feed);
 
+  const itineraryActivities: {id: number; name: string}[] = [];
+
+  itineraries?.map((itinerary) =>
+    itineraryActivities.push(...itinerary.activities),
+  );
+
+  console.tron.log(itineraryActivities);
+
+  const removeDuplicatedActivities = itineraryActivities.filter(
+    (item, index, arr) =>
+      arr.findIndex((comparable) => comparable.id === item.id) === index,
+  );
+
+  console.tron.log(removeDuplicatedActivities);
+
   function itineraryDetail(itineraryId: number) {
     navigation.navigate('FeedItineraryDetails', {id: itineraryId});
   }
 
   function toggleFilter() {
     setFilterVisible(!filterVisible);
+  }
+
+  function clearFilter() {
+    dispatch(getFeedRequest());
   }
 
   return (
@@ -51,55 +72,39 @@ const Feed: React.FC = () => {
         <FilterContent>
           <RowGroupSpaced>
             <Title>Afim de se aventurar?</Title>
-            <FilterButton onPress={toggleFilter}>
+            <FilterButton onPress={toggleFilter} onLongPress={clearFilter}>
               <Icon name="filter" size={24} color="#3dc77b" />
             </FilterButton>
           </RowGroupSpaced>
           <FilterInput visible={filterVisible} onRequestClose={toggleFilter} />
           <ActivityList>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Trilha</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Camping</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>4x4</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Trilha</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Trilha</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Trilha</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Trilha</ActivityName>
-            </Activity>
-            <Activity>
-              <Icon name="menu" size={24} color="#FFF" />
-              <ActivityName>Trilha</ActivityName>
-            </Activity>
+            {removeDuplicatedActivities.map((item, index) => (
+              <Activity key={index}>
+                <Icon name="menu" size={24} color="#FFF" />
+                <ActivityName>{item.name}</ActivityName>
+              </Activity>
+            ))}
           </ActivityList>
         </FilterContent>
         <ItineraryList>
-          {itineraries &&
+          {itineraries[0] ? (
             itineraries.map((itinerary) => (
               <Itinerary
                 itinerary={itinerary}
                 key={itinerary.id}
                 detailButtonAction={() => itineraryDetail(itinerary.id)}
               />
-            ))}
+            ))
+          ) : (
+            <Card>
+              <ColumnGroup>
+                <Icon name="alert-decagram-outline" size={30} color="#3dc77b" />
+                <Title>Ops!</Title>
+                <Title>Parece que não tem nada por aqui.</Title>
+                <Title>Crie seu prório roteiro agora mesmo!</Title>
+              </ColumnGroup>
+            </Card>
+          )}
         </ItineraryList>
         <FloatContent>
           <NewItineraryButton

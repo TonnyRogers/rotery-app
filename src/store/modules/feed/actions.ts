@@ -1,5 +1,11 @@
 import {ItineraryProps} from './reducer';
 
+interface FilterProps {
+  begin?: string;
+  end?: string;
+  city?: string;
+}
+
 export function getFeedRequest() {
   return {
     type: '@feed/GET_FEED_REQUEST',
@@ -16,6 +22,26 @@ export function getFeedSuccess(itineraries: ItineraryProps) {
 export function getFeedFailure() {
   return {
     type: '@feed/GET_FEED_FAILURE',
+  };
+}
+
+export function getFeedFilteredRequest(filter: FilterProps) {
+  return {
+    type: '@feed/GET_FEED_FILTERED_REQUEST',
+    payload: {filter},
+  };
+}
+
+export function getFeedFilteredSuccess(itineraries: ItineraryProps) {
+  return {
+    type: '@feed/GET_FEED_FILTERED_SUCCESS',
+    payload: {itineraries},
+  };
+}
+
+export function getFeedFilteredFailure() {
+  return {
+    type: '@feed/GET_FEED_FILTERED_FAILURE',
   };
 }
 

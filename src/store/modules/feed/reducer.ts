@@ -98,6 +98,10 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         draft.itineraries = action.payload.itineraries;
         break;
       }
+      case '@feed/GET_FEED_FILTERED_SUCCESS': {
+        draft.itineraries = action.payload.itineraries;
+        break;
+      }
       default:
     }
   });

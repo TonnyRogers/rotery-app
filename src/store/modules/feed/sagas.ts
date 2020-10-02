@@ -7,6 +7,9 @@ import {
   getFeedRequest,
   getFeedSuccess,
   getFeedFailure,
+  getFeedFilteredRequest,
+  getFeedFilteredSuccess,
+  getFeedFilteredFailure,
   makeQuestionRequest,
   makeQuestionSuccess,
   makeQuestionFailure,
@@ -25,6 +28,28 @@ export function* getItineraries() {
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFailure());
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao buscar seus roteiros');
+  }
+}
+
+export function* getFilteredItineraries({
+  payload,
+}: ReturnType<typeof getFeedFilteredRequest>) {
+  try {
+    const {filter} = payload;
+
+    yield put(setLoadingTrue());
+
+    const response = yield call(
+      api.get,
+      `/feed?begin=${filter.begin}&end=${filter.end}`,
+    );
+
+    yield put(getFeedFilteredSuccess(response.data));
+    yield put(setLoadingFalse());
+  } catch (error) {
+    yield put(getFeedFilteredFailure());
     yield put(setLoadingFalse());
     Alert.alert('Erro ao buscar seus roteiros');
   }
@@ -74,5 +99,6 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
 export default all([
   takeLatest('@feed/JOIN_REQUEST', joinItinerary),
   takeLatest('@feed/GET_FEED_REQUEST', getItineraries),
+  takeLatest('@feed/GET_FEED_FILTERED_REQUEST', getFilteredItineraries),
   takeLatest('@feed/MAKE_QUESTION_REQUEST', makeQuestion),
 ]);

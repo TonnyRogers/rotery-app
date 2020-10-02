@@ -5,7 +5,9 @@ export const Container = styled.View`
   position: relative;
 `;
 
-export const Content = styled.View``;
+export const Content = styled.View`
+  flex: 1;
+`;
 
 export const FilterContent = styled.View``;
 
@@ -52,9 +54,7 @@ export const ActivityName = styled.Text`
 
 export const ItineraryList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
-})`
-  max-height: 435px;
-`;
+})``;
 
 export const FloatContent = styled.View``;
 
@@ -65,7 +65,7 @@ export const NewItineraryButton = styled.TouchableOpacity`
   justify-content: center;
   background: #3dc77b;
   border-radius: 15px;
-  margin-top: -20px;
+  margin-top: -30px;
   elevation: 3;
   align-self: center;
 `;
@@ -75,4 +75,9 @@ export const RowGroupSpaced = styled.View`
   align-items: center;
   justify-content: space-between;
   margin: 0 10px;
+`;
+
+export const ColumnGroup = styled.View`
+  align-items: center;
+  justify-content: center;
 `;
