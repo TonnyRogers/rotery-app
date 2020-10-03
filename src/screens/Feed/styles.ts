@@ -14,6 +14,7 @@ export const FilterContent = styled.View``;
 export const Title = styled.Text`
   font-family: 'Roboto';
   font-size: 18px;
+  font-weight: bold;
 `;
 
 export const FilterButton = styled.TouchableOpacity`

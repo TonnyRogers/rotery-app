@@ -8,6 +8,7 @@ const Stack = createStackNavigator();
 
 import Home from '../screens/Home';
 import SignUp from '../screens/SignUp';
+import Favorites from '../screens/Favorites';
 import Feed from '../screens/Feed';
 import FeedItineraryDetails from '../screens/FeedItineraryDetails';
 import Profile from '../screens/Profile';
@@ -37,6 +38,7 @@ const Routes = () => {
         {signed ? (
           <>
             <Stack.Screen name="Feed" component={Feed} />
+            <Stack.Screen name="Favorites" component={Favorites} />
             <Stack.Screen
               name="FeedItineraryDetails"
               component={FeedItineraryDetails}

@@ -44,14 +44,10 @@ const Feed: React.FC = () => {
     itineraryActivities.push(...itinerary.activities),
   );
 
-  console.tron.log(itineraryActivities);
-
   const removeDuplicatedActivities = itineraryActivities.filter(
     (item, index, arr) =>
       arr.findIndex((comparable) => comparable.id === item.id) === index,
   );
-
-  console.tron.log(removeDuplicatedActivities);
 
   function itineraryDetail(itineraryId: number) {
     navigation.navigate('FeedItineraryDetails', {id: itineraryId});

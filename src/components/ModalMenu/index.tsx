@@ -50,6 +50,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
     navigation.navigate('NextItineraries');
   }
 
+  function toFavorites() {
+    onRequestClose();
+    navigation.navigate('Favorites');
+  }
+
   return (
     <Container
       visible={visible}
@@ -81,7 +86,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
               <ItinerariesButtonText>Próximos Roteiros</ItinerariesButtonText>
               <View />
             </MenuButton>
-            <MenuButton onPress={() => {}}>
+            <MenuButton onPress={toFavorites}>
               <Icon name="heart-outline" size={24} color="#FFF" />
               <FavoritesButtonText>Favoritos</FavoritesButtonText>
               <View />

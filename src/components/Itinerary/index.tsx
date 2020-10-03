@@ -1,7 +1,14 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector, useDispatch} from 'react-redux';
 // import {format} from 'date-fns';
 // import pt from 'date-fns/locale/pt';
+
+import {RootStateProps} from '../../store/modules/rootReducer';
+import {
+  setFavoriteRequest,
+  removeFavoriteRequest,
+} from '../../store/modules/favorites/actions';
 
 import {
   Container,
@@ -26,7 +33,7 @@ import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 interface ItineraryItemProps {
   owner?: boolean;
   itinerary: ItineraryProps;
-  detailButtonAction(): any;
+  detailButtonAction?(): any;
 }
 
 const Itinerary: React.FC<ItineraryItemProps> = ({
@@ -34,6 +41,21 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
   owner,
   detailButtonAction,
 }) => {
+  const dispatch = useDispatch();
+  const {itineraries} = useSelector((state: RootStateProps) => state.favorites);
+
+  const isFavorited = itineraries?.find(
+    (favorited) => favorited.itinerary.id === itinerary.id,
+  );
+
+  function setFavorite(itineraryId: number) {
+    dispatch(setFavoriteRequest(itineraryId));
+  }
+
+  function removeFavorite(itineraryId: number) {
+    dispatch(removeFavoriteRequest(itineraryId));
+  }
+
   return (
     <Container>
       <ItineraryHeader>
@@ -44,8 +66,12 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
             <FavoriteButton>
               <Icon name="book-outline" size={24} color="#3dc77b" />
             </FavoriteButton>
+          ) : isFavorited ? (
+            <FavoriteButton onPress={() => removeFavorite(itinerary.id)}>
+              <Icon name="heart" size={24} color="#4885fd" />
+            </FavoriteButton>
           ) : (
-            <FavoriteButton>
+            <FavoriteButton onPress={() => setFavorite(itinerary.id)}>
               <Icon name="heart-outline" size={24} color="#3dc77b" />
             </FavoriteButton>
           )}

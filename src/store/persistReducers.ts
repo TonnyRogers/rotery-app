@@ -8,6 +8,7 @@ export default (reducers: any) => {
       storage: AsyncStorage,
       whitelist: [
         'auth',
+        'favorites',
         'feed',
         'profile',
         'itineraries',
