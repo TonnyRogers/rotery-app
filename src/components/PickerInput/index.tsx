@@ -5,6 +5,7 @@ import {Container, Content, Label, SPickerInput} from './styles';
 interface OptionProps {
   id: number;
   name: string;
+  value: string;
 }
 
 interface PickerInputProps {
@@ -13,10 +14,11 @@ interface PickerInputProps {
   label: string;
   value: string | number;
   onChange(returnValue: any): any;
+  byValue?: boolean;
 }
 
 const PickerInput: React.FC<PickerInputProps> = (
-  {options, label, value, onChange},
+  {options, label, value, onChange, byValue},
   ref,
 ) => {
   return (
@@ -34,7 +36,7 @@ const PickerInput: React.FC<PickerInputProps> = (
               <SPickerInput.Item
                 key={option.id}
                 label={option.name}
-                value={option.id}
+                value={byValue ? option.value : option.id}
               />
             ))}
         </SPickerInput>

@@ -117,7 +117,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Label>Host</Label>
               </HostLabel>
               <Divider />
-              <HostButton>
+              <HostButton onPress={() => navigation.navigate('UserDetails')}>
                 <UserImage
                   source={{
                     uri: itinerary.owner.person.file?.url || '..',

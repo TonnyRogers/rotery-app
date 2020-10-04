@@ -12,6 +12,7 @@ import {
   updateProfileRequest,
   updateProfileImageRequest,
 } from '../../store/modules/profile/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -37,34 +38,49 @@ import Card from '../../components/Card';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
 import DateInput from '../../components/DateInput';
+import PickerInput from '../../components/PickerInput';
+
+const sexOptions = [
+  {
+    id: 1,
+    name: 'Masculino',
+    value: 'male',
+  },
+  {
+    id: 2,
+    name: 'Feminino',
+    value: 'female',
+  },
+];
 
 const Profile: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {user} = useSelector((state) => state.auth);
-  const {data} = useSelector((state) => state.profile);
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {data} = useSelector((state: RootStateProps) => state.profile);
 
-  const [name, setName] = useState(data.name);
-  const [email, setEmail] = useState(user.email);
-  const [phone, setPhone] = useState(data.phone);
-  const [cpf, setCpf] = useState(data.cpf);
+  const [name, setName] = useState(data?.name || '');
+  const [gender, setGender] = useState(data?.gender || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(data?.phone || '');
+  const [cpf, setCpf] = useState(data?.cpf || '');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [profission, setProfission] = useState(data.profission);
-  const [birthDate, setBirthDate] = useState(new Date(data.birth));
+  const [profission, setProfission] = useState(data?.profission || '');
+  const [birthDate, setBirthDate] = useState(new Date(data?.birth));
   const [alertVisible, setAlertVisible] = useState(false);
   const [profileImage, setProfileImage] = useState({
-    uri: data.file_id && data.file ? data.file.url : '',
+    uri: data?.file_id && data.file ? data.file.url : '',
   });
 
   const nameRef = useRef();
+  const genderRef = useRef();
   const emailRef = useRef();
   const phoneRef = useRef();
   const cpfRef = useRef();
   const stateRef = useRef();
   const cityRef = useRef();
   const profissionRef = useRef();
-  const birthDateRef = useRef();
 
   const useSinceDate = useMemo(
     () =>
@@ -81,7 +97,9 @@ const Profile: React.FC = () => {
   }
 
   function updateProfileHandle() {
-    dispatch(updateProfileRequest(name, birthDate, cpf, profission, phone));
+    dispatch(
+      updateProfileRequest(name, gender, birthDate, cpf, profission, phone),
+    );
   }
 
   async function pickFile() {
@@ -156,7 +174,15 @@ const Profile: React.FC = () => {
             value={name}
             onChange={setName}
             returnKeyType="next"
-            onSubmitEditing={() => emailRef.current.focus()}
+            onSubmitEditing={() => emailRef.current?.focus()}
+          />
+          <PickerInput
+            label="Sexo"
+            value={gender}
+            onChange={setGender}
+            options={sexOptions}
+            ref={genderRef}
+            byValue={true}
           />
           <Input
             icon="email-outline"

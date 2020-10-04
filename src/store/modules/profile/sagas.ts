@@ -32,9 +32,10 @@ export function* updateProfile({
   payload,
 }: ReturnType<typeof updateProfileRequest>) {
   try {
-    const {name, birth, cpf, profission, phone} = payload;
+    const {name, gender, birth, cpf, profission, phone} = payload;
     const response = yield call(api.put, '/profile', {
       name,
+      gender,
       birth,
       cpf,
       profission,
@@ -42,6 +43,7 @@ export function* updateProfile({
     });
 
     yield put(updateProfileSuccess(response.data));
+    Alert.alert('Perfil atualizado');
   } catch (error) {
     console.tron.log(error);
     Alert.alert('Erro ao atualizar dados');

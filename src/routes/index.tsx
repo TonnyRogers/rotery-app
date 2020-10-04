@@ -18,6 +18,7 @@ import MyItineraryDetails from '../screens/MyItineraryDetails';
 import NextItineraries from '../screens/NextItineraries';
 import NextItineraryDetails from '../screens/NextItineraryDetails';
 import EditItinerary from '../screens/EditItinerary';
+import UserDetails from '../screens/UserDetails';
 import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
@@ -56,6 +57,7 @@ const Routes = () => {
               component={MyItineraryDetails}
             />
             <Stack.Screen name="EditItinerary" component={EditItinerary} />
+            <Stack.Screen name="UserDetails" component={UserDetails} />
           </>
         ) : (
           <>

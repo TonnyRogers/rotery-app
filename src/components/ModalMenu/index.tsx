@@ -69,6 +69,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
             <Title>Menu</Title>
           </Header>
           <Actions>
+            <MenuButton onPress={toItineraries}>
+              <Icon name="link-variant" size={24} color="#FFF" />
+              <ItinerariesButtonText>Minhas Conexões</ItinerariesButtonText>
+              <View />
+            </MenuButton>
             <MenuButton onPress={() => {}}>
               <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
               <MessageButtonText>Mensagens Diretas</MessageButtonText>

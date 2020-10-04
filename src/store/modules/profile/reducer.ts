@@ -3,6 +3,7 @@ import produce from 'immer';
 export interface ProfileProps {
   id: number;
   name: string | null;
+  gender: string | null;
   birth: string | null;
   cpf: number | null;
   profission: string | null;

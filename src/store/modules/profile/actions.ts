@@ -22,6 +22,7 @@ export function getProfileFail() {
 
 export function updateProfileRequest(
   name: string,
+  gender: string,
   birth: string,
   cpf: number,
   profission: string,
@@ -29,7 +30,7 @@ export function updateProfileRequest(
 ) {
   return {
     type: '@profile/UPDATE_PROFILE_REQUEST',
-    payload: {name, birth, cpf, profission, phone},
+    payload: {name, gender, birth, cpf, profission, phone},
   };
 }
 
