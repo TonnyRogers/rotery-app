@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {useEffect, useState, useMemo, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
+import {format, parse} from 'date-fns';
+import {pt} from 'date-fns/locale';
 
 import api from '../../services/api';
+import {RootStateProps} from '../../store/modules/rootReducer';
+import {makeConnectionRequest} from '../../store/modules/connections/actions';
 
 import {
   Container,
@@ -26,18 +31,150 @@ import {
   IconContent,
   RowGroupSpaced,
   ColumnGroup,
+  UserRate,
+  RateDescription,
 } from './styles';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
+import {Alert} from 'react-native';
 
-const UserDetails: React.FC = () => {
+interface RateProps {
+  id: number;
+  description: string;
+  rate: number;
+  created_at: string;
+}
+interface ProfileProps {
+  profission: string;
+  created_at: string;
+  birth: string;
+  file: {
+    url: string;
+  };
+  user: {
+    username: string;
+    created_at: string;
+    rate: RateProps[];
+  };
+}
+
+interface UserDetailsProps {
+  route: {
+    params: {userId: number};
+  };
+  navigation: any;
+}
+
+const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState([] as any);
+  const {userId} = route.params;
+
+  useEffect(() => {
+    async function getProfile() {
+      try {
+        const response = await api.get(`/profile/${userId}`);
+        setProfile(response.data);
+      } catch (error) {
+        Alert.alert('Erro ao buscar dados.');
+      }
+    }
+
+    getProfile();
+  }, [userId]);
+
+  function renderRateStars(rate: number) {
+    const starsComponent = [];
+    for (let index = 1; index <= 5; index++) {
+      starsComponent.push(
+        rate >= index ? (
+          <Icon key={Math.random()} name="star" size={24} color="#3dc77b" />
+        ) : (
+          <Icon
+            key={Math.random()}
+            name="star-outline"
+            size={24}
+            color="#000"
+          />
+        ),
+      );
+    }
+    return starsComponent;
+  }
+
+  let createDateFormated = useRef('');
+
+  useMemo(() => {
+    createDateFormated.current = format(
+      parse(
+        profile.created_at || '2020-08-10 10:00:00',
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      ),
+      'dd MMM yyyy',
+      {
+        locale: pt,
+      },
+    );
+  }, [profile]);
+
+  const {connections} = useSelector(
+    (state: RootStateProps) => state.connections,
+  );
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+
+  let finalRate = 0;
+  let countRate = 0;
+  profile.user &&
+    profile.user.rate &&
+    profile.user.rate.map((rate: RateProps) => {
+      finalRate += rate.rate;
+      countRate++;
+    });
+
+  const isConnection = connections?.find((connection) => {
+    if (connection.owner_id === user.id) {
+      return connection.user_id === userId ? true : false;
+    } else if (connection.user_id === user.id) {
+      return connection.owner_id === userId ? true : false;
+    }
+  });
+
+  function askConnection() {
+    dispatch(makeConnectionRequest(userId));
+  }
+
+  function formatDate(date: string) {
+    return format(
+      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
+      'dd MMM yyyy',
+      {
+        locale: pt,
+      },
+    );
+  }
+
+  function getAge(birthDate: string) {
+    const currentDate = new Date();
+    const birth = new Date(birthDate);
+
+    let age = currentDate.getFullYear() - birth.getFullYear();
+    const month = currentDate.getMonth() - birth.getMonth();
+
+    if (month < 0 || (month === 0 && currentDate.getDate() < birth.getDate())) {
+      age = age - 1;
+    }
+
+    return age;
+  }
+
   return (
     <Container>
       <Header />
       <Content>
         <Card>
           <CardHeader>
-            <BackButton onPress={() => {}}>
+            <BackButton onPress={() => navigation.goBack()}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
           </CardHeader>
@@ -45,54 +182,52 @@ const UserDetails: React.FC = () => {
             <UserDetail>
               <Avatar
                 source={{
-                  uri:
-                    'https://avatars2.githubusercontent.com/u/37991230?s=460&u=93bdd1c3673cc0a4685c138dbf74e0c6ec8a50e0&v=4',
+                  uri: profile.file ? profile.file.url : '..',
                 }}
               />
-              <Name>Tony</Name>
-              <RateStars>
-                <Icon name="star" size={24} color="#3dc77b" />
-                <Icon name="star" size={24} color="#3dc77b" />
-                <Icon name="star" size={24} color="#3dc77b" />
-                <Icon name="star" size={24} color="#3dc77b" />
-                <Icon name="star-outline" size={24} color="#000" />
-              </RateStars>
-              <DateJoin>Ativo desde 10 Jun 2004</DateJoin>
-              <Profission>Cozinheiro</Profission>
-              <Age>24 Anos</Age>
+              <Name>{profile.user && profile.user.username}</Name>
+              <RateStars>{renderRateStars(finalRate / countRate)}</RateStars>
+              <DateJoin>Ativo desde {createDateFormated.current}</DateJoin>
+              <Profission>{profile.profission}</Profission>
+              <Age>{getAge(profile.birth)} Anos</Age>
               <Location>São Paulo - SP</Location>
             </UserDetail>
             <Title>Avaliações</Title>
             <RateList>
-              <Card>
-                <CardHeader>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <ItineraryName>Trilha do Elefante</ItineraryName>
-                      <ItineraryDate>16 Jun 2020</ItineraryDate>
-                    </ColumnGroup>
-                    <IconContent>
-                      <Icon name="content-paste" size={24} color="#FFF" />
-                    </IconContent>
-                  </RowGroupSpaced>
-                </CardHeader>
-                <CardCotent>
-                  <RateStars>
-                    <Icon name="star" size={24} color="#3dc77b" />
-                    <Icon name="star" size={24} color="#3dc77b" />
-                    <Icon name="star" size={24} color="#3dc77b" />
-                    <Icon name="star" size={24} color="#3dc77b" />
-                    <Icon name="star-outline" size={24} color="#000" />
-                  </RateStars>
-                </CardCotent>
-              </Card>
+              {profile.user &&
+                profile.user.rate &&
+                profile.user.rate.map((item: RateProps) => (
+                  <Card key={item.id}>
+                    <CardHeader>
+                      <RowGroupSpaced>
+                        <ColumnGroup>
+                          <ItineraryName>Host de Roteiro</ItineraryName>
+                          <ItineraryDate>
+                            {formatDate(item.created_at)}
+                          </ItineraryDate>
+                        </ColumnGroup>
+                        <IconContent>
+                          <Icon name="content-paste" size={24} color="#FFF" />
+                        </IconContent>
+                      </RowGroupSpaced>
+                    </CardHeader>
+                    <CardCotent>
+                      <UserRate>
+                        <RateDescription>{item.description}</RateDescription>
+                        <RateStars>{renderRateStars(item.rate)}</RateStars>
+                      </UserRate>
+                    </CardCotent>
+                  </Card>
+                ))}
             </RateList>
           </CardCotent>
         </Card>
-        <ConnectButton>
-          <ConnectButtonText>Conectar</ConnectButtonText>
-          <Icon name="account-voice" size={24} color="#FFF" />
-        </ConnectButton>
+        {!isConnection && userId !== user.id && (
+          <ConnectButton onPress={askConnection}>
+            <ConnectButtonText>Conectar</ConnectButtonText>
+            <Icon name="account-voice" size={24} color="#FFF" />
+          </ConnectButton>
+        )}
       </Content>
     </Container>
   );

@@ -95,7 +95,7 @@ export function* createItinerary({
     yield put(createItinerarySuccess(response.data));
     yield put(setLoadingFalse());
     yield put(getItinerariesRequest());
-    RootNavigation.navigate('Itineraries', {});
+    RootNavigation.navigate('MyItineraries', {});
   } catch (error) {
     yield put(createItineraryFailure());
     yield put(setLoadingFalse());
@@ -115,7 +115,7 @@ export function* deleteItinerary({
     yield put(deleteItinerarySuccess());
     yield put(getItinerariesRequest());
     yield put(setLoadingFalse());
-    RootNavigation.navigate('Itineraries', {});
+    RootNavigation.navigate('MyItineraries', {});
     Alert.alert('Roteiro deletado.');
   } catch (error) {
     Alert.alert('Não foi possivel deletar roteiro.');
@@ -197,7 +197,7 @@ export function* updateItinerary({
     yield put(updateItinerarySuccess());
     yield put(setLoadingFalse());
     yield put(getItinerariesRequest());
-    RootNavigation.navigate('Itineraries', {});
+    RootNavigation.navigate('MyItineraries', {});
     Alert.alert('Roteiro atualizado.');
   } catch (error) {
     yield put(updateItineraryFailure());

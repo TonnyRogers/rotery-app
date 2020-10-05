@@ -22,6 +22,7 @@ interface UserProps {
   username: string;
   email: string;
   person: ProfileProps;
+  created_at: string;
 }
 
 export interface ConnectionsProps {
@@ -29,24 +30,35 @@ export interface ConnectionsProps {
   owner_id: number;
   user_id: number;
   blocked: boolean;
-  accepted: boolean;
-  owner: UserProps[];
-  target: UserProps[];
+  owner: UserProps;
+  target: UserProps;
+}
+
+export interface InvitesProps {
+  id: number;
+  owner_id: number;
+  user_id: number;
+  blocked: boolean;
+  owner: UserProps;
+  target: UserProps;
 }
 
 interface ActionProps {
   type: string;
   payload: {
     connections: ConnectionsProps[];
+    invites: InvitesProps[];
   };
 }
 
 interface InitialStateProps {
-  list: ConnectionsProps[] | null;
+  connections: ConnectionsProps[] | null;
+  invites: InvitesProps[] | null;
 }
 
 const INITIAL_STATE: InitialStateProps = {
-  list: null,
+  connections: null,
+  invites: null,
 };
 
 export default function connections(
@@ -56,7 +68,8 @@ export default function connections(
   return produce(state, (draft) => {
     switch (action.type) {
       case '@connections/GET_CONNECTIONS_SUCCESS': {
-        draft.list = action.payload.connections;
+        draft.connections = action.payload.connections;
+        draft.invites = action.payload.invites;
         break;
       }
       default:

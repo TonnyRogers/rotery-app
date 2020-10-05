@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 
 import auth from './auth/reducer';
+import connections from './connections/reducer';
 import favorites from './favorites/reducer';
 import feed from './feed/reducer';
 import profile from './profile/reducer';
@@ -10,6 +11,7 @@ import options from './options/reducer';
 
 const rootReducer = combineReducers({
   auth,
+  connections,
   favorites,
   feed,
   profile,

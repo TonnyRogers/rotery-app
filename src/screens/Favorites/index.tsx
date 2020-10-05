@@ -24,7 +24,7 @@ const Favorites: React.FC = () => {
   }
 
   function itineraryDetail(itineraryId: number) {
-    navigation.navigate('NextItineraryDetails', {id: itineraryId});
+    navigation.navigate('FeedItineraryDetails', {id: itineraryId});
   }
 
   return (

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {format, parse} from 'date-fns';
+import {pt} from 'date-fns/locale';
 
 import {
   promoteMemberRequest,
@@ -8,6 +11,7 @@ import {
   acceptMemberRequest,
   removeMemberRequest,
 } from '../../store/modules/itineraries/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -21,6 +25,7 @@ import {
   AdminButton,
   RejectButtonButton,
   AcceptButtonButton,
+  UserButton,
 } from './styles';
 
 import {MemberProps} from '../../store/modules/itineraries/reducer';
@@ -32,6 +37,20 @@ interface ItineraryMemberProps {
 
 const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+
+  let createDateFormated = useRef('');
+  useMemo(() => {
+    createDateFormated.current = format(
+      parse(member.pivot.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
+      ' dd MMM yyyy',
+      {
+        locale: pt,
+      },
+    );
+  }, [member.pivot.created_at]);
 
   function handlePromoteMember(memberId: number) {
     dispatch(promoteMemberRequest(member.pivot.itinerary_id, memberId));
@@ -49,19 +68,31 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
     dispatch(removeMemberRequest(member.pivot.itinerary_id, memberId));
   }
 
+  function viewProfile(userId: number) {
+    if (userId === user.id) {
+      navigation.navigate('Profile');
+    } else {
+      navigation.navigate('UserDetails', {
+        userId,
+      });
+    }
+  }
+
   return (
     <Container>
       <RowGroupSpaced>
         <MemberDetails>
-          <UserImage
-            source={{
-              uri: member.person.file?.url || '..',
-            }}
-            resizeMode="cover"
-          />
+          <UserButton onPress={() => viewProfile(member.id)}>
+            <UserImage
+              source={{
+                uri: member.person.file?.url || '..',
+              }}
+              resizeMode="cover"
+            />
+          </UserButton>
           <ColumnGroup>
             <Name>{member.username}</Name>
-            <JoinDate>{member.pivot.created_at}</JoinDate>
+            <JoinDate>{createDateFormated.current}</JoinDate>
           </ColumnGroup>
         </MemberDetails>
         {owner && (

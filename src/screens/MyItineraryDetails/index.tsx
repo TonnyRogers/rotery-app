@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useMemo} from 'react';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {format} from 'date-fns';
+import {pt} from 'date-fns/locale';
 
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 import {deleteItineraryRequest} from '../../store/modules/itineraries/actions';
@@ -71,6 +73,32 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     (item: ItineraryProps) => item.id === id,
   );
 
+  let beginDateFormated = useRef('');
+  let endDateFormated = useRef('');
+  let limitDateFormated = useRef('');
+
+  useMemo(() => {
+    beginDateFormated.current = format(
+      new Date(itinerary.begin),
+      ' dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+    endDateFormated.current = format(
+      new Date(itinerary.end),
+      ' dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+    limitDateFormated.current = format(
+      new Date(itinerary.deadline_for_join),
+      ' dd MMM yyyy H:mm',
+      {locale: pt},
+    );
+  }, [itinerary]);
+
   function showAlert() {
     setAlertVisible(true);
   }
@@ -105,7 +133,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             </RowGroupSpaced>
             <RowGroupSpaced>
               <Location>{itinerary.location}</Location>
-              <DateBegin>{itinerary.begin}</DateBegin>
+              <DateBegin>{beginDateFormated.current}</DateBegin>
             </RowGroupSpaced>
             <ImageCarousel data={itinerary.photos} />
             <View>
@@ -144,15 +172,15 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </DataContentHeader>
               <RowGroupSpaced>
                 <Name>Saida</Name>
-                <Value>{itinerary.begin}</Value>
+                <Value>{beginDateFormated.current}</Value>
               </RowGroupSpaced>
               <RowGroupSpaced>
                 <Name>Retorno</Name>
-                <Value>{itinerary.end}</Value>
+                <Value>{endDateFormated.current}</Value>
               </RowGroupSpaced>
               <RowGroupSpaced>
                 <Name>Limite Incrição</Name>
-                <Value>{itinerary.deadline_for_join}</Value>
+                <Value>{limitDateFormated.current}</Value>
               </RowGroupSpaced>
             </DataContent>
             <RowGroup>

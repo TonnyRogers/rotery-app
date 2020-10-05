@@ -1,10 +1,13 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {navigationRef} from '../RootNavigation';
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 import Home from '../screens/Home';
 import SignUp from '../screens/SignUp';
@@ -19,11 +22,48 @@ import NextItineraries from '../screens/NextItineraries';
 import NextItineraryDetails from '../screens/NextItineraryDetails';
 import EditItinerary from '../screens/EditItinerary';
 import UserDetails from '../screens/UserDetails';
+import SearchUsers from '../screens/SearchUsers';
+import MyConnections from '../screens/MyConnections';
 import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
+}
+
+function ConnectionNavigator() {
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        adaptive: true,
+        activeTintColor: '#3dc77b',
+        labelStyle: {
+          fontFamily: 'Roboto',
+        },
+        labelPosition: 'beside-icon',
+      }}>
+      <Tab.Screen
+        name="MyConnections"
+        component={MyConnections}
+        options={{
+          title: 'Conexões',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="link-variant" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="SearchUsers"
+        component={SearchUsers}
+        options={{
+          title: 'Pesquisar',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="magnify" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
 }
 
 const Routes = () => {
@@ -58,6 +98,7 @@ const Routes = () => {
             />
             <Stack.Screen name="EditItinerary" component={EditItinerary} />
             <Stack.Screen name="UserDetails" component={UserDetails} />
+            <Stack.Screen name="Connections" component={ConnectionNavigator} />
           </>
         ) : (
           <>

@@ -120,3 +120,14 @@ export const RowGroupSpaced = styled.View`
 `;
 
 export const ColumnGroup = styled.View``;
+
+export const UserRate = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
+export const RateDescription = styled.Text`
+  font-family: 'Roboto';
+  font-size: 14px;
+  color: #9d9d9d;
+`;

@@ -1,6 +1,8 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
+import {format, parse} from 'date-fns';
+import {pt} from 'date-fns/locale';
 
 import {replyQuestionRequest} from '../../store/modules/itineraries/actions';
 
@@ -35,6 +37,25 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   const [anwser, setAnwser] = useState('');
   const anwserRef = useRef();
 
+  let createDateFormated = useRef('');
+  let updateDateFormated = useRef('');
+  useMemo(() => {
+    createDateFormated.current = format(
+      parse(question.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
+      ' dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+    updateDateFormated.current = format(
+      parse(question.updated_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
+      ' dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+  }, [question.created_at, question.updated_at]);
+
   function handleSubmitAnwser(questionId: number) {
     if (!anwser) {
       return;
@@ -55,14 +76,14 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
         />
         <ColumnGroup>
           <Name>{question.owner.username}</Name>
-          <QuestionDate>{question.created_at}</QuestionDate>
+          <QuestionDate>{createDateFormated.current}</QuestionDate>
         </ColumnGroup>
       </OwnerDetails>
       <Question>{question.question}</Question>
       {owner ? (
         question.anwser ? (
           <AnwserContent>
-            <AnwserDate>{question.updated_at}</AnwserDate>
+            <AnwserDate>{updateDateFormated.current}</AnwserDate>
             <Anwser>{question.anwser}</Anwser>
           </AnwserContent>
         ) : (
@@ -82,7 +103,7 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
       ) : (
         question.anwser && (
           <AnwserContent>
-            <AnwserDate>{question.updated_at}</AnwserDate>
+            <AnwserDate>{updateDateFormated.current}</AnwserDate>
             <Anwser>{question.anwser}</Anwser>
           </AnwserContent>
         )

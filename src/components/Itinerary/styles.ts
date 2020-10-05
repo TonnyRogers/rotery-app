@@ -31,7 +31,7 @@ export const Location = styled.Text.attrs({
   max-width: 200px;
 `;
 
-export const Date = styled.Text`
+export const DateText = styled.Text`
   font-family: 'Roboto';
   font-size: 14px;
   color: #9d9d9d;

@@ -55,6 +55,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
     navigation.navigate('Favorites');
   }
 
+  function toConnections() {
+    onRequestClose();
+    navigation.navigate('Connections');
+  }
+
   return (
     <Container
       visible={visible}
@@ -69,7 +74,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
             <Title>Menu</Title>
           </Header>
           <Actions>
-            <MenuButton onPress={toItineraries}>
+            <MenuButton onPress={toConnections}>
               <Icon name="link-variant" size={24} color="#FFF" />
               <ItinerariesButtonText>Minhas Conexões</ItinerariesButtonText>
               <View />

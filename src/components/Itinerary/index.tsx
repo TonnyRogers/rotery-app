@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
-// import {format} from 'date-fns';
-// import pt from 'date-fns/locale/pt';
+import {format} from 'date-fns';
+import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
@@ -17,7 +17,7 @@ import {
   Name,
   FavoriteButton,
   Location,
-  Date,
+  DateText,
   Description,
   Actions,
   Badges,
@@ -48,6 +48,17 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
     (favorited) => favorited.itinerary.id === itinerary.id,
   );
 
+  let beginDateFormated = useRef('');
+  useMemo(() => {
+    beginDateFormated.current = format(
+      new Date(itinerary.begin),
+      'dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+  }, [itinerary.begin]);
+
   function setFavorite(itineraryId: number) {
     dispatch(setFavoriteRequest(itineraryId));
   }
@@ -77,7 +88,7 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
           )}
         </RowGroup>
         <Location>{itinerary.location}</Location>
-        <Date>{itinerary.begin}</Date>
+        <DateText>{beginDateFormated.current}</DateText>
       </ItineraryHeader>
       <Description>{itinerary.description}</Description>
       <Actions>

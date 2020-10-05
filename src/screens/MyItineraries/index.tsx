@@ -37,7 +37,7 @@ const MyItineraries: React.FC = () => {
           <BackButton onPress={toFeed}>
             <Icon name="chevron-left" size={24} color="#3dc77b" />
           </BackButton>
-          <Title>Seus Roteiros</Title>
+          <Title>Meus Roteiros</Title>
         </ContentHeader>
 
         {itineraries &&
