@@ -24,6 +24,8 @@ import EditItinerary from '../screens/EditItinerary';
 import UserDetails from '../screens/UserDetails';
 import SearchUsers from '../screens/SearchUsers';
 import MyConnections from '../screens/MyConnections';
+import DirectMessages from '../screens/DirectMessages';
+import UserConversation from '../screens/UserConversation';
 import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
@@ -31,12 +33,13 @@ interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
 
-function ConnectionNavigator() {
+function ConnectionTabs() {
   return (
     <Tab.Navigator
       tabBarOptions={{
         adaptive: true,
         activeTintColor: '#3dc77b',
+        inactiveBackgroundColor: '#f7f7f7',
         labelStyle: {
           fontFamily: 'Roboto',
         },
@@ -59,6 +62,42 @@ function ConnectionNavigator() {
           title: 'Pesquisar',
           tabBarIcon: ({color, size}) => (
             <Icon name="magnify" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+function DirectMessagesTabs() {
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        adaptive: true,
+        activeTintColor: '#3dc77b',
+        inactiveBackgroundColor: '#f7f7f7',
+        labelStyle: {
+          fontFamily: 'Roboto',
+        },
+        labelPosition: 'beside-icon',
+      }}>
+      <Tab.Screen
+        name="DirectMessages"
+        component={DirectMessages}
+        options={{
+          title: 'Mensagens',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="message-text-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="MyConnections"
+        component={MyConnections}
+        options={{
+          title: 'Conexões',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="link-variant" color={color} size={size} />
           ),
         }}
       />
@@ -98,7 +137,15 @@ const Routes = () => {
             />
             <Stack.Screen name="EditItinerary" component={EditItinerary} />
             <Stack.Screen name="UserDetails" component={UserDetails} />
-            <Stack.Screen name="Connections" component={ConnectionNavigator} />
+            <Stack.Screen name="Connections" component={ConnectionTabs} />
+            <Stack.Screen
+              name="DirectMessagesTabs"
+              component={DirectMessagesTabs}
+            />
+            <Stack.Screen
+              name="UserConversation"
+              component={UserConversation}
+            />
           </>
         ) : (
           <>

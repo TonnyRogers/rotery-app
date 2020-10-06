@@ -60,6 +60,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
     navigation.navigate('Connections');
   }
 
+  function toDirecMessages() {
+    onRequestClose();
+    navigation.navigate('DirectMessagesTabs');
+  }
+
   return (
     <Container
       visible={visible}
@@ -79,7 +84,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
               <ItinerariesButtonText>Minhas Conexões</ItinerariesButtonText>
               <View />
             </MenuButton>
-            <MenuButton onPress={() => {}}>
+            <MenuButton onPress={toDirecMessages}>
               <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
               <MessageButtonText>Mensagens Diretas</MessageButtonText>
               <CounterContent>

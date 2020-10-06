@@ -4,26 +4,47 @@ export const Container = styled.View`
   flex: 1;
 `;
 
+export const ColumnGroup = styled.View``;
+
+export const CardHeader = styled.View`
+  margin: 20px 0;
+`;
+
+export const BackButton = styled.TouchableOpacity`
+  height: 20px;
+  width: 20px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TitleContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  margin-left: 10px;
+  text-align: center;
+  margin-left: 20px;
 `;
 
 export const CardContent = styled.View``;
 
-export const ColumnGroup = styled.View``;
-
-export const ConnectionList = styled.ScrollView.attrs({
+export const MessageList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  height: 400px;
+  height: 390px;
 `;
 
-export const User = styled.View`
+export const UserMessage = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
+  height: 60px;
+  border-radius: 8px;
+  padding: 5px;
   margin-bottom: 10px;
 `;
 
@@ -31,7 +52,7 @@ export const UserInfo = styled.View`
   flex-direction: row;
 `;
 
-export const UserButton = styled.TouchableOpacity`
+export const UserButton = styled.View`
   align-items: center;
   justify-content: center;
 `;
@@ -63,17 +84,7 @@ export const Actions = styled.View`
   padding: 0 10px;
 `;
 
-export const AcceptButton = styled.TouchableOpacity`
-  background: #3dc77b;
-  height: 32px;
-  width: 32px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  margin-right: 10px;
-`;
-
-export const RejectButton = styled.TouchableOpacity`
+export const MessageButton = styled.View`
   background: #f57373;
   height: 32px;
   width: 32px;
@@ -83,24 +94,9 @@ export const RejectButton = styled.TouchableOpacity`
   margin-left: 10px;
 `;
 
-export const ConnectionFeedback = styled.View`
-  background: #4885fd;
-  height: 32px;
-  width: 100px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-`;
-
-export const FeedbackText = styled.Text`
+export const MessageButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 14px;
   color: #fff;
-`;
-
-export const Divider = styled.View`
-  height: 3px;
-  background: #eee;
-  margin: 10px 0;
+  font-weight: bold;
 `;
