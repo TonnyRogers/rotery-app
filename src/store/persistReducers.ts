@@ -15,6 +15,7 @@ export default (reducers: any) => {
         'itineraries',
         'options',
         'nextItineraries',
+        'messages',
       ],
     },
     reducers,

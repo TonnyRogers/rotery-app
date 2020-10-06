@@ -1,10 +1,11 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 
 import {logout} from '../../store/modules/auth/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -35,6 +36,10 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const {unreadCounter} = useSelector(
+    (state: RootStateProps) => state.messages,
+  );
 
   async function handleLogout() {
     dispatch(logout());
@@ -88,7 +93,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
               <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
               <MessageButtonText>Mensagens Diretas</MessageButtonText>
               <CounterContent>
-                <Counter>8</Counter>
+                <Counter>{unreadCounter}</Counter>
               </CounterContent>
             </MenuButton>
             <MenuButton onPress={toItineraries}>

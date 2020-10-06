@@ -1,6 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {format, parse} from 'date-fns';
+import {pt} from 'date-fns/locale';
+
+import {getMessagesRequest} from '../../store/modules/messages/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -26,9 +32,26 @@ import Card from '../../components/Card';
 
 const DirectMessages: React.FC = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  function getUserConversation() {
-    navigation.navigate('UserConversation');
+  useEffect(() => {
+    dispatch(getMessagesRequest());
+  }, [dispatch]);
+
+  function formatDate(date: string) {
+    return format(
+      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
+      'dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+  }
+
+  const {messages} = useSelector((state: RootStateProps) => state.messages);
+
+  function getUserConversation(userId: number) {
+    navigation.navigate('UserConversation', {userId});
   }
 
   return (
@@ -46,27 +69,37 @@ const DirectMessages: React.FC = () => {
         </CardHeader>
         <CardContent>
           <MessageList>
-            <UserMessage onPress={() => getUserConversation()}>
-              <UserInfo>
-                <UserButton>
-                  <UserImage
-                    source={{
-                      uri: '..',
-                    }}
-                    resizeMode="cover"
-                  />
-                </UserButton>
-                <ColumnGroup>
-                  <Name>Tony</Name>
-                  <JoinDate>Amaral</JoinDate>
-                </ColumnGroup>
-              </UserInfo>
-              <Actions>
-                <MessageButton>
-                  <MessageButtonText>10</MessageButtonText>
-                </MessageButton>
-              </Actions>
-            </UserMessage>
+            {messages.map((message) => (
+              <UserMessage
+                key={message.id}
+                onPress={() => getUserConversation(message.sender_id)}>
+                <UserInfo>
+                  <UserButton>
+                    <UserImage
+                      source={{
+                        uri: message.sender.person.file
+                          ? message.sender.person.file.url
+                          : '..',
+                      }}
+                      resizeMode="cover"
+                    />
+                  </UserButton>
+                  <ColumnGroup>
+                    <Name>{message.sender.username}</Name>
+                    <JoinDate>
+                      Atividade: {formatDate(message.created_at)}
+                    </JoinDate>
+                  </ColumnGroup>
+                </UserInfo>
+                <Actions>
+                  {message.unreaded > 0 && (
+                    <MessageButton>
+                      <MessageButtonText>{message.unreaded}</MessageButtonText>
+                    </MessageButton>
+                  )}
+                </Actions>
+              </UserMessage>
+            ))}
           </MessageList>
         </CardContent>
       </Card>

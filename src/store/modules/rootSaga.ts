@@ -7,6 +7,7 @@ import feed from './feed/sagas';
 import profile from './profile/sagas';
 import itineraries from './itineraries/sagas';
 import nextItineraries from './nextItineraries/sagas';
+import messages from './messages/sagas';
 import options from './options/sagas';
 
 export default function* rootSaga() {
@@ -19,5 +20,6 @@ export default function* rootSaga() {
     itineraries,
     options,
     nextItineraries,
+    messages,
   ]);
 }

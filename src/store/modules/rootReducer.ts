@@ -6,6 +6,7 @@ import favorites from './favorites/reducer';
 import feed from './feed/reducer';
 import profile from './profile/reducer';
 import itineraries from './itineraries/reducer';
+import messages from './messages/reducer';
 import nextItineraries from './nextItineraries/reducer';
 import options from './options/reducer';
 
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   profile,
   itineraries,
   options,
+  messages,
   nextItineraries,
 });
 

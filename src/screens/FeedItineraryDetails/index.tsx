@@ -257,7 +257,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
 
             {!isMember && (
               <JoinButton onPress={handleJoinItinerary}>
-                <Icon name="send-outline" size={24} color="#FFF" />
+                <Icon name="location-enter" size={24} color="#FFF" />
                 <JoinButtonText>Participar</JoinButtonText>
               </JoinButton>
             )}

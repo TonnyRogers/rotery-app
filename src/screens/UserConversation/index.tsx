@@ -1,5 +1,13 @@
-import React from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector, useDispatch} from 'react-redux';
+import {format, parse} from 'date-fns';
+import {pt} from 'date-fns/locale';
+
+import {
+  getConversationRequest,
+  sendMessageRequest,
+} from '../../store/modules/messages/actions';
 
 import {
   Container,
@@ -17,12 +25,60 @@ import {
   Message,
   MessageDate,
   ReplyContent,
+  MessageForm,
+  SendButton,
+  SendButtonText,
 } from './styles';
 
 import Header from '../../components/Header';
 import Card from '../../components/Card';
+import TextArea from '../../components/TextArea';
+import {RootStateProps} from '../../store/modules/rootReducer';
+import {ScrollView} from 'react-native';
 
-const UserConversation: React.FC = () => {
+interface UserConversation {
+  route: {
+    params: {
+      userId: number;
+    };
+  };
+}
+
+const UserConversation: React.FC<UserConversation> = ({route}) => {
+  const dispatch = useDispatch();
+  const [message, setMessage] = useState('');
+
+  const scrollViewRef = useRef<ScrollView>();
+  const messageRef = useRef();
+  const {userId} = route.params;
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {conversation} = useSelector((state: RootStateProps) => state.messages);
+
+  useEffect(() => {
+    dispatch(getConversationRequest(userId));
+    // scrollViewRef.current?.scrollToEnd({animated: true});
+  }, [dispatch, userId]);
+
+  const sender = conversation?.find((item) => item.sender_id === userId);
+
+  function formatDate(date: string) {
+    return format(
+      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
+      'dd MMM yyyy H:mm',
+      {
+        locale: pt,
+      },
+    );
+  }
+
+  function handleSendMessage() {
+    if (!message) {
+      return;
+    }
+    dispatch(sendMessageRequest(userId, message));
+    setMessage('');
+  }
+
   return (
     <Container>
       <Header />
@@ -37,32 +93,45 @@ const UserConversation: React.FC = () => {
             <UserButton>
               <UserImage
                 source={{
-                  uri: '..',
+                  uri:
+                    sender && sender.sender.person.file
+                      ? sender.sender.person.file.url
+                      : '..',
                 }}
                 resizeMode="cover"
               />
             </UserButton>
             <ColumnGroup>
-              <Name>Tony</Name>
-              <JoinDate>Amaral</JoinDate>
+              <Name>{sender && sender.sender.username}</Name>
+              <JoinDate>Conversa</JoinDate>
             </ColumnGroup>
           </UserInfo>
-          <ConversationList>
-            <MessageContent>
-              <Message>
-                Fala cara como você esta ?Tentei de ligar ontem... Tudo pronto
-                para nossa viagem semana que vem ?
-              </Message>
-              <MessageDate>15 Nov 2020 10:00</MessageDate>
-            </MessageContent>
-            <ReplyContent>
-              <Message>
-                Fala cara como você esta ?Tentei de ligar ontem... Tudo pronto
-                para nossa viagem semana que vem ?
-              </Message>
-              <MessageDate>15 Nov 2020 10:00</MessageDate>
-            </ReplyContent>
+          <ConversationList ref={scrollViewRef}>
+            {conversation.map((messageItem) =>
+              messageItem.sender_id === user.id ? (
+                <ReplyContent key={messageItem.id}>
+                  <Message>{messageItem.message}</Message>
+                  <MessageDate>
+                    {formatDate(messageItem.created_at)}
+                  </MessageDate>
+                </ReplyContent>
+              ) : (
+                <MessageContent key={messageItem.id}>
+                  <Message>{messageItem.message}</Message>
+                  <MessageDate>
+                    {formatDate(messageItem.created_at)}
+                  </MessageDate>
+                </MessageContent>
+              ),
+            )}
           </ConversationList>
+          <MessageForm>
+            <TextArea value={message} onChange={setMessage} ref={messageRef} />
+            <SendButton onPress={handleSendMessage}>
+              <Icon name="send-outline" size={24} color="#FFF" />
+              <SendButtonText>Enviar</SendButtonText>
+            </SendButton>
+          </MessageForm>
         </CardContent>
       </Card>
     </Container>

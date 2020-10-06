@@ -50,7 +50,12 @@ export const JoinDate = styled.Text`
   color: #9d9d9d;
 `;
 
-export const ConversationList = styled.ScrollView``;
+export const ConversationList = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})`
+  margin-top: 5px;
+  height: 260px;
+`;
 
 export const MessageContent = styled.View`
   background: #3dc77b;
@@ -84,4 +89,26 @@ export const ReplyContent = styled.View`
   border-top-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
+`;
+
+export const MessageForm = styled.View``;
+
+export const SendButton = styled.TouchableOpacity`
+  background: #4885fd;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  padding: 10px;
+  height: 40px;
+  align-self: flex-end;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+`;
+
+export const SendButtonText = styled.Text`
+  font-family: 'Roboto';
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
 `;
