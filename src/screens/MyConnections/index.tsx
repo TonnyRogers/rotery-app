@@ -34,6 +34,7 @@ import {
   AcceptButton,
   RejectButton,
   Divider,
+  MessageButton,
 } from './styles';
 import Card from '../../components/Card';
 import Header from '../../components/Header';
@@ -69,6 +70,10 @@ const MyConnections: React.FC = () => {
     navigation.navigate('UserDetails', {
       userId,
     });
+  }
+
+  function getUserConversation(userId: number) {
+    navigation.navigate('UserConversation', {userId});
   }
 
   function formatDate(date: string) {
@@ -157,18 +162,27 @@ const MyConnections: React.FC = () => {
                 </UserInfo>
                 <Actions>
                   <>
+                    {!item.blocked && (
+                      <MessageButton
+                        onPress={() => getUserConversation(item.user_id)}>
+                        <Icon
+                          name="message-arrow-left-outline"
+                          size={24}
+                          color="#FFF"
+                        />
+                      </MessageButton>
+                    )}
                     {item.blocked ? (
-                      <RejectButton
+                      <MessageButton
                         onPress={() => handleUnblockConnection(item.user_id)}>
                         <Icon name="lock-open" size={24} color="#FFF" />
-                      </RejectButton>
+                      </MessageButton>
                     ) : (
                       <RejectButton
                         onPress={() => handleBlockConnection(item.user_id)}>
-                        <Icon name="lock" size={24} color="#FFF" />
+                        <Icon name="block-helper" size={24} color="#FFF" />
                       </RejectButton>
                     )}
-
                     <RejectButton
                       onPress={() => handleRejectConnection(item.user_id)}>
                       <Icon name="close" size={24} color="#FFF" />

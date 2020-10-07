@@ -40,6 +40,7 @@ export function* getConversation({
     const response = yield call(api.get, `/users/${userId}/messages`);
 
     yield put(getConversationSuccess(response.data));
+    yield put(getMessagesRequest());
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(getConversationFailure());
@@ -71,5 +72,6 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
 export default all([
   takeLatest('@messages/SEND_MESSAGE_REQUEST', sendMessage),
   takeLatest('@messages/GET_CONVERSATION_REQUEST', getConversation),
+  takeLatest('WS_NOTIFICATION_MESSAGES', getMessages),
   takeLatest('@messages/GET_MESSAGES_REQUEST', getMessages),
 ]);

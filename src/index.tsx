@@ -1,8 +1,9 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {LogBox, StatusBar} from 'react-native';
+import {StatusBar} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
+import './services/window';
 
 import './config/ReactotronConfig';
 import {store, persistor} from './store';

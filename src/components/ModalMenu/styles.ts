@@ -2,7 +2,9 @@ import styled from 'styled-components/native';
 
 export const Container = styled.Modal``;
 
-export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
+export const KeyboardAvoidingView = styled.KeyboardAvoidingView.attrs({
+  blurRadius: 1,
+})`
   background: rgba(0, 0, 0, 0.8);
   flex: 1;
 `;
@@ -27,37 +29,46 @@ export const Title = styled.Text`
   margin-left: 5px;
 `;
 
-export const Actions = styled.View``;
+export const Actions = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-top: 10px;
+`;
 
 export const MenuButton = styled.TouchableOpacity`
   background: #3dc77b;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 10px;
+  width: 47%;
+  height: 100px;
   border-radius: 8px;
-  margin: 10px 0;
+  margin: 5px;
+  position: relative;
 `;
 
-export const MessageButtonText = styled.Text`
+export const MenuButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   color: #fff;
 `;
 
 export const CounterContent = styled.View`
   background: #f57373;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  bottom: 5px;
 `;
 
 export const Counter = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 14px;
   color: #fff;
 `;
 
@@ -87,7 +98,6 @@ export const SignOutButton = styled.TouchableOpacity`
   align-items: center;
   padding: 10px;
   border-radius: 8px;
-  margin: 10px 0;
 `;
 
 export const SignOutButtonText = styled.Text`

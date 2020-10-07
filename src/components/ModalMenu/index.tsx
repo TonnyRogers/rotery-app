@@ -1,8 +1,8 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {logout} from '../../store/modules/auth/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -15,11 +15,9 @@ import {
   Title,
   Actions,
   MenuButton,
-  MessageButtonText,
+  MenuButtonText,
   CounterContent,
   Counter,
-  ItinerariesButtonText,
-  FavoritesButtonText,
   SignOutButton,
   SignOutButtonText,
 } from './styles';
@@ -86,41 +84,36 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
           <Actions>
             <MenuButton onPress={toConnections}>
               <Icon name="link-variant" size={24} color="#FFF" />
-              <ItinerariesButtonText>Minhas Conexões</ItinerariesButtonText>
-              <View />
+              <MenuButtonText>Minhas Conexões</MenuButtonText>
             </MenuButton>
             <MenuButton onPress={toDirecMessages}>
               <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
-              <MessageButtonText>Mensagens Diretas</MessageButtonText>
+              <MenuButtonText>Mensagens Diretas</MenuButtonText>
               <CounterContent>
                 <Counter>{unreadCounter}</Counter>
               </CounterContent>
             </MenuButton>
             <MenuButton onPress={toItineraries}>
               <Icon name="map-outline" size={24} color="#FFF" />
-              <ItinerariesButtonText>Meus Roteiros</ItinerariesButtonText>
-              <View />
+              <MenuButtonText>Meus Roteiros</MenuButtonText>
             </MenuButton>
             <MenuButton onPress={toNextItineraries}>
               <Icon name="map-check" size={24} color="#FFF" />
-              <ItinerariesButtonText>Próximos Roteiros</ItinerariesButtonText>
-              <View />
+              <MenuButtonText>Próximos Roteiros</MenuButtonText>
             </MenuButton>
             <MenuButton onPress={toFavorites}>
               <Icon name="heart-outline" size={24} color="#FFF" />
-              <FavoritesButtonText>Favoritos</FavoritesButtonText>
-              <View />
+              <MenuButtonText>Favoritos</MenuButtonText>
             </MenuButton>
             <MenuButton onPress={() => navigation.navigate('Feed')}>
               <Icon name="format-list-text" size={24} color="#FFF" />
-              <FavoritesButtonText>Feed</FavoritesButtonText>
-              <View />
+              <MenuButtonText>Feed</MenuButtonText>
             </MenuButton>
-            <SignOutButton onPress={() => handleLogout()}>
-              <SignOutButtonText>Sair</SignOutButtonText>
-            </SignOutButton>
-            {children}
           </Actions>
+          <SignOutButton onPress={() => handleLogout()}>
+            <SignOutButtonText>Sair</SignOutButtonText>
+          </SignOutButton>
+          {children}
         </Content>
       </KeyboardAvoidingView>
     </Container>

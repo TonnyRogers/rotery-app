@@ -83,6 +83,16 @@ export const RejectButton = styled.TouchableOpacity`
   margin-left: 10px;
 `;
 
+export const MessageButton = styled.TouchableOpacity`
+  background: #4885fd;
+  height: 32px;
+  width: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  margin-left: 10px;
+`;
+
 export const ConnectionFeedback = styled.View`
   background: #4885fd;
   height: 32px;

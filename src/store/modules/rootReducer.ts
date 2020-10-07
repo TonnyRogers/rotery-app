@@ -9,6 +9,7 @@ import itineraries from './itineraries/reducer';
 import messages from './messages/reducer';
 import nextItineraries from './nextItineraries/reducer';
 import options from './options/reducer';
+import websocket from './websocket/reducer';
 
 const rootReducer = combineReducers({
   auth,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   options,
   messages,
   nextItineraries,
+  websocket,
 });
 
 export type RootStateProps = ReturnType<typeof rootReducer>;

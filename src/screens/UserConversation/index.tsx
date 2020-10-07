@@ -5,6 +5,7 @@ import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {
+  getMessagesRequest,
   getConversationRequest,
   sendMessageRequest,
 } from '../../store/modules/messages/actions';
@@ -56,6 +57,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   useEffect(() => {
     dispatch(getConversationRequest(userId));
+    dispatch(getMessagesRequest());
     // scrollViewRef.current?.scrollToEnd({animated: true});
   }, [dispatch, userId]);
 

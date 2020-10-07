@@ -9,6 +9,7 @@ import itineraries from './itineraries/sagas';
 import nextItineraries from './nextItineraries/sagas';
 import messages from './messages/sagas';
 import options from './options/sagas';
+import websocket from './websocket/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -21,5 +22,6 @@ export default function* rootSaga() {
     options,
     nextItineraries,
     messages,
+    websocket,
   ]);
 }

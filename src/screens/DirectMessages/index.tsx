@@ -1,11 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
-import {getMessagesRequest} from '../../store/modules/messages/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
@@ -32,11 +31,6 @@ import Card from '../../components/Card';
 
 const DirectMessages: React.FC = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getMessagesRequest());
-  }, [dispatch]);
 
   function formatDate(date: string) {
     return format(
