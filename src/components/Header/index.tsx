@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -21,10 +24,12 @@ import Notification from '../Notification';
 
 import ModalMenu from '../ModalMenu';
 
-const Header: React.FC<HeaderProps> = ({notifications}) => {
+const Header: React.FC<HeaderProps> = () => {
   const navigation = useNavigation();
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+
+  const {counter} = useSelector((state: RootStateProps) => state.notifications);
 
   function toggleNotifications() {
     setNotificationVisible(!notificationVisible);
@@ -46,9 +51,9 @@ const Header: React.FC<HeaderProps> = ({notifications}) => {
             <Icon name="account-box-outline" size={24} color="#FFF" />
           </ProfileButton>
           <NotificationsButton onPress={toggleNotifications}>
-            {notifications && (
+            {counter > 0 && (
               <Notifications>
-                <Counter>{notifications}</Counter>
+                <Counter>{counter}</Counter>
               </Notifications>
             )}
             <Icon name="bell-ring-outline" size={24} color="#3dc77b" />

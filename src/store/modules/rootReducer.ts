@@ -8,6 +8,7 @@ import profile from './profile/reducer';
 import itineraries from './itineraries/reducer';
 import messages from './messages/reducer';
 import nextItineraries from './nextItineraries/reducer';
+import notifications from './notifications/reducer';
 import options from './options/reducer';
 import websocket from './websocket/reducer';
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   itineraries,
   options,
   messages,
+  notifications,
   nextItineraries,
   websocket,
 });

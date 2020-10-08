@@ -8,6 +8,7 @@ import profile from './profile/sagas';
 import itineraries from './itineraries/sagas';
 import nextItineraries from './nextItineraries/sagas';
 import messages from './messages/sagas';
+import notifications from './notifications/sagas';
 import options from './options/sagas';
 import websocket from './websocket/sagas';
 
@@ -21,6 +22,7 @@ export default function* rootSaga() {
     itineraries,
     options,
     nextItineraries,
+    notifications,
     messages,
     websocket,
   ]);

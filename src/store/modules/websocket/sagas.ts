@@ -1,21 +1,30 @@
 import {all, takeLatest, call, put, take, select} from 'redux-saga/effects';
 import {eventChannel, END} from 'redux-saga';
-import {Alert} from 'react-native';
+import {Alert, Vibration} from 'react-native';
 import ws from '../../../services/websocket';
 
-import {wsNotificationMessages} from './actions';
+import {
+  wsNotificationMessages,
+  wsChatSubscribe,
+  wsCloseChatChannel,
+} from './actions';
+import {getConversationRequest} from '../messages/actions';
+import {RootStateProps} from '../rootReducer';
 
 export function* subscribeUser() {
+  const {user} = yield select((state: RootStateProps) => state.auth);
   return eventChannel((emitter) => {
     ws.connect();
     const channel =
-      ws.getSubscription('notifications:1') || ws.subscribe('notifications:1');
+      ws.getSubscription(`notifications:${user.id}`) ||
+      ws.subscribe(`notifications:${user.id}`);
 
     channel.on('ready', () => {
       channel.emit('message', 'connecting to channel');
     });
 
     channel.on('notify:message', async () => {
+      Vibration.vibrate(200);
       return emitter(wsNotificationMessages());
     });
 
@@ -31,21 +40,18 @@ export function* subscribeUser() {
   });
 }
 
-export function* subscribeChat() {
+export function* subscribeChat(ownerId: number, targetId: number) {
   return eventChannel((emitter) => {
-    ws.connect();
-    const channel = ws.getSubscription('chat:1') || ws.subscribe('chat:1');
+    const channel =
+      ws.getSubscription(`chat:${ownerId}on${targetId}`) ||
+      ws.subscribe(`chat:${ownerId}on${targetId}`);
 
     channel.on('ready', () => {
       channel.emit('message', 'connecting to channel');
     });
 
-    channel.on('cast', (data) => {
-      Alert.alert(`cast:${data}`);
-    });
-
-    channel.on('newMessage', async () => {
-      return emitter(wsNotificationMessages());
+    channel.on('chat:new', (data: number) => {
+      return emitter(getConversationRequest(data));
     });
 
     channel.on('error', () => {
@@ -60,15 +66,20 @@ export function* subscribeChat() {
   });
 }
 
-export function* closeUserChanel() {
-  // const {user} = yield select((state) => state.auth);
-
-  const channel = ws.getSubscription('chat:1');
-  const notifications = ws.getSubscription('notifications:1');
+export function* closeChatChannel({
+  payload,
+}: ReturnType<typeof wsCloseChatChannel>) {
+  const {ownerId, targetId} = payload;
+  const channel = ws.getSubscription(`chat:${ownerId}on${targetId}`);
 
   if (channel) {
     channel.close();
   }
+}
+
+export function* closeUserChanel() {
+  const {user} = yield select((state: RootStateProps) => state.auth);
+  const notifications = ws.getSubscription(`notifications:${user.id}`);
 
   if (notifications) {
     notifications.close();
@@ -85,7 +96,21 @@ export function* watchUserSbuscription() {
   }
 }
 
+export function* watchChatSbuscription({
+  payload,
+}: ReturnType<typeof wsChatSubscribe>) {
+  const {ownerId, targetId} = payload;
+  const chat = yield call(subscribeChat, ownerId, targetId);
+
+  while (true) {
+    const action = yield take(chat);
+    yield put(action);
+  }
+}
+
 export default all([
+  takeLatest('WS_CLOSE_CHAT_CHANNEL', closeChatChannel),
+  takeLatest('WS_CHAT_SUBSCRIBE', watchChatSbuscription),
   takeLatest('@auth/LOGOUT', closeUserChanel),
   takeLatest('@auth/LOGIN_SUCCESS', watchUserSbuscription),
 ]);

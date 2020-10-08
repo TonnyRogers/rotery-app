@@ -11,6 +11,11 @@ import {
 } from '../../store/modules/messages/actions';
 
 import {
+  wsChatSubscribe,
+  wsCloseChatChannel,
+} from '../../store/modules/websocket/actions';
+
+import {
   Container,
   CardHeader,
   BackButton,
@@ -58,8 +63,13 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   useEffect(() => {
     dispatch(getConversationRequest(userId));
     dispatch(getMessagesRequest());
+
+    dispatch(wsChatSubscribe(user.id, userId));
     // scrollViewRef.current?.scrollToEnd({animated: true});
-  }, [dispatch, userId]);
+    return function cleanup() {
+      dispatch(wsCloseChatChannel(user.id, userId));
+    };
+  }, [dispatch, userId, user.id]);
 
   const sender = conversation?.find((item) => item.sender_id === userId);
 

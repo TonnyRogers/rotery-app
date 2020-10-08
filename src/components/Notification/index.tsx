@@ -1,6 +1,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform} from 'react-native';
+import {useSelector} from 'react-redux';
+
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
@@ -28,6 +31,8 @@ const Notification: React.FC<NotificationProps> = ({
   iconColor,
   title,
 }) => {
+  const {data} = useSelector((state: RootStateProps) => state.notifications);
+
   return (
     <Container
       visible={visible}
@@ -42,13 +47,9 @@ const Notification: React.FC<NotificationProps> = ({
             <Title>{title}</Title>
           </Header>
           <NotificationList>
-            <NotificationItem />
-            <NotificationItem />
-            <NotificationItem />
-            <NotificationItem />
-            <NotificationItem />
-            <NotificationItem />
-            <NotificationItem />
+            {data.map((item) => (
+              <NotificationItem key={item?.id} notification={item} />
+            ))}
           </NotificationList>
           {children}
         </Content>

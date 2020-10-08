@@ -18,14 +18,11 @@ import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 
 export function* getMessages() {
   try {
-    yield put(setLoadingTrue());
     const response = yield call(api.get, '/messages');
 
     yield put(getMessagesSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getMessagesFailure());
-    yield put(setLoadingFalse());
     Alert.alert('Erro ao buscar novas mensagens.');
   }
 }
@@ -36,15 +33,11 @@ export function* getConversation({
   try {
     const {userId} = payload;
 
-    yield put(setLoadingTrue());
     const response = yield call(api.get, `/users/${userId}/messages`);
 
     yield put(getConversationSuccess(response.data));
-    yield put(getMessagesRequest());
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getConversationFailure());
-    yield put(setLoadingFalse());
     Alert.alert('Erro ao carregar conversa.');
   }
 }

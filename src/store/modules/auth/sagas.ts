@@ -1,8 +1,9 @@
-import {all, takeLatest, call, put} from 'redux-saga/effects';
+import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
 
 import api from '../../../services/api';
+import {RootStateProps} from '../rootReducer';
 
 import {
   loginRequest,
@@ -63,9 +64,8 @@ export function* setToken({payload}: any) {
 
   if (token) {
     api.defaults.headers.Authorization = `Bearer ${token}`;
+    yield put(refreshTokenRequest());
   }
-
-  yield put(refreshTokenRequest());
 }
 
 export function* logout() {
@@ -100,6 +100,12 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
 }
 
 export function* refreshToken() {
+  const {token} = yield select((state: RootStateProps) => state.auth);
+
+  if (!token) {
+    return;
+  }
+
   try {
     const response = yield call(api.get, '/sessions');
 
