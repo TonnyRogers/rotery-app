@@ -53,7 +53,7 @@ const DirectMessages: React.FC = () => {
       <Header />
       <Card>
         <CardHeader>
-          <BackButton onPress={() => {}}>
+          <BackButton onPress={() => navigation.goBack()}>
             <Icon name="chevron-left" size={24} color="#3dc77b" />
           </BackButton>
           <TitleContent>

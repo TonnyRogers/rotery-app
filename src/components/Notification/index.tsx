@@ -47,9 +47,14 @@ const Notification: React.FC<NotificationProps> = ({
             <Title>{title}</Title>
           </Header>
           <NotificationList>
-            {data.map((item) => (
-              <NotificationItem key={item?.id} notification={item} />
-            ))}
+            {data &&
+              data.map((item) => (
+                <NotificationItem
+                  key={item?.id}
+                  notification={item}
+                  close={onRequestClose()}
+                />
+              ))}
           </NotificationList>
           {children}
         </Content>

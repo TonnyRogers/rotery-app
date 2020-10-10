@@ -4,12 +4,17 @@ export interface NotificationsProps {
   id: number;
   user_id: number;
   readed: boolean;
+  subject: string;
   content: string;
-  json_data: string;
+  created_at: string;
+  alias: string;
+  json_data: {
+    itinerary_id: number;
+  };
 }
 
 interface InitialStateProps {
-  data: (NotificationsProps | undefined)[];
+  data: NotificationsProps[] | null;
   counter: number;
 }
 
@@ -21,7 +26,7 @@ interface ActionProps {
 }
 
 const INITAL_STATE: InitialStateProps = {
-  data: [],
+  data: null,
   counter: 0,
 };
 
@@ -34,7 +39,7 @@ export default function notifications(
       case '@notifications/GET_NOTIFICATIONS_SUCCESS': {
         let notReadedCouter = 0;
 
-        const notReadedNotifications = action.payload.notifications.map(
+        const notReadedNotifications = action.payload.notifications.filter(
           (item) => {
             if (!item.readed) {
               notReadedCouter += 1;

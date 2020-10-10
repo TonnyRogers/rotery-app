@@ -21,7 +21,7 @@ export const Bullet = styled.View`
   height: 8px;
   width: 8px;
   border-radius: 4px;
-  background: #808080;
-  opacity: ${(props: {current: boolean}) => (props.current ? '0.5' : '0.1')};
+  background: ${(props: {current: boolean}) =>
+    props.current ? '#3dc77b' : '#e1e1e1'};
   margin: 5px;
 `;

@@ -10,3 +10,16 @@ export function getNotificationsSuccess(notifications: NotificationsProps) {
     payload: {notifications},
   };
 }
+
+export function setNoticationReadedRequest(notificationId: number) {
+  return {
+    type: '@notifications/SET_NOTIFICATION_READED_REQUEST',
+    payload: {notificationId},
+  };
+}
+
+export function setNoticationReadedSuccess() {
+  return {
+    type: '@notifications/SET_NOTIFICATION_READED_SUCCESS',
+  };
+}

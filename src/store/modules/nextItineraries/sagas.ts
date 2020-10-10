@@ -47,6 +47,7 @@ export function* makeQuestion({
 }
 
 export default all([
+  takeLatest('WS_NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@nextItineraries/MAKE_QUESTION_REQUEST', makeQuestion),
   takeLatest('@nextItineraries/GET_NEXTITINERARIES_REQUEST', getItineraries),
 ]);

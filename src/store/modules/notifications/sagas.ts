@@ -1,7 +1,11 @@
 import {takeLatest, put, all, call} from 'redux-saga/effects';
 
 import api from '../../../services/api';
-import {getNotificationsSuccess} from './actions';
+import {
+  getNotificationsSuccess,
+  setNoticationReadedRequest,
+  setNoticationReadedSuccess,
+} from './actions';
 
 export function* getNotifications() {
   try {
@@ -11,4 +15,25 @@ export function* getNotifications() {
   } catch (error) {}
 }
 
-export default all([takeLatest('WS_NOTIFICATION_MESSAGES', getNotifications)]);
+export function* setNotificationReaded({
+  payload,
+}: ReturnType<typeof setNoticationReadedRequest>) {
+  try {
+    const {notificationId} = payload;
+    yield call(api.put, `/notifications/${notificationId}`);
+
+    yield put(setNoticationReadedSuccess());
+  } catch (error) {}
+}
+
+export default all([
+  takeLatest(
+    '@notifications/SET_NOTIFICATION_READED_SUCCESS',
+    getNotifications,
+  ),
+  takeLatest(
+    '@notifications/SET_NOTIFICATION_READED_REQUEST',
+    setNotificationReaded,
+  ),
+  takeLatest('WS_NOTIFICATION_MESSAGES', getNotifications),
+]);

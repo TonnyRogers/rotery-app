@@ -17,6 +17,7 @@ import {
   refreshTokenFailure,
 } from './actions';
 import {getProfileRequest} from '../profile/actions';
+import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {
   getActivitiesRequest,
@@ -49,6 +50,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getLodgingsRequest());
     yield put(getTransportsRequest());
     yield put(getConnectionsRequest());
+    yield put(getItinerariesRequest());
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());

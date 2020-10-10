@@ -30,7 +30,7 @@ export const RowGroup = styled.View`
   flex-direction: row;
 `;
 
-export const Date = styled.Text`
+export const DateText = styled.Text`
   font-family: 'Roboto';
   font-size: 20px;
   font-weight: bold;

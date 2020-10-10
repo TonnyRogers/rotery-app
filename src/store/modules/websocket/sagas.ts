@@ -14,29 +14,65 @@ import {RootStateProps} from '../rootReducer';
 export function* subscribeUser() {
   const {user} = yield select((state: RootStateProps) => state.auth);
   return eventChannel((emitter) => {
-    ws.connect();
-    const channel =
-      ws.getSubscription(`notifications:${user.id}`) ||
-      ws.subscribe(`notifications:${user.id}`);
+    function initWebsocket() {
+      ws.connect();
 
-    channel.on('ready', () => {
-      channel.emit('message', 'connecting to channel');
-    });
+      const channel =
+        ws.getSubscription(`notifications:${user.id}`) ||
+        ws.subscribe(`notifications:${user.id}`);
 
-    channel.on('notify:message', async () => {
-      Vibration.vibrate(200);
-      return emitter(wsNotificationMessages());
-    });
+      channel.on('ready', () => {
+        channel.emit('message', 'connecting to channel');
+      });
 
-    channel.on('error', () => {
-      Alert.alert('Erro');
-    });
+      channel.on('notify:message', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
 
-    channel.on('close', () => {
-      Alert.alert('Close');
-    });
+      channel.on('notify:requestConnection', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
 
-    return () => {};
+      channel.on('notify:connectionAccepted', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
+      channel.on('notify:newQuestion', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
+      channel.on('notify:newAnswer', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
+      channel.on('error', () => {
+        Alert.alert('Erro');
+      });
+
+      channel.on('close', () => {
+        Alert.alert('Close Notifications');
+      });
+
+      ws.on('close', (e: any) => {
+        if (e._connectionState == 'terminated') {
+          return emitter(END);
+        } else {
+          initWebsocket();
+        }
+        // initWebsocket();
+        Alert.alert('Close Websocket');
+      });
+    }
+    initWebsocket();
+
+    return () => {
+      ws.close();
+    };
   });
 }
 
@@ -77,7 +113,7 @@ export function* closeChatChannel({
   }
 }
 
-export function* closeUserChanel() {
+export function* closeNotificationChanel() {
   const {user} = yield select((state: RootStateProps) => state.auth);
   const notifications = ws.getSubscription(`notifications:${user.id}`);
 
@@ -87,7 +123,7 @@ export function* closeUserChanel() {
   }
 }
 
-export function* watchUserSbuscription() {
+export function* watchNotificationSbuscription() {
   const channel = yield call(subscribeUser);
 
   while (true) {
@@ -111,8 +147,8 @@ export function* watchChatSbuscription({
 export default all([
   takeLatest('WS_CLOSE_CHAT_CHANNEL', closeChatChannel),
   takeLatest('WS_CHAT_SUBSCRIBE', watchChatSbuscription),
-  takeLatest('@auth/LOGOUT', closeUserChanel),
-  takeLatest('@auth/LOGIN_SUCCESS', watchUserSbuscription),
+  takeLatest('@auth/LOGOUT', closeNotificationChanel),
+  takeLatest('@auth/LOGIN_SUCCESS', watchNotificationSbuscription),
 ]);
 
 // function connect() {

@@ -48,7 +48,7 @@ export const QuestionDate = styled.Text`
 
 export const Question = styled.Text``;
 
-export const AnwserContent = styled.View`
+export const AnswerContent = styled.View`
   background: #4885fd;
   min-height: 60px;
   border-radius: 8px;
@@ -56,14 +56,14 @@ export const AnwserContent = styled.View`
   margin-top: 10px;
 `;
 
-export const AnwserDate = styled.Text`
+export const AnswerDate = styled.Text`
   margin-bottom: 10px;
   font-family: 'Roboto';
   font-size: 14px;
   color: #fff;
 `;
 
-export const Anwser = styled.Text`
+export const Answer = styled.Text`
   font-family: 'Roboto';
   font-size: 14px;
   color: #fff;

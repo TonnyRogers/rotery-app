@@ -317,7 +317,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
         visible={alertVisible}
         onCancel={hideAlert}
         onRequestClose={hideAlert}
-        onConfirm={handleDeleteItinerary}
+        onConfirm={() => {}}
       />
     </Container>
   );

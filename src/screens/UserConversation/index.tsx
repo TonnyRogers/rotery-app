@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import {useNavigation} from '@react-navigation/native';
 
 import {
   getMessagesRequest,
@@ -52,6 +53,7 @@ interface UserConversation {
 
 const UserConversation: React.FC<UserConversation> = ({route}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [message, setMessage] = useState('');
 
   const scrollViewRef = useRef<ScrollView>();
@@ -96,7 +98,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
       <Header />
       <Card>
         <CardHeader>
-          <BackButton onPress={() => {}}>
+          <BackButton onPress={() => navigation.goBack()}>
             <Icon name="chevron-left" size={24} color="#3dc77b" />
           </BackButton>
         </CardHeader>
@@ -138,7 +140,13 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
             )}
           </ConversationList>
           <MessageForm>
-            <TextArea value={message} onChange={setMessage} ref={messageRef} />
+            <TextArea
+              value={message}
+              onChange={setMessage}
+              ref={messageRef}
+              returnKeyType="send"
+              onSubmitEditing={handleSendMessage}
+            />
             <SendButton onPress={handleSendMessage}>
               <Icon name="send-outline" size={24} color="#FFF" />
               <SendButtonText>Enviar</SendButtonText>

@@ -38,6 +38,23 @@ import Highlight from '../../components/Highlight';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
 
+const images = [
+  {
+    id: 1,
+    url:
+      'https://nerdymates.com/static/img/regular/shutterstock_1044339595.jpg',
+  },
+  {
+    id: 2,
+    url: 'https://youmatter.world/app/uploads/sites/2/2019/11/travel-world.jpg',
+  },
+  {
+    id: 3,
+    url:
+      'https://cdn.businesstraveller.com/wp-content/uploads/fly-images/985033/Column-Travel-916x516.jpg',
+  },
+];
+
 const Home: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();

@@ -63,8 +63,8 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
 }
 
 export default all([
+  takeLatest('WS_NOTIFICATION_MESSAGES', getMessages),
   takeLatest('@messages/SEND_MESSAGE_REQUEST', sendMessage),
   takeLatest('@messages/GET_CONVERSATION_REQUEST', getConversation),
-  takeLatest('WS_NOTIFICATION_MESSAGES', getMessages),
   takeLatest('@messages/GET_MESSAGES_REQUEST', getMessages),
 ]);

@@ -14,9 +14,9 @@ import {
   Name,
   QuestionDate,
   Question,
-  AnwserContent,
-  AnwserDate,
-  Anwser,
+  AnswerContent,
+  AnswerDate,
+  Answer,
   SendButton,
   SendButtonText,
 } from './styles';
@@ -34,8 +34,8 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   owner,
 }) => {
   const dispatch = useDispatch();
-  const [anwser, setAnwser] = useState('');
-  const anwserRef = useRef();
+  const [answer, setAnswer] = useState('');
+  const answerRef = useRef();
 
   let createDateFormated = useRef('');
   let updateDateFormated = useRef('');
@@ -57,12 +57,12 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   }, [question.created_at, question.updated_at]);
 
   function handleSubmitAnwser(questionId: number) {
-    if (!anwser) {
+    if (!answer) {
       return;
     }
 
-    dispatch(replyQuestionRequest(question.itinerary_id, questionId, anwser));
-    setAnwser('');
+    dispatch(replyQuestionRequest(question.itinerary_id, questionId, answer));
+    setAnswer('');
   }
 
   return (
@@ -82,17 +82,17 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
       <Question>{question.question}</Question>
       {owner ? (
         question.anwser ? (
-          <AnwserContent>
-            <AnwserDate>{updateDateFormated.current}</AnwserDate>
-            <Anwser>{question.anwser}</Anwser>
-          </AnwserContent>
+          <AnswerContent>
+            <AnswerDate>{updateDateFormated.current}</AnswerDate>
+            <Answer>{question.anwser}</Answer>
+          </AnswerContent>
         ) : (
           <>
             <TextArea
               placeholder="sua resposta..."
-              value={anwser}
-              ref={anwserRef}
-              onChange={setAnwser}
+              value={answer}
+              ref={answerRef}
+              onChange={setAnswer}
             />
             <SendButton onPress={() => handleSubmitAnwser(question.id)}>
               <Icon name="send-outline" size={24} color="#FFF" />
@@ -102,10 +102,10 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
         )
       ) : (
         question.anwser && (
-          <AnwserContent>
-            <AnwserDate>{updateDateFormated.current}</AnwserDate>
-            <Anwser>{question.anwser}</Anwser>
-          </AnwserContent>
+          <AnswerContent>
+            <AnswerDate>{updateDateFormated.current}</AnswerDate>
+            <Answer>{question.anwser}</Answer>
+          </AnswerContent>
         )
       )}
     </Container>
