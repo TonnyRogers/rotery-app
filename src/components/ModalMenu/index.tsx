@@ -1,5 +1,5 @@
-import React from 'react';
-import {Platform} from 'react-native';
+import React, {useRef, useCallback, useEffect} from 'react';
+import {Platform, Dimensions, PanResponder, Animated} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,63 +20,124 @@ import {
   Counter,
   SignOutButton,
   SignOutButtonText,
+  CloseButton,
 } from './styles';
 
 interface ModalMenuProps {
   visible: boolean;
-  onRequestClose(): void;
+  onRequestClose(value: boolean): any;
 }
 
-const ModalMenu: React.FC<ModalMenuProps> = ({
-  visible,
-  onRequestClose,
-  children,
-}) => {
+const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {height} = Dimensions.get('screen');
+  const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
+
+  const handleOpen = useCallback(() => {
+    Animated.timing(panY.y, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [panY.y]);
+
+  const handleDismiss = useCallback(() => {
+    Animated.timing(panY.y, {
+      toValue: -height,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+    setTimeout(() => {
+      onRequestClose(false);
+    }, 400);
+  }, [height, onRequestClose, panY.y]);
+
+  const panRespoders = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => false,
+      onPanResponderMove: (e, gs) => {
+        if (gs.dy < 0) {
+          panY.setValue({x: 0, y: gs.dy});
+        }
+      },
+      onPanResponderRelease: (e, gs) => {
+        if (gs.dy < 0 && gs.vy > 1) {
+          return handleDismiss();
+        }
+        Animated.spring(panY.y, {
+          toValue: 0,
+          bounciness: 3,
+          useNativeDriver: false,
+        }).start();
+      },
+    }),
+  ).current;
+
+  useEffect(() => {
+    if (visible === true) {
+      handleOpen();
+    } else {
+      handleDismiss();
+    }
+  }, [handleDismiss, handleOpen, visible]);
 
   const {unreadCounter} = useSelector(
     (state: RootStateProps) => state.messages,
   );
 
   async function handleLogout() {
+    onRequestClose(false);
     dispatch(logout());
   }
 
   function toItineraries() {
-    onRequestClose();
+    onRequestClose(false);
     navigation.navigate('MyItineraries');
   }
 
   function toNextItineraries() {
-    onRequestClose();
+    onRequestClose(false);
     navigation.navigate('NextItineraries');
   }
 
   function toFavorites() {
-    onRequestClose();
+    onRequestClose(false);
     navigation.navigate('Favorites');
   }
 
   function toConnections() {
-    onRequestClose();
+    onRequestClose(false);
     navigation.navigate('Connections');
   }
 
   function toDirecMessages() {
-    onRequestClose();
+    onRequestClose(false);
     navigation.navigate('DirectMessagesTabs');
   }
 
   return (
     <Container
+      animated
       visible={visible}
       animationType="fade"
       transparent
       onRequestClose={() => onRequestClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <Content>
+        <Content
+          style={{
+            transform: [
+              {
+                translateY: panY.y.interpolate({
+                  inputRange: [-100, 0, 1],
+                  outputRange: [-100, 0, 1],
+                }),
+              },
+            ],
+          }}
+          {...panRespoders.panHandlers}>
           <Header>
             <Icon name="menu" size={24} color="#3e44c7" />
             <Title>Menu</Title>
@@ -113,7 +174,9 @@ const ModalMenu: React.FC<ModalMenuProps> = ({
           <SignOutButton onPress={() => handleLogout()}>
             <SignOutButtonText>Sair</SignOutButtonText>
           </SignOutButton>
-          {children}
+          <CloseButton onPress={handleDismiss}>
+            <Icon name="chevron-up" size={24} color="#808080" />
+          </CloseButton>
         </Content>
       </KeyboardAvoidingView>
     </Container>

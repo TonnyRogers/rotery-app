@@ -135,6 +135,7 @@ const NewItinerary: React.FC = () => {
   const activityPriceRef = useRef();
   const activityCapacityRef = useRef();
   const activityDescriptionRef = useRef();
+  const fileRef = useRef();
 
   function addImages(imageList: []) {
     setImages([...images, ...imageList]);

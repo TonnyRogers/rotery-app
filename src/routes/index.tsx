@@ -26,6 +26,7 @@ import SearchUsers from '../screens/SearchUsers';
 import MyConnections from '../screens/MyConnections';
 import DirectMessages from '../screens/DirectMessages';
 import UserConversation from '../screens/UserConversation';
+import ItineraryRate from '../screens/ItineraryRate';
 import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
@@ -146,6 +147,7 @@ const Routes = () => {
               name="UserConversation"
               component={UserConversation}
             />
+            <Stack.Screen name="ItineraryRate" component={ItineraryRate} />
           </>
         ) : (
           <>

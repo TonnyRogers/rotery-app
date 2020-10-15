@@ -1,8 +1,8 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {Text} from 'react-native';
+import {Text, Animated, PanResponder} from 'react-native';
 
 import {loginRequest} from '../../store/modules/auth/actions';
 
@@ -65,6 +65,54 @@ const Home: React.FC = () => {
   const [password, setPassword] = useState('');
   const emailRef = useRef();
   const passwordRef = useRef();
+  const panY = useRef(new Animated.ValueXY({x: 0, y: 400})).current;
+
+  const handleOpen = useCallback(() => {
+    Animated.timing(panY.y, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  }, [panY.y]);
+
+  const handleDismiss = useCallback(() => {
+    Animated.timing(panY.y, {
+      toValue: 400,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+    setLoginVisible(false);
+  }, [panY.y]);
+
+  const panRespoders = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => false,
+      onPanResponderMove: (e, gs) => {
+        if (gs.dy > 0) {
+          panY.setValue({x: 0, y: gs.dy});
+        }
+      },
+      onPanResponderRelease: (e, gs) => {
+        if (gs.dy > 0 && gs.vy > 1) {
+          return handleDismiss();
+        }
+        Animated.spring(panY.y, {
+          toValue: 400,
+          bounciness: 3,
+          useNativeDriver: false,
+        }).start();
+      },
+    }),
+  ).current;
+
+  useEffect(() => {
+    if (loginVisible === true) {
+      handleOpen();
+    } else {
+      handleDismiss();
+    }
+  }, [handleDismiss, handleOpen, loginVisible]);
 
   function signUpNavigate() {
     setLoginVisible(false);
@@ -113,7 +161,19 @@ const Home: React.FC = () => {
         <Icon name="chevron-double-left" size={24} color="#4885fd" />
         <TipText> Arraste para ver mais</TipText>
       </TipContent>
-      <LoginHover visible={loginVisible}>
+      <LoginHover
+        visible={loginVisible}
+        style={{
+          transform: [
+            {
+              translateY: panY.y.interpolate({
+                inputRange: [-1, 0, 1],
+                outputRange: [0, 0, 1],
+              }),
+            },
+          ],
+        }}
+        {...panRespoders.panHandlers}>
         <LoginHeader>
           <SwitchLoginButton onPress={() => setLoginVisible(!loginVisible)}>
             <Icon

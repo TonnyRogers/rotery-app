@@ -9,6 +9,7 @@ export interface NotificationsProps {
   created_at: string;
   alias: string;
   json_data: {
+    id: number;
     itinerary_id: number;
   };
 }

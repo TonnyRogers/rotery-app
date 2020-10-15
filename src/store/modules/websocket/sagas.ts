@@ -50,6 +50,26 @@ export function* subscribeUser() {
         return emitter(wsNotificationMessages());
       });
 
+      channel.on('notify:newMember', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
+      channel.on('notify:memberAccepted', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
+      channel.on('notify:memberRejected', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
+      channel.on('notify:itineraryDeleted', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
       channel.on('error', () => {
         Alert.alert('Erro');
       });
@@ -64,7 +84,6 @@ export function* subscribeUser() {
         } else {
           initWebsocket();
         }
-        // initWebsocket();
         Alert.alert('Close Websocket');
       });
     }

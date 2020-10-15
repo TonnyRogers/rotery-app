@@ -1,5 +1,5 @@
 import React from 'react';
-import DocumentPicker from 'react-native-document-picker';
+import ImagePicker from 'react-native-image-picker';
 
 import api from '../../services/api';
 
@@ -10,56 +10,63 @@ interface FileInputProps {
 }
 
 const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
-  async function pickFile() {
-    try {
-      const fileResponse = await DocumentPicker.pickMultiple({
-        type: [DocumentPicker.types.images],
-      });
+  function pickImage() {
+    const options = {
+      title: 'Fotos',
+      quality: 1.0,
+      storageOptions: {
+        skipBackup: true,
+        privateDirectory: true,
+      },
+    };
 
-      const formData = new FormData();
+    ImagePicker.showImagePicker(options, async (response) => {
+      console.tron.log('Response = ', response);
 
-      let response;
-
-      if (fileResponse[1]) {
-        fileResponse.forEach((file) => {
-          formData.append('files', file);
-        });
-
-        response = await api.post('/multiple-files', formData);
-
-        const {id} = response.data[0];
-
-        if (!id) {
-          return;
-        }
+      if (response.didCancel) {
+        console.tron.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.tron.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.tron.log('User tapped custom button: ', response.customButton);
       } else {
-        formData.append('file', fileResponse[0]);
+        console.tron.log('Response = ', response);
 
-        response = await api.post('/files', formData);
+        const image = {
+          size: response.fileSize,
+          name: response.fileName,
+          type: response.type,
+          uri: response.uri,
+        };
 
-        const {id} = response.data;
+        const formData = new FormData();
 
-        response.data = [response.data];
+        let fileResponse;
 
-        if (!id) {
-          return;
+        if (image.uri) {
+          formData.append('file', image);
+
+          fileResponse = await api.post('/files', formData);
+
+          const {id} = fileResponse.data;
+
+          fileResponse.data = [fileResponse.data];
+
+          if (!id) {
+            return;
+          }
         }
-      }
 
-      const images = response.data;
+        const images = fileResponse?.data;
 
-      onSelect(images);
-    } catch (error) {
-      if (DocumentPicker.isCancel(error)) {
-        console.tron.log('DocumentPicker', error);
-      } else {
+        onSelect(images);
       }
-    }
+    });
   }
 
   return (
     <Container>
-      <SelectFilesButton onPress={pickFile}>{children}</SelectFilesButton>
+      <SelectFilesButton onPress={pickImage}>{children}</SelectFilesButton>
     </Container>
   );
 };

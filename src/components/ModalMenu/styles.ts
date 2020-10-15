@@ -1,15 +1,17 @@
 import styled from 'styled-components/native';
+import {Animated} from 'react-native';
 
 export const Container = styled.Modal``;
 
 export const KeyboardAvoidingView = styled.KeyboardAvoidingView.attrs({
   blurRadius: 1,
 })`
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.4);
   flex: 1;
+  justify-content: flex-start;
 `;
 
-export const Content = styled.View`
+export const Content = styled(Animated.View)`
   background: #fff;
   min-height: 300px;
   border-bottom-left-radius: 20px;
@@ -105,4 +107,15 @@ export const SignOutButtonText = styled.Text`
   font-size: 20px;
   font-weight: bold;
   color: #3e44c7;
+`;
+
+export const CloseButton = styled.TouchableOpacity`
+  background: transparent;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;

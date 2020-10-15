@@ -14,7 +14,6 @@ import {
   MenuButton,
   Notifications,
   Counter,
-  CloseButton,
 } from './styles';
 
 interface HeaderProps {
@@ -88,18 +87,14 @@ const Header: React.FC<HeaderProps> = () => {
       <Notification
         title="Notificações"
         visible={notificationVisible}
-        onRequestClose={() => toggleNotifications}
+        onRequestClose={(value) => setNotificationVisible(value)}
         icon="bell-ring-outline"
-        iconColor="#3dc77b">
-        <CloseButton onPress={toggleNotifications}>
-          <Icon name="chevron-up" size={24} color="#808080" />
-        </CloseButton>
-      </Notification>
-      <ModalMenu visible={menuVisible} onRequestClose={toggleMenu}>
-        <CloseButton onPress={toggleMenu}>
-          <Icon name="chevron-up" size={24} color="#808080" />
-        </CloseButton>
-      </ModalMenu>
+        iconColor="#3dc77b"
+      />
+      <ModalMenu
+        visible={menuVisible}
+        onRequestClose={(value) => setMenuVisible(value)}
+      />
     </>
   );
 };

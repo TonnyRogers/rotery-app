@@ -77,7 +77,7 @@ export function* makeQuestion({
 export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
   try {
     const {itineraryId, userId} = payload;
-    const currentDate = new Date('now');
+    const currentDate = new Date();
 
     yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/join`, {

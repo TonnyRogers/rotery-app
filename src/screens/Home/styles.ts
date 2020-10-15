@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import {Animated} from 'react-native';
 
 export const Container = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
@@ -48,7 +49,7 @@ export const TipText = styled.Text`
   color: #4885fd;
 `;
 
-export const LoginHover = styled.View.attrs({
+export const LoginHover = styled(Animated.View).attrs({
   elevation: 5,
 })<{visible: boolean}>`
   height: 480px;
@@ -57,7 +58,7 @@ export const LoginHover = styled.View.attrs({
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   position: absolute;
-  bottom: ${(props) => (props.visible ? 0 : '-400px')};
+  bottom: 0;
 `;
 
 export const LoginHeader = styled.View`

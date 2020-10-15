@@ -9,8 +9,12 @@ import {
   makeQuestionRequest,
   makeQuestionSuccess,
   makeQuestionFailure,
+  rateItineraryRequest,
+  rateItinerarySuccess,
+  rateItineraryFailure,
 } from './actions';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
+import * as RootNavigation from '../../../RootNavigation';
 
 export function* getItineraries() {
   try {
@@ -46,7 +50,43 @@ export function* makeQuestion({
   }
 }
 
+export function* rateItinerary({
+  payload,
+}: ReturnType<typeof rateItineraryRequest>) {
+  try {
+    const {
+      userId,
+      itineraryId,
+      itineraryRate,
+      userRate,
+      itineraryDescription,
+      userDescription,
+    } = payload;
+
+    yield put(setLoadingTrue());
+
+    yield call(api.post, `/users/${userId}/rate`, {
+      rate: userRate,
+      description: userDescription,
+    });
+
+    yield call(api.post, `/itineraries/${itineraryId}/rate`, {
+      rate: itineraryRate,
+      description: itineraryDescription,
+    });
+
+    yield put(rateItinerarySuccess());
+    yield put(setLoadingFalse());
+    RootNavigation.navigate('MyItineraries', {});
+  } catch (error) {
+    yield put(rateItineraryFailure());
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao avaliar roteiro');
+  }
+}
+
 export default all([
+  takeLatest('@nextItineraries/RATE_ITINERARY_REQUEST', rateItinerary),
   takeLatest('WS_NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@nextItineraries/MAKE_QUESTION_REQUEST', makeQuestion),
   takeLatest('@nextItineraries/GET_NEXTITINERARIES_REQUEST', getItineraries),

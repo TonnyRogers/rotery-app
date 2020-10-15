@@ -37,3 +37,36 @@ export function makeQuestionFailure() {
     type: '@nextItineraries/MAKE_QUESTION_FAILURE',
   };
 }
+
+export function rateItineraryRequest(
+  itineraryId: number,
+  userId: number,
+  itineraryRate: number,
+  userRate: number,
+  itineraryDescription: string,
+  userDescription: string,
+) {
+  return {
+    type: '@nextItineraries/RATE_ITINERARY_REQUEST',
+    payload: {
+      itineraryId,
+      itineraryRate,
+      itineraryDescription,
+      userId,
+      userRate,
+      userDescription,
+    },
+  };
+}
+
+export function rateItinerarySuccess() {
+  return {
+    type: '@nextItineraries/RATE_ITINERARY_SUCCESS',
+  };
+}
+
+export function rateItineraryFailure() {
+  return {
+    type: '@nextItineraries/RATE_ITINERARY_FAILURE',
+  };
+}

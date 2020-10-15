@@ -3,6 +3,7 @@ import produce from 'immer';
 interface OwnerProps {
   id: number;
   username: string;
+  created_at: string;
   person: {
     file?: {
       url?: string;

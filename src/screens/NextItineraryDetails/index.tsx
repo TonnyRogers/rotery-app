@@ -273,8 +273,11 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             </RowGroup>
           </CardHeader>
           <CardContent>
-            {itinerary.questions.map((question) => (
-              <ItineraryQuestion question={question} key={question.id} />
+            {itinerary.questions.map((questionItem) => (
+              <ItineraryQuestion
+                question={questionItem}
+                key={questionItem.id}
+              />
             ))}
             <>
               <TextArea

@@ -26,11 +26,13 @@ import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 import FilterInput from '../../components/FilterInput';
 import Card from '../../components/Card';
+import BottomSheet from '../../components/BottomSheet';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [filterVisible, setFilterVisible] = useState(false);
+  const [sheetVisible, setSheetVisible] = useState(false);
 
   useEffect(() => {
     dispatch(getFeedRequest());
@@ -83,7 +85,7 @@ const Feed: React.FC = () => {
           </ActivityList>
         </FilterContent>
         <ItineraryList>
-          {itineraries[0] ? (
+          {itineraries ? (
             itineraries.map((itinerary) => (
               <Itinerary
                 itinerary={itinerary}
@@ -109,6 +111,10 @@ const Feed: React.FC = () => {
           </NewItineraryButton>
         </FloatContent>
       </Content>
+      <BottomSheet
+        visible={sheetVisible}
+        onRequestClose={(value) => setSheetVisible(value)}
+      />
     </Container>
   );
 };

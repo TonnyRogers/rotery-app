@@ -55,13 +55,3 @@ export const MenuButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
 `;
-
-export const CloseButton = styled.TouchableOpacity`
-  background: transparent;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-`;

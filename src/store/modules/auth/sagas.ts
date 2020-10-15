@@ -16,14 +16,16 @@ import {
   refreshTokenSuccess,
   refreshTokenFailure,
 } from './actions';
-import {getProfileRequest} from '../profile/actions';
-import {getItinerariesRequest} from '../itineraries/actions';
-import {getConnectionsRequest} from '../connections/actions';
 import {
   getActivitiesRequest,
   getLodgingsRequest,
   getTransportsRequest,
 } from '../options/actions';
+import {getProfileRequest} from '../profile/actions';
+import {getItinerariesRequest} from '../itineraries/actions';
+import {getConnectionsRequest} from '../connections/actions';
+import {getNotificationsRequest} from '../notifications/actions';
+import {getMessagesRequest} from '../messages/actions';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -51,6 +53,8 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getTransportsRequest());
     yield put(getConnectionsRequest());
     yield put(getItinerariesRequest());
+    yield put(getNotificationsRequest());
+    yield put(getMessagesRequest());
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());

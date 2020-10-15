@@ -71,9 +71,30 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         close();
         break;
       }
+      case 'itinerary_member_request': {
+        navigation.navigate('MyItineraryDetails', {
+          id: item.json_data.itinerary_id,
+        });
+        close();
+        break;
+      }
       case 'itinerary_answer': {
         navigation.navigate('NextItineraryDetails', {
           id: item.json_data.itinerary_id,
+        });
+        close();
+        break;
+      }
+      case 'itinerary_member_accepted': {
+        navigation.navigate('NextItineraryDetails', {
+          id: item.json_data.itinerary_id,
+        });
+        close();
+        break;
+      }
+      case 'itinerary_updated': {
+        navigation.navigate('NextItineraryDetails', {
+          id: item.json_data.id,
         });
         close();
         break;

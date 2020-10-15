@@ -1,7 +1,7 @@
 import React, {useRef, useState, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import DocumentPicker from 'react-native-document-picker';
+import ImagePicker from 'react-native-image-picker';
 import {format, parse} from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import {useNavigation} from '@react-navigation/native';
@@ -102,41 +102,55 @@ const Profile: React.FC = () => {
     );
   }
 
-  async function pickFile() {
-    try {
-      const fileResponse = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
-      });
+  function pickImage() {
+    const options = {
+      title: 'Fotos',
+      quality: 1.0,
+      storageOptions: {
+        skipBackup: true,
+        privateDirectory: true,
+      },
+    };
 
-      const customFile = {
-        name: fileResponse.name,
-        type: fileResponse.type,
-        uri: fileResponse.uri,
-        size: fileResponse.size,
-      };
+    ImagePicker.showImagePicker(options, async (response) => {
+      console.tron.log('Response = ', response);
 
-      setProfileImage(customFile);
-
-      const formData = new FormData();
-      formData.append('file', customFile);
-
-      const response = await api.post('/profile/avatar', formData);
-
-      const {id} = response.data;
-
-      if (!id) {
-        setProfileImage({uri: ''});
-        return;
-      }
-
-      dispatch(updateProfileImageRequest(id));
-    } catch (error) {
-      if (DocumentPicker.isCancel(error)) {
-        console.tron.log('DocumentPicker', error); // User cancelled the picker, exit any dialogs or menus and move on
+      if (response.didCancel) {
+        console.tron.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.tron.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.tron.log('User tapped custom button: ', response.customButton);
       } else {
-        setProfileImage({uri: ''});
+        console.tron.log('Response = ', response);
+
+        const image = {
+          size: response.fileSize,
+          name: response.fileName,
+          type: response.type,
+          uri: response.uri,
+        };
+
+        const formData = new FormData();
+
+        let fileResponse;
+
+        if (image.uri) {
+          formData.append('file', image);
+
+          fileResponse = await api.post('/files', formData);
+
+          const {id} = fileResponse.data;
+
+          if (!id) {
+            setProfileImage({uri: ''});
+            return;
+          }
+          setProfileImage(image);
+          dispatch(updateProfileImageRequest(id));
+        }
       }
-    }
+    });
   }
 
   return (
@@ -150,7 +164,7 @@ const Profile: React.FC = () => {
         </CardHeader>
         <User>
           <Avatar source={{uri: profileImage.uri}} resizeMode="cover" />
-          <ChangeAvatarButton onPress={pickFile}>
+          <ChangeAvatarButton onPress={pickImage}>
             <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
           </ChangeAvatarButton>
           <UserName>{user.username}</UserName>
