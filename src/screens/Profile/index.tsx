@@ -97,6 +97,10 @@ const Profile: React.FC = () => {
   }
 
   function updateProfileHandle() {
+    if (!name || !gender || !birthDate || !cpf || !phone) {
+      return;
+    }
+
     dispatch(
       updateProfileRequest(name, gender, birthDate, cpf, profission, phone),
     );
@@ -163,7 +167,7 @@ const Profile: React.FC = () => {
           </BackButton>
         </CardHeader>
         <User>
-          <Avatar source={{uri: profileImage.uri}} resizeMode="cover" />
+          <Avatar source={{uri: profileImage.uri || '..'}} resizeMode="cover" />
           <ChangeAvatarButton onPress={pickImage}>
             <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
           </ChangeAvatarButton>

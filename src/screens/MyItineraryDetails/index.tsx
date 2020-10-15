@@ -297,7 +297,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         message="você deseja realmente excluir este roteiro?"
         visible={alertVisible}
         onCancel={hideAlert}
-        onRequestClose={hideAlert}
+        onRequestClose={(value) => setAlertVisible(value)}
         onConfirm={handleDeleteItinerary}
       />
     </Container>

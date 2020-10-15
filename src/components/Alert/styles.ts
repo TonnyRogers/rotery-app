@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import {Animated} from 'react-native';
 
 export const Container = styled.Modal``;
 
@@ -7,7 +8,7 @@ export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
   flex: 1;
 `;
 
-export const Content = styled.View`
+export const Content = styled(Animated.View)`
   background: #fff;
   min-height: 300px;
   border-bottom-left-radius: 20px;

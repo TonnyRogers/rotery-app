@@ -70,6 +70,11 @@ export function* subscribeUser() {
         return emitter(wsNotificationMessages());
       });
 
+      channel.on('notify:itineraryRate', async () => {
+        Vibration.vibrate(200);
+        return emitter(wsNotificationMessages());
+      });
+
       channel.on('error', () => {
         Alert.alert('Erro');
       });

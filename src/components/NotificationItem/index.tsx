@@ -45,7 +45,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         break;
       }
       case 'rate_itinerary': {
-        navigation.navigate('DirectMessagesTabs');
+        navigation.navigate('ItineraryRate', {id: item.json_data.id});
         close();
         break;
       }
@@ -60,7 +60,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         break;
       }
       case 'itinerary_update': {
-        navigation.navigate('NextItineraryDetails', {id: 1});
+        navigation.navigate('NextItineraryDetails', {id: item.json_data.id});
         close();
         break;
       }
