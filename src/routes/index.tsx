@@ -27,6 +27,8 @@ import MyConnections from '../screens/MyConnections';
 import DirectMessages from '../screens/DirectMessages';
 import UserConversation from '../screens/UserConversation';
 import ItineraryRate from '../screens/ItineraryRate';
+import RecoverPassword from '../screens/RecoverPassword';
+import NewPassword from '../screens/NewPassword';
 import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
@@ -153,6 +155,8 @@ const Routes = () => {
           <>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
+            <Stack.Screen name="NewPassword" component={NewPassword} />
           </>
         )}
       </Stack.Navigator>

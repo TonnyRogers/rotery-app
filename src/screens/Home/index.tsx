@@ -119,6 +119,11 @@ const Home: React.FC = () => {
     navigation.navigate('SignUp');
   }
 
+  function passwordRecover() {
+    setLoginVisible(false);
+    navigation.navigate('RecoverPassword');
+  }
+
   function openAlert(message: string) {
     setAlertVisible(true);
     setAlertMessage(message);
@@ -210,7 +215,7 @@ const Home: React.FC = () => {
               <LoginButton onPress={() => handleLogin()}>
                 <LoginButtonText>Logar</LoginButtonText>
               </LoginButton>
-              <ForgotPasswordButton>
+              <ForgotPasswordButton onPress={() => passwordRecover()}>
                 <ForgotPasswordButtonText>
                   Esqueceu a senha?
                 </ForgotPasswordButtonText>
