@@ -15,8 +15,6 @@ export function* subscribeUser() {
   const {user} = yield select((state: RootStateProps) => state.auth);
   return eventChannel((emitter) => {
     function initWebsocket() {
-      ws.connect();
-
       const channel =
         ws.getSubscription(`notifications:${user.id}`) ||
         ws.subscribe(`notifications:${user.id}`);
@@ -31,7 +29,6 @@ export function* subscribeUser() {
       });
 
       channel.on('notify:requestConnection', async () => {
-        Vibration.vibrate(200);
         return emitter(wsNotificationMessages());
       });
 
@@ -169,44 +166,9 @@ export function* watchChatSbuscription({
 }
 
 export default all([
-  takeLatest('WS_CLOSE_CHAT_CHANNEL', closeChatChannel),
-  takeLatest('WS_CHAT_SUBSCRIBE', watchChatSbuscription),
+  takeLatest('@ws/CLOSE_CHAT_CHANNEL', closeChatChannel),
+  takeLatest('@ws/CHAT_SUBSCRIBE', watchChatSbuscription),
   takeLatest('@auth/LOGOUT', closeNotificationChanel),
   takeLatest('@auth/LOGIN_SUCCESS', watchNotificationSbuscription),
+  takeLatest('@ws/SUBSCRIBE_USER_TO_NOTIFICATIONS', subscribeUser),
 ]);
-
-// function connect() {
-//   return eventChannel(() => {
-//     ws.connect();
-
-//     return () => {
-//       ws.close();
-//     };
-//   });
-// }
-
-// export function* subscribeUser() {
-//   connect();
-//   return eventChannel((emitter) => {
-//     const chanel = ws.getSubscription('chat') || ws.subscribe('chat');
-
-//     // chanel.on('logout', ({forced} = {forced: false}) => {
-//     //   if (!forced) {
-//     //     Alert.alert('Login realizado em outro navegador');
-//     //   }
-
-//     //   return emitter({type: 'SIGN_OUT'});
-//     // });
-
-//     chanel.on('ready', () => {
-//       // chanel.emit('message', 'hello friends');
-//     });
-
-//     chanel.on('message', (message: any) => {
-//       Alert.alert(message);
-//       return emitter(showMessageSuccess(message));
-//     });
-
-//     return chanel.close();
-//   });
-// }

@@ -357,7 +357,7 @@ export function* removeMember({
 }
 
 export default all([
-  takeLatest('WS_NOTIFICATION_MESSAGES', getItineraries),
+  takeLatest('@ws/NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@itineraries/UPDATE_ITINERARY_REQUEST', updateItinerary),
   takeLatest('@itineraries/DELETE_ITINERARY_REQUEST', deleteItinerary),
   takeLatest('@itineraries/REMOVE_MEMBER_REQUEST', removeMember),

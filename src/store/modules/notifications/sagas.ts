@@ -35,6 +35,6 @@ export default all([
     '@notifications/SET_NOTIFICATION_READED_REQUEST',
     setNotificationReaded,
   ),
-  takeLatest('WS_NOTIFICATION_MESSAGES', getNotifications),
+  takeLatest('@ws/NOTIFICATION_MESSAGES', getNotifications),
   takeLatest('@notifications/GET_NOTIFICATIONS_REQUEST', getNotifications),
 ]);

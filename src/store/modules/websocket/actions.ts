@@ -1,20 +1,26 @@
 export function wsNotificationMessages() {
   return {
-    type: 'WS_NOTIFICATION_MESSAGES',
+    type: '@ws/NOTIFICATION_MESSAGES',
   };
 }
 
 export function wsChatSubscribe(ownerId: number, targetId: number) {
   return {
-    type: 'WS_CHAT_SUBSCRIBE',
+    type: '@ws/CHAT_SUBSCRIBE',
     payload: {ownerId, targetId},
   };
 }
 
 export function wsCloseChatChannel(ownerId: number, targetId: number) {
   return {
-    type: 'WS_CLOSE_CHAT_CHANNEL',
+    type: '@ws/CLOSE_CHAT_CHANNEL',
     payload: {ownerId, targetId},
+  };
+}
+
+export function wsSubscribeUserToNotifications() {
+  return {
+    type: '@ws/SUBSCRIBE_USER_TO_NOTIFICATIONS',
   };
 }
 

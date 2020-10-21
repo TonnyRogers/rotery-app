@@ -1,4 +1,5 @@
 import produce from 'immer';
+import {localNotification} from '../../../services/notifications';
 
 export interface NotificationsProps {
   id: number;
@@ -44,6 +45,13 @@ export default function notifications(
           (item) => {
             if (!item.readed) {
               notReadedCouter += 1;
+              localNotification(
+                item.subject,
+                item.content,
+                item.json_data,
+                undefined,
+                'Ver',
+              );
               return item;
             }
           },

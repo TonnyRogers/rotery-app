@@ -10,7 +10,7 @@ export default function websocket(
 ) {
   return produce(state, (draft) => {
     switch (action.type) {
-      case 'WS_NOTIFICATION_MESSAGES': {
+      case '@ws/NOTIFICATION_MESSAGES': {
         draft.messages = 'Agora Foi';
         break;
       }

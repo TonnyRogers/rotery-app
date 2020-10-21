@@ -1,6 +1,8 @@
 import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
+import BackgroundTimer from 'react-native-background-timer';
+import {cancelNotifications} from '../../../services/notifications';
 
 import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
@@ -26,6 +28,11 @@ import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {getNotificationsRequest} from '../notifications/actions';
 import {getMessagesRequest} from '../messages/actions';
+import {wsSubscribeUserToNotifications} from '../websocket/actions';
+
+function* wsSubscribe() {
+  yield put(wsSubscribeUserToNotifications());
+}
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -46,6 +53,11 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
+    // BackgroundTimer.runBackgroundTimer(() => {
+    //   console.tron.log('+1');
+    //   wsSubscribe();
+    // }, 15 * 1000);
+
     yield put(loginSuccess(token, refreshToken, user));
     yield put(getProfileRequest(user.id));
     yield put(getActivitiesRequest());
@@ -55,6 +67,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getItinerariesRequest());
     yield put(getNotificationsRequest());
     yield put(getMessagesRequest());
+    wsSubscribe();
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());
@@ -77,6 +90,8 @@ export function* setToken({payload}: any) {
 export function* logout() {
   yield call([AsyncStorage, 'removeItem'], '@auth:token');
   api.defaults.headers.Authorization = 'Bearer ';
+  BackgroundTimer.stopBackgroundTimer();
+  cancelNotifications();
 }
 
 export function* registerUser({payload}: ReturnType<typeof registerRequest>) {

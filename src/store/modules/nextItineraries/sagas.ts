@@ -87,7 +87,7 @@ export function* rateItinerary({
 
 export default all([
   takeLatest('@nextItineraries/RATE_ITINERARY_REQUEST', rateItinerary),
-  takeLatest('WS_NOTIFICATION_MESSAGES', getItineraries),
+  takeLatest('@ws/NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@nextItineraries/MAKE_QUESTION_REQUEST', makeQuestion),
   takeLatest('@nextItineraries/GET_NEXTITINERARIES_REQUEST', getItineraries),
 ]);

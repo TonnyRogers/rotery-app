@@ -3,9 +3,11 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import {Text, Animated, PanResponder, Alert as RNAlert} from 'react-native';
-import BackgroundTimer from 'react-native-background-timer';
+
+import {localNotification} from '../../services/notifications';
 
 import {loginRequest} from '../../store/modules/auth/actions';
+import {wsSubscribeUserToNotifications} from '../../store/modules/websocket/actions';
 
 import {
   Container,
@@ -142,15 +144,6 @@ const Home: React.FC = () => {
     dispatch(loginRequest(email, password));
     // openAlert('Email ou senha incorreto.');
   }
-
-  let count = 0;
-
-  // BackgroundTimer.runBackgroundTimer(() => {
-  //   console.tron.log(`Background Task n ${count}`);
-  //   count++;
-  // }, 10 * 1000);
-
-  // BackgroundTimer.stopBackgroundTimer();
 
   return (
     <Container>
