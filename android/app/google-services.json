@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "381573382363",
+    "firebase_url": "https://rotery-cb559.firebaseio.com",
+    "project_id": "rotery-cb559",
+    "storage_bucket": "rotery-cb559.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381573382363:android:78c276af68feb679638cfe",
+        "android_client_info": {
+          "package_name": "com.rotery.rotery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "381573382363-52n3sckt5bck2j8lekvv5seb3rid9gi0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rotery.rotery",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "381573382363-c9aav1oiejqov6nv6j89kap2rods3dsr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdwIXqEsx4lfhZ3K7QuIXTTvX2qgPFG_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "381573382363-c9aav1oiejqov6nv6j89kap2rods3dsr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
