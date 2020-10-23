@@ -147,7 +147,7 @@ const NewItinerary: React.FC = () => {
   }
 
   function addLodgingItem() {
-    if (!lodgingType || !lodgingPrice || !lodgingDescription) {
+    if (!lodgingType || !lodgingPrice) {
       return;
     }
 
@@ -179,7 +179,7 @@ const NewItinerary: React.FC = () => {
   }
 
   function addTransportItem() {
-    if (!transportType || !transportPrice || !transportDescription) {
+    if (!transportType || !transportPrice) {
       return;
     }
 
@@ -211,7 +211,7 @@ const NewItinerary: React.FC = () => {
   }
 
   function addActivityItem() {
-    if (!activityType || !activityPrice || !activityDescription) {
+    if (!activityType || !activityPrice) {
       return;
     }
 
@@ -366,7 +366,7 @@ const NewItinerary: React.FC = () => {
               </DataContentHeader>
               <Input
                 label="Endereço"
-                placeholder="endereço completo"
+                placeholder="endereço/cidade/local"
                 value={location}
                 ref={locationRef}
                 onChange={setLocation}

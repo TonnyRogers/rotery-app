@@ -1,7 +1,9 @@
 import {all, takeLatest, call, put, take, select} from 'redux-saga/effects';
 import {eventChannel, END} from 'redux-saga';
 import {Alert, Vibration} from 'react-native';
-import ws from '../../../services/websocket';
+import Ws from '@adonisjs/websocket-client';
+
+const protocol = __DEV__ ? 'ws' : 'wss';
 
 import {
   wsNotificationMessages,
@@ -11,15 +13,35 @@ import {
 import {getConversationRequest} from '../messages/actions';
 import {RootStateProps} from '../rootReducer';
 
+let isConnected: boolean = false;
+let chatConnection: boolean = false;
+let notificationConnection: boolean = false;
+let ws: any;
+
 export function* subscribeUser() {
   const {user} = yield select((state: RootStateProps) => state.auth);
+
   return eventChannel((emitter) => {
+    let channel: any;
+
     function initWebsocket() {
-      const channel =
-        ws.getSubscription(`notifications:${user.id}`) ||
-        ws.subscribe(`notifications:${user.id}`);
+      if (!isConnected) {
+        console.tron.log('Connection to ws');
+        ws = Ws(`${protocol}://localhost:3333`, {reconnection: false});
+        ws.connect();
+        isConnected = true;
+      }
+
+      if (notificationConnection) {
+        console.tron.log('Reconnection to notifications');
+        channel = ws.getSubscription(`notifications:${user.id}`);
+      } else {
+        console.tron.log('Connection to notifications');
+        channel = ws.subscribe(`notifications:${user.id}`);
+      }
 
       channel.on('ready', () => {
+        notificationConnection = true;
         channel.emit('message', 'connecting to channel');
       });
 
@@ -73,26 +95,32 @@ export function* subscribeUser() {
       });
 
       channel.on('error', () => {
-        Alert.alert('Erro');
+        console.tron.log('Erro');
       });
 
-      channel.on('close', () => {
-        Alert.alert('Close Notifications');
+      channel.on('close', (e: any) => {
+        notificationConnection = false;
+        console.tron.log('Close Notifications', e);
       });
 
       ws.on('close', (e: any) => {
-        if (e._connectionState == 'terminated') {
+        if (e._connectionState === 'terminated') {
+          console.tron.log('Websocket terminated');
           return emitter(END);
         } else {
-          initWebsocket();
+          console.tron.log('Websocket closed');
+          isConnected = false;
+          setTimeout(() => {
+            initWebsocket();
+          }, 10 * 1000);
         }
-        Alert.alert('Close Websocket');
       });
     }
     initWebsocket();
 
     return () => {
-      ws.close();
+      console.tron.log('Clear:Channel closed');
+      channel.close();
     };
   });
 }
@@ -104,6 +132,7 @@ export function* subscribeChat(ownerId: number, targetId: number) {
       ws.subscribe(`chat:${ownerId}on${targetId}`);
 
     channel.on('ready', () => {
+      chatConnection = true;
       channel.emit('message', 'connecting to channel');
     });
 
@@ -116,6 +145,7 @@ export function* subscribeChat(ownerId: number, targetId: number) {
     });
 
     channel.on('close', () => {
+      chatConnection = false;
       Alert.alert('Close');
     });
 
@@ -129,7 +159,7 @@ export function* closeChatChannel({
   const {ownerId, targetId} = payload;
   const channel = ws.getSubscription(`chat:${ownerId}on${targetId}`);
 
-  if (channel) {
+  if (channel && chatConnection) {
     channel.close();
   }
 }
@@ -138,8 +168,11 @@ export function* closeNotificationChanel() {
   const {user} = yield select((state: RootStateProps) => state.auth);
   const notifications = ws.getSubscription(`notifications:${user.id}`);
 
-  if (notifications) {
+  if (notifications && notificationConnection) {
     notifications.close();
+  }
+
+  if (isConnected) {
     ws.close();
   }
 }
