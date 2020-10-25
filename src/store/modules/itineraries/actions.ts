@@ -246,3 +246,16 @@ export function removeMemberFailure() {
     type: '@itineraries/REMOVE_MEMBER_FAILURE',
   };
 }
+
+export function notifyItineraryFinishRequest(itineraryId: number) {
+  return {
+    type: '@itineraries/NOTIFY_ITINERARY_FINISH_REQUEST',
+    payload: {itineraryId},
+  };
+}
+
+export function notifyItineraryFinishFailure() {
+  return {
+    type: '@itineraries/NOTIFY_ITINERARY_FINISH_FAILURE',
+  };
+}

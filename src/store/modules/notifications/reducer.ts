@@ -48,7 +48,7 @@ export default function notifications(
               localNotification(
                 item.subject,
                 item.content,
-                item.json_data,
+                item,
                 undefined,
                 'Ver',
               );

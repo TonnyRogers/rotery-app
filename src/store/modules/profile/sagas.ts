@@ -13,7 +13,11 @@ import {
   updateProfileImageRequest,
   updateProfileImageSuccess,
   updateProfileImageFailure,
+  removeUserSuccess,
+  removeUserFailure,
 } from './actions';
+import {logout} from '../auth/actions';
+import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 
 export function* getProfile({payload}: ReturnType<typeof getProfileRequest>) {
   try {
@@ -68,7 +72,23 @@ export function* updateProfileImage({
   }
 }
 
+export function* deleteUser() {
+  try {
+    yield put(setLoadingTrue());
+    yield call(api.delete, '/users');
+
+    yield put(removeUserSuccess());
+    yield put(setLoadingFalse());
+    yield put(logout());
+  } catch (error) {
+    yield put(removeUserFailure());
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao remover conta');
+  }
+}
+
 export default all([
+  takeLatest('@profile/REMOVE_USER_REQUEST', deleteUser),
   takeLatest('@profile/UPDATE_PROFILE_IMAGE_REQUEST', updateProfileImage),
   takeLatest('@profile/UPDATE_PROFILE_REQUEST', updateProfile),
   takeLatest('@profile/GET_PROFILE_REQUEST', getProfile),

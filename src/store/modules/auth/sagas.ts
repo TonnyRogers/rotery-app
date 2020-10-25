@@ -120,7 +120,7 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   }
 }
 
-export function* refreshToken() {
+export function* handleRefreshToken() {
   const {token} = yield select((state: RootStateProps) => state.auth);
 
   if (!token) {
@@ -161,7 +161,7 @@ export function* refreshToken() {
 
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
-  takeLatest('@auth/REFRESH_TOKEN_REQUEST', refreshToken),
+  takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),

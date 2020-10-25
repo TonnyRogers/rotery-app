@@ -176,6 +176,7 @@ export const DeleteItineraryButton = styled.TouchableOpacity`
   border-radius: 8px;
   flex-direction: row;
   margin: 10px;
+  padding: 0 10px;
 `;
 
 export const DeleteItineraryButtonText = styled.Text`
@@ -183,4 +184,22 @@ export const DeleteItineraryButtonText = styled.Text`
   font-size: 16px;
   font-weight: bold;
   color: #fff;
+`;
+export const FinalizeItineraryButton = styled.TouchableOpacity`
+  background: #3dc77b;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-direction: row;
+  margin: 10px;
+  padding: 0 10px;
+`;
+
+export const FinalizeItineraryButtonText = styled.Text`
+  font-family: 'Roboto';
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  margin-left: 8px;
 `;

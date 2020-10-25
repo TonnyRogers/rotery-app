@@ -30,6 +30,8 @@ import {
   removeMemberRequest,
   removeMemberSuccess,
   removeMemberFailure,
+  notifyItineraryFinishRequest,
+  notifyItineraryFinishFailure,
 } from './actions';
 
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
@@ -356,7 +358,26 @@ export function* removeMember({
   }
 }
 
+export function* finishItinerary({
+  payload,
+}: ReturnType<typeof notifyItineraryFinishRequest>) {
+  try {
+    const {itineraryId} = payload;
+    yield put(setLoadingTrue());
+    yield call(api.post, `/itineraries/${itineraryId}/notify`);
+
+    yield put(setLoadingFalse());
+    RootNavigation.navigate('MyItineraries', {});
+    Alert.alert('Roteiro finalizado');
+  } catch (error) {
+    yield put(notifyItineraryFinishFailure());
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao finizar roteiro');
+  }
+}
+
 export default all([
+  takeLatest('@itineraries/NOTIFY_ITINERARY_FINISH_REQUEST', finishItinerary),
   takeLatest('@ws/NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@itineraries/UPDATE_ITINERARY_REQUEST', updateItinerary),
   takeLatest('@itineraries/DELETE_ITINERARY_REQUEST', deleteItinerary),

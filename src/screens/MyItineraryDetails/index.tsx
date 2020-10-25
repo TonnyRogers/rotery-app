@@ -6,7 +6,10 @@ import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
-import {deleteItineraryRequest} from '../../store/modules/itineraries/actions';
+import {
+  deleteItineraryRequest,
+  notifyItineraryFinishRequest,
+} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
@@ -43,6 +46,8 @@ import {
   DataPriceValue,
   DeleteItineraryButton,
   DeleteItineraryButtonText,
+  FinalizeItineraryButton,
+  FinalizeItineraryButtonText,
 } from './styles';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
@@ -67,6 +72,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     (state: RootStateProps) => state.itineraries,
   );
   const [alertVisible, setAlertVisible] = useState(false);
+  const [finishAlertVisible, setFinishAlertVisible] = useState(false);
   const dispatch = useDispatch();
 
   const itinerary: ItineraryProps = itineraries?.find(
@@ -99,17 +105,24 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     );
   }, [itinerary]);
 
-  function showAlert() {
+  function showDeleteAlert() {
     setAlertVisible(true);
   }
 
-  function hideAlert() {
+  function hideDeleteAlert() {
     setAlertVisible(false);
   }
 
   function handleDeleteItinerary() {
     dispatch(deleteItineraryRequest(itinerary.id));
-    navigation.goBack();
+  }
+
+  function showFinishAlert() {
+    setFinishAlertVisible(true);
+  }
+
+  function handleFinishItinerary() {
+    dispatch(notifyItineraryFinishRequest(id));
   }
 
   return (
@@ -287,16 +300,36 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             ))}
           </CardContent>
         </Card>
-        <DeleteItineraryButton onPress={showAlert}>
-          <Icon name="delete-forever-outline" size={24} color="#FFF" />
-          <DeleteItineraryButtonText>Excluir Roteiro</DeleteItineraryButtonText>
-        </DeleteItineraryButton>
+        <RowGroupSpaced>
+          <FinalizeItineraryButton onPress={showFinishAlert}>
+            <Icon name="progress-check" size={24} color="#FFF" />
+            <FinalizeItineraryButtonText>
+              Finalizer Roteiro
+            </FinalizeItineraryButtonText>
+          </FinalizeItineraryButton>
+          <DeleteItineraryButton onPress={showDeleteAlert}>
+            <Icon name="delete-forever-outline" size={24} color="#FFF" />
+            <DeleteItineraryButtonText>
+              Excluir Roteiro
+            </DeleteItineraryButtonText>
+          </DeleteItineraryButton>
+        </RowGroupSpaced>
       </Content>
+      <Alert
+        title="Fim do Roteiro!"
+        message="Vode deseja realmente encerrar este roteiro?"
+        icon="progress-check"
+        visible={finishAlertVisible}
+        onCancel={hideDeleteAlert}
+        onRequestClose={(value) => setFinishAlertVisible(value)}
+        onConfirm={handleFinishItinerary}
+      />
       <Alert
         title="Ops!"
         message="você deseja realmente excluir este roteiro?"
+        icon="delete-forever-outline"
         visible={alertVisible}
-        onCancel={hideAlert}
+        onCancel={hideDeleteAlert}
         onRequestClose={(value) => setAlertVisible(value)}
         onConfirm={handleDeleteItinerary}
       />

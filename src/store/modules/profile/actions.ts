@@ -66,3 +66,21 @@ export function updateProfileImageFailure() {
     type: '@profile/UPDATE_PROFILE_IMAGE_FAILURE',
   };
 }
+
+export function removeUserRequest() {
+  return {
+    type: '@profile/REMOVE_USER_REQUEST',
+  };
+}
+
+export function removeUserSuccess() {
+  return {
+    type: '@profile/REMOVE_USER_SUCCESS',
+  };
+}
+
+export function removeUserFailure() {
+  return {
+    type: '@profile/REMOVE_USER_FAILURE',
+  };
+}

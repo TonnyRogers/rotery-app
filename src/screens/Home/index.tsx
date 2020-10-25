@@ -7,6 +7,7 @@ import {Text, Animated, PanResponder, Alert as RNAlert} from 'react-native';
 import {localNotification} from '../../services/notifications';
 
 import {loginRequest} from '../../store/modules/auth/actions';
+import {setLoadingFalse} from '../../store/modules/auth/actions';
 import {wsSubscribeUserToNotifications} from '../../store/modules/websocket/actions';
 
 import {
@@ -66,8 +67,8 @@ const Home: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const emailRef = useRef() as any;
+  const passwordRef = useRef() as any;
   const panY = useRef(new Animated.ValueXY({x: 0, y: 400})).current;
 
   const handleOpen = useCallback(() => {
@@ -110,12 +111,14 @@ const Home: React.FC = () => {
   ).current;
 
   useEffect(() => {
+    dispatch(setLoadingFalse());
+
     if (loginVisible === true) {
       handleOpen();
     } else {
       handleDismiss();
     }
-  }, [handleDismiss, handleOpen, loginVisible]);
+  }, [handleDismiss, handleOpen, loginVisible, dispatch]);
 
   function signUpNavigate() {
     setLoginVisible(false);
@@ -199,6 +202,7 @@ const Home: React.FC = () => {
             icon="email-outline"
             onChange={setEmail}
             ref={emailRef}
+            autoCapitalize="none"
             returnKeyType="next"
             onSubmitEditing={() => passwordRef.current?.focus()}
           />

@@ -13,6 +13,7 @@ import {
   updateProfileImageRequest,
 } from '../../store/modules/profile/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import {removeUserRequest} from '../../store/modules/profile/actions';
 
 import {
   Container,
@@ -67,20 +68,22 @@ const Profile: React.FC = () => {
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [profission, setProfission] = useState(data?.profission || '');
-  const [birthDate, setBirthDate] = useState(new Date(data?.birth));
+  const [birthDate, setBirthDate] = useState(
+    data?.birth ? new Date(data?.birth) : new Date(),
+  );
   const [alertVisible, setAlertVisible] = useState(false);
   const [profileImage, setProfileImage] = useState({
     uri: data?.file_id && data.file ? data.file.url : '',
   });
 
-  const nameRef = useRef();
-  const genderRef = useRef();
-  const emailRef = useRef();
-  const phoneRef = useRef();
-  const cpfRef = useRef();
-  const stateRef = useRef();
-  const cityRef = useRef();
-  const profissionRef = useRef();
+  const nameRef = useRef() as any;
+  const genderRef = useRef() as any;
+  const emailRef = useRef() as any;
+  const phoneRef = useRef() as any;
+  const cpfRef = useRef() as any;
+  const stateRef = useRef() as any;
+  const cityRef = useRef() as any;
+  const profissionRef = useRef() as any;
 
   const useSinceDate = useMemo(
     () =>
@@ -157,6 +160,11 @@ const Profile: React.FC = () => {
     });
   }
 
+  function handleDeleteUser() {
+    dispatch(removeUserRequest());
+    setAlertVisible(false);
+  }
+
   return (
     <Container>
       <Header />
@@ -210,7 +218,7 @@ const Profile: React.FC = () => {
             value={email}
             onChange={setEmail}
             returnKeyType="next"
-            onSubmitEditing={() => phoneRef.current.focus()}
+            onSubmitEditing={() => phoneRef.current?.focus()}
             keyboardType="email-address"
           />
           <Input
@@ -221,7 +229,7 @@ const Profile: React.FC = () => {
             value={phone}
             onChange={setPhone}
             returnKeyType="next"
-            onSubmitEditing={() => cpfRef.current.focus()}
+            onSubmitEditing={() => cpfRef.current?.focus()}
             keyboardType="number-pad"
           />
           <Input
@@ -232,7 +240,7 @@ const Profile: React.FC = () => {
             value={cpf}
             onChange={setCpf}
             returnKeyType="next"
-            onSubmitEditing={() => stateRef.current.focus()}
+            onSubmitEditing={() => stateRef.current?.focus()}
             keyboardType="number-pad"
           />
           <Input
@@ -242,7 +250,7 @@ const Profile: React.FC = () => {
             value={state}
             onChange={setState}
             returnKeyType="next"
-            onSubmitEditing={() => cityRef.current.focus()}
+            onSubmitEditing={() => cityRef.current?.focus()}
           />
           <Input
             label="Cidade"
@@ -251,7 +259,7 @@ const Profile: React.FC = () => {
             value={city}
             onChange={setCity}
             returnKeyType="next"
-            onSubmitEditing={() => profissionRef.current.focus()}
+            onSubmitEditing={() => profissionRef.current?.focus()}
           />
           <Input
             icon="purse-outline"
@@ -262,7 +270,11 @@ const Profile: React.FC = () => {
             onChange={setProfission}
             returnKeyType="next"
           />
-          <DateInput date={birthDate} onChange={setBirthDate} />
+          <DateInput
+            label="Nascimento"
+            date={birthDate}
+            onChange={setBirthDate}
+          />
         </InputContent>
         <ActionContent>
           <SubmitButton onPress={() => updateProfileHandle()}>
@@ -276,12 +288,13 @@ const Profile: React.FC = () => {
       </DeleteAccountButton>
       <Alert
         title="Opá!"
+        message="você deseja realmente excluir sua conta?"
         icon="clipboard-alert-outline"
         iconColor="#3dc77b"
         visible={alertVisible}
-        onRequestClose={() => alertToggle}
+        onRequestClose={(value) => setAlertVisible(value)}
         onCancel={alertToggle}
-        onConfirm={() => {}}
+        onConfirm={() => handleDeleteUser()}
       />
     </Container>
   );
