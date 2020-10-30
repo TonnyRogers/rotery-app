@@ -5,9 +5,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
+import {formatBRL} from '../../lib/mask';
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 import {deleteItineraryRequest} from '../../store/modules/itineraries/actions';
-import {makeQuestionRequest} from '../../store/modules/nextItineraries/actions';
+import {
+  makeQuestionRequest,
+  leaveItineraryRequest,
+} from '../../store/modules/nextItineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
@@ -113,9 +117,8 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     setAlertVisible(false);
   }
 
-  function handleDeleteItinerary() {
-    dispatch(deleteItineraryRequest(itinerary.id));
-    navigation.goBack();
+  function handleLeaveItinerary() {
+    dispatch(leaveItineraryRequest(itinerary.id));
   }
 
   function handleMakeQuestion() {
@@ -207,7 +210,9 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                   </ColumnGroup>
                   <ColumnGroup>
                     <DataPriceLabel>Preço</DataPriceLabel>
-                    <DataPriceValue>{transport.pivot.price}</DataPriceValue>
+                    <DataPriceValue>
+                      {formatBRL(String(transport.pivot.price))}
+                    </DataPriceValue>
                   </ColumnGroup>
                 </RowGroupSpaced>
               </DataContent>
@@ -229,7 +234,9 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                   </ColumnGroup>
                   <ColumnGroup>
                     <DataPriceLabel>Preço</DataPriceLabel>
-                    <DataPriceValue>{lodging.pivot.price}</DataPriceValue>
+                    <DataPriceValue>
+                      {formatBRL(String(lodging.pivot.price))}
+                    </DataPriceValue>
                   </ColumnGroup>
                 </RowGroupSpaced>
               </DataContent>
@@ -251,7 +258,9 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                   </ColumnGroup>
                   <ColumnGroup>
                     <DataPriceLabel>Preço</DataPriceLabel>
-                    <DataPriceValue>{activity.pivot.price}</DataPriceValue>
+                    <DataPriceValue>
+                      {formatBRL(String(activity.pivot.price))}
+                    </DataPriceValue>
                   </ColumnGroup>
                 </RowGroupSpaced>
               </DataContent>
@@ -320,7 +329,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
         visible={alertVisible}
         onCancel={hideAlert}
         onRequestClose={hideAlert}
-        onConfirm={() => {}}
+        onConfirm={() => handleLeaveItinerary()}
       />
     </Container>
   );

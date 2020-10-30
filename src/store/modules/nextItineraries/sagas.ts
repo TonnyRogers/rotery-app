@@ -1,5 +1,6 @@
 import {Alert} from 'react-native';
 import {takeLatest, put, call, all} from 'redux-saga/effects';
+import {eventChannel, END} from 'redux-saga';
 
 import api from '../../../services/api';
 import {
@@ -12,9 +13,14 @@ import {
   rateItineraryRequest,
   rateItinerarySuccess,
   rateItineraryFailure,
+  leaveItineraryRequest,
+  leaveItinerarySuccess,
 } from './actions';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 import * as RootNavigation from '../../../RootNavigation';
+
+const delay = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));
 
 export function* getItineraries() {
   try {
@@ -85,7 +91,27 @@ export function* rateItinerary({
   }
 }
 
+export function* leaveItinerary({
+  payload,
+}: ReturnType<typeof leaveItineraryRequest>) {
+  try {
+    const {itineraryId} = payload;
+
+    RootNavigation.navigate('NextItineraries');
+    yield put(setLoadingTrue());
+    yield call(api.post, `/itineraries/${itineraryId}/leave`);
+    yield put(leaveItinerarySuccess());
+    yield put(setLoadingFalse());
+    yield call(delay, 250);
+    yield put(getNextItinerariesRequest());
+  } catch (error) {
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao sair do roteiro.');
+  }
+}
+
 export default all([
+  takeLatest('@nextItineraries/LEAVE_ITINERARY_REQUEST', leaveItinerary),
   takeLatest('@nextItineraries/RATE_ITINERARY_REQUEST', rateItinerary),
   takeLatest('@ws/NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@nextItineraries/MAKE_QUESTION_REQUEST', makeQuestion),

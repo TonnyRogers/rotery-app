@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
+import {formatBRL} from '../../lib/mask';
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 import {
   deleteItineraryRequest,
@@ -213,7 +214,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                   </ColumnGroup>
                   <ColumnGroup>
                     <DataPriceLabel>Preço</DataPriceLabel>
-                    <DataPriceValue>{transport.pivot.price}</DataPriceValue>
+                    <DataPriceValue>
+                      {formatBRL(String(transport.pivot.price))}
+                    </DataPriceValue>
                   </ColumnGroup>
                 </RowGroupSpaced>
               </DataContent>
@@ -235,7 +238,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                   </ColumnGroup>
                   <ColumnGroup>
                     <DataPriceLabel>Preço</DataPriceLabel>
-                    <DataPriceValue>{lodging.pivot.price}</DataPriceValue>
+                    <DataPriceValue>
+                      {formatBRL(String(lodging.pivot.price))}
+                    </DataPriceValue>
                   </ColumnGroup>
                 </RowGroupSpaced>
               </DataContent>
@@ -257,7 +262,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                   </ColumnGroup>
                   <ColumnGroup>
                     <DataPriceLabel>Preço</DataPriceLabel>
-                    <DataPriceValue>{activity.pivot.price}</DataPriceValue>
+                    <DataPriceValue>
+                      {formatBRL(String(activity.pivot.price))}
+                    </DataPriceValue>
                   </ColumnGroup>
                 </RowGroupSpaced>
               </DataContent>

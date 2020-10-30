@@ -5,7 +5,9 @@ export const Container = styled.View`
   flex: 1;
 `;
 
-export const Content = styled.ScrollView`
+export const Content = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})`
   flex-direction: column;
   flex: 1;
 `;

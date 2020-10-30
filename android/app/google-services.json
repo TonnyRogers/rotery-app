@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "381573382363",
-    "firebase_url": "https://rotery-cb559.firebaseio.com",
-    "project_id": "rotery-cb559",
-    "storage_bucket": "rotery-cb559.appspot.com"
+    "project_number": "56267981095",
+    "firebase_url": "https://rotery-181a9.firebaseio.com",
+    "project_id": "rotery-181a9",
+    "storage_bucket": "rotery-181a9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:381573382363:android:78c276af68feb679638cfe",
+        "mobilesdk_app_id": "1:56267981095:android:4ea8afc59ba744c225a902",
         "android_client_info": {
           "package_name": "com.rotery.rotery"
         }
       },
       "oauth_client": [
         {
-          "client_id": "381573382363-52n3sckt5bck2j8lekvv5seb3rid9gi0.apps.googleusercontent.com",
+          "client_id": "56267981095-rojtk48hjoh3g566li660tnllona99uq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.rotery.rotery",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "381573382363-c9aav1oiejqov6nv6j89kap2rods3dsr.apps.googleusercontent.com",
+          "client_id": "56267981095-q2ha21mtpmo2je5309vvsrrb366ki2ve.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAdwIXqEsx4lfhZ3K7QuIXTTvX2qgPFG_w"
+          "current_key": "AIzaSyCtC8U-z7J_4Yr-lm_0EiouH4-2ar4lQ_k"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "381573382363-c9aav1oiejqov6nv6j89kap2rods3dsr.apps.googleusercontent.com",
+              "client_id": "56267981095-q2ha21mtpmo2je5309vvsrrb366ki2ve.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

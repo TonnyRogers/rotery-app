@@ -12,6 +12,8 @@ target 'roteryApp' do
 
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
+
+
   target 'roteryAppTests' do
     inherit! :complete
     # Pods for testing

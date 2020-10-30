@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
+import {Vibration} from 'react-native';
 
 import {getFeedRequest} from '../../store/modules/feed/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -60,6 +61,7 @@ const Feed: React.FC = () => {
   }
 
   function clearFilter() {
+    Vibration.vibrate([100, 100, 200, 100]);
     dispatch(getFeedRequest());
   }
 

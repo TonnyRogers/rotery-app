@@ -2,4 +2,5 @@
 
 <resources>
   <color name="primary">#EEE</color>
+  <color name="main">#3dc77b</color>
 </resources>

@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {formatBRL, clearValue} from '../../lib/mask';
 import {
   getActivitiesRequest,
   getLodgingsRequest,
@@ -188,7 +189,7 @@ const EditItinerary: React.FC = ({route}) => {
       id: lodgingType,
       name: optionItem?.name,
       pivot: {
-        price: lodgingPrice,
+        price: clearValue(lodgingPrice),
         capacity: lodgingCapacity,
         description: lodgingDescription,
       },
@@ -220,7 +221,7 @@ const EditItinerary: React.FC = ({route}) => {
       id: transportType,
       name: optionItem?.name,
       pivot: {
-        price: transportPrice,
+        price: clearValue(transportPrice),
         capacity: transportCapacity,
         description: transportDescription,
       },
@@ -252,7 +253,7 @@ const EditItinerary: React.FC = ({route}) => {
       id: activityType,
       name: optionItem?.name,
       pivot: {
-        price: activityPrice,
+        price: clearValue(activityPrice),
         capacity: activityCapacity,
         description: activityDescription,
       },
@@ -418,7 +419,9 @@ const EditItinerary: React.FC = ({route}) => {
                       </ColumnGroup>
                       <ColumnGroup>
                         <FieldTitle>Preço</FieldTitle>
-                        <FieldValue>{item.pivot.price}</FieldValue>
+                        <FieldValue>
+                          {formatBRL(String(item.pivot.price))}
+                        </FieldValue>
                       </ColumnGroup>
                     </RowGroupSpaced>
                   </DataContent>
@@ -434,7 +437,7 @@ const EditItinerary: React.FC = ({route}) => {
                 <Input
                   label="Preço"
                   placeholder="preço por pessoa"
-                  value={transportPrice}
+                  value={formatBRL(transportPrice)}
                   ref={transportPriceRef}
                   onChange={setTransportPrice}
                   keyboardType="number-pad"
@@ -487,7 +490,9 @@ const EditItinerary: React.FC = ({route}) => {
                       </ColumnGroup>
                       <ColumnGroup>
                         <FieldTitle>Preço</FieldTitle>
-                        <FieldValue>{item.pivot.price}</FieldValue>
+                        <FieldValue>
+                          {formatBRL(String(item.pivot.price))}
+                        </FieldValue>
                       </ColumnGroup>
                     </RowGroupSpaced>
                   </DataContent>
@@ -503,7 +508,7 @@ const EditItinerary: React.FC = ({route}) => {
                 <Input
                   label="Preço"
                   placeholder="preço por pessoa"
-                  value={lodgingPrice}
+                  value={formatBRL(lodgingPrice)}
                   ref={lodgingPriceRef}
                   onChange={setLodgingPrice}
                   keyboardType="number-pad"
@@ -555,7 +560,9 @@ const EditItinerary: React.FC = ({route}) => {
                     </ColumnGroup>
                     <ColumnGroup>
                       <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.pivot.price}</FieldValue>
+                      <FieldValue>
+                        {formatBRL(String(item.pivot.price))}
+                      </FieldValue>
                     </ColumnGroup>
                   </RowGroupSpaced>
                 </DataContent>
@@ -571,7 +578,7 @@ const EditItinerary: React.FC = ({route}) => {
                 <Input
                   label="Preço"
                   placeholder="preço por pessoa"
-                  value={activityPrice}
+                  value={formatBRL(activityPrice)}
                   ref={activityPriceRef}
                   onChange={setActivityPrice}
                   keyboardType="number-pad"

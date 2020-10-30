@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 
+import {formatBRL, clearValue} from '../../lib/mask';
 import {createItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
@@ -118,24 +119,23 @@ const NewItinerary: React.FC = () => {
   const [activityDescription, setActivityDescription] = useState('');
   const [images, setImages] = useState([] as any);
 
-  const descriptionRef = useRef();
-  const nameRef = useRef();
-  const locationRef = useRef();
-  const locationDescriptionRef = useRef();
-  const vacanciesRef = useRef();
-  const transportTypeRef = useRef();
-  const transportPriceRef = useRef();
-  const transportCapacityRef = useRef();
-  const transportDescriptionRef = useRef();
-  const lodgingTypeRef = useRef();
-  const lodgingPriceRef = useRef();
-  const lodgingCapacityRef = useRef();
-  const lodgingDescriptionRef = useRef();
-  const activityTypeRef = useRef();
-  const activityPriceRef = useRef();
-  const activityCapacityRef = useRef();
-  const activityDescriptionRef = useRef();
-  const fileRef = useRef();
+  const descriptionRef = useRef() as any;
+  const nameRef = useRef() as any;
+  const locationRef = useRef() as any;
+  const locationDescriptionRef = useRef() as any;
+  const vacanciesRef = useRef() as any;
+  const transportTypeRef = useRef() as any;
+  const transportPriceRef = useRef() as any;
+  const transportCapacityRef = useRef() as any;
+  const transportDescriptionRef = useRef() as any;
+  const lodgingTypeRef = useRef() as any;
+  const lodgingPriceRef = useRef() as any;
+  const lodgingCapacityRef = useRef() as any;
+  const lodgingDescriptionRef = useRef() as any;
+  const activityTypeRef = useRef() as any;
+  const activityPriceRef = useRef() as any;
+  const activityCapacityRef = useRef() as any;
+  const activityDescriptionRef = useRef() as any;
 
   function addImages(imageList: []) {
     setImages([...images, ...imageList]);
@@ -157,7 +157,7 @@ const NewItinerary: React.FC = () => {
 
     const newItem: LodgingProps = {
       id: Number(lodgingType),
-      price: Number(lodgingPrice),
+      price: Number(clearValue(lodgingPrice)),
       capacity: Number(lodgingCapacity),
       description: lodgingDescription,
       name: optionItem?.name,
@@ -189,7 +189,7 @@ const NewItinerary: React.FC = () => {
 
     const newItem: TransportProps = {
       id: Number(transportType),
-      price: Number(transportPrice),
+      price: Number(clearValue(transportPrice)),
       capacity: Number(transportCapacity),
       description: transportDescription,
       name: optionItem?.name,
@@ -221,7 +221,7 @@ const NewItinerary: React.FC = () => {
 
     const newItem: ActivityProps = {
       id: Number(activityType),
-      price: Number(activityPrice),
+      price: Number(clearValue(activityPrice)),
       capacity: Number(activityCapacity),
       description: activityDescription,
       name: optionItem?.name,
@@ -406,7 +406,7 @@ const NewItinerary: React.FC = () => {
                     </ColumnGroup>
                     <ColumnGroup>
                       <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.price}</FieldValue>
+                      <FieldValue>{formatBRL(String(item.price))}</FieldValue>
                     </ColumnGroup>
                   </RowGroupSpaced>
                 </DataContent>
@@ -422,7 +422,7 @@ const NewItinerary: React.FC = () => {
                 <Input
                   label="Preço"
                   placeholder="preço por pessoa"
-                  value={transportPrice}
+                  value={formatBRL(transportPrice)}
                   ref={transportPriceRef}
                   onChange={setTransportPrice}
                   keyboardType="number-pad"
@@ -474,7 +474,7 @@ const NewItinerary: React.FC = () => {
                     </ColumnGroup>
                     <ColumnGroup>
                       <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.price}</FieldValue>
+                      <FieldValue>{formatBRL(String(item.price))}</FieldValue>
                     </ColumnGroup>
                   </RowGroupSpaced>
                 </DataContent>
@@ -490,7 +490,7 @@ const NewItinerary: React.FC = () => {
                 <Input
                   label="Preço"
                   placeholder="preço por pessoa"
-                  value={lodgingPrice}
+                  value={formatBRL(lodgingPrice)}
                   ref={lodgingPriceRef}
                   onChange={setLodgingPrice}
                   keyboardType="number-pad"
@@ -542,7 +542,7 @@ const NewItinerary: React.FC = () => {
                     </ColumnGroup>
                     <ColumnGroup>
                       <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{item.price}</FieldValue>
+                      <FieldValue>{formatBRL(String(item.price))}</FieldValue>
                     </ColumnGroup>
                   </RowGroupSpaced>
                 </DataContent>
@@ -558,7 +558,7 @@ const NewItinerary: React.FC = () => {
                 <Input
                   label="Preço"
                   placeholder="preço por pessoa"
-                  value={activityPrice}
+                  value={formatBRL(activityPrice)}
                   ref={activityPriceRef}
                   onChange={setActivityPrice}
                   keyboardType="number-pad"

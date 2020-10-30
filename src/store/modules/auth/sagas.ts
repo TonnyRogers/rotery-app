@@ -55,7 +55,6 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     // BackgroundTimer.runBackgroundTimer(() => {
     //   console.tron.log('+1');
-    //   wsSubscribe();
     // }, 15 * 1000);
 
     yield put(loginSuccess(token, refreshToken, user));
@@ -67,7 +66,6 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getItinerariesRequest());
     yield put(getNotificationsRequest());
     yield put(getMessagesRequest());
-    wsSubscribe();
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());

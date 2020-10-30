@@ -16,6 +16,7 @@ PushNotification.configure({
 
   onNotification: function (notification) {
     console.log('ON NOTIFICATION:', notification);
+    console.log('JSON:', notification.data.json_data);
 
     switch (notification.data.alias) {
       case 'new_message': {

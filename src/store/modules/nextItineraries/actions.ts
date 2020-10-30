@@ -70,3 +70,16 @@ export function rateItineraryFailure() {
     type: '@nextItineraries/RATE_ITINERARY_FAILURE',
   };
 }
+
+export function leaveItineraryRequest(itineraryId: number) {
+  return {
+    type: '@nextItineraries/LEAVE_ITINERARY_REQUEST',
+    payload: {itineraryId},
+  };
+}
+
+export function leaveItinerarySuccess() {
+  return {
+    type: '@nextItineraries/LEAVE_ITINERARY_SUCCESS',
+  };
+}
