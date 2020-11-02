@@ -84,3 +84,15 @@ export function setLoadingFalse() {
     type: '@auth/SET_LOADING_FALSE',
   };
 }
+
+export function setDeviceTokenRequest() {
+  return {
+    type: '@auth/SET_DEVICE_TOKEN_REQUEST',
+  };
+}
+
+export function setDeviceTokenSuccess() {
+  return {
+    type: '@auth/SET_DEVICE_TOKEN_SUCCESS',
+  };
+}

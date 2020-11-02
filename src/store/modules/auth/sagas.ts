@@ -17,6 +17,8 @@ import {
   refreshTokenRequest,
   refreshTokenSuccess,
   refreshTokenFailure,
+  setDeviceTokenRequest,
+  setDeviceTokenSuccess,
 } from './actions';
 import {
   getActivitiesRequest,
@@ -28,11 +30,6 @@ import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {getNotificationsRequest} from '../notifications/actions';
 import {getMessagesRequest} from '../messages/actions';
-import {wsSubscribeUserToNotifications} from '../websocket/actions';
-
-function* wsSubscribe() {
-  yield put(wsSubscribeUserToNotifications());
-}
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -58,6 +55,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     // }, 15 * 1000);
 
     yield put(loginSuccess(token, refreshToken, user));
+    yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getActivitiesRequest());
     yield put(getLodgingsRequest());
@@ -157,7 +155,26 @@ export function* handleRefreshToken() {
   }
 }
 
+export function* setDeviceToken() {
+  try {
+    const deviceTokenJSON = yield call(
+      [AsyncStorage, 'getItem'],
+      '@notification:token',
+    );
+
+    const deviceToken = JSON.parse(deviceTokenJSON);
+
+    yield call(api.post, '/users/device', {
+      token: deviceToken.token,
+    });
+    yield put(setDeviceTokenSuccess());
+  } catch (error) {
+    Alert.alert('Erro ao registrar dispositivo');
+  }
+}
+
 export default all([
+  takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
   takeLatest('persist/REHYDRATE', setToken),
   takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),

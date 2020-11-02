@@ -1428,6 +1428,11 @@
   resolved "https://registry.yarnpkg.com/@types/react-native-background-timer/-/react-native-background-timer-2.0.0.tgz#c44c57f8fbca9d9d5521fdd72a8f55232b79381e"
   integrity sha512-y5VW82dL/ESOLg+5QQHyBdsFVA4ZklENxmOyxv8o06T+3HBG2JOSuz/CIPz1vKdB7dmWDGPZNuPosdtnp+xv2A==
 
+"@types/react-native-push-notification@^5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-native-push-notification/-/react-native-push-notification-5.0.5.tgz#a84efdeb15af414a89b1291f4df631266d6a4330"
+  integrity sha512-rdpEb+YZtTmGJ7qEhwENjNkICU6pnwlCV2U+kvU6cAhuQxeQFgxFTKijN3kqOWL9SW8l0PeW29QREx6mvdeurg==
+
 "@types/react-native-vector-icons@^6.4.5":
   version "6.4.6"
   resolved "https://registry.yarnpkg.com/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.6.tgz#848e3b14572def56212cafbf5cb1254b445bfb41"

@@ -11,15 +11,15 @@ PushNotification.createChannel(
     importance: 4, // (optional) default: 4. Int value of the Android notification importance
     vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
   },
-  (created) => {},
+  (/** created */) => {},
 );
 
 export const localNotification = (
-  title,
-  message,
+  title: string,
+  message: string,
   data = {},
   bigText = '',
-  actions,
+  actions: string[],
 ) => {
   PushNotification.localNotification({
     channelId: wsChannelId,
