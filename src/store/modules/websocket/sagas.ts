@@ -4,6 +4,7 @@ import {Alert, Vibration} from 'react-native';
 import Ws from '@adonisjs/websocket-client';
 
 const protocol = __DEV__ ? 'ws' : 'wss';
+const wsConnection = __DEV__ ? '://localhost:3333' : '://api.rotery.com.br';
 
 import {
   wsNotificationMessages,
@@ -27,7 +28,7 @@ export function* subscribeUser() {
     function initWebsocket() {
       if (!isConnected) {
         console.tron.log('Connection to ws');
-        ws = Ws(`${protocol}://localhost:3333`, {reconnection: false});
+        ws = Ws(`${protocol}${wsConnection}`, {reconnection: false});
         ws.connect();
         isConnected = true;
       }
