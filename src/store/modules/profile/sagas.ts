@@ -49,7 +49,7 @@ export function* updateProfile({
     yield put(updateProfileSuccess(response.data));
     Alert.alert('Perfil atualizado');
   } catch (error) {
-    console.tron.log(error);
+    // console.tron.log(error);
     Alert.alert('Erro ao atualizar dados');
     yield put(updateProfileFailure());
   }
@@ -66,7 +66,7 @@ export function* updateProfileImage({
 
     yield put(updateProfileImageSuccess(response.data));
   } catch (error) {
-    console.tron.log(error);
+    // console.tron.log(error);
     Alert.alert('Erro ao atualizar imagem');
     yield put(updateProfileImageFailure());
   }
