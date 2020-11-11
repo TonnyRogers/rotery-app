@@ -3,8 +3,8 @@ import {eventChannel, END} from 'redux-saga';
 import {Alert, Vibration} from 'react-native';
 import Ws from '@adonisjs/websocket-client';
 
-const protocol = __DEV__ ? 'ws' : 'wss';
-const wsConnection = __DEV__ ? '://localhost:3333' : '://api.rotery.com.br';
+const protocol = 'wss';
+const wsConnection = '://api.rotery.com.br';
 
 import {
   wsNotificationMessages,
@@ -27,17 +27,17 @@ export function* subscribeUser() {
 
     function initWebsocket() {
       if (!isConnected) {
-        console.tron.log('Connection to ws');
+        // console.tron.log('Connection to ws');
         ws = Ws(`${protocol}${wsConnection}`, {reconnection: false});
         ws.connect();
         isConnected = true;
       }
 
       if (notificationConnection) {
-        console.tron.log('Reconnection to notifications');
+        // console.tron.log('Reconnection to notifications');
         channel = ws.getSubscription(`notifications:${user.id}`);
       } else {
-        console.tron.log('Connection to notifications');
+        // console.tron.log('Connection to notifications');
         channel = ws.subscribe(`notifications:${user.id}`);
       }
 
@@ -96,20 +96,20 @@ export function* subscribeUser() {
       });
 
       channel.on('error', () => {
-        console.tron.log('Erro');
+        // console.tron.log('Erro');
       });
 
       channel.on('close', (e: any) => {
         notificationConnection = false;
-        console.tron.log('Close Notifications', e);
+        // console.tron.log('Close Notifications', e);
       });
 
       ws.on('close', (e: any) => {
         if (e._connectionState === 'terminated') {
-          console.tron.log('Websocket terminated');
+          // console.tron.log('Websocket terminated');
           return emitter(END);
         } else {
-          console.tron.log('Websocket closed');
+          // console.tron.log('Websocket closed');
           isConnected = false;
           setTimeout(() => {
             initWebsocket();
@@ -120,7 +120,7 @@ export function* subscribeUser() {
     initWebsocket();
 
     return () => {
-      console.tron.log('Clear:Channel closed');
+      // console.tron.log('Clear:Channel closed');
       channel.close();
     };
   });

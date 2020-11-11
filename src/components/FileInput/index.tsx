@@ -21,16 +21,16 @@ const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
     };
 
     ImagePicker.showImagePicker(options, async (response) => {
-      console.tron.log('Response = ', response);
+      // console.tron.log('Response = ', response);
 
       if (response.didCancel) {
-        console.tron.log('User cancelled photo picker');
+        // console.tron.log('User cancelled photo picker');
       } else if (response.error) {
-        console.tron.log('ImagePicker Error: ', response.error);
+        // console.tron.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.tron.log('User tapped custom button: ', response.customButton);
+        // console.tron.log('User tapped custom button: ', response.customButton);
       } else {
-        console.tron.log('Response = ', response);
+        // console.tron.log('Response = ', response);
 
         const image = {
           size: response.fileSize,

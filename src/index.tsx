@@ -24,7 +24,7 @@ class App extends Component {
 
   // disparada quando clicar numa notificação
   onOpened = (notification: any) => {
-    console.tron.log('On Opened', notification);
+    // console.tron.log('On Opened', notification);
   };
 
   // quando usuario faz registro no serviço de notificaçao
