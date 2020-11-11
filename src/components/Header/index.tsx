@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {AppState} from 'react-native';
+// import {AppState} from 'react-native';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 
@@ -28,27 +28,27 @@ const Header: React.FC<HeaderProps> = () => {
   const navigation = useNavigation();
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
-  const appState = useRef(AppState.currentState);
+  // const appState = useRef(AppState.currentState);
 
-  useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange);
+  // useEffect(() => {
+  //   AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
-    };
-  }, []);
+  //   return () => {
+  //     AppState.removeEventListener('change', handleAppStateChange);
+  //   };
+  // }, []);
 
-  const handleAppStateChange = (nextState: any) => {
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextState === 'active'
-    ) {
-      console.tron.log('App has come to the foreground!');
-    }
+  // const handleAppStateChange = (nextState: any) => {
+  //   if (
+  //     appState.current.match(/inactive|background/) &&
+  //     nextState === 'active'
+  //   ) {
+  //     console.tron.log('App has come to the foreground!');
+  //   }
 
-    appState.current = nextState;
-    console.tron.log('AppState', appState.current);
-  };
+  //   appState.current = nextState;
+  //   console.tron.log('AppState', appState.current);
+  // };
 
   const {counter} = useSelector((state: RootStateProps) => state.notifications);
 

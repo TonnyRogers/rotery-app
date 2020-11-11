@@ -164,6 +164,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
@@ -171,13 +179,14 @@ android {
             resValue "string", "CodePushDeploymentKey", '""'
         }   
         releaseStaging {
+            signingConfig signingConfigs.debug
             resValue "string", "CodePushDeploymentKey", '"gpgNyxnP1mWwSSI5PASx4b9SM1sQS8G8yFKpZ"'
             matchingFallbacks = ['debug','release']
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "CodePushDeploymentKey", '"8KYilEuuOb9M5t9nW3VQ1E5XRwLliHeg4T7NK"' 
@@ -203,26 +212,27 @@ android {
 dependencies {
     def multidex_version = "2.0.1"
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
-    implementation 'androidx.multidex:multidex:$multidex_version'
+    implementation "androidx.multidex:multidex:$multidex_version"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation 'com.google.firebase:firebase-messaging:20.3.0'
-    implementation project(':react-native-push-notification')
+    implementation "com.google.firebase:firebase-messaging:20.3.0"
+    // implementation "com.google.firebase:firebase-analytics:17.5.0"
+    implementation project(":react-native-push-notification")
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-      exclude group:'com.facebook.fbjni'
+      exclude group:"com.facebook.fbjni"
     }
 
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
-        exclude group:'com.facebook.flipper'
-        // exclude group:'com.squareup.okhttp3', module:'okhttp'
+        exclude group:"com.facebook.flipper"
+        // exclude group:"com.squareup.okhttp3", module:"okhttp"
     }
 
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
-        exclude group:'com.facebook.flipper'
+        exclude group:"com.facebook.flipper"
     }
 
     if (enableHermes) {
@@ -242,4 +252,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.google.gms.google-services"
