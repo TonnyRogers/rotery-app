@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import api from '../../services/api';
 
+import {phoneBR, cpfCnpj, clearValue} from '../../lib/mask';
 import {
   updateProfileRequest,
   updateProfileImageRequest,
@@ -105,7 +106,14 @@ const Profile: React.FC = () => {
     }
 
     dispatch(
-      updateProfileRequest(name, gender, birthDate, cpf, profission, phone),
+      updateProfileRequest(
+        name,
+        gender,
+        birthDate,
+        clearValue(String(cpf)),
+        profission,
+        clearValue(String(phone)),
+      ),
     );
   }
 
@@ -113,6 +121,9 @@ const Profile: React.FC = () => {
     const options = {
       title: 'Fotos',
       quality: 1.0,
+      takePhotoButtonTitle: 'Câmera',
+      chooseFromLibraryButtonTitle: 'Galeria',
+      cancelButtonTitle: 'Cancelar',
       storageOptions: {
         skipBackup: true,
         privateDirectory: true,
@@ -226,7 +237,7 @@ const Profile: React.FC = () => {
             label="Telefone"
             placeholder="Digite seu telefone"
             ref={phoneRef}
-            value={phone}
+            value={phoneBR(String(phone))}
             onChange={setPhone}
             returnKeyType="next"
             onSubmitEditing={() => cpfRef.current?.focus()}
@@ -237,7 +248,7 @@ const Profile: React.FC = () => {
             label="CPF"
             placeholder="Digite seu CPF"
             ref={cpfRef}
-            value={cpf}
+            value={cpfCnpj(String(cpf))}
             onChange={setCpf}
             returnKeyType="next"
             onSubmitEditing={() => stateRef.current?.focus()}
