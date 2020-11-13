@@ -6,9 +6,18 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getFavoritesRequest} from '../../store/modules/favorites/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
-import {Container, Content, Title, ContentHeader, BackButton} from './styled';
+import {
+  Container,
+  Content,
+  Title,
+  ContentHeader,
+  BackButton,
+  ItineraryList,
+  ColumnGroup,
+} from './styled';
 import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
+import Card from '../../components/Card';
 
 const Favorites: React.FC = () => {
   const {itineraries} = useSelector((state: RootStateProps) => state.favorites);
@@ -38,14 +47,24 @@ const Favorites: React.FC = () => {
           <Title>Salvos como favoritos</Title>
         </ContentHeader>
 
-        {itineraries &&
-          itineraries.map((item) => (
+        <ItineraryList
+          data={itineraries}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({item}) => (
             <Itinerary
               itinerary={item.itinerary}
-              key={item.itinerary.id}
               detailButtonAction={() => itineraryDetail(item.itinerary.id)}
             />
-          ))}
+          )}
+          ListEmptyComponent={() => (
+            <Card>
+              <ColumnGroup>
+                <Icon name="heart-off-outline" size={30} color="#3dc77b" />
+                <Title>Nenhum Favotiro Ainda...</Title>
+              </ColumnGroup>
+            </Card>
+          )}
+        />
       </Content>
     </Container>
   );

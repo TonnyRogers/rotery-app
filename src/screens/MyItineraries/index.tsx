@@ -6,9 +6,20 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getItinerariesRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
-import {Container, Content, Title, ContentHeader, BackButton} from './styled';
+import {
+  Container,
+  Content,
+  Title,
+  ContentHeader,
+  BackButton,
+  ItineraryList,
+  ColumnGroup,
+  NewItineraryButton,
+  NewItineraryButtonText,
+} from './styled';
 import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
+import Card from '../../components/Card';
 
 const MyItineraries: React.FC = () => {
   const {itineraries} = useSelector(
@@ -40,15 +51,34 @@ const MyItineraries: React.FC = () => {
           <Title>Meus Roteiros</Title>
         </ContentHeader>
 
-        {itineraries &&
-          itineraries.map((item) => (
+        <ItineraryList
+          data={itineraries}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({item}) => (
             <Itinerary
               itinerary={item}
-              key={item.id}
               owner
               detailButtonAction={() => itineraryDetail(item.id)}
             />
-          ))}
+          )}
+          ListEmptyComponent={() => (
+            <Card>
+              <ColumnGroup>
+                <Icon
+                  name="bag-personal-off-outline"
+                  size={30}
+                  color="#3dc77b"
+                />
+                <Title>Nada por aqui</Title>
+                <Title>Crie seu primeiro roteiro!</Title>
+              </ColumnGroup>
+              <NewItineraryButton
+                onPress={() => navigation.navigate('NewItinerary')}>
+                <NewItineraryButtonText>Novo Roteiro</NewItineraryButtonText>
+              </NewItineraryButton>
+            </Card>
+          )}
+        />
       </Content>
     </Container>
   );

@@ -3,8 +3,8 @@ import {eventChannel, END} from 'redux-saga';
 import {Alert, Vibration} from 'react-native';
 import Ws from '@adonisjs/websocket-client';
 
-const protocol = 'wss';
-const wsConnection = '://api.rotery.com.br';
+const protocol = __DEV__ ? 'ws' : 'wss';
+const wsConnection = __DEV__ ? '://localhost:3333' : '://api.rotery.com.br';
 
 import {
   wsNotificationMessages,

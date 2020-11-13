@@ -53,7 +53,7 @@ export const ActivityName = styled.Text`
   color: #fff;
 `;
 
-export const ItineraryList = styled.ScrollView.attrs({
+export const ItineraryList = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
 })``;
 

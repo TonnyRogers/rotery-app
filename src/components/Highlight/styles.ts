@@ -2,9 +2,9 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View.attrs({})`
   border-radius: 8px;
-  width: 320px;
-  height: 400px;
-  padding: 5px;
+  width: 360px;
+  padding: 10px;
+  background: #e1e1e1;
 `;
 
 export const Background = styled.Image`
@@ -12,6 +12,7 @@ export const Background = styled.Image`
   width: 100%;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  background: #fff;
 `;
 
 export const Info = styled.View.attrs({

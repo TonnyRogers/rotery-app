@@ -39,7 +39,7 @@ export const TipContent = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 130px;
+  margin-bottom: 100px;
 `;
 
 export const TipText = styled.Text`

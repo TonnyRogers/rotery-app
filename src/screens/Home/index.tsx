@@ -14,18 +14,13 @@ import {
   Container,
   Logo,
   Header,
-  HighlightList,
   Title,
   LoginHover,
   LoginHeader,
   SwitchLoginButton,
   TipContent,
   TipText,
-  HighlightContent,
-  ItineraryName,
   RowGroup,
-  ItineraryLocation,
-  ItineraryDate,
   LoginContent,
   Actions,
   LoginButton,
@@ -38,24 +33,37 @@ import {
   RegisterButtonText,
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
-import Highlight from '../../components/Highlight';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
+import HighlightCarousel from '../../components/HighlightCarousel';
 
 const images = [
   {
     id: 1,
     url:
-      'https://nerdymates.com/static/img/regular/shutterstock_1044339595.jpg',
+      'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/e35/122710052_265228344916662_7643155457604945242_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=1c-_ZP-lc_AAX95TzhX&tp=18&oh=5ce3c6785d20945725c987c591d8d11b&oe=5FD89A66',
+    withInfo: true,
+    title: 'Versão Beta Lançada: é hora de decolar',
+    message:
+      'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
   },
   {
     id: 2,
-    url: 'https://youmatter.world/app/uploads/sites/2/2019/11/travel-world.jpg',
+    url:
+      'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/fr/e15/s1080x1080/120260212_398861281104741_8446377112608016734_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=HTLIWGNcwMkAX_fG63d&_nc_tp=25&oh=c01580206c119f90cc98f62c6b11790a&oe=5FD95511',
+    withInfo: true,
+    title: 'Sobre a Rotery:',
+    message:
+      'Nossa missão é criar uma comunidade de aventureiros e facilitar o acesso a atividades radicais e o cuidado com a natureza.',
   },
   {
     id: 3,
     url:
-      'https://cdn.businesstraveller.com/wp-content/uploads/fly-images/985033/Column-Travel-916x516.jpg',
+      'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/e35/120907285_1869239136549589_3762586591150118781_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=wkZ9KbW23LIAX9NCiZL&tp=18&oh=30862e9eccd086146d81e3a294eba5f4&oe=5FD96D26',
+    withInfo: true,
+    title: 'Nos Apoie:',
+    message:
+      'Queremos criar a melhor plataforma para viajantes, de forma independênnte, nos apoie no APOIA-SE.',
   },
 ];
 
@@ -145,7 +153,6 @@ const Home: React.FC = () => {
       return;
     }
     dispatch(loginRequest(email, password));
-    // openAlert('Email ou senha incorreto.');
   }
 
   return (
@@ -153,23 +160,10 @@ const Home: React.FC = () => {
       <Header>
         <Logo source={horizontalLogo} resizeMode="contain" />
       </Header>
-
       <Title>Destaques {'&'} Informações</Title>
-      <HighlightList>
-        <Highlight background="https://nerdymates.com/static/img/regular/shutterstock_1044339595.jpg">
-          <HighlightContent>
-            <ItineraryName>Trilha da pedra Furada</ItineraryName>
-            <RowGroup>
-              <ItineraryLocation>São Paulo - SP</ItineraryLocation>
-              <ItineraryDate>16 Maio 2020 16:00</ItineraryDate>
-            </RowGroup>
-          </HighlightContent>
-        </Highlight>
-        <Highlight background="https://youmatter.world/app/uploads/sites/2/2019/11/travel-world.jpg" />
-        <Highlight background="https://cdn.businesstraveller.com/wp-content/uploads/fly-images/985033/Column-Travel-916x516.jpg" />
-      </HighlightList>
+      <HighlightCarousel data={images} />
       <TipContent>
-        <Icon name="chevron-double-left" size={24} color="#4885fd" />
+        <Icon name="chevron-double-left" size={20} color="#4885fd" />
         <TipText> Arraste para ver mais</TipText>
       </TipContent>
       <LoginHover

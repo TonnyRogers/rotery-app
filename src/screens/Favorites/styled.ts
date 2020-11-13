@@ -24,4 +24,15 @@ export const Title = styled.Text`
   margin-left: 20px;
 `;
 
-export const Content = styled.ScrollView``;
+export const Content = styled.View`
+  flex: 1;
+`;
+
+export const ItineraryList = styled.FlatList.attrs({
+  showsVerticalScrollIndicator: false,
+})``;
+
+export const ColumnGroup = styled.View`
+  align-items: center;
+  justify-content: center;
+`;

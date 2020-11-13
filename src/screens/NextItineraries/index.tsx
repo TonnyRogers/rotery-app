@@ -6,9 +6,20 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getNextItinerariesRequest} from '../../store/modules/nextItineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
-import {Container, Content, Title, ContentHeader, BackButton} from './styled';
+import {
+  Container,
+  Content,
+  Title,
+  ContentHeader,
+  BackButton,
+  ItineraryList,
+  ColumnGroup,
+  FeedButton,
+  FeedButtonText,
+} from './styled';
 import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
+import Card from '../../components/Card';
 
 const NextItineraries: React.FC = () => {
   const {itineraries} = useSelector(
@@ -40,14 +51,28 @@ const NextItineraries: React.FC = () => {
           <Title>Próximos Roteiros</Title>
         </ContentHeader>
 
-        {itineraries &&
-          itineraries.map((item) => (
+        <ItineraryList
+          data={itineraries}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({item}) => (
             <Itinerary
               itinerary={item}
-              key={item.id}
               detailButtonAction={() => itineraryDetail(item.id)}
             />
-          ))}
+          )}
+          ListEmptyComponent={() => (
+            <Card>
+              <ColumnGroup>
+                <Icon name="bus-clock" size={30} color="#3dc77b" />
+                <Title>Que tal viajar?</Title>
+                <Title>Encontre um roteiro!</Title>
+              </ColumnGroup>
+              <FeedButton onPress={() => navigation.navigate('Feed')}>
+                <FeedButtonText>Ir para o Feed</FeedButtonText>
+              </FeedButton>
+            </Card>
+          )}
+        />
       </Content>
     </Container>
   );

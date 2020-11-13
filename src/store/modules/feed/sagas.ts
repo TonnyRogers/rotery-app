@@ -24,7 +24,7 @@ export function* getItineraries() {
 
     const response = yield call(api.get, '/feed');
 
-    yield put(getFeedSuccess(response.data));
+    yield put(getFeedSuccess(response.data.data));
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFailure());
@@ -43,10 +43,10 @@ export function* getFilteredItineraries({
 
     const response = yield call(
       api.get,
-      `/feed?begin=${filter.begin}&end=${filter.end}`,
+      `/feed?begin=${filter.begin}&end=${filter.end}&page=${filter.page || 1}`,
     );
 
-    yield put(getFeedFilteredSuccess(response.data));
+    yield put(getFeedFilteredSuccess(response.data.data));
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFilteredFailure());

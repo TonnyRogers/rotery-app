@@ -4,6 +4,7 @@ interface FilterProps {
   begin?: string;
   end?: string;
   city?: string;
+  page?: number;
 }
 
 export function getFeedRequest() {

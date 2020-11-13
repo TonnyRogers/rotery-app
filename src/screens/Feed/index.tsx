@@ -28,6 +28,7 @@ import Itinerary from '../../components/Itinerary';
 import FilterInput from '../../components/FilterInput';
 import Card from '../../components/Card';
 import BottomSheet from '../../components/BottomSheet';
+import {ItineraryProps} from '../../store/modules/feed/reducer';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
@@ -86,16 +87,16 @@ const Feed: React.FC = () => {
             ))}
           </ActivityList>
         </FilterContent>
-        <ItineraryList>
-          {itineraries ? (
-            itineraries.map((itinerary) => (
-              <Itinerary
-                itinerary={itinerary}
-                key={itinerary.id}
-                detailButtonAction={() => itineraryDetail(itinerary.id)}
-              />
-            ))
-          ) : (
+        <ItineraryList
+          data={itineraries}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({item}) => (
+            <Itinerary
+              itinerary={item}
+              detailButtonAction={() => itineraryDetail(item.id)}
+            />
+          )}
+          ListEmptyComponent={() => (
             <Card>
               <ColumnGroup>
                 <Icon name="alert-decagram-outline" size={30} color="#3dc77b" />
@@ -105,7 +106,7 @@ const Feed: React.FC = () => {
               </ColumnGroup>
             </Card>
           )}
-        </ItineraryList>
+        />
         <FloatContent>
           <NewItineraryButton
             onPress={() => navigation.navigate('NewItinerary')}>

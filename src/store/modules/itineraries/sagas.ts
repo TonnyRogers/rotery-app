@@ -48,7 +48,7 @@ export function* getItineraries() {
 
     const response = yield call(api.get, '/itineraries');
 
-    yield put(getItinerariesSuccess(response.data));
+    yield put(getItinerariesSuccess(response.data.data));
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(setLoadingFalse());
