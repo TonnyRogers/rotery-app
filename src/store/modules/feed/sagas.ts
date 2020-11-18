@@ -16,6 +16,8 @@ import {
   joinRequest,
   joinSuccess,
   joinFailure,
+  paginateFeedRequest,
+  paginateFeedSuccess,
 } from './actions';
 
 export function* getItineraries() {
@@ -43,10 +45,13 @@ export function* getFilteredItineraries({
 
     const response = yield call(
       api.get,
-      `/feed?begin=${filter.begin}&end=${filter.end}&page=${filter.page || 1}`,
+      `/feed?begin=${filter.begin}&end=${filter.end}`,
     );
 
-    yield put(getFeedFilteredSuccess(response.data.data));
+    if (response.data.data.length > 0) {
+      yield put(getFeedFilteredSuccess(response.data.data));
+    }
+
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFilteredFailure());
@@ -96,7 +101,35 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
   }
 }
 
+export function* getPaginatedItineraries({
+  payload,
+}: ReturnType<typeof paginateFeedRequest>) {
+  try {
+    const {page, begin, end} = payload;
+
+    yield put(setLoadingTrue());
+
+    const response = yield call(
+      api.get,
+      `/feed?${begin ? `begin=${begin}&` : ''}${end ? `end=${end}&` : ''}page=${
+        page || 1
+      }`,
+    );
+
+    if (response.data.data.length > 0) {
+      yield put(paginateFeedSuccess(response.data.data));
+    }
+
+    yield put(setLoadingFalse());
+  } catch (error) {
+    yield put(getFeedFilteredFailure());
+    yield put(setLoadingFalse());
+    Alert.alert('Erro ao buscar seus roteiros');
+  }
+}
+
 export default all([
+  takeLatest('@feed/PAGINATE_FEED_REQUEST', getPaginatedItineraries),
   takeLatest('@feed/JOIN_REQUEST', joinItinerary),
   takeLatest('@feed/GET_FEED_REQUEST', getItineraries),
   takeLatest('@feed/GET_FEED_FILTERED_REQUEST', getFilteredItineraries),

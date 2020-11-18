@@ -25,9 +25,14 @@ import Input from '../Input';
 interface FilterInputProps {
   visible: boolean;
   onRequestClose(): any;
+  onFiltered(begin: string, end: string): void;
 }
 
-const FilterInput: React.FC<FilterInputProps> = ({visible, onRequestClose}) => {
+const FilterInput: React.FC<FilterInputProps> = ({
+  visible,
+  onRequestClose,
+  onFiltered,
+}) => {
   const dispatch = useDispatch();
   const [location, setLocation] = useState('');
   const [beginDate, setBeginDate] = useState(new Date());
@@ -41,6 +46,7 @@ const FilterInput: React.FC<FilterInputProps> = ({visible, onRequestClose}) => {
     };
 
     dispatch(getFeedFilteredRequest(filter));
+    onFiltered(filter.begin, filter.end);
     onRequestClose();
   }
 

@@ -83,3 +83,21 @@ export function joinFailure() {
     type: '@feed/JOIN_FAILURE',
   };
 }
+
+export function paginateFeedRequest(
+  page: number,
+  begin?: string,
+  end?: string,
+) {
+  return {
+    type: '@feed/PAGINATE_FEED_REQUEST',
+    payload: {page, begin, end},
+  };
+}
+
+export function paginateFeedSuccess(itineraries: ItineraryProps) {
+  return {
+    type: '@feed/PAGINATE_FEED_SUCCESS',
+    payload: {itineraries},
+  };
+}

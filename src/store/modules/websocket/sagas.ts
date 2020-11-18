@@ -26,20 +26,14 @@ export function* subscribeUser() {
     let channel: any;
 
     function initWebsocket() {
-      if (!isConnected) {
-        // console.tron.log('Connection to ws');
-        ws = Ws(`${protocol}${wsConnection}`, {reconnection: false});
-        ws.connect();
-        isConnected = true;
-      }
+      // console.tron.log('Connection to ws');
+      ws = Ws(`${protocol}${wsConnection}`, {reconnection: false});
+      ws.connect();
+      isConnected = true;
 
-      if (notificationConnection) {
-        // console.tron.log('Reconnection to notifications');
-        channel = ws.getSubscription(`notifications:${user.id}`);
-      } else {
-        // console.tron.log('Connection to notifications');
-        channel = ws.subscribe(`notifications:${user.id}`);
-      }
+      channel =
+        ws.getSubscription(`notifications:${user.id}`) ||
+        ws.subscribe(`notifications:${user.id}`);
 
       channel.on('ready', () => {
         notificationConnection = true;
@@ -47,7 +41,6 @@ export function* subscribeUser() {
       });
 
       channel.on('notify:message', async () => {
-        Vibration.vibrate(200);
         return emitter(wsNotificationMessages());
       });
 
@@ -179,6 +172,11 @@ export function* closeNotificationChanel() {
 }
 
 export function* watchNotificationSbuscription() {
+  const {signed} = yield select((state: RootStateProps) => state.auth);
+
+  if (!signed) {
+    return;
+  }
   const channel = yield call(subscribeUser);
 
   while (true) {
@@ -200,6 +198,7 @@ export function* watchChatSbuscription({
 }
 
 export default all([
+  takeLatest('persist/REHYDRATE', watchNotificationSbuscription),
   takeLatest('@ws/CLOSE_CHAT_CHANNEL', closeChatChannel),
   takeLatest('@ws/CHAT_SUBSCRIBE', watchChatSbuscription),
   takeLatest('@auth/LOGOUT', closeNotificationChanel),

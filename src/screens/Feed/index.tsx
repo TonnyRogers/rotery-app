@@ -2,9 +2,13 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Vibration} from 'react-native';
+import {Vibration, Alert} from 'react-native';
 
-import {getFeedRequest} from '../../store/modules/feed/actions';
+import {
+  getFeedRequest,
+  getFeedFilteredRequest,
+  paginateFeedRequest,
+} from '../../store/modules/feed/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
@@ -35,11 +39,14 @@ const Feed: React.FC = () => {
   const dispatch = useDispatch();
   const [filterVisible, setFilterVisible] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
+  const [filter, setFilter] = useState({} as any);
+  const [page, setPage] = useState(2);
 
   useEffect(() => {
     dispatch(getFeedRequest());
   }, [dispatch]);
 
+  const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {itineraries} = useSelector((state: RootStateProps) => state.feed);
 
   const itineraryActivities: {id: number; name: string}[] = [];
@@ -64,6 +71,13 @@ const Feed: React.FC = () => {
   function clearFilter() {
     Vibration.vibrate([100, 100, 200, 100]);
     dispatch(getFeedRequest());
+    setPage(2);
+    setFilter({});
+  }
+
+  function loadFeed() {
+    setPage(page + 1);
+    dispatch(paginateFeedRequest(page, filter.begin, filter.end));
   }
 
   return (
@@ -77,7 +91,13 @@ const Feed: React.FC = () => {
               <Icon name="filter" size={24} color="#3dc77b" />
             </FilterButton>
           </RowGroupSpaced>
-          <FilterInput visible={filterVisible} onRequestClose={toggleFilter} />
+          <FilterInput
+            visible={filterVisible}
+            onRequestClose={toggleFilter}
+            onFiltered={(begin, end) => {
+              setFilter({begin: begin, end: end});
+            }}
+          />
           <ActivityList>
             {removeDuplicatedActivities.map((item, index) => (
               <Activity key={index}>
@@ -106,6 +126,14 @@ const Feed: React.FC = () => {
               </ColumnGroup>
             </Card>
           )}
+          onRefresh={() => {
+            dispatch(getFeedRequest());
+            setPage(2);
+          }}
+          onEndReached={() => loadFeed()}
+          onEndReachedThreshold={0.1}
+          refreshing={loading}
+          viewabilityConfig={{viewAreaCoveragePercentThreshold: 20}}
         />
         <FloatContent>
           <NewItineraryButton

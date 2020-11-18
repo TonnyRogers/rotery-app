@@ -1,6 +1,6 @@
 import PushNotification from 'react-native-push-notification';
 
-const wsChannelId = 'ws-notifications';
+const wsChannelId = 'ws-local-notifications';
 
 PushNotification.createChannel(
   {

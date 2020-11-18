@@ -45,13 +45,6 @@ export default function notifications(
           (item) => {
             if (!item.readed) {
               notReadedCouter += 1;
-              localNotification(
-                item.subject,
-                item.content,
-                item,
-                undefined,
-                'Ver',
-              );
               return item;
             }
           },

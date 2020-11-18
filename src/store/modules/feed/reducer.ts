@@ -76,7 +76,7 @@ export interface ItineraryProps {
 }
 
 interface InitialStateProps {
-  itineraries: ItineraryProps[] | null;
+  itineraries: ItineraryProps[] | [];
 }
 
 interface ActionProps {
@@ -88,7 +88,7 @@ interface ActionProps {
 }
 
 const INITIAL_STATE: InitialStateProps = {
-  itineraries: null,
+  itineraries: [],
 };
 
 export default function feed(state = INITIAL_STATE, action: ActionProps) {
@@ -100,6 +100,15 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
       }
       case '@feed/GET_FEED_FILTERED_SUCCESS': {
         draft.itineraries = action.payload.itineraries;
+        break;
+      }
+      case '@feed/PAGINATE_FEED_SUCCESS': {
+        const itineraries = [
+          ...draft.itineraries,
+          ...action.payload.itineraries,
+        ];
+
+        draft.itineraries = itineraries;
         break;
       }
       default:

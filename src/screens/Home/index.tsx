@@ -43,7 +43,7 @@ const images = [
     url:
       'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/e35/122710052_265228344916662_7643155457604945242_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=1c-_ZP-lc_AAX95TzhX&tp=18&oh=5ce3c6785d20945725c987c591d8d11b&oe=5FD89A66',
     withInfo: true,
-    title: 'Versão Beta Lançada: é hora de decolar',
+    title: 'Versão BETA Lançada:',
     message:
       'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
   },
@@ -63,7 +63,7 @@ const images = [
     withInfo: true,
     title: 'Nos Apoie:',
     message:
-      'Queremos criar a melhor plataforma para viajantes, de forma independênnte, nos apoie no APOIA-SE.',
+      'Queremos criar a melhor plataforma para viajantes, de forma independênte, nos apoie no APOIA-SE.',
   },
 ];
 
