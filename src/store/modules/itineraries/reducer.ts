@@ -54,6 +54,12 @@ interface ItemProps {
   };
 }
 
+interface StatusProps {
+  id: number;
+  slug: string;
+  name: string;
+}
+
 export interface ItineraryProps {
   id: number;
   owner_id: number;
@@ -72,6 +78,7 @@ export interface ItineraryProps {
   photos: [];
   questions: QuestionProps[];
   members: MemberProps[];
+  status: StatusProps;
   owner: OwnerProps;
 }
 

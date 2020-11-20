@@ -25,6 +25,9 @@ import {
   Quantity,
   DetailsButton,
   DetailsButtonText,
+  StatusContent,
+  Status,
+  StatusName,
 } from './styles';
 import ImageCarousel from '../ImageCarousel';
 
@@ -70,6 +73,11 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
   return (
     <Container>
       <ItineraryHeader>
+        <StatusContent>
+          <Status>
+            <StatusName>{itinerary.status.name}</StatusName>
+          </Status>
+        </StatusContent>
         <ImageCarousel data={itinerary.photos} />
         <RowGroup>
           <Name>{itinerary.name}</Name>

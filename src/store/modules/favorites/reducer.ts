@@ -54,27 +54,32 @@ interface ItemProps {
   };
 }
 
+interface StatusProps {
+  id: number;
+  slug: string;
+  name: string;
+}
+
 export interface ItineraryProps {
-  itinerary: {
-    id: number;
-    owner_id: number;
-    name: string;
-    description: string;
-    begin: string;
-    end: string;
-    deadline_for_join: string;
-    capacity: number;
-    location: string;
-    created_at: string;
-    updated_at: string;
-    activities: ItemProps[];
-    lodgings: ItemProps[];
-    transports: ItemProps[];
-    photos: [];
-    questions: QuestionProps[];
-    members: MemberProps[];
-    owner: OwnerProps;
-  };
+  id: number;
+  owner_id: number;
+  name: string;
+  description: string;
+  begin: string;
+  end: string;
+  deadline_for_join: string;
+  capacity: number;
+  location: string;
+  created_at: string;
+  updated_at: string;
+  activities: ItemProps[];
+  lodgings: ItemProps[];
+  transports: ItemProps[];
+  photos: [];
+  questions: QuestionProps[];
+  members: MemberProps[];
+  status: StatusProps;
+  owner: OwnerProps;
 }
 
 interface InitialStateProps {

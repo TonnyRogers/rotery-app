@@ -14,6 +14,7 @@ export const RowGroup = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-top: 30px;
 `;
 
 export const Name = styled.Text`
@@ -92,5 +93,28 @@ export const DetailsButtonText = styled.Text`
   font-family: 'Roboto';
   font-size: 18px;
   font-weight: bold;
+  color: #fff;
+`;
+
+export const StatusContent = styled.View`
+  position: relative;
+`;
+
+export const Status = styled.View`
+  width: 110px;
+  height: 25px;
+  background: #4885fd;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  position: absolute;
+  right: 0;
+  z-index: 10;
+`;
+
+export const StatusName = styled.Text`
+  font-family: 'Roboto';
+  font-size: 14px;
   color: #fff;
 `;

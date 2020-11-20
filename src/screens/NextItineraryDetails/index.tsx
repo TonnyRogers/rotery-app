@@ -49,6 +49,9 @@ import {
   DeleteItineraryButtonText,
   SendButton,
   SendButtonText,
+  StatusContent,
+  Status,
+  StatusName,
 } from './styles';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
@@ -145,6 +148,11 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               <Location>{itinerary.location}</Location>
               <DateBegin>{beginDateFormated.current}</DateBegin>
             </RowGroupSpaced>
+            <StatusContent>
+              <Status>
+                <StatusName>{itinerary.status.name}</StatusName>
+              </Status>
+            </StatusContent>
             <ImageCarousel data={itinerary.photos} />
             <View>
               <DescriptionTitle>Descrição:</DescriptionTitle>
