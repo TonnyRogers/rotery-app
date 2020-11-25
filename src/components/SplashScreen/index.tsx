@@ -1,8 +1,9 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, View} from 'react-native';
+import LottieView from 'lottie-react-native';
 
-import {Container, KeyboardAvoidingView, Content, Logo, Title} from './styles';
-const iconImage = require('../../../assets/rotery-icon.png');
+import {Container, KeyboardAvoidingView, Content, Title} from './styles';
+const iconImage = require('../../../assets/animation_rotery.json');
 
 interface SplashScreenProps {
   visible: boolean;
@@ -14,7 +15,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({visible}) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Content>
-          <Logo source={iconImage} />
+          <LottieView source={iconImage} autoPlay />
           <Title>Carregando...</Title>
         </Content>
       </KeyboardAvoidingView>

@@ -4,6 +4,7 @@ import auth from './auth/reducer';
 import connections from './connections/reducer';
 import favorites from './favorites/reducer';
 import feed from './feed/reducer';
+import guides from './guides/reducer';
 import profile from './profile/reducer';
 import itineraries from './itineraries/reducer';
 import messages from './messages/reducer';
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   connections,
   favorites,
   feed,
+  guides,
   profile,
   itineraries,
   options,

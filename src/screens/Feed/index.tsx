@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Vibration, Alert} from 'react-native';
+import {Vibration} from 'react-native';
 
 import {
   getFeedRequest,
-  getFeedFilteredRequest,
   paginateFeedRequest,
 } from '../../store/modules/feed/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import {hideFeedGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
@@ -32,7 +32,57 @@ import Itinerary from '../../components/Itinerary';
 import FilterInput from '../../components/FilterInput';
 import Card from '../../components/Card';
 import BottomSheet from '../../components/BottomSheet';
-import {ItineraryProps} from '../../store/modules/feed/reducer';
+import GuideCarousel from '../../components/GuideCarousel';
+import Ads from '../../components/Ads';
+
+const guideImages = [
+  {
+    id: 1,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-1.png',
+    withInfo: true,
+    title: 'Filtrando Roteiros 1/2',
+    message: 'Clique no ícone de filtro para customizar o filtro de roteiros.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-2.png',
+    withInfo: true,
+    title: 'Filtrando Roteiros 2/2',
+    message:
+      'Customize o filtro com base nas suas necessidades e clique em "filtrar".',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-1.png',
+    withInfo: true,
+    title: 'Limpando filtro',
+    message: 'Clique e segure no botão de filtro até o dispositivo vibrar.',
+    isAnimation: false,
+  },
+  {
+    id: 4,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-reload-feed.png',
+    withInfo: true,
+    title: 'Carregando novos roteiros',
+    message: 'Deslize os dedos para baixo para atualizar feed.',
+    isAnimation: false,
+  },
+  {
+    id: 5,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-new-itinerary.png',
+    withInfo: true,
+    title: 'Criando novo roteiro',
+    message: 'Clique no ícone de "mais" para criar um novo roteiro.',
+    isAnimation: false,
+  },
+];
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
@@ -48,6 +98,7 @@ const Feed: React.FC = () => {
 
   const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {itineraries} = useSelector((state: RootStateProps) => state.feed);
+  const {feedGuide} = useSelector((state: RootStateProps) => state.guides);
 
   const itineraryActivities: {id: number; name: string}[] = [];
 
@@ -78,6 +129,10 @@ const Feed: React.FC = () => {
   function loadFeed() {
     setPage(page + 1);
     dispatch(paginateFeedRequest(page, filter.begin, filter.end));
+  }
+
+  function closeGuide() {
+    dispatch(hideFeedGuide());
   }
 
   return (
@@ -146,6 +201,9 @@ const Feed: React.FC = () => {
         visible={sheetVisible}
         onRequestClose={(value) => setSheetVisible(value)}
       />
+      <Ads visible={feedGuide} onRequestClose={() => {}}>
+        <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
+      </Ads>
     </Container>
   );
 };

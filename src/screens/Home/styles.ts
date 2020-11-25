@@ -6,7 +6,7 @@ export const Container = styled.ScrollView.attrs({
 })`
   flex: 1;
   flex-direction: column;
-  background: #efefef;
+  background: #f6f6f6;
   height: 100%;
 `;
 

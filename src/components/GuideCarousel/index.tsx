@@ -8,8 +8,12 @@ import {
   HighlightContent,
   Title,
   Subtitle,
+  ActionContent,
+  CloseButton,
+  CloseButtonText,
+  Content,
 } from './styles';
-import Highlight from '../Highlight';
+import GuideItem from '../GuideItem';
 
 interface dataProps {
   id: number;
@@ -17,13 +21,15 @@ interface dataProps {
   withInfo?: boolean;
   title?: string;
   message?: string;
+  isAnimation: boolean;
 }
 
-interface HighlightCarouselProps {
+interface GuideCarouselProps {
   data: dataProps[];
+  onClose(): void;
 }
 
-const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
+const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
   const [interval, setInterval] = useState(1);
   const [intervals, setIntervals] = useState(1);
   const [width, setWidth] = useState(0);
@@ -64,21 +70,30 @@ const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
         }}
         decelerationRate="fast"
         pagingEnabled>
-        {data &&
-          data.map((item) => (
-            <Highlight key={item.id} background={item.url}>
-              {item.withInfo && (
-                <HighlightContent>
-                  <Title>{item.title}</Title>
-                  <Subtitle>{item.message}</Subtitle>
-                </HighlightContent>
-              )}
-            </Highlight>
-          ))}
+        {data.map((item) => (
+          <GuideItem
+            key={item.id}
+            background={item.url}
+            animation={item.isAnimation}>
+            {item.withInfo && (
+              <HighlightContent>
+                <Title>{item.title}</Title>
+                <Subtitle>{item.message}</Subtitle>
+              </HighlightContent>
+            )}
+          </GuideItem>
+        ))}
       </ImageList>
       <Bullets>{bullets}</Bullets>
+      <ActionContent>
+        {interval === intervals && (
+          <CloseButton onPress={onClose}>
+            <CloseButtonText>Fechar</CloseButtonText>
+          </CloseButton>
+        )}
+      </ActionContent>
     </Container>
   );
 };
 
-export default HighlightCarousel;
+export default GuideCarousel;

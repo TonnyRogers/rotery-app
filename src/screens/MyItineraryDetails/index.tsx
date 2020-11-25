@@ -12,6 +12,7 @@ import {
   notifyItineraryFinishRequest,
 } from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import {hideMyItineraryGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
@@ -59,6 +60,30 @@ import ImageCarousel from '../../components/ImageCarousel';
 import ItineraryMember from '../../components/ItineraryMember';
 import ItineraryQuestion from '../../components/ItineraryQuestion';
 import Alert from '../../components/Alert';
+import GuideCarousel from '../../components/GuideCarousel';
+import Ads from '../../components/Ads';
+
+const guideImages = [
+  {
+    id: 1,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary.png',
+    withInfo: true,
+    title: 'Editando Roteiro',
+    message: 'Clique no ícone de lápis para editar informações do seu roteiro.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary.png',
+    withInfo: true,
+    title: 'Finalizando Roteiros',
+    message:
+      'Após o término do seu roteiro clique em finalizar para que os membros avaliem.',
+    isAnimation: false,
+  },
+];
 
 interface MyItineraryDetailsProps {
   route: {
@@ -74,6 +99,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const {id} = route.params;
   const {itineraries} = useSelector(
     (state: RootStateProps) => state.itineraries,
+  );
+  const {myItineraryGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
   );
   const [alertVisible, setAlertVisible] = useState(false);
   const [finishAlertVisible, setFinishAlertVisible] = useState(false);
@@ -127,6 +155,10 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
 
   function handleFinishItinerary() {
     dispatch(notifyItineraryFinishRequest(id));
+  }
+
+  function closeGuide() {
+    dispatch(hideMyItineraryGuide());
   }
 
   return (
@@ -348,6 +380,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         onRequestClose={(value) => setAlertVisible(value)}
         onConfirm={handleDeleteItinerary}
       />
+      <Ads visible={myItineraryGuide} onRequestClose={() => {}}>
+        <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
+      </Ads>
     </Container>
   );
 };

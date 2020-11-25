@@ -12,6 +12,7 @@ import {
   getTransportsRequest,
 } from '../../store/modules/options/actions';
 import {InitialStateProps} from '../../store/modules/options/reducer';
+import {hideNewItineraryGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
@@ -55,6 +56,49 @@ import TextArea from '../../components/TextArea';
 import DateTimeInput from '../../components/DateTimeInput';
 import FileInput from '../../components/FileInput';
 import PickerInput from '../../components/PickerInput';
+import GuideCarousel from '../../components/GuideCarousel';
+import Ads from '../../components/Ads';
+
+const guideImages = [
+  {
+    id: 1,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-1.png',
+    withInfo: true,
+    title: 'Criando Roteiros 1/4',
+    message:
+      'Ao criar um roteiro você pode adicionar fotos, descrição, quantidade de vagas, dar um nome, datas e muito mais.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-2.png',
+    withInfo: true,
+    title: 'Criando Roteiros 2/4',
+    message:
+      'Para dicionar uma Atividade, Hospedagem ou Transporte você deve clicar no "mais" após preencher os dados.',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
+    withInfo: true,
+    title: 'Criando Roteiros 3/4',
+    message: 'Após isso você vai notar que um item será adicionado logo acima.',
+    isAnimation: false,
+  },
+  {
+    id: 4,
+    url:
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
+    withInfo: true,
+    title: 'Criando Roteiros 4/4',
+    message: 'Você pode remove-lo clicando no ícone de lixeira.',
+    isAnimation: false,
+  },
+];
 
 interface TransportProps {
   id: number;
@@ -92,6 +136,9 @@ const NewItinerary: React.FC = () => {
 
   const options: InitialStateProps = useSelector(
     (state: RootStateProps) => state.options,
+  );
+  const {newItineraryGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
   );
 
   const [name, setName] = useState('');
@@ -278,6 +325,10 @@ const NewItinerary: React.FC = () => {
     setActivities([]);
     setLodgings([]);
     setTransports([]);
+  }
+
+  function closeGuide() {
+    dispatch(hideNewItineraryGuide());
   }
 
   return (
@@ -591,6 +642,9 @@ const NewItinerary: React.FC = () => {
           </CardActions>
         </Card>
       </Content>
+      <Ads visible={newItineraryGuide} onRequestClose={() => {}}>
+        <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
+      </Ads>
     </Container>
   );
 };

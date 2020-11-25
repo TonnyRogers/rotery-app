@@ -29,4 +29,5 @@ export const Title = styled.Text`
   font-family: 'Roboto';
   font-size: 20px;
   font-weight: bold;
+  margin-top: 210px;
 `;

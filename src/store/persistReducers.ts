@@ -11,6 +11,7 @@ export default (reducers: any) => {
         'connections',
         'favorites',
         'feed',
+        'guides',
         'profile',
         'itineraries',
         'options',

@@ -36,6 +36,8 @@ const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
 import HighlightCarousel from '../../components/HighlightCarousel';
+import GuideCarousel from '../../components/GuideCarousel';
+import Ads from '../../components/Ads';
 
 const images = [
   {
@@ -64,6 +66,33 @@ const images = [
     title: 'Nos Apoie:',
     message:
       'Queremos criar a melhor plataforma para viajantes, de forma independênte, nos apoie no APOIA-SE.',
+  },
+];
+
+const guideImages = [
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/Rotery-H.png',
+    withInfo: true,
+    title: 'Versão BETA Lançada:',
+    message:
+      'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/Rotery-H.png',
+    withInfo: true,
+    title: 'Versão BETA Lançada:',
+    message:
+      'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/Rotery-H.png',
+    withInfo: true,
+    title: 'Versão BETA Lançada:',
+    message:
+      'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
   },
 ];
 
@@ -241,6 +270,9 @@ const Home: React.FC = () => {
         onRequestClose={() => closeAlert}>
         <Text>{alertMessage}</Text>
       </Alert>
+      <Ads visible={false} onRequestClose={() => {}}>
+        <GuideCarousel data={guideImages} />
+      </Ads>
     </Container>
   );
 };

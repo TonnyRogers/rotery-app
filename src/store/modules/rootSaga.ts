@@ -4,6 +4,7 @@ import auth from './auth/sagas';
 import connections from './connections/sagas';
 import favorites from './favorites/sagas';
 import feed from './feed/sagas';
+import guides from './guides/sagas';
 import profile from './profile/sagas';
 import itineraries from './itineraries/sagas';
 import nextItineraries from './nextItineraries/sagas';
@@ -18,6 +19,7 @@ export default function* rootSaga() {
     connections,
     favorites,
     feed,
+    guides,
     profile,
     itineraries,
     options,

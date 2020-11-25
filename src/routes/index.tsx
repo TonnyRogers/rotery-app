@@ -30,6 +30,7 @@ import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import SplashScreen from '../components/SplashScreen';
+import Ads from '../components/Ads';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
