@@ -2,7 +2,7 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {Text, Animated, PanResponder, Alert as RNAlert, SafeAreaView} from 'react-native';
+import {Text, Animated, PanResponder} from 'react-native';
 
 import {localNotification} from '../../services/notifications';
 
@@ -187,95 +187,95 @@ const Home: React.FC = () => {
 
   return (
     <SafeView>
-    <Container>
-      <Header>
-        <Logo source={horizontalLogo} resizeMode="contain" />
-      </Header>
-      <Title>Destaques {'&'} Informações</Title>
-      <HighlightCarousel data={images} />
-      <TipContent>
-        <Icon name="chevron-double-left" size={20} color="#4885fd" />
-        <TipText> Arraste para ver mais</TipText>
-      </TipContent>
-      <LoginHover
-        visible={loginVisible}
-        style={{
-          transform: [
-            {
-              translateY: panY.y.interpolate({
-                inputRange: [-1, 0, 1],
-                outputRange: [0, 0, 1],
-              }),
-            },
-          ],
-        }}
-        {...panRespoders.panHandlers}>
-        <LoginHeader>
-          <SwitchLoginButton onPress={() => setLoginVisible(!loginVisible)}>
-            <Icon
-              name={loginVisible ? 'chevron-down' : 'chevron-up'}
-              size={30}
-              color="#3dc77b"
+      <Container>
+        <Header>
+          <Logo source={horizontalLogo} resizeMode="contain" />
+        </Header>
+        <Title>Destaques {'&'} Informações</Title>
+        <HighlightCarousel data={images} />
+        <TipContent>
+          <Icon name="chevron-double-left" size={20} color="#4885fd" />
+          <TipText> Arraste para ver mais</TipText>
+        </TipContent>
+        <LoginHover
+          visible={loginVisible}
+          style={{
+            transform: [
+              {
+                translateY: panY.y.interpolate({
+                  inputRange: [-1, 0, 1],
+                  outputRange: [0, 0, 1],
+                }),
+              },
+            ],
+          }}
+          {...panRespoders.panHandlers}>
+          <LoginHeader>
+            <SwitchLoginButton onPress={() => setLoginVisible(!loginVisible)}>
+              <Icon
+                name={loginVisible ? 'chevron-down' : 'chevron-up'}
+                size={30}
+                color="#3dc77b"
+              />
+            </SwitchLoginButton>
+          </LoginHeader>
+          <LoginContent visible={loginVisible}>
+            <Input
+              value={email}
+              label="Email"
+              placeholder="digite seu e-mail"
+              icon="email-outline"
+              onChange={setEmail}
+              ref={emailRef}
+              autoCapitalize="none"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
             />
-          </SwitchLoginButton>
-        </LoginHeader>
-        <LoginContent visible={loginVisible}>
-          <Input
-            value={email}
-            label="Email"
-            placeholder="digite seu e-mail"
-            icon="email-outline"
-            onChange={setEmail}
-            ref={emailRef}
-            autoCapitalize="none"
-            returnKeyType="next"
-            onSubmitEditing={() => passwordRef.current?.focus()}
-          />
-          <Input
-            value={password}
-            label="Senha"
-            placeholder="digite sua senha"
-            icon="lock-outline"
-            onChange={setPassword}
-            secureTextEntry
-            ref={passwordRef}
-            returnKeyType="send"
-            onSubmitEditing={() => handleLogin()}
-          />
-          <Actions>
-            <RowGroup>
-              <LoginButton onPress={() => handleLogin()}>
-                <LoginButtonText>Logar</LoginButtonText>
-              </LoginButton>
-              <ForgotPasswordButton onPress={() => passwordRecover()}>
-                <ForgotPasswordButtonText>
-                  Esqueceu a senha?
-                </ForgotPasswordButtonText>
-              </ForgotPasswordButton>
-            </RowGroup>
-            <RegisterContent>
-              <RegisterText>Não tem uma conta?</RegisterText>
-              <RegisterButton onPress={signUpNavigate}>
-                <RegisterButtonText>Cadastre-se</RegisterButtonText>
-              </RegisterButton>
-            </RegisterContent>
-          </Actions>
-        </LoginContent>
-      </LoginHover>
-      <Alert
-        icon="clipboard-alert-outline"
-        iconColor="#3dc77b"
-        visible={alertVisible}
-        title="Eita!"
-        message={alertMessage}
-        onCancel={closeAlert}
-        onRequestClose={() => closeAlert}>
-        <Text>{alertMessage}</Text>
-      </Alert>
-      <Ads visible={false} onRequestClose={() => {}}>
-        <GuideCarousel data={guideImages} />
-      </Ads>
-    </Container>
+            <Input
+              value={password}
+              label="Senha"
+              placeholder="digite sua senha"
+              icon="lock-outline"
+              onChange={setPassword}
+              secureTextEntry
+              ref={passwordRef}
+              returnKeyType="send"
+              onSubmitEditing={() => handleLogin()}
+            />
+            <Actions>
+              <RowGroup>
+                <LoginButton onPress={() => handleLogin()}>
+                  <LoginButtonText>Logar</LoginButtonText>
+                </LoginButton>
+                <ForgotPasswordButton onPress={() => passwordRecover()}>
+                  <ForgotPasswordButtonText>
+                    Esqueceu a senha?
+                  </ForgotPasswordButtonText>
+                </ForgotPasswordButton>
+              </RowGroup>
+              <RegisterContent>
+                <RegisterText>Não tem uma conta?</RegisterText>
+                <RegisterButton onPress={signUpNavigate}>
+                  <RegisterButtonText>Cadastre-se</RegisterButtonText>
+                </RegisterButton>
+              </RegisterContent>
+            </Actions>
+          </LoginContent>
+        </LoginHover>
+        <Alert
+          icon="clipboard-alert-outline"
+          iconColor="#3dc77b"
+          visible={alertVisible}
+          title="Eita!"
+          message={alertMessage}
+          onCancel={closeAlert}
+          onRequestClose={() => closeAlert}>
+          <Text>{alertMessage}</Text>
+        </Alert>
+        <Ads visible={false} onRequestClose={() => {}}>
+          <GuideCarousel data={guideImages} />
+        </Ads>
+      </Container>
     </SafeView>
   );
 };

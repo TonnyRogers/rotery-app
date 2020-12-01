@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.View``;
 
@@ -16,8 +16,7 @@ export const Bullet = styled.View`
   height: 6px;
   width: 6px;
   border-radius: 4px;
-  background: ${(props: {current: boolean}) =>
-    props.current ? '#3dc77b' : '#e1e1e1'};
+  background: #3dc77b;
   margin: 5px;
 `;
 

@@ -1,8 +1,8 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin: 20px;
+  margin: 2rem;
 `;
 
 export const RowGroup = styled.View`
@@ -10,37 +10,37 @@ export const RowGroup = styled.View`
 `;
 
 export const Header = styled.View`
-  padding: 5px 0;
+  padding: 0.5rem 0;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  height: 40px;
-  width: 40px;
-  border-radius: 20px;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
   align-items: center;
   justify-content: center;
   background: rgba(61, 199, 123, 0.2);
 `;
 
 export const Logo = styled.Image`
-  width: 145px;
-  height: 34px;
-  margin-top: 10px;
+  width: 14.5rem;
+  height: 3.4rem;
+  margin-top: 1rem;
   align-self: center;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
-  font-size: 24px;
-  margin: 10px 0;
+  font-size: 2.4rem;
+  margin: 1rem 0;
   align-self: center;
 `;
 
 export const SubmitButton = styled.TouchableOpacity`
-  height: 44px;
+  height: 4.4rem;
   background: #4885fd;
-  border-radius: 8px;
+  border-radius: 0.8rem;
 
   align-items: center;
   justify-content: center;
@@ -49,6 +49,6 @@ export const SubmitButton = styled.TouchableOpacity`
 export const SubmitButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
-  font-size: 24px;
+  font-size: 2.4rem;
   color: #fff;
 `;

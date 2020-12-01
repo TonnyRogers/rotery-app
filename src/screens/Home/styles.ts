@@ -1,23 +1,22 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 import {Animated} from 'react-native';
 
 export const SafeView = styled.SafeAreaView`
-flex: 1;
+  flex: 1;
 `;
 
 export const Container = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-
   flex-direction: column;
   background: #f6f6f6;
   height: 100%;
 `;
 
 export const Logo = styled.Image`
-  width: 145px;
-  height: 34px;
-  margin-top: 10px;
+  width: 14.5rem;
+  height: 3.4rem;
+  margin-top: 1.2rem;
 `;
 
 export const Header = styled.View`
@@ -26,9 +25,9 @@ export const Header = styled.View`
 
 export const Title = styled.Text`
   align-self: center;
-  font-size: 20px;
+  font-size: 2rem;
   font-family: 'Roboto-Bold';
-  margin: 10px 0;
+  margin: 1rem 0;
 `;
 
 export const HighlightList = styled.ScrollView.attrs({
@@ -36,18 +35,18 @@ export const HighlightList = styled.ScrollView.attrs({
   contentContainerStyle: {paddingLeft: 10, paddingRight: 10},
   showsHorizontalScrollIndicator: false,
 })`
-  height: 424px;
+  height: 42.4rem;
 `;
 
 export const TipContent = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 100px;
+  margin-bottom: 10rem;
 `;
 
 export const TipText = styled.Text`
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: bold;
   font-family: 'Roboto';
   color: #4885fd;
@@ -56,11 +55,11 @@ export const TipText = styled.Text`
 export const LoginHover = styled(Animated.View).attrs({
   elevation: 5,
 })<{visible: boolean}>`
-  height: 480px;
+  height: 48rem;
   width: 100%;
   background: #fff;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
   position: absolute;
   bottom: 0;
 `;
@@ -71,9 +70,9 @@ export const LoginHeader = styled.View`
 `;
 
 export const SwitchLoginButton = styled.TouchableOpacity`
-  margin-top: 10px;
-  height: 30px;
-  width: 30px;
+  margin-top: 1rem;
+  height: 3rem;
+  width: 3rem;
   align-items: center;
 `;
 
@@ -81,7 +80,7 @@ export const HighlightContent = styled.View``;
 
 export const ItineraryName = styled.Text`
   font-family: 'Roboto-Bold';
-  font-size: 16px;
+  font-size: 1.6rem;
 `;
 
 export const RowGroup = styled.View`
@@ -92,18 +91,18 @@ export const RowGroup = styled.View`
 
 export const ItineraryLocation = styled.Text`
   font-family: 'Roboto-Regular';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const ItineraryDate = styled.Text`
   font-family: 'Roboto-Regular';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const LoginContent = styled.View<{visible: boolean}>`
-  margin: 20px;
+  margin: 2rem;
   opacity: ${(props) => (props.visible ? 1 : 0)};
 `;
 
@@ -111,9 +110,9 @@ export const Actions = styled.View``;
 
 export const LoginButton = styled.TouchableOpacity`
   flex: 1;
-  height: 44px;
+  height: 4.4rem;
   background: #4885fd;
-  border-radius: 8px;
+  border-radius: 0.8rem;
 
   align-items: center;
   justify-content: center;
@@ -122,17 +121,17 @@ export const LoginButton = styled.TouchableOpacity`
 export const LoginButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
-  font-size: 24px;
+  font-size: 2.4rem;
   color: #fff;
 `;
 
 export const ForgotPasswordButton = styled.TouchableOpacity`
-  margin: 10px;
+  margin: 1rem;
 `;
 
 export const ForgotPasswordButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #9d9d9d;
 `;
 
@@ -140,22 +139,22 @@ export const RegisterContent = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin: 18px 0;
+  margin: 1.8rem 0;
 `;
 
 export const RegisterText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #9d9d9d;
 `;
 
 export const RegisterButton = styled.TouchableOpacity`
-  margin: 0 10px;
+  margin: 0 1rem;
 `;
 
 export const RegisterButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #3dc77b;
 `;
