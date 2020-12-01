@@ -98,6 +98,7 @@ export const DetailsButtonText = styled.Text`
 
 export const StatusContent = styled.View`
   position: relative;
+  z-index: 10;
 `;
 
 export const Status = styled.View`
@@ -110,7 +111,6 @@ export const Status = styled.View`
   border-radius: 10px;
   position: absolute;
   right: 0;
-  z-index: 10;
 `;
 
 export const StatusName = styled.Text`

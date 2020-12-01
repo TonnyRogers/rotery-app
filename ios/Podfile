@@ -12,7 +12,8 @@ target 'roteryApp' do
 
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
-
+  pod 'Firebase/Analytics'
+  pod 'AppCenter'
 
   target 'roteryAppTests' do
     inherit! :complete
@@ -25,7 +26,21 @@ target 'roteryApp' do
   # you should disable these next few lines.
   use_flipper!
   post_install do |installer|
-    flipper_post_install(installer)
+    installer.pods_project.targets.each do |target|
+
+      # The following is needed to ensure the "archive" step works in XCode.
+      # It removes React & Yoga from the Pods project, as it is already included in the main project.
+      # Without this, you'd see errors when you archive like:
+      # "Multiple commands produce ... libReact.a"
+      # "Multiple commands produce ... libyoga.a"
+
+      targets_to_ignore = %w(React yoga)
+      
+      if targets_to_ignore.include? target.name
+        target.remove_from_project
+      end
+
+    end
   end
 end
 

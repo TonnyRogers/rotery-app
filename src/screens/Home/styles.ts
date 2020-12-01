@@ -1,10 +1,14 @@
 import styled from 'styled-components/native';
 import {Animated} from 'react-native';
 
+export const SafeView = styled.SafeAreaView`
+flex: 1;
+`;
+
 export const Container = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  flex: 1;
+
   flex-direction: column;
   background: #f6f6f6;
   height: 100%;

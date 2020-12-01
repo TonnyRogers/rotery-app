@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Platform} from 'react-native';
+import {Platform, SafeAreaView} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {format} from 'date-fns';
 
@@ -55,6 +55,7 @@ const FilterInput: React.FC<FilterInputProps> = ({
       <Modal visible={visible} animationType="fade" transparent>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <SafeAreaView>
           <Content>
             <ModalHeader>
               <Title>Filtro</Title>
@@ -86,6 +87,7 @@ const FilterInput: React.FC<FilterInputProps> = ({
               </Actions>
             </ModalContent>
           </Content>
+          </SafeAreaView>
         </KeyboardAvoidingView>
       </Modal>
     </Container>

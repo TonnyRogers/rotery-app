@@ -1,8 +1,11 @@
 import styled from 'styled-components/native';
 
+export const SafeView = styled.SafeAreaView`
+flex: 1;
+`;
+
 export const Container = styled.ScrollView`
   flex-direction: column;
-  flex: 1;
 `;
 
 export const CardHeader = styled.View``;

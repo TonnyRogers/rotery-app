@@ -2,7 +2,7 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {Text, Animated, PanResponder, Alert as RNAlert} from 'react-native';
+import {Text, Animated, PanResponder, Alert as RNAlert, SafeAreaView} from 'react-native';
 
 import {localNotification} from '../../services/notifications';
 
@@ -11,6 +11,7 @@ import {setLoadingFalse} from '../../store/modules/auth/actions';
 import {wsSubscribeUserToNotifications} from '../../store/modules/websocket/actions';
 
 import {
+  SafeView,
   Container,
   Logo,
   Header,
@@ -185,6 +186,7 @@ const Home: React.FC = () => {
   }
 
   return (
+    <SafeView>
     <Container>
       <Header>
         <Logo source={horizontalLogo} resizeMode="contain" />
@@ -274,6 +276,7 @@ const Home: React.FC = () => {
         <GuideCarousel data={guideImages} />
       </Ads>
     </Container>
+    </SafeView>
   );
 };
 

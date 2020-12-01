@@ -1,6 +1,6 @@
 import React, {useEffect, useCallback, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Platform, Dimensions, Animated, PanResponder} from 'react-native';
+import {Platform, Dimensions, Animated, PanResponder, SafeAreaView} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -95,6 +95,7 @@ const Notification: React.FC<NotificationProps> = ({
       onRequestClose={() => onRequestClose(false)}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <SafeAreaView>
         <Content
           style={{
             transform: [
@@ -125,6 +126,7 @@ const Notification: React.FC<NotificationProps> = ({
             <Icon name="chevron-up" size={24} color="#808080" />
           </CloseButton>
         </Content>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Container>
   );

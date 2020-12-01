@@ -1,6 +1,6 @@
 import React, {useRef, useCallback, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Platform, Dimensions, PanResponder, Animated} from 'react-native';
+import {Platform, Dimensions, PanResponder, Animated, SafeAreaView} from 'react-native';
 
 import {
   Container,
@@ -97,6 +97,7 @@ const Alert: React.FC<AlertProps> = ({
       onRequestClose={() => onRequestClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <SafeAreaView>
         <Content
           style={{
             transform: [
@@ -128,6 +129,7 @@ const Alert: React.FC<AlertProps> = ({
           </AlertActions>
           <BaseBlock />
         </Content>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Container>
   );

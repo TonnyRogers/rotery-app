@@ -1,5 +1,5 @@
 import React, {useRef, useCallback, useEffect} from 'react';
-import {Platform, Dimensions, PanResponder, Animated} from 'react-native';
+import {Platform, Dimensions, PanResponder, Animated, SafeAreaView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -126,6 +126,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
       onRequestClose={() => onRequestClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <SafeAreaView>
         <Content
           style={{
             transform: [
@@ -178,6 +179,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
             <Icon name="chevron-up" size={24} color="#808080" />
           </CloseButton>
         </Content>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Container>
   );

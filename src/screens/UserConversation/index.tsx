@@ -17,6 +17,7 @@ import {
 } from '../../store/modules/websocket/actions';
 
 import {
+  SafeView,
   Container,
   CardHeader,
   BackButton,
@@ -94,6 +95,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   }
 
   return (
+    <SafeView>
     <Container>
       <Header />
       <Card>
@@ -155,6 +157,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
         </CardContent>
       </Card>
     </Container>
+    </SafeView>
   );
 };
 

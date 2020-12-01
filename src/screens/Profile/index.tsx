@@ -17,6 +17,7 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {removeUserRequest} from '../../store/modules/profile/actions';
 
 import {
+  SafeView,
   Container,
   User,
   Avatar,
@@ -41,6 +42,7 @@ import Input from '../../components/Input';
 import Alert from '../../components/Alert';
 import DateInput from '../../components/DateInput';
 import PickerInput from '../../components/PickerInput';
+
 
 const sexOptions = [
   {
@@ -177,6 +179,7 @@ const Profile: React.FC = () => {
   }
 
   return (
+    <SafeView>
     <Container>
       <Header />
       <Card>
@@ -308,6 +311,7 @@ const Profile: React.FC = () => {
         onConfirm={() => handleDeleteUser()}
       />
     </Container>
+    </SafeView>
   );
 };
 
