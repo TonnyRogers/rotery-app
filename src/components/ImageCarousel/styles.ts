@@ -1,14 +1,18 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 export const Container = styled.View``;
 
-export const ImageList = styled.ScrollView``;
+export const ImageList = styled.ScrollView`
+`;
 
 export const ImageItem = styled.Image`
-  width: 310px;
-  height: 200px;
-  border-radius: 8px;
-  margin: 5px;
+  width: ${(width*0.88)/10}rem;
+  height: 20rem;
+  border-radius: 0.8rem;
+  margin: 0.5rem;
 `;
 
 export const Bullets = styled.View`
@@ -18,10 +22,9 @@ export const Bullets = styled.View`
 `;
 
 export const Bullet = styled.View`
-  height: 8px;
-  width: 8px;
-  border-radius: 4px;
-  background: ${(props: {current: boolean}) =>
-    props.current ? '#3dc77b' : '#e1e1e1'};
-  margin: 5px;
+  height: 0.8rem;
+  width: 0.8rem;
+  border-radius: 0.4rem;
+  background: #3dc77b;
+  margin: 0.5rem;
 `;

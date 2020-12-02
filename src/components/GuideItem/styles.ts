@@ -1,9 +1,11 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 import LottieView from 'lottie-react-native';
+import { Dimensions } from 'react-native';
 
+const { width } = Dimensions.get('screen');
 export const Container = styled.View.attrs({})`
   border-radius: 8px;
-  width: 340px;
+  width: 20%;
   padding: 10px;
 `;
 

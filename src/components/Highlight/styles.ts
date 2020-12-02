@@ -1,16 +1,19 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 export const Container = styled.View.attrs({})`
-  border-radius: 8px;
-  width: 360px;
-  padding: 10px;
+  border-radius: 0.8rem;
+  width: ${width/10}rem;
+  padding: 1rem;
 `;
 
 export const Background = styled.Image`
-  height: 300px;
+  height: 30rem;
   width: 100%;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  border-top-left-radius: 0.8rem;
+  border-top-right-radius: 0.8rem;
   background: #fff;
 `;
 
@@ -18,8 +21,8 @@ export const Info = styled.View.attrs({
   elevation: 3,
 })`
   background: #fff;
-  height: 100px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  padding: 8px;
+  height: 10rem;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+  padding: 0.8rem;
 `;

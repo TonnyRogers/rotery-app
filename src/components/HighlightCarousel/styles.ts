@@ -13,11 +13,11 @@ export const Bullets = styled.View`
 `;
 
 export const Bullet = styled.View`
-  height: 6px;
-  width: 6px;
-  border-radius: 4px;
+  height: 0.6rem;
+  width: 0.6rem;
+  border-radius: 0.4rem;
   background: #3dc77b;
-  margin: 5px;
+  margin: 0.5rem;
 `;
 
 export const HighlightContent = styled.View``;
@@ -30,13 +30,13 @@ export const RowGroup = styled.View`
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   text-align: center;
 `;
 
 export const Subtitle = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   text-align: center;
 `;
