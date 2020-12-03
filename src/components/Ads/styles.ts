@@ -1,9 +1,13 @@
-import styled from 'styled-components/native';
-import {Animated} from 'react-native';
+import styled from 'styled-native-components';
+import {
+  Animated,
+  Modal,
+  KeyboardAvoidingView as RNKAvoindingView,
+} from 'react-native';
 
-export const Container = styled.Modal``;
+export const Container = styled(Modal)``;
 
-export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
+export const KeyboardAvoidingView = styled(RNKAvoindingView)`
   background: rgba(0, 0, 0, 0.4);
   flex: 1;
   justify-content: flex-end;
@@ -12,10 +16,10 @@ export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
 export const Content = styled(Animated.View)`
   flex: 1;
   background: #fff;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 10px;
-  margin-top: 75px;
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  padding: 1rem;
+  margin-top: 7.5rem;
 `;
 
 export const Header = styled.View`
@@ -26,9 +30,9 @@ export const Header = styled.View`
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
-  margin-left: 5px;
+  margin-left: 0.5rem;
 `;
 
 export const CloseButton = styled.TouchableOpacity`
@@ -36,13 +40,13 @@ export const CloseButton = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 export const ImageItem = styled(Animated.Image)`
-  height: 514px;
-  border-radius: 10px;
+  height: 51.4rem;
+  border-radius: 1rem;
 `;

@@ -1,32 +1,32 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.View`
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 `;
 
 export const Label = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #808080;
 `;
 
 export const DateButton = styled.TouchableOpacity`
-  height: 45px;
-  border-radius: 4px;
+  height: 4.5rem;
+  border-radius: 0.4rem;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border-bottom-width: 1px;
+  border-bottom-width: 0.1rem;
   border-bottom-color: #cfcfcf;
 `;
 
 export const DateText = styled.Text`
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #909090;
 `;
 
 export const Picker = styled.View`
   background: #808080;
-  padding: 15px 30px;
-  margin-top: 30px;
+  padding: 1.5rem 3rem;
+  margin-top: 3rem;
 `;

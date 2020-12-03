@@ -1,12 +1,11 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
-export const Container = styled.View.attrs({
-  elevation: 3,
-})`
+export const Container = styled.View.attrs({})`
   background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  margin: 10px 5px;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  margin: 1rem 0.5rem;
+  elevation: 2;
 `;
 
 export const RowGroup = styled.View`
@@ -28,21 +27,21 @@ export const OwnerDetails = styled.View`
 
 export const Name = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
 `;
 
 export const UserImage = styled.Image`
-  height: 50px;
-  width: 50px;
-  border-radius: 8px;
-  margin-right: 5px;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 0.8rem;
+  margin-right: 0.5rem;
   background: #eee;
 `;
 
 export const QuestionDate = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
@@ -50,41 +49,41 @@ export const Question = styled.Text``;
 
 export const AnswerContent = styled.View`
   background: #4885fd;
-  min-height: 60px;
-  border-radius: 8px;
-  padding: 10px;
-  margin-top: 10px;
+  min-height: 6rem;
+  border-radius: 0.8rem;
+  padding: 1rem;
+  margin-top: 1rem;
 `;
 
 export const AnswerDate = styled.Text`
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #fff;
 `;
 
 export const Answer = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #fff;
 `;
 
 export const SendButton = styled.TouchableOpacity`
   background: #4885fd;
-  height: 40px;
-  width: 120px;
+  height: 4rem;
+  width: 12rem;
   align-self: flex-end;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-top-left-radius: 0.8rem;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
 `;
 
 export const SendButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
 `;

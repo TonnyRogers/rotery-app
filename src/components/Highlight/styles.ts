@@ -1,11 +1,11 @@
 import styled from 'styled-native-components';
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
 
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
 export const Container = styled.View.attrs({})`
   border-radius: 0.8rem;
-  width: ${width/10}rem;
+  width: ${width / 10}rem;
   padding: 1rem;
 `;
 

@@ -1,6 +1,7 @@
 import React, {forwardRef} from 'react';
+import {Picker} from '@react-native-community/picker';
 
-import {Container, Content, Label, SPickerInput} from './styles';
+import {Container, Content, Label} from './styles';
 
 interface OptionProps {
   id: number;
@@ -25,21 +26,22 @@ const PickerInput: React.FC<PickerInputProps> = (
     <Container>
       <Content>
         <Label>{label}</Label>
-        <SPickerInput
+        <Picker
           selectedValue={value}
           onValueChange={(itemValue, intemIndex) => onChange(itemValue)}
           ref={ref}
-          mode="dropdown">
-          <SPickerInput.Item label="Selecione" value="" />
+          mode="dropdown"
+          style={{color: '#808080'}}>
+          <Picker.Item label="Selecione" value="" />
           {options &&
             options.map((option) => (
-              <SPickerInput.Item
+              <Picker.Item
                 key={option.id}
                 label={option.name}
                 value={byValue ? option.value : option.id}
               />
             ))}
-        </SPickerInput>
+        </Picker>
       </Content>
     </Container>
   );

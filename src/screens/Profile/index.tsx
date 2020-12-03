@@ -43,7 +43,6 @@ import Alert from '../../components/Alert';
 import DateInput from '../../components/DateInput';
 import PickerInput from '../../components/PickerInput';
 
-
 const sexOptions = [
   {
     id: 1,
@@ -180,137 +179,140 @@ const Profile: React.FC = () => {
 
   return (
     <SafeView>
-    <Container>
-      <Header />
-      <Card>
-        <CardHeader>
-          <BackButton onPress={() => navigation.navigate('Feed')}>
-            <Icon name="chevron-left" size={24} color="#3dc77b" />
-          </BackButton>
-        </CardHeader>
-        <User>
-          <Avatar source={{uri: profileImage.uri || '..'}} resizeMode="cover" />
-          <ChangeAvatarButton onPress={pickImage}>
-            <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
-          </ChangeAvatarButton>
-          <UserName>{user.username}</UserName>
-          <Reputation>
-            <Icon name="star" size={24} color="#3dc77b" />
-            <Icon name="star" size={24} color="#3dc77b" />
-            <Icon name="star" size={24} color="#3dc77b" />
-            <Icon name="star" size={24} color="#3dc77b" />
-            <Icon name="star-outline" size={24} color="#3dc77b" />
-          </Reputation>
-          <Joined>Ativo desde {useSinceDate}</Joined>
-        </User>
-      </Card>
-      <Card>
-        <InputContent>
-          <Input
-            icon="face-recognition"
-            label="Nome"
-            placeholder="Digite seu nome completo"
-            ref={nameRef}
-            value={name}
-            onChange={setName}
-            returnKeyType="next"
-            onSubmitEditing={() => emailRef.current?.focus()}
-          />
-          <PickerInput
-            label="Sexo"
-            value={gender}
-            onChange={setGender}
-            options={sexOptions}
-            ref={genderRef}
-            byValue={true}
-          />
-          <Input
-            icon="email-outline"
-            label="Email"
-            placeholder="Digite seu e-mail"
-            ref={emailRef}
-            value={email}
-            onChange={setEmail}
-            returnKeyType="next"
-            onSubmitEditing={() => phoneRef.current?.focus()}
-            keyboardType="email-address"
-          />
-          <Input
-            icon="cellphone-iphone"
-            label="Telefone"
-            placeholder="Digite seu telefone"
-            ref={phoneRef}
-            value={phoneBR(String(phone))}
-            onChange={setPhone}
-            returnKeyType="next"
-            onSubmitEditing={() => cpfRef.current?.focus()}
-            keyboardType="number-pad"
-          />
-          <Input
-            icon="fingerprint"
-            label="CPF"
-            placeholder="Digite seu CPF"
-            ref={cpfRef}
-            value={cpfCnpj(String(cpf))}
-            onChange={setCpf}
-            returnKeyType="next"
-            onSubmitEditing={() => stateRef.current?.focus()}
-            keyboardType="number-pad"
-          />
-          <Input
-            label="Estado"
-            placeholder="Digite seu estado"
-            ref={stateRef}
-            value={state}
-            onChange={setState}
-            returnKeyType="next"
-            onSubmitEditing={() => cityRef.current?.focus()}
-          />
-          <Input
-            label="Cidade"
-            placeholder="Digite sua cidade"
-            ref={cityRef}
-            value={city}
-            onChange={setCity}
-            returnKeyType="next"
-            onSubmitEditing={() => profissionRef.current?.focus()}
-          />
-          <Input
-            icon="purse-outline"
-            label="Profissão"
-            placeholder="Digite sua profissão"
-            ref={profissionRef}
-            value={profission}
-            onChange={setProfission}
-            returnKeyType="next"
-          />
-          <DateInput
-            label="Nascimento"
-            date={birthDate}
-            onChange={setBirthDate}
-          />
-        </InputContent>
-        <ActionContent>
-          <SubmitButton onPress={() => updateProfileHandle()}>
-            <SubmitButtonText>Atualizar</SubmitButtonText>
-          </SubmitButton>
-        </ActionContent>
-      </Card>
-      <DeleteAccountButton onPress={alertToggle}>
-        <Icon name="delete-forever-outline" size={24} color="#FFF" />
-        <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
-      </DeleteAccountButton>
-      <Alert
-        title="Opá!"
-        message="você deseja realmente excluir sua conta?"
-        icon="clipboard-alert-outline"
-        iconColor="#3dc77b"
-        visible={alertVisible}
-        onRequestClose={(value) => setAlertVisible(value)}
-        onCancel={alertToggle}
-        onConfirm={() => handleDeleteUser()}
-      />
-    </Container>
+      <Container>
+        <Header />
+        <Card>
+          <CardHeader>
+            <BackButton onPress={() => navigation.navigate('Feed')}>
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </BackButton>
+          </CardHeader>
+          <User>
+            <Avatar
+              source={{uri: profileImage.uri || '..'}}
+              resizeMode="cover"
+            />
+            <ChangeAvatarButton onPress={pickImage}>
+              <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
+            </ChangeAvatarButton>
+            <UserName>{user.username}</UserName>
+            <Reputation>
+              <Icon name="star" size={24} color="#3dc77b" />
+              <Icon name="star" size={24} color="#3dc77b" />
+              <Icon name="star" size={24} color="#3dc77b" />
+              <Icon name="star" size={24} color="#3dc77b" />
+              <Icon name="star-outline" size={24} color="#3dc77b" />
+            </Reputation>
+            <Joined>Ativo desde {useSinceDate}</Joined>
+          </User>
+        </Card>
+        <Card>
+          <InputContent>
+            <Input
+              icon="face-recognition"
+              label="Nome"
+              placeholder="Digite seu nome completo"
+              ref={nameRef}
+              value={name}
+              onChange={setName}
+              returnKeyType="next"
+              onSubmitEditing={() => emailRef.current?.focus()}
+            />
+            <PickerInput
+              label="Sexo"
+              value={gender}
+              onChange={setGender}
+              options={sexOptions}
+              ref={genderRef}
+              byValue={true}
+            />
+            <Input
+              icon="email-outline"
+              label="Email"
+              placeholder="Digite seu e-mail"
+              ref={emailRef}
+              value={email}
+              onChange={setEmail}
+              returnKeyType="next"
+              onSubmitEditing={() => phoneRef.current?.focus()}
+              keyboardType="email-address"
+            />
+            <Input
+              icon="cellphone-iphone"
+              label="Telefone"
+              placeholder="Digite seu telefone"
+              ref={phoneRef}
+              value={phoneBR(String(phone))}
+              onChange={setPhone}
+              returnKeyType="next"
+              onSubmitEditing={() => cpfRef.current?.focus()}
+              keyboardType="number-pad"
+            />
+            <Input
+              icon="fingerprint"
+              label="CPF"
+              placeholder="Digite seu CPF"
+              ref={cpfRef}
+              value={cpfCnpj(String(cpf))}
+              onChange={setCpf}
+              returnKeyType="next"
+              onSubmitEditing={() => stateRef.current?.focus()}
+              keyboardType="number-pad"
+            />
+            <Input
+              label="Estado"
+              placeholder="Digite seu estado"
+              ref={stateRef}
+              value={state}
+              onChange={setState}
+              returnKeyType="next"
+              onSubmitEditing={() => cityRef.current?.focus()}
+            />
+            <Input
+              label="Cidade"
+              placeholder="Digite sua cidade"
+              ref={cityRef}
+              value={city}
+              onChange={setCity}
+              returnKeyType="next"
+              onSubmitEditing={() => profissionRef.current?.focus()}
+            />
+            <Input
+              icon="purse-outline"
+              label="Profissão"
+              placeholder="Digite sua profissão"
+              ref={profissionRef}
+              value={profission}
+              onChange={setProfission}
+              returnKeyType="next"
+            />
+            <DateInput
+              label="Nascimento"
+              date={birthDate}
+              onChange={setBirthDate}
+            />
+          </InputContent>
+          <ActionContent>
+            <SubmitButton onPress={() => updateProfileHandle()}>
+              <SubmitButtonText>Atualizar</SubmitButtonText>
+            </SubmitButton>
+          </ActionContent>
+        </Card>
+        <DeleteAccountButton onPress={alertToggle}>
+          <Icon name="delete-forever-outline" size={24} color="#FFF" />
+          <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
+        </DeleteAccountButton>
+        <Alert
+          title="Opá!"
+          message="você deseja realmente excluir sua conta?"
+          icon="clipboard-alert-outline"
+          iconColor="#3dc77b"
+          visible={alertVisible}
+          onRequestClose={(value) => setAlertVisible(value)}
+          onCancel={alertToggle}
+          onConfirm={() => handleDeleteUser()}
+        />
+      </Container>
     </SafeView>
   );
 };

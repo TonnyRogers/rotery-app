@@ -1,21 +1,16 @@
-import styled from 'styled-components/native';
-import {Picker} from '@react-native-community/picker';
+import styled from 'styled-native-components';
 
 export const Container = styled.View`
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 `;
 
 export const Content = styled.View`
   border-bottom-color: #cfcfcf;
-  border-bottom-width: 1px;
+  border-bottom-width: 0.1rem;
 `;
 
 export const Label = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
-  color: #808080;
-`;
-
-export const SPickerInput = styled(Picker)`
+  font-size: 1.6rem;
   color: #808080;
 `;

@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.View``;
 
@@ -6,23 +6,23 @@ export const Menu = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 0;
+  margin: 1rem 0;
 `;
 
 export const ProfileButton = styled.TouchableOpacity`
   background: #3e44c7;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-  width: 40px;
-  height: 40px;
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+  width: 4rem;
+  height: 4rem;
   justify-content: center;
   align-items: center;
 `;
 
 export const NotificationsButton = styled.TouchableOpacity`
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2rem;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -30,9 +30,9 @@ export const NotificationsButton = styled.TouchableOpacity`
 
 export const Notifications = styled.View`
   background: #f57373;
-  width: 14px;
-  height: 14px;
-  border-radius: 7px;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 0.7rem;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -42,16 +42,16 @@ export const Notifications = styled.View`
 
 export const Counter = styled.Text`
   font-family: 'Roboto';
-  font-size: 10px;
+  font-size: 1rem;
   color: #fff;
 `;
 
 export const MenuButton = styled.TouchableOpacity`
   background: #3e44c7;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  width: 40px;
-  height: 40px;
+  border-top-left-radius: 0.8rem;
+  border-bottom-left-radius: 0.8rem;
+  width: 4rem;
+  height: 4rem;
   justify-content: center;
   align-items: center;
 `;

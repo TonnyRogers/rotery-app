@@ -1,10 +1,10 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.View`
   background: #fff;
-  margin: 10px;
-  padding: 10px;
-  border-radius: 8px;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 0.8rem;
   elevation: 3;
 `;
 
@@ -14,12 +14,12 @@ export const RowGroup = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 3rem;
 `;
 
 export const Name = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
 `;
 
@@ -27,14 +27,14 @@ export const Location = styled.Text.attrs({
   numberOfLines: 1,
 })`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
-  max-width: 200px;
+  max-width: 20rem;
 `;
 
 export const DateText = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
@@ -44,7 +44,7 @@ export const Description = styled.Text.attrs({
   numberOfLines: 3,
 })`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #545454;
 `;
 
@@ -52,7 +52,7 @@ export const Actions = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 1rem;
 `;
 
 export const Badges = styled.View`
@@ -62,36 +62,36 @@ export const Badges = styled.View`
 `;
 
 export const Badge = styled.View`
-  width: 48px;
-  height: 40px;
+  width: 4.8rem;
+  height: 4rem;
   background: #4885fd;
   flex-direction: column;
   align-items: center;
-  border-radius: 8px;
-  margin-right: 8px;
+  border-radius: 0.8rem;
+  margin-right: 0.8rem;
   justify-content: center;
 `;
 
 export const Quantity = styled.Text`
   font-family: 'Roboto';
-  font-size: 10px;
+  font-size: 1rem;
   color: #fff;
 `;
 
 export const DetailsButton = styled.TouchableOpacity`
-  height: 37px;
+  height: 3.7rem;
   align-items: center;
   justify-content: center;
   background: #3dc77b;
   flex: 1;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
 `;
 
 export const DetailsButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: bold;
   color: #fff;
 `;
@@ -102,19 +102,19 @@ export const StatusContent = styled.View`
 `;
 
 export const Status = styled.View`
-  width: 110px;
-  height: 25px;
+  width: 11rem;
+  height: 2.5rem;
   background: #4885fd;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 1rem;
   position: absolute;
   right: 0;
 `;
 
 export const StatusName = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #fff;
 `;

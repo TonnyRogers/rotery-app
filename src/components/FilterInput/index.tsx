@@ -55,38 +55,38 @@ const FilterInput: React.FC<FilterInputProps> = ({
       <Modal visible={visible} animationType="fade" transparent>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <SafeAreaView>
-          <Content>
-            <ModalHeader>
-              <Title>Filtro</Title>
-              <CloseButton onPress={onRequestClose}>
-                <Icon name="close" size={24} color="#3dc77b" />
-              </CloseButton>
-            </ModalHeader>
-            <ModalContent>
-              <DateInput
-                date={beginDate}
-                onChange={setBeginDate}
-                label="Inicio do Roteiro"
-              />
-              <DateInput
-                date={endDate}
-                onChange={setEndDate}
-                label="Fim do Roteiro"
-              />
-              <Input
-                value={location}
-                onChange={setLocation}
-                ref={locationRef}
-                label="Localidade"
-              />
-              <Actions>
-                <FilterButton onPress={handleFilter}>
-                  <FilterButtonText>Filtrar</FilterButtonText>
-                </FilterButton>
-              </Actions>
-            </ModalContent>
-          </Content>
+          <SafeAreaView>
+            <Content>
+              <ModalHeader>
+                <Title>Filtro</Title>
+                <CloseButton onPress={onRequestClose}>
+                  <Icon name="close" size={24} color="#3dc77b" />
+                </CloseButton>
+              </ModalHeader>
+              <ModalContent>
+                <DateInput
+                  date={beginDate}
+                  onChange={setBeginDate}
+                  label="Inicio do Roteiro"
+                />
+                <DateInput
+                  date={endDate}
+                  onChange={setEndDate}
+                  label="Fim do Roteiro"
+                />
+                <Input
+                  value={location}
+                  onChange={setLocation}
+                  ref={locationRef}
+                  label="Localidade"
+                />
+                <Actions>
+                  <FilterButton onPress={handleFilter}>
+                    <FilterButtonText>Filtrar</FilterButtonText>
+                  </FilterButton>
+                </Actions>
+              </ModalContent>
+            </Content>
           </SafeAreaView>
         </KeyboardAvoidingView>
       </Modal>

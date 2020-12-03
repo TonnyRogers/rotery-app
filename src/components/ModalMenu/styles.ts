@@ -1,9 +1,13 @@
-import styled from 'styled-components/native';
-import {Animated} from 'react-native';
+import styled from 'styled-native-components';
+import {
+  Animated,
+  Modal,
+  KeyboardAvoidingView as RNKAvoidView,
+} from 'react-native';
 
-export const Container = styled.Modal``;
+export const Container = styled(Modal)``;
 
-export const KeyboardAvoidingView = styled.KeyboardAvoidingView.attrs({
+export const KeyboardAvoidingView = styled(RNKAvoidView).attrs({
   blurRadius: 1,
 })`
   background: rgba(0, 0, 0, 0.4);
@@ -13,10 +17,10 @@ export const KeyboardAvoidingView = styled.KeyboardAvoidingView.attrs({
 
 export const Content = styled(Animated.View)`
   background: #fff;
-  min-height: 300px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 10px;
+  min-height: 30rem;
+  border-bottom-left-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  padding: 1rem;
 `;
 
 export const Header = styled.View`
@@ -26,16 +30,16 @@ export const Header = styled.View`
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
-  margin-left: 5px;
+  margin-left: 0.5rem;
 `;
 
 export const Actions = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin-top: 10px;
+  margin-top: 1rem;
 `;
 
 export const MenuButton = styled.TouchableOpacity`
@@ -44,33 +48,33 @@ export const MenuButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   width: 47%;
-  height: 100px;
-  border-radius: 8px;
-  margin: 5px;
+  height: 10rem;
+  border-radius: 0.8rem;
+  margin: 0.5rem;
   position: relative;
 `;
 
 export const MenuButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
 `;
 
 export const CounterContent = styled.View`
   background: #f57373;
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.4rem;
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 5px;
+  bottom: 0.5rem;
 `;
 
 export const Counter = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #fff;
 `;
 
@@ -78,7 +82,7 @@ export const ItinerariesButton = styled.TouchableOpacity``;
 
 export const ItinerariesButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
   color: #fff;
   align-self: center;
@@ -88,7 +92,7 @@ export const FavoritesButton = styled.TouchableOpacity``;
 
 export const FavoritesButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
   color: #fff;
 `;
@@ -98,13 +102,13 @@ export const SignOutButton = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 1rem;
+  border-radius: 0.8rem;
 `;
 
 export const SignOutButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
   color: #3e44c7;
 `;
@@ -114,8 +118,8 @@ export const CloseButton = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;

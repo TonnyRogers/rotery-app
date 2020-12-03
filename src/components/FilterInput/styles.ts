@@ -1,22 +1,26 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
+import {
+  Modal as RNModal,
+  KeyboardAvoidingView as RNKAvoidingView,
+} from 'react-native';
 
 export const Container = styled.View`
   flex: 1;
 `;
 
-export const Modal = styled.Modal``;
+export const Modal = styled(RNModal)``;
 
-export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
+export const KeyboardAvoidingView = styled(RNKAvoidingView)`
   background: rgba(0, 0, 0, 0.8);
   flex: 1;
 `;
 
 export const Content = styled.View`
   background: #fff;
-  min-height: 300px;
-  border-radius: 8px;
-  padding: 10px;
-  margin: 20px 10px;
+  min-height: 30rem;
+  border-radius: 0.8rem;
+  padding: 1rem;
+  margin: 2rem 1rem;
 `;
 
 export const ModalHeader = styled.View`
@@ -26,7 +30,7 @@ export const ModalHeader = styled.View`
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
 `;
 
@@ -38,19 +42,19 @@ export const Actions = styled.View``;
 
 export const FilterButton = styled.TouchableOpacity`
   background: #4885fd;
-  height: 40px;
-  width: 120px;
+  height: 4rem;
+  width: 12rem;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  border-top-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-top-right-radius: 0.8rem;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
 `;
 
 export const FilterButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
 `;

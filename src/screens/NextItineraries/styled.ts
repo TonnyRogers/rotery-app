@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -10,18 +10,18 @@ export const ContentHeader = styled.View`
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  height: 20px;
-  width: 20px;
+  height: 2rem;
+  width: 2rem;
   align-items: center;
   justify-content: center;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  margin-left: 20px;
+  margin-left: 2rem;
 `;
 
 export const Content = styled.View`
@@ -39,16 +39,16 @@ export const ColumnGroup = styled.View`
 
 export const FeedButton = styled.TouchableOpacity`
   background: #3dc77b;
-  border-radius: 8px;
+  border-radius: 0.8rem;
   align-items: center;
   justify-content: center;
-  height: 44px;
-  margin: 10px 40px;
+  height: 4.4rem;
+  margin: 1rem 4rem;
 `;
 
 export const FeedButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: bold;
   color: #fff;
 `;

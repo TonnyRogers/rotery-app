@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const Container = styled.SafeAreaView`
@@ -20,33 +20,33 @@ export const CardContent = styled.View`
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #808080;
 `;
 
 export const ImageList = styled.View`
   flex-direction: row;
   width: 100%;
-  margin: 10px 0;
+  margin: 1rem 0;
   flex-wrap: wrap;
   align-items: flex-start;
 `;
 
 export const ImageButton = styled.TouchableOpacity`
-  width: 100px;
-  height: 76px;
-  margin: 2px;
+  width: 10rem;
+  height: 7.6rem;
+  margin: 0.2rem;
 `;
 
 export const AddImageButton = styled.View`
-  width: 100px;
-  height: 76px;
-  margin: 2px;
+  width: 10rem;
+  height: 7.6rem;
+  margin: 0.2rem;
   background: #fff;
   border-style: solid;
   border-color: #d9d8d8;
-  border-width: 2px;
-  border-radius: 10px;
+  border-width: 0.2rem;
+  border-radius: 1rem;
   justify-content: center;
   align-items: center;
 `;
@@ -54,7 +54,7 @@ export const AddImageButton = styled.View`
 export const Background = styled.Image`
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 1rem;
 `;
 
 export const BackgroundCover = styled.View`
@@ -64,7 +64,7 @@ export const BackgroundCover = styled.View`
   justify-content: center;
   background: rgba(0, 0, 0, 0.6);
   position: absolute;
-  border-radius: 10px;
+  border-radius: 1rem;
 `;
 
 export const SIcon = styled(Icon)`
@@ -73,42 +73,42 @@ export const SIcon = styled(Icon)`
 
 export const DataContent = styled.View`
   background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  margin: 0 5px 10px 5px;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  margin: 0 0.5rem 1rem 0.5rem;
   elevation: 3;
 `;
 
 export const DataContentHeader = styled.View`
   flex-direction: row;
   align-items: center;
-  margin: 10px 0;
+  margin: 1rem 0;
 `;
 
 export const RowGroup = styled.View`
   flex-direction: row;
   align-items: center;
-  margin: 10px 0;
+  margin: 1rem 0;
 `;
 
 export const RowGroupSpaced = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 0;
+  margin: 1rem 0;
 `;
 
 export const ContentTitle = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
-  margin-left: 10px;
+  margin-left: 1rem;
 `;
 
 export const IconHolder = styled.View`
-  height: 40px;
-  width: 40px;
-  border-radius: 20px;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
   background: #4885fd;
   align-items: center;
   justify-content: center;
@@ -132,13 +132,13 @@ export const RemoveButton = styled.TouchableOpacity``;
 
 export const FieldTitle = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #808080;
 `;
 
 export const FieldValue = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
@@ -149,11 +149,11 @@ export const AddTransportButton = styled.TouchableOpacity`
 
 export const SubmitButton = styled.TouchableOpacity`
   background: #3dc77b;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-top-left-radius: 10px;
-  height: 37px;
-  padding: 10px 20px;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-top-left-radius: 1rem;
+  height: 3.7rem;
+  padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
   justify-content: center;
@@ -163,7 +163,7 @@ export const SubmitButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
   color: #fff;
-  font-size: 20px;
+  font-size: 2rem;
 `;
 
 export const LodgingList = styled.View``;

@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -20,10 +20,10 @@ export const UserDetail = styled.View`
 `;
 
 export const Avatar = styled.Image`
-  height: 100px;
-  width: 100px;
-  border-radius: 8px;
-  margin-right: 5px;
+  height: 10rem;
+  width: 10rem;
+  border-radius: 0.8rem;
+  margin-right: 0.5rem;
   background: #eee;
 `;
 
@@ -33,60 +33,60 @@ export const RateStars = styled.View`
 
 export const Name = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
 `;
 
 export const DateJoin = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const Profission = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const Age = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const Location = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const ConnectButton = styled.TouchableOpacity`
   background: #3dc77b;
-  height: 40px;
-  width: 120px;
+  height: 4rem;
+  width: 12rem;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  border-top-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  margin: 10px;
+  border-top-right-radius: 0.8rem;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+  margin: 1rem;
 `;
 
 export const ConnectButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
-  margin-right: 5px;
+  margin-right: 0.5rem;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: bold;
-  margin: 10px 0;
+  margin: 1rem 0;
   text-align: center;
 `;
 
@@ -94,23 +94,23 @@ export const RateList = styled.View``;
 
 export const ItineraryName = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: 700;
 `;
 
 export const ItineraryDate = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const IconContent = styled.View`
   background: #4885fd;
-  height: 30px;
-  width: 30px;
+  height: 3rem;
+  width: 3rem;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 0.8rem;
 `;
 
 export const RowGroupSpaced = styled.View`
@@ -128,6 +128,6 @@ export const UserRate = styled.View`
 
 export const RateDescription = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;

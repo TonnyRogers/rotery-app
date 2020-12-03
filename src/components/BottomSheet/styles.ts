@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 import {Animated} from 'react-native';
 
 export const Container = styled.View``;
@@ -11,7 +11,7 @@ export const Overlay = styled.View`
 
 export const Content = styled(Animated.View)`
   background: #fff;
-  padding-top: 12px;
-  border-top-right-radius: 12px;
-  border-top-left-radius: 12px;
+  padding-top: 1.2rem;
+  border-top-right-radius: 1.2rem;
+  border-top-left-radius: 1.2rem;
 `;

@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -6,13 +6,13 @@ export const Container = styled.SafeAreaView`
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
-  margin-left: 10px;
+  margin-left: 1rem;
 `;
 
 export const CardContent = styled.View`
-  min-height: 460px;
+  min-height: 46rem;
 `;
 
 export const ColumnGroup = styled.View``;
@@ -21,7 +21,7 @@ export const UserList = styled.ScrollView``;
 
 export const User = styled.View`
   flex-direction: row;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 `;
 
 export const UserButton = styled.TouchableOpacity`
@@ -30,21 +30,21 @@ export const UserButton = styled.TouchableOpacity`
 `;
 
 export const UserImage = styled.Image`
-  height: 50px;
-  width: 50px;
-  border-radius: 8px;
-  margin-right: 5px;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 0.8rem;
+  margin-right: 0.5rem;
   background: #eee;
 `;
 
 export const Name = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
 `;
 
 export const JoinDate = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;

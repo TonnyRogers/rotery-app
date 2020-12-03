@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.TouchableOpacity`
   flex-direction: row;
@@ -6,23 +6,23 @@ export const Container = styled.TouchableOpacity`
   align-items: center;
   background: #fff;
   elevation: 3;
-  min-height: 60px;
-  margin: 8px;
-  border-radius: 8px;
-  padding: 5px 8px;
+  min-height: 6rem;
+  margin: 0.8rem;
+  border-radius: 0.8rem;
+  padding: 0.5rem 0.8rem;
 `;
 
 export const ColumGroup = styled.View``;
 
 export const Subject = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
 `;
 
 export const Type = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
@@ -32,17 +32,17 @@ export const RowGroup = styled.View`
 
 export const DateText = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
 `;
 
 export const NotificationButton = styled.View`
-  width: 32px;
-  height: 32px;
+  width: 3.2rem;
+  height: 3.2rem;
   background: #4885fd;
   flex-direction: row;
   align-items: center;
-  border-radius: 8px;
-  margin-left: 5px;
+  border-radius: 0.8rem;
+  margin-left: 0.5rem;
   justify-content: center;
 `;

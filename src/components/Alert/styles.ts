@@ -1,19 +1,23 @@
-import styled from 'styled-components/native';
-import {Animated} from 'react-native';
+import styled from 'styled-native-components';
+import {
+  Animated,
+  Modal,
+  KeyboardAvoidingView as RNKAvoidingView,
+} from 'react-native';
 
-export const Container = styled.Modal``;
+export const Container = styled(Modal)``;
 
-export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
+export const KeyboardAvoidingView = styled(RNKAvoidingView)`
   background: rgba(0, 0, 0, 0.8);
   flex: 1;
 `;
 
 export const Content = styled(Animated.View)`
   background: #fff;
-  min-height: 300px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 10px;
+  min-height: 30rem;
+  border-bottom-left-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  padding: 1rem;
   align-items: center;
   justify-content: center;
 `;
@@ -21,20 +25,20 @@ export const Content = styled(Animated.View)`
 export const Header = styled.View`
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 2rem;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: bold;
 `;
 
 export const Message = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #9d9d9d;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
   align-self: center;
 `;
 
@@ -46,42 +50,42 @@ export const AlertActions = styled.View`
 
 export const ConfirmButton = styled.TouchableOpacity`
   background: #3dc77b;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  height: 37px;
-  padding: 10px 20px;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  height: 3.7rem;
+  padding: 1rem 2rem;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-right: 5px;
+  margin-right: 0.5rem;
 `;
 
 export const CancelButton = styled.TouchableOpacity`
   background: #f57373;
-  border-top-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  height: 37px;
-  padding: 10px 20px;
+  border-top-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  height: 3.7rem;
+  padding: 1rem 2rem;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-left: 5px;
+  margin-left: 0.5rem;
 `;
 
 export const ButtonText = styled.Text`
-  font-size: 20px;
+  font-size: 2rem;
   font-family: 'Roboto';
   color: #fff;
   font-weight: bold;
-  margin: 0 8px;
+  margin: 0 0.8rem;
 `;
 
 export const BaseBlock = styled.View`
   background: #9d9d9d;
-  height: 7px;
-  border-radius: 3px;
-  width: 172px;
-  margin-top: 90px;
+  height: 0.7rem;
+  border-radius: 0.3rem;
+  width: 17.2rem;
+  margin-top: 9rem;
 `;

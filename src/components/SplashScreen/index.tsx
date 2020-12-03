@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 import LottieView from 'lottie-react-native';
 
 import {Container, KeyboardAvoidingView, Content, Title} from './styles';

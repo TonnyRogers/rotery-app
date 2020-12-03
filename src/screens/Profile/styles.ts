@@ -1,7 +1,7 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const SafeView = styled.SafeAreaView`
-flex: 1;
+  flex: 1;
 `;
 
 export const Container = styled.ScrollView`
@@ -18,33 +18,32 @@ export const User = styled.View`
 `;
 
 export const Avatar = styled.Image`
-  height: 114px;
-  width: 114px;
-  border-radius: 8px;
+  height: 11.4rem;
+  width: 11.4rem;
+  border-radius: 0.8rem;
   background: #f8f8f8;
-  border-color: #cfcfcf;
-  border-width: 1px;
+  border-width: 0.1rem;
 `;
 
 export const ChangeAvatarButton = styled.TouchableOpacity`
-  height: 31px;
-  width: 114px;
+  height: 3.1rem;
+  width: 11.4rem;
   background: #3e44c7;
-  border-radius: 8px;
-  margin-top: 10px;
+  border-radius: 0.8rem;
+  margin-top: 1rem;
   align-items: center;
   justify-content: center;
 `;
 
 export const ChangeAvatarButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #fff;
 `;
 
 export const UserName = styled.Text`
   font-family: 'Roboto';
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: bold;
 `;
 
@@ -54,7 +53,7 @@ export const Reputation = styled.View`
 
 export const Joined = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
@@ -70,11 +69,11 @@ export const ActionContent = styled.View`
 
 export const SubmitButton = styled.TouchableOpacity`
   background: #3dc77b;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  height: 37px;
-  padding: 10px 20px;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  height: 3.7rem;
+  padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
   justify-content: center;
@@ -84,26 +83,26 @@ export const SubmitButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
   color: #fff;
-  font-size: 20px;
+  font-size: 2rem;
 `;
 
 export const DeleteAccountButton = styled.TouchableOpacity`
   flex-direction: row;
   background: #f57373;
   flex: 1;
-  height: 52px;
+  height: 5.2rem;
   align-items: center;
   justify-content: center;
-  margin: 10px;
-  border-radius: 8px;
+  margin: 1rem;
+  border-radius: 0.8rem;
 `;
 
 export const DeleteAccountButtonText = styled.Text`
-  font-size: 20px;
+  font-size: 2rem;
   font-family: 'Roboto';
   color: #fff;
   font-weight: bold;
-  margin: 0 8px;
+  margin: 0 0.8rem;
 `;
 
 export const AlertContent = styled.View`
@@ -113,9 +112,9 @@ export const AlertContent = styled.View`
 
 export const AlertText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #9d9d9d;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 `;
 
 export const AlertActions = styled.View`
@@ -126,42 +125,42 @@ export const AlertActions = styled.View`
 
 export const ConfirmButton = styled.TouchableOpacity`
   background: #3dc77b;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  height: 37px;
-  padding: 10px 20px;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  height: 3.7rem;
+  padding: 1rem 2rem;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-right: 5px;
+  margin-right: 0.5rem;
 `;
 
 export const CancelButton = styled.TouchableOpacity`
   background: #f57373;
-  border-top-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  height: 37px;
-  padding: 10px 20px;
+  border-top-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  height: 3.7rem;
+  padding: 1rem 2rem;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-left: 5px;
+  margin-left: 0.5rem;
 `;
 
 export const ButtonText = styled.Text`
-  font-size: 20px;
+  font-size: 2rem;
   font-family: 'Roboto';
   color: #fff;
   font-weight: bold;
-  margin: 0 8px;
+  margin: 0 0.8rem;
 `;
 
 export const BaseBlock = styled.View`
   background: #9d9d9d;
-  height: 7px;
-  border-radius: 3px;
-  width: 172px;
-  margin-top: 90px;
+  height: 0.7rem;
+  border-radius: 0.3rem;
+  width: 17.2rem;
+  margin-top: 9rem;
 `;

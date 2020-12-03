@@ -1,12 +1,11 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
-export const Container = styled.View.attrs({
-  elevation: 3,
-})`
+export const Container = styled.View.attrs({})`
   background: #fff;
-  margin: 10px;
-  padding: 10px;
-  border-radius: 8px;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  elevation: 2;
 `;
 
 export const CardContent = styled.View``;

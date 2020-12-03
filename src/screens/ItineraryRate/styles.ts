@@ -1,4 +1,4 @@
-import styled from 'styled-components/native';
+import styled from 'styled-native-components';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -27,85 +27,85 @@ export const User = styled.View`
 `;
 
 export const Avatar = styled.Image`
-  height: 114px;
-  width: 114px;
-  border-radius: 8px;
+  height: 11.4rem;
+  width: 11.4rem;
+  border-radius: 0.8rem;
   background: #f8f8f8;
   border-color: #cfcfcf;
-  border-width: 1px;
+  border-width: 0.1rem;
 `;
 
 export const ChangeAvatarButton = styled.TouchableOpacity`
-  height: 31px;
-  width: 114px;
+  height: 3.1rem;
+  width: 11.4rem;
   background: #3e44c7;
-  border-radius: 8px;
-  margin-top: 10px;
+  border-radius: 0.8rem;
+  margin-top: 1rem;
   align-items: center;
   justify-content: center;
 `;
 
 export const ChangeAvatarButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #fff;
 `;
 
 export const UserName = styled.Text`
   font-family: 'Roboto';
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: bold;
 `;
 
 export const Reputation = styled.View`
   flex-direction: row;
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
 `;
 
 export const Joined = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
   color: #4885fd;
 `;
 
 export const ItineraryName = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
 `;
 
 export const ItineraryLocation = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const ItineraryDate = styled.Text`
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: 1.4rem;
   color: #9d9d9d;
 `;
 
 export const SubmitButton = styled.TouchableOpacity`
   background: #4885fd;
-  height: 44px;
+  height: 4.4rem;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 0.8rem;
   flex-direction: row;
-  margin: 10px;
+  margin: 1rem;
 `;
 
 export const SubmitButtonText = styled.Text`
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
 `;

@@ -96,67 +96,67 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   return (
     <SafeView>
-    <Container>
-      <Header />
-      <Card>
-        <CardHeader>
-          <BackButton onPress={() => navigation.goBack()}>
-            <Icon name="chevron-left" size={24} color="#3dc77b" />
-          </BackButton>
-        </CardHeader>
-        <CardContent>
-          <UserInfo>
-            <UserButton>
-              <UserImage
-                source={{
-                  uri:
-                    sender && sender.sender.person.file
-                      ? sender.sender.person.file.url
-                      : '..',
-                }}
-                resizeMode="cover"
+      <Container>
+        <Header />
+        <Card>
+          <CardHeader>
+            <BackButton onPress={() => navigation.goBack()}>
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </BackButton>
+          </CardHeader>
+          <CardContent>
+            <UserInfo>
+              <UserButton>
+                <UserImage
+                  source={{
+                    uri:
+                      sender && sender.sender.person.file
+                        ? sender.sender.person.file.url
+                        : '..',
+                  }}
+                  resizeMode="cover"
+                />
+              </UserButton>
+              <ColumnGroup>
+                <Name>{sender && sender.sender.username}</Name>
+                <JoinDate>Conversa</JoinDate>
+              </ColumnGroup>
+            </UserInfo>
+            <ConversationList ref={scrollViewRef}>
+              {conversation.map((messageItem) =>
+                messageItem.sender_id === user.id ? (
+                  <ReplyContent key={messageItem.id}>
+                    <Message>{messageItem.message}</Message>
+                    <MessageDate>
+                      {formatDate(messageItem.created_at)}
+                    </MessageDate>
+                  </ReplyContent>
+                ) : (
+                  <MessageContent key={messageItem.id}>
+                    <Message>{messageItem.message}</Message>
+                    <MessageDate>
+                      {formatDate(messageItem.created_at)}
+                    </MessageDate>
+                  </MessageContent>
+                ),
+              )}
+            </ConversationList>
+            <MessageForm>
+              <TextArea
+                value={message}
+                onChange={setMessage}
+                ref={messageRef}
+                returnKeyType="send"
+                onSubmitEditing={handleSendMessage}
               />
-            </UserButton>
-            <ColumnGroup>
-              <Name>{sender && sender.sender.username}</Name>
-              <JoinDate>Conversa</JoinDate>
-            </ColumnGroup>
-          </UserInfo>
-          <ConversationList ref={scrollViewRef}>
-            {conversation.map((messageItem) =>
-              messageItem.sender_id === user.id ? (
-                <ReplyContent key={messageItem.id}>
-                  <Message>{messageItem.message}</Message>
-                  <MessageDate>
-                    {formatDate(messageItem.created_at)}
-                  </MessageDate>
-                </ReplyContent>
-              ) : (
-                <MessageContent key={messageItem.id}>
-                  <Message>{messageItem.message}</Message>
-                  <MessageDate>
-                    {formatDate(messageItem.created_at)}
-                  </MessageDate>
-                </MessageContent>
-              ),
-            )}
-          </ConversationList>
-          <MessageForm>
-            <TextArea
-              value={message}
-              onChange={setMessage}
-              ref={messageRef}
-              returnKeyType="send"
-              onSubmitEditing={handleSendMessage}
-            />
-            <SendButton onPress={handleSendMessage}>
-              <Icon name="send-outline" size={24} color="#FFF" />
-              <SendButtonText>Enviar</SendButtonText>
-            </SendButton>
-          </MessageForm>
-        </CardContent>
-      </Card>
-    </Container>
+              <SendButton onPress={handleSendMessage}>
+                <Icon name="send-outline" size={24} color="#FFF" />
+                <SendButtonText>Enviar</SendButtonText>
+              </SendButton>
+            </MessageForm>
+          </CardContent>
+        </Card>
+      </Container>
     </SafeView>
   );
 };

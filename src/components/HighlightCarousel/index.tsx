@@ -47,7 +47,14 @@ const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
 
   let bullets = [];
   for (let counter = 1; counter <= intervals; counter++) {
-    bullets.push(<Bullet current={counter === interval} key={counter} />);
+    bullets.push(
+      <Bullet
+        style={{
+          backgroundColor: `${counter === interval ? '#3dc77b' : '#e6e6e6'}`,
+        }}
+        key={counter}
+      />,
+    );
   }
 
   return (
