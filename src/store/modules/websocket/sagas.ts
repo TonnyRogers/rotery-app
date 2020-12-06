@@ -135,12 +135,12 @@ export function* subscribeChat(ownerId: number, targetId: number) {
     });
 
     channel.on('error', () => {
-      Alert.alert('Erro');
+      // Alert.alert('Erro');
     });
 
     channel.on('close', () => {
       chatConnection = false;
-      Alert.alert('Close');
+      // Alert.alert('Close');
     });
 
     return () => {};
