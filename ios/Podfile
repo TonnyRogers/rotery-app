@@ -43,12 +43,3 @@ target 'roteryApp' do
     end
   end
 end
-
-target 'roteryApp-tvOS' do
-  # Pods for roteryApp-tvOS
-
-  target 'roteryApp-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
