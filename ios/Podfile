@@ -39,6 +39,10 @@ target 'roteryApp' do
       if targets_to_ignore.include? target.name
         target.remove_from_project
       end
+      	
+      target.build_configurations.each do |config|
+       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+      end
 
     end
   end
