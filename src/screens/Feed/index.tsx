@@ -201,7 +201,7 @@ const Feed: React.FC = () => {
         visible={sheetVisible}
         onRequestClose={(value) => setSheetVisible(value)}
       />
-      <Ads visible={feedGuide} onRequestClose={() => {}}>
+      <Ads visible={false} onRequestClose={() => {}}>
         <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
       </Ads>
     </Container>
