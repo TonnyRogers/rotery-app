@@ -19,6 +19,7 @@ import {
   refreshTokenFailure,
   setDeviceTokenRequest,
   setDeviceTokenSuccess,
+  setLoadingFalse,
 } from './actions';
 import {
   getActivitiesRequest,
@@ -67,6 +68,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   } catch (error) {
     Alert.alert('Erro ao efetuar login.');
     yield put(loginFailure());
+    yield put(setLoadingFalse());
   }
 }
 
@@ -111,8 +113,9 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
     yield put(registerSuccess(id));
     yield put(loginRequest(email, password));
   } catch (error) {
-    Alert.alert(error.response.data[0].message);
+    yield put(setLoadingFalse());
     yield put(registerFailure());
+    Alert.alert(error.response.data[0].message);
   }
 }
 
@@ -169,6 +172,7 @@ export function* setDeviceToken() {
     });
     yield put(setDeviceTokenSuccess());
   } catch (error) {
+    yield put(setLoadingFalse());
     Alert.alert('Erro ao registrar dispositivo');
   }
 }

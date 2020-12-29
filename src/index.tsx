@@ -5,6 +5,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import {ThemeProvider} from 'styled-native-components';
 import './services/window';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import './config/ReactotronConfig';
 import {store, persistor} from './store';
@@ -19,6 +20,15 @@ class App extends Component {
   }
 
   componentWillUnmount() {}
+
+  componentDidMount() {
+    async function check() { 
+      const tokken = await AsyncStorage.getItem('@notification:token');
+      console.tron.log(tokken);
+    }
+
+    check();
+  }
 
   // disparada quando app esta aberto
   onReceived = (data) => {};

@@ -208,8 +208,7 @@ const Home: React.FC = () => {
                 }),
               },
             ],
-          }}
-          {...panRespoders.panHandlers}>
+          }}>
           <LoginHeader>
             <SwitchLoginButton onPress={() => setLoginVisible(!loginVisible)}>
               <Icon

@@ -86,8 +86,8 @@ export const Actions = styled.View`
 
 export const MessageButton = styled.View`
   background: #f57373;
-  height: 32rem;
-  width: 32rem;
+  height: 3.2rem;
+  width: 3.2rem;
   align-items: center;
   justify-content: center;
   border-radius: 0.8rem;
