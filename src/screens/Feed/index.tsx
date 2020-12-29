@@ -127,7 +127,7 @@ const Feed: React.FC = () => {
   }
 
   function loadFeed() {
-    setPage(page + 1);
+    //setPage(page + 1);
     dispatch(paginateFeedRequest(page, filter.begin, filter.end));
   }
 
@@ -182,10 +182,10 @@ const Feed: React.FC = () => {
             </Card>
           )}
           onRefresh={() => {
-            dispatch(getFeedRequest());
-            setPage(2);
+            //dispatch(getFeedRequest());
+            //setPage(2);
           }}
-          onEndReached={() => loadFeed()}
+          onEndReached={() => {}}
           onEndReachedThreshold={0.1}
           refreshing={loading}
           viewabilityConfig={{viewAreaCoveragePercentThreshold: 20}}

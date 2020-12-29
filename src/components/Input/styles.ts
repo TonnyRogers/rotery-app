@@ -12,6 +12,8 @@ export const Label = styled.Text`
 
 export const Field = styled.TextInput`
   flex: 1;
+  color: #808080;
+  height: 3rem;
 `;
 
 export const Content = styled.View`

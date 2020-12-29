@@ -165,6 +165,7 @@ const NewItinerary: React.FC = () => {
   const [activityCapacity, setActivityCapacity] = useState('');
   const [activityDescription, setActivityDescription] = useState('');
   const [images, setImages] = useState([] as any);
+  const [guideVisible, setGuideVisible] = useState(true);
 
   const descriptionRef = useRef() as any;
   const nameRef = useRef() as any;
@@ -642,7 +643,7 @@ const NewItinerary: React.FC = () => {
           </CardActions>
         </Card>
       </Content>
-      <Ads visible={newItineraryGuide} onRequestClose={() => {}}>
+      <Ads visible={guideVisible} onRequestClose={() => {}}>
         <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
       </Ads>
     </Container>
