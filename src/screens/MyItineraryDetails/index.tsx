@@ -1,5 +1,5 @@
 import React, {useState, useRef, useMemo} from 'react';
-import {View} from 'react-native';
+import {View, KeyboardAvoidingView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -162,6 +162,10 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   }
 
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    style={{ flex:1, justifyContent: 'center'} }
+  >
     <Container>
       <Header />
       <Content>
@@ -384,6 +388,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
       </Ads>
     </Container>
+    </KeyboardAvoidingView>
   );
 };
 

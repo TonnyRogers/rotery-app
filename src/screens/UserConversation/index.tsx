@@ -4,6 +4,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
+import {ScrollView, KeyboardAvoidingView, Platform, Keyboard} from 'react-native';
+
 
 import {
   getMessagesRequest,
@@ -42,7 +44,7 @@ import Header from '../../components/Header';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import {RootStateProps} from '../../store/modules/rootReducer';
-import {ScrollView} from 'react-native';
+
 
 interface UserConversation {
   route: {
@@ -87,6 +89,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   }
 
   function handleSendMessage() {
+    Keyboard.dismiss();
     if (!message) {
       return;
     }
@@ -96,6 +99,10 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   return (
     <SafeView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ justifyContent: 'flex-end', marginBottom: 50 } }
+      >
       <Container>
         <Header />
         <Card>
@@ -141,6 +148,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
                 ),
               )}
             </ConversationList>
+            
             <MessageForm>
               <TextArea
                 value={message}
@@ -157,6 +165,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
           </CardContent>
         </Card>
       </Container>
+      </KeyboardAvoidingView>
     </SafeView>
   );
 };

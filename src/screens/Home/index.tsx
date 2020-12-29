@@ -44,7 +44,7 @@ const images = [
   {
     id: 1,
     url:
-      'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/e35/122710052_265228344916662_7643155457604945242_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=1c-_ZP-lc_AAX95TzhX&tp=18&oh=5ce3c6785d20945725c987c591d8d11b&oe=5FD89A66',
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-defender.jpg',
     withInfo: true,
     title: 'Versão BETA Lançada:',
     message:
@@ -53,7 +53,7 @@ const images = [
   {
     id: 2,
     url:
-      'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/fr/e15/s1080x1080/120260212_398861281104741_8446377112608016734_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=109&_nc_ohc=HTLIWGNcwMkAX_fG63d&_nc_tp=25&oh=c01580206c119f90cc98f62c6b11790a&oe=5FD95511',
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-montanha.jpg',
     withInfo: true,
     title: 'Sobre a Rotery:',
     message:
@@ -62,7 +62,7 @@ const images = [
   {
     id: 3,
     url:
-      'https://instagram.fcgh14-1.fna.fbcdn.net/v/t51.2885-15/e35/120907285_1869239136549589_3762586591150118781_n.jpg?_nc_ht=instagram.fcgh14-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=wkZ9KbW23LIAX9NCiZL&tp=18&oh=30862e9eccd086146d81e3a294eba5f4&oe=5FD96D26',
+      'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-banner.jpg',
     withInfo: true,
     title: 'Nos Apoie:',
     message:

@@ -207,6 +207,7 @@ export const SendButtonText = styled.Text`
 
 export const StatusContent = styled.View`
   position: relative;
+  z-index: 10;
 `;
 
 export const Status = styled.View`

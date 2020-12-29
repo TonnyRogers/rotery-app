@@ -161,7 +161,7 @@ const Routes = () => {
           </>
         )}
       </Stack.Navigator>
-      <SplashScreen visible={loading} />
+      {/*<SplashScreen visible={loading} />*/}
     </NavigationContainer>
   );
 };

@@ -1,5 +1,5 @@
 import React, {useState, useRef, useMemo} from 'react';
-import {View} from 'react-native';
+import {View, KeyboardAvoidingView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -126,6 +126,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   }
 
   return (
+    <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex:1, justifyContent: 'center'} }
+      >
     <Container>
       <Header />
       <Content>
@@ -331,6 +335,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
         </Card>
       </Content>
     </Container>
+    </KeyboardAvoidingView>
   );
 };
 
