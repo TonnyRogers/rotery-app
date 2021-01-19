@@ -643,7 +643,7 @@ const NewItinerary: React.FC = () => {
           </CardActions>
         </Card>
       </Content>
-      <Ads visible={guideVisible} onRequestClose={() => {}}>
+      <Ads visible={newItineraryGuide} onRequestClose={() => {}}>
         <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
       </Ads>
     </Container>

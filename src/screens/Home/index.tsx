@@ -1,14 +1,11 @@
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch} from 'react-redux';
-import {Text, Animated, PanResponder} from 'react-native';
-
-import {localNotification} from '../../services/notifications';
+import {useDispatch, useSelector} from 'react-redux';
+import {Text, Animated} from 'react-native';
 
 import {loginRequest} from '../../store/modules/auth/actions';
 import {setLoadingFalse} from '../../store/modules/auth/actions';
-import {wsSubscribeUserToNotifications} from '../../store/modules/websocket/actions';
 
 import {
   SafeView,
@@ -39,6 +36,8 @@ import Alert from '../../components/Alert';
 import HighlightCarousel from '../../components/HighlightCarousel';
 import GuideCarousel from '../../components/GuideCarousel';
 import Ads from '../../components/Ads';
+import SplashScreen from '../../components/SplashScreen';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 const images = [
   {
@@ -109,6 +108,8 @@ const Home: React.FC = () => {
   const passwordRef = useRef() as any;
   const panY = useRef(new Animated.ValueXY({x: 0, y: 400})).current;
 
+  const {loading} = useSelector((state: RootStateProps) => state.auth);
+
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
       toValue: 0,
@@ -125,28 +126,6 @@ const Home: React.FC = () => {
     }).start();
     setLoginVisible(false);
   }, [panY.y]);
-
-  const panRespoders = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => false,
-      onPanResponderMove: (e, gs) => {
-        if (gs.dy > 0) {
-          panY.setValue({x: 0, y: gs.dy});
-        }
-      },
-      onPanResponderRelease: (e, gs) => {
-        if (gs.dy > 0 && gs.vy > 1) {
-          return handleDismiss();
-        }
-        Animated.spring(panY.y, {
-          toValue: 400,
-          bounciness: 3,
-          useNativeDriver: false,
-        }).start();
-      },
-    }),
-  ).current;
 
   useEffect(() => {
     dispatch(setLoadingFalse());
@@ -166,11 +145,6 @@ const Home: React.FC = () => {
   function passwordRecover() {
     setLoginVisible(false);
     navigation.navigate('RecoverPassword');
-  }
-
-  function openAlert(message: string) {
-    setAlertVisible(true);
-    setAlertMessage(message);
   }
 
   function closeAlert() {
@@ -274,6 +248,7 @@ const Home: React.FC = () => {
         <Ads visible={false} onRequestClose={() => {}}>
           <GuideCarousel data={guideImages} />
         </Ads>
+        <SplashScreen visible={loading} />
       </Container>
     </SafeView>
   );

@@ -4,8 +4,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
-import {ScrollView, KeyboardAvoidingView, Platform, Keyboard} from 'react-native';
-
+import {
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from 'react-native';
 
 import {
   getMessagesRequest,
@@ -44,7 +48,6 @@ import Header from '../../components/Header';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import {RootStateProps} from '../../store/modules/rootReducer';
-
 
 interface UserConversation {
   route: {
@@ -99,72 +102,71 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   return (
     <SafeView>
+      <Header />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ justifyContent: 'flex-end', marginBottom: 50 } }
-      >
-      <Container>
-        <Header />
-        <Card>
-          <CardHeader>
-            <BackButton onPress={() => navigation.goBack()}>
-              <Icon name="chevron-left" size={24} color="#3dc77b" />
-            </BackButton>
-          </CardHeader>
-          <CardContent>
-            <UserInfo>
-              <UserButton>
-                <UserImage
-                  source={{
-                    uri:
-                      sender && sender.sender.person.file
-                        ? sender.sender.person.file.url
-                        : '..',
-                  }}
-                  resizeMode="cover"
+        style={{justifyContent: 'flex-end', marginBottom: 50}}>
+        <Container>
+          <Card>
+            <CardHeader>
+              <BackButton onPress={() => navigation.goBack()}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+            </CardHeader>
+            <CardContent>
+              <UserInfo>
+                <UserButton>
+                  <UserImage
+                    source={{
+                      uri:
+                        sender && sender.sender.person.file
+                          ? sender.sender.person.file.url
+                          : '..',
+                    }}
+                    resizeMode="cover"
+                  />
+                </UserButton>
+                <ColumnGroup>
+                  <Name>{sender && sender.sender.username}</Name>
+                  <JoinDate>Conversa</JoinDate>
+                </ColumnGroup>
+              </UserInfo>
+              <ConversationList ref={scrollViewRef}>
+                {conversation.map((messageItem) =>
+                  messageItem.sender_id === user.id ? (
+                    <ReplyContent key={messageItem.id}>
+                      <Message>{messageItem.message}</Message>
+                      <MessageDate>
+                        {formatDate(messageItem.created_at)}
+                      </MessageDate>
+                    </ReplyContent>
+                  ) : (
+                    <MessageContent key={messageItem.id}>
+                      <Message>{messageItem.message}</Message>
+                      <MessageDate>
+                        {formatDate(messageItem.created_at)}
+                      </MessageDate>
+                    </MessageContent>
+                  ),
+                )}
+              </ConversationList>
+
+              <MessageForm>
+                <TextArea
+                  value={message}
+                  onChange={setMessage}
+                  ref={messageRef}
+                  returnKeyType="send"
+                  onSubmitEditing={handleSendMessage}
                 />
-              </UserButton>
-              <ColumnGroup>
-                <Name>{sender && sender.sender.username}</Name>
-                <JoinDate>Conversa</JoinDate>
-              </ColumnGroup>
-            </UserInfo>
-            <ConversationList ref={scrollViewRef}>
-              {conversation.map((messageItem) =>
-                messageItem.sender_id === user.id ? (
-                  <ReplyContent key={messageItem.id}>
-                    <Message>{messageItem.message}</Message>
-                    <MessageDate>
-                      {formatDate(messageItem.created_at)}
-                    </MessageDate>
-                  </ReplyContent>
-                ) : (
-                  <MessageContent key={messageItem.id}>
-                    <Message>{messageItem.message}</Message>
-                    <MessageDate>
-                      {formatDate(messageItem.created_at)}
-                    </MessageDate>
-                  </MessageContent>
-                ),
-              )}
-            </ConversationList>
-            
-            <MessageForm>
-              <TextArea
-                value={message}
-                onChange={setMessage}
-                ref={messageRef}
-                returnKeyType="send"
-                onSubmitEditing={handleSendMessage}
-              />
-              <SendButton onPress={handleSendMessage}>
-                <Icon name="send-outline" size={24} color="#FFF" />
-                <SendButtonText>Enviar</SendButtonText>
-              </SendButton>
-            </MessageForm>
-          </CardContent>
-        </Card>
-      </Container>
+                <SendButton onPress={handleSendMessage}>
+                  <Icon name="send-outline" size={24} color="#FFF" />
+                  <SendButtonText>Enviar</SendButtonText>
+                </SendButton>
+              </MessageForm>
+            </CardContent>
+          </Card>
+        </Container>
       </KeyboardAvoidingView>
     </SafeView>
   );

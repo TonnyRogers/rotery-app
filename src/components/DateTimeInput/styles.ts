@@ -10,6 +10,12 @@ export const Label = styled.Text`
   color: #808080;
 `;
 
+export const RowGroup = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin: 1rem 0;
+`;
+
 export const DateButton = styled.TouchableOpacity`
   height: 4.5rem;
   border-radius: 0.4rem;

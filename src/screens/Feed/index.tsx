@@ -121,14 +121,16 @@ const Feed: React.FC = () => {
 
   function clearFilter() {
     Vibration.vibrate([100, 100, 200, 100]);
-    dispatch(getFeedRequest());
     setPage(2);
     setFilter({});
+    dispatch(getFeedRequest());
   }
 
   function loadFeed() {
-    //setPage(page + 1);
-    dispatch(paginateFeedRequest(page, filter.begin, filter.end));
+    if (itineraries.length > 3) {
+      setPage(page + 1);
+      dispatch(paginateFeedRequest(page, filter.begin, filter.end));
+    }
   }
 
   function closeGuide() {
@@ -182,10 +184,10 @@ const Feed: React.FC = () => {
             </Card>
           )}
           onRefresh={() => {
-            //dispatch(getFeedRequest());
-            //setPage(2);
+            setPage(2);
+            dispatch(getFeedRequest());
           }}
-          onEndReached={() => {}}
+          onEndReached={() => loadFeed()}
           onEndReachedThreshold={0.1}
           refreshing={loading}
           viewabilityConfig={{viewAreaCoveragePercentThreshold: 20}}

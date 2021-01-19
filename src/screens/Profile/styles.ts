@@ -23,6 +23,10 @@ export const Avatar = styled.Image`
   border-radius: 0.8rem;
   background: #f8f8f8;
   border-width: 0.1rem;
+  border-top-color: #eee;
+  border-right-color: #eee;
+  border-bottom-color: #eee;
+  border-left-color: #eee;
 `;
 
 export const ChangeAvatarButton = styled.TouchableOpacity`
@@ -72,7 +76,7 @@ export const SubmitButton = styled.TouchableOpacity`
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  height: 3.7rem;
+  height: 4.4rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
@@ -128,7 +132,7 @@ export const ConfirmButton = styled.TouchableOpacity`
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  height: 3.7rem;
+  height: 4.4rem;
   padding: 1rem 2rem;
   align-items: center;
   justify-content: center;
@@ -141,7 +145,7 @@ export const CancelButton = styled.TouchableOpacity`
   border-top-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  height: 3.7rem;
+  height: 4.4rem;
   padding: 1rem 2rem;
   align-items: center;
   justify-content: center;

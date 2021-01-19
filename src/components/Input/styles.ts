@@ -10,10 +10,12 @@ export const Label = styled.Text`
   color: #808080;
 `;
 
-export const Field = styled.TextInput`
+export const Field = styled.TextInput.attrs({
+  placeholderTextColor: '#808080',
+})`
   flex: 1;
   color: #808080;
-  height: 3rem;
+  height: 4.4rem;
 `;
 
 export const Content = styled.View`

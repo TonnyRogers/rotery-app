@@ -29,8 +29,6 @@ import UserConversation from '../screens/UserConversation';
 import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
-import SplashScreen from '../components/SplashScreen';
-import Ads from '../components/Ads';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
@@ -110,7 +108,7 @@ function DirectMessagesTabs() {
 }
 
 const Routes = () => {
-  const {signed, loading} = useSelector((state: RootStateProps) => state.auth);
+  const {signed} = useSelector((state: RootStateProps) => state.auth);
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -161,7 +159,6 @@ const Routes = () => {
           </>
         )}
       </Stack.Navigator>
-      {/*<SplashScreen visible={loading} />*/}
     </NavigationContainer>
   );
 };

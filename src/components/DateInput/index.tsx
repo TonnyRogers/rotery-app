@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useMemo, useState} from 'react';
 import {Platform} from 'react-native';
 import {format} from 'date-fns';
@@ -38,17 +39,27 @@ const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
     <Container>
       <Label>{label}</Label>
       <DateButton onPress={showDatePicker}>
-        <DateText>{dateFormatted}</DateText>
+        {!show && (
+          <DateText>
+            {date ? dateFormatted : 'Clique para selecionar a data'}
+          </DateText>
+        )}
+        {show && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={onChangeDate}
+            textColor="#808080"
+            style={{
+              width: 100,
+              marginRight: 10,
+            }}
+            locale="pt"
+          />
+        )}
         <Icon name="calendar-today" color="#808080" size={24} />
       </DateButton>
-      {show && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="spinner"
-          onChange={onChangeDate}
-        />
-      )}
     </Container>
   );
 };
