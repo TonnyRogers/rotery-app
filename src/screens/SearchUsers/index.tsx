@@ -2,6 +2,7 @@ import React, {useState, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import Toast from 'react-native-toast-message';
 
 import api from '../../services/api';
 
@@ -20,7 +21,6 @@ import {
 import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Input from '../../components/Input';
-import {Alert} from 'react-native';
 
 interface UserProps {
   id: number;
@@ -45,7 +45,11 @@ const SearchUsers: React.FC = () => {
       const response = await api.get(`/users?username=${search}`);
       setUserList(response.data.data);
     } catch (error) {
-      Alert.alert('Erro ao buscar usuários.');
+      Toast.show({
+        text1: 'Erro ao buscar usuários.',
+        position: 'bottom',
+        type: 'error',
+      });
     }
   }
 

@@ -1,7 +1,7 @@
 import {all, call, put, takeLatest} from 'redux-saga/effects';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
-import {Alert} from 'react-native';
 
 import {
   getMessagesRequest,
@@ -23,7 +23,11 @@ export function* getMessages() {
     yield put(getMessagesSuccess(response.data));
   } catch (error) {
     yield put(getMessagesFailure());
-    Alert.alert('Erro ao buscar novas mensagens.');
+    Toast.show({
+      text1: 'Erro ao buscar novas mensagens.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -38,7 +42,11 @@ export function* getConversation({
     yield put(getConversationSuccess(response.data));
   } catch (error) {
     yield put(getConversationFailure());
-    Alert.alert('Erro ao carregar conversa.');
+    Toast.show({
+      text1: 'Erro ao carregar conversa.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -58,7 +66,11 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
   } catch (error) {
     yield put(sendMessageFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao enviar mensagem.');
+    Toast.show({
+      text1: 'Erro ao enviar mensagem.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import Toast from 'react-native-toast-message';
 
 import api from '../../services/api';
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -36,7 +37,6 @@ import {
 } from './styles';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
-import {Alert} from 'react-native';
 
 interface RateProps {
   id: number;
@@ -76,7 +76,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         const response = await api.get(`/profile/${userId}`);
         setProfile(response.data);
       } catch (error) {
-        Alert.alert('Erro ao buscar dados.');
+        Toast.show({
+          text1: 'Erro ao buscar dados.',
+          position: 'bottom',
+          type: 'error',
+        });
       }
     }
 

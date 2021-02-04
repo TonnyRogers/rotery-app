@@ -1,5 +1,5 @@
-import {Alert} from 'react-native';
 import {takeLatest, put, call, all} from 'redux-saga/effects';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import * as RootNavigation from '../../../RootNavigation';
@@ -52,7 +52,11 @@ export function* getItineraries() {
     yield put(setLoadingFalse());
   } catch (error) {
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao buscar seus roteiros');
+    Toast.show({
+      text1: 'Erro ao buscar seus roteiros.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -101,7 +105,11 @@ export function* createItinerary({
   } catch (error) {
     yield put(createItineraryFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao criar roteiro.');
+    Toast.show({
+      text1: 'Erro ao criar roteiro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -118,9 +126,17 @@ export function* deleteItinerary({
     yield put(getItinerariesRequest());
     yield put(setLoadingFalse());
     RootNavigation.navigate('MyItineraries', {});
-    Alert.alert('Roteiro deletado.');
+    Toast.show({
+      text1: 'Roteiro deletado.',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
-    Alert.alert('Não foi possivel deletar roteiro.');
+    Toast.show({
+      text1: 'Não foi possivel deletar roteiro.',
+      position: 'bottom',
+      type: 'error',
+    });
     yield put(deleteItineraryFailure());
     yield put(setLoadingFalse());
   }
@@ -200,11 +216,19 @@ export function* updateItinerary({
     yield put(setLoadingFalse());
     yield put(getItinerariesRequest());
     RootNavigation.navigate('MyItineraries', {});
-    Alert.alert('Roteiro atualizado.');
+    Toast.show({
+      text1: 'Roteiro atualizado.',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(updateItineraryFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao atualizar roteiro.');
+    Toast.show({
+      text1: 'Erro ao atualizar roteiro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -234,7 +258,11 @@ export function* replyQuestion({
   } catch (error) {
     yield put(replyQuestionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao enviar resposta.');
+    Toast.show({
+      text1: 'Erro ao enviar resposta.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -264,7 +292,11 @@ export function* promoteMember({
   } catch (error) {
     yield put(promoteMemberFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao promover o membro.');
+    Toast.show({
+      text1: 'Erro ao promover o membro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -294,7 +326,11 @@ export function* demoteMember({
   } catch (error) {
     yield put(demoteMemberFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao rebaixar o membro.');
+    Toast.show({
+      text1: 'Erro ao rebaixar o membro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -324,7 +360,11 @@ export function* acceptMember({
   } catch (error) {
     yield put(acceptMemberFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao aceitar o membro.');
+    Toast.show({
+      text1: 'Erro ao aceitar o membro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -354,7 +394,11 @@ export function* removeMember({
   } catch (error) {
     yield put(removeMemberFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao remover o membro.');
+    Toast.show({
+      text1: 'Erro ao remover o membro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -368,11 +412,19 @@ export function* finishItinerary({
 
     yield put(setLoadingFalse());
     RootNavigation.navigate('MyItineraries', {});
-    Alert.alert('Roteiro finalizado');
+    Toast.show({
+      text1: 'Roteiro finalizado.',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(notifyItineraryFinishFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao finizar roteiro');
+    Toast.show({
+      text1: 'Erro ao finizar roteiro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

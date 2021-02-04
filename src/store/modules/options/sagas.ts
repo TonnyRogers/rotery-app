@@ -1,4 +1,5 @@
 import {takeLatest, all, put, call} from 'redux-saga/effects';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import {
@@ -10,7 +11,6 @@ import {
   getTransportsFailure,
 } from './actions';
 import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
-import {Alert} from 'react-native';
 
 export function* getActivities() {
   try {
@@ -22,7 +22,11 @@ export function* getActivities() {
   } catch (error) {
     yield put(setLoadingFalse());
     yield put(getActivitiesFailure());
-    Alert.alert('Erro ao carregar atividades');
+    Toast.show({
+      text1: 'Erro ao carregar atividades.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -36,7 +40,11 @@ export function* getLodgings() {
   } catch (error) {
     yield put(setLoadingFalse());
     yield put(getLodgingsFailure());
-    Alert.alert('Erro ao carregar hospedagens');
+    Toast.show({
+      text1: 'Erro ao carregar hospedagens.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -50,7 +58,11 @@ export function* getTransports() {
   } catch (error) {
     yield put(setLoadingFalse());
     yield put(getTransportsFailure());
-    Alert.alert('Erro ao carregar transportes');
+    Toast.show({
+      text1: 'Erro ao carregar transportes.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

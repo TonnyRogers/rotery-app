@@ -1,6 +1,7 @@
 import {all, takeLatest, call, put, take, select} from 'redux-saga/effects';
 import {eventChannel, END} from 'redux-saga';
-import {Alert, Vibration} from 'react-native';
+import {Vibration} from 'react-native';
+import Toast from 'react-native-toast-message';
 import Ws from '@adonisjs/websocket-client';
 
 const protocol = 'wss';
@@ -135,12 +136,20 @@ export function* subscribeChat(ownerId: number, targetId: number) {
     });
 
     channel.on('error', () => {
-      // Alert.alert('Erro');
+      // Toast.show({
+      //   text1: 'Erro.',
+      //   position: 'bottom',
+      //   type: 'error',
+      // });
     });
 
     channel.on('close', () => {
       chatConnection = false;
-      // Alert.alert('Close');
+      // Toast.show({
+      //   text1: 'Close.',
+      //   position: 'bottom',
+      //   type: 'error',
+      // });
     });
 
     return () => {};

@@ -1,5 +1,6 @@
 import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 import api from '../../services/api';
 
@@ -20,7 +21,6 @@ import {
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
-import {Alert} from 'react-native';
 
 interface NewPasswordProps {
   navigation: {
@@ -119,7 +119,11 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
       await api.post(`/users/resetcode/${code}`);
       setIsValid(true);
     } catch (error) {
-      Alert.alert('Código inválido ou expirado, solicite outro');
+      Toast.show({
+        text1: 'Código inválido ou expirado, solicite outro.',
+        position: 'bottom',
+        type: 'error',
+      });
       setNumberOne('');
       setNumberTwo('');
       setNumberThree('');
@@ -144,7 +148,11 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('As senhas não são iguais.');
+      Toast.show({
+        text1: 'As senhas não são iguais.',
+        position: 'bottom',
+        type: 'error',
+      });
       return;
     }
 
@@ -154,10 +162,18 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
     });
 
     try {
-      Alert.alert('Senha alterada');
+      Toast.show({
+        text1: 'Senha alterada.',
+        position: 'bottom',
+        type: 'success',
+      });
       navigation.navigate('Home');
     } catch (error) {
-      Alert.alert('Erro ao alterar senha, revise.');
+      Toast.show({
+        text1: 'Erro ao alterar senha, revise.',
+        position: 'bottom',
+        type: 'error',
+      });
     }
   }
 

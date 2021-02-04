@@ -1,5 +1,5 @@
-import {Alert} from 'react-native';
 import {takeLatest, put, call, all} from 'redux-saga/effects';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
@@ -31,7 +31,11 @@ export function* getItineraries() {
   } catch (error) {
     yield put(getFeedFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao buscar seus roteiros');
+    Toast.show({
+      text1: 'Erro ao buscar seus roteiros.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -56,7 +60,11 @@ export function* getFilteredItineraries({
   } catch (error) {
     yield put(getFeedFilteredFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao buscar seus roteiros');
+    Toast.show({
+      text1: 'Erro ao buscar seus roteiros.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -71,11 +79,19 @@ export function* makeQuestion({
     yield put(getFeedRequest());
     yield put(makeQuestionSuccess());
     yield put(setLoadingFalse());
-    Alert.alert('Pergunta enviada!');
+    Toast.show({
+      text1: 'Pergunta enviada!',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(makeQuestionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao criar pergunta');
+    Toast.show({
+      text1: 'Erro ao criar pergunta.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -93,11 +109,19 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     yield put(joinSuccess());
     yield put(getFeedRequest());
     yield put(setLoadingFalse());
-    Alert.alert('Solicitação enviada.');
+    Toast.show({
+      text1: 'Solicitação enviada!',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(joinFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao solicitar participação.');
+    Toast.show({
+      text1: 'Erro ao solicitar participação.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -124,7 +148,11 @@ export function* getPaginatedItineraries({
   } catch (error) {
     yield put(getFeedFilteredFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao buscar seus roteiros');
+    Toast.show({
+      text1: 'Erro ao buscar seus roteiros.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

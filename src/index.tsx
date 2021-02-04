@@ -6,6 +6,7 @@ import {Provider} from 'react-redux';
 import {ThemeProvider} from 'styled-native-components';
 import './services/window';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-toast-message';
 
 import './config/ReactotronConfig';
 import {store, persistor} from './store';
@@ -22,7 +23,7 @@ class App extends Component {
   componentWillUnmount() {}
 
   componentDidMount() {
-    async function check() { 
+    async function check() {
       const tokken = await AsyncStorage.getItem('@notification:token');
       console.tron.log(tokken);
     }
@@ -65,6 +66,7 @@ class App extends Component {
           <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
           <ThemeProvider theme={theme}>
             <Routes />
+            <Toast ref={(ref) => Toast.setRef(ref)} visibilityTime={3000} />
           </ThemeProvider>
         </PersistGate>
       </Provider>

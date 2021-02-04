@@ -1,6 +1,5 @@
-import {Alert} from 'react-native';
 import {takeLatest, put, call, all} from 'redux-saga/effects';
-import {eventChannel, END} from 'redux-saga';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import {
@@ -33,7 +32,11 @@ export function* getItineraries() {
   } catch (error) {
     yield put(getNextItinerariesFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao buscar seus roteiros');
+    Toast.show({
+      text1: 'Erro ao buscar novas mensagens.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -48,11 +51,19 @@ export function* makeQuestion({
     yield put(getNextItinerariesRequest());
     yield put(makeQuestionSuccess());
     yield put(setLoadingFalse());
-    Alert.alert('Pergunta enviada!');
+    Toast.show({
+      text1: 'Pergunta enviada!',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(makeQuestionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao criar pergunta');
+    Toast.show({
+      text1: 'Erro ao criar pergunta.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -87,7 +98,11 @@ export function* rateItinerary({
   } catch (error) {
     yield put(rateItineraryFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao avaliar roteiro');
+    Toast.show({
+      text1: 'Erro ao avaliar roteiro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -106,7 +121,11 @@ export function* leaveItinerary({
     yield put(getNextItinerariesRequest());
   } catch (error) {
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao sair do roteiro.');
+    Toast.show({
+      text1: 'Erro ao sair do roteiro.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

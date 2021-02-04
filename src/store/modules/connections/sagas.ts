@@ -1,5 +1,5 @@
-import {Alert} from 'react-native';
 import {call, put, all, takeLatest} from 'redux-saga/effects';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
@@ -36,7 +36,11 @@ export function* getConnections() {
   } catch (error) {
     yield put(getConnectionsFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao carregar conexões');
+    Toast.show({
+      text1: 'Erro ao carregar conexões.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -51,11 +55,20 @@ export function* makeConnection({
     yield put(makeConnectionSuccess());
     yield put(getConnectionsRequest());
     yield put(setLoadingFalse());
-    Alert.alert('Conexão solicitada.');
+
+    Toast.show({
+      text1: 'Conexão solicitada.',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(makeConnectionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao solicitar conexão.');
+    Toast.show({
+      text1: 'Erro ao solicitar conexão.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -70,11 +83,19 @@ export function* acceptConnection({
     yield put(acceptConnectionSuccess());
     yield put(getConnectionsRequest());
     yield put(setLoadingFalse());
-    Alert.alert('Conexão aceita.');
+    Toast.show({
+      text1: 'Conexão aceita.',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
     yield put(acceptConnectionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao aceitar conexão.');
+    Toast.show({
+      text1: 'Erro ao aceitar conexão.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -92,7 +113,11 @@ export function* rejectConnection({
   } catch (error) {
     yield put(rejectConnectionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao cancelar conexão.');
+    Toast.show({
+      text1: 'EErro ao cancelar conexão.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -110,7 +135,11 @@ export function* blockConnection({
   } catch (error) {
     yield put(blockConnectionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao bloquear conexão.');
+    Toast.show({
+      text1: 'Erro ao bloquear conexão.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -128,7 +157,11 @@ export function* unblockConnection({
   } catch (error) {
     yield put(unblockConnectionFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao desbloquear conexão.');
+    Toast.show({
+      text1: 'Erro ao desbloquear conexão.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

@@ -1,5 +1,5 @@
-import {Alert} from 'react-native';
 import {takeLatest, put, call, all} from 'redux-saga/effects';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
@@ -26,7 +26,11 @@ export function* getFavoritedItineraries() {
   } catch (error) {
     yield put(getFavoritesFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao buscar favoritos');
+    Toast.show({
+      text1: 'Erro ao buscar favoritos.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -45,7 +49,11 @@ export function* favoriteItinerary({
   } catch (error) {
     yield put(setFavoriteFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao adicionar aos favoritos');
+    Toast.show({
+      text1: 'Erro ao adicionar aos favoritos.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -64,7 +72,11 @@ export function* unfavoriteItinerary({
   } catch (error) {
     yield put(removeFavoriteFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao remover dos favoritos');
+    Toast.show({
+      text1: 'Erro ao remover dos favoritos.',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

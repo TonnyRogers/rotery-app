@@ -1,9 +1,9 @@
 import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Alert} from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
-import {cancelNotifications} from '../../../services/notifications';
+import Toast from 'react-native-toast-message';
 
+import {cancelNotifications} from '../../../services/notifications';
 import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
 
@@ -42,7 +42,12 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     const {user} = response.data;
 
     if (!token) {
-      Alert.alert('Email ou senha incorreto.');
+      Toast.show({
+        text1: 'Email ou senha incorreto.',
+        position: 'bottom',
+        type: 'error',
+      });
+
       yield put(loginFailure());
       return;
     }
@@ -66,7 +71,11 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getNotificationsRequest());
     yield put(getMessagesRequest());
   } catch (error) {
-    Alert.alert('Erro ao efetuar login.');
+    Toast.show({
+      text1: 'Erro ao efetuar login.',
+      position: 'bottom',
+      type: 'error',
+    });
     yield put(loginFailure());
     yield put(setLoadingFalse());
   }
@@ -105,7 +114,12 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
     const {id} = response.data;
 
     if (!id) {
-      Alert.alert('Dados incorretos.');
+      Toast.show({
+        text1: 'Dados incorretos.',
+        position: 'bottom',
+        type: 'error',
+      });
+
       yield put(registerFailure());
       return;
     }
@@ -115,7 +129,11 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   } catch (error) {
     yield put(setLoadingFalse());
     yield put(registerFailure());
-    Alert.alert(error.response.data[0].message);
+    Toast.show({
+      text1: `${error.response.data[0].message}`,
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 
@@ -173,7 +191,11 @@ export function* setDeviceToken() {
     yield put(setDeviceTokenSuccess());
   } catch (error) {
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao registrar dispositivo');
+    Toast.show({
+      text1: 'Erro ao registrar dispositivo',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

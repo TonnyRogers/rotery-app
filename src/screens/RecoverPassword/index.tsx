@@ -1,5 +1,6 @@
 import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 import api from '../../services/api';
 
@@ -15,7 +16,6 @@ import {
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
-import {Alert} from 'react-native';
 
 interface RecoverPasswordProps {
   navigation: {
@@ -37,13 +37,20 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
       await api.post('/users/reset-password', {
         email,
       });
-
-      Alert.alert('Instruções de recuperação enviadas por e-mail');
+      Toast.show({
+        text1: 'Instruções enviadas por e-mail.',
+        position: 'bottom',
+        type: 'success',
+      });
       setEmail('');
 
       navigation.navigate('NewPassword');
     } catch (error) {
-      Alert.alert('Erro ao solicitar recuperação');
+      Toast.show({
+        text1: 'Erro ao solicitar recuperação.',
+        position: 'bottom',
+        type: 'error',
+      });
     }
   }
 

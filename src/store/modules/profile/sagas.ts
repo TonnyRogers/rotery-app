@@ -1,5 +1,5 @@
 import {all, takeLatest, put, call} from 'redux-saga/effects';
-import {Alert} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 
@@ -47,10 +47,17 @@ export function* updateProfile({
     });
 
     yield put(updateProfileSuccess(response.data));
-    Alert.alert('Perfil atualizado');
+    Toast.show({
+      text1: 'Perfil atualizado',
+      position: 'bottom',
+      type: 'success',
+    });
   } catch (error) {
-    // console.tron.log(error);
-    Alert.alert('Erro ao atualizar dados');
+    Toast.show({
+      text1: 'Erro ao atualizar dados',
+      position: 'bottom',
+      type: 'error',
+    });
     yield put(updateProfileFailure());
   }
 }
@@ -66,8 +73,11 @@ export function* updateProfileImage({
 
     yield put(updateProfileImageSuccess(response.data));
   } catch (error) {
-    // console.tron.log(error);
-    Alert.alert('Erro ao atualizar imagem');
+    Toast.show({
+      text1: 'Erro ao atualizar imagem',
+      position: 'bottom',
+      type: 'error',
+    });
     yield put(updateProfileImageFailure());
   }
 }
@@ -83,7 +93,11 @@ export function* deleteUser() {
   } catch (error) {
     yield put(removeUserFailure());
     yield put(setLoadingFalse());
-    Alert.alert('Erro ao remover conta');
+    Toast.show({
+      text1: 'Erro ao remover conta',
+      position: 'bottom',
+      type: 'error',
+    });
   }
 }
 

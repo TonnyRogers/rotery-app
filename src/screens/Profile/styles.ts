@@ -22,11 +22,10 @@ export const Avatar = styled.Image`
   width: 11.4rem;
   border-radius: 0.8rem;
   background: #f8f8f8;
-  border-width: 0.1rem;
-  border-top-color: #eee;
-  border-right-color: #eee;
-  border-bottom-color: #eee;
-  border-left-color: #eee;
+  border-top-width: 0.1rem;
+  border-right-width: 0.1rem;
+  border-bottom-width: 0.1rem;
+  border-left-width: 0.1rem;
 `;
 
 export const ChangeAvatarButton = styled.TouchableOpacity`
