@@ -112,7 +112,7 @@ const Feed: React.FC = () => {
   );
 
   function itineraryDetail(itineraryId: number) {
-    navigation.navigate('FeedItineraryDetails', {id: itineraryId});
+    navigation.navigate('DynamicItineraryDetails', {id: itineraryId});
   }
 
   function toggleFilter() {

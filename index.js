@@ -42,37 +42,37 @@ PushNotification.configure({
           break;
         }
         case 'itinerary_update': {
-          RootNavigation.navigate('NextItineraryDetails', {
+          RootNavigation.navigate('DynamicItineraryDetails', {
             id: notification.data.json_data.id,
           });
           break;
         }
         case 'itinerary_question': {
-          RootNavigation.navigate('MyItineraryDetails', {
+          RootNavigation.navigate('DynamicItineraryDetails', {
             id: notification.data.json_data.itinerary_id,
           });
           break;
         }
         case 'itinerary_member_request': {
-          RootNavigation.navigate('MyItineraryDetails', {
+          RootNavigation.navigate('DynamicItineraryDetails', {
             id: notification.data.json_data.itinerary_id,
           });
           break;
         }
         case 'itinerary_answer': {
-          RootNavigation.navigate('NextItineraryDetails', {
+          RootNavigation.navigate('DynamicItineraryDetails', {
             id: notification.data.json_data.itinerary_id,
           });
           break;
         }
         case 'itinerary_member_accepted': {
-          RootNavigation.navigate('NextItineraryDetails', {
+          RootNavigation.navigate('DynamicItineraryDetails', {
             id: notification.data.json_data.itinerary_id,
           });
           break;
         }
         case 'itinerary_updated': {
-          RootNavigation.navigate('NextItineraryDetails', {
+          RootNavigation.navigate('DynamicItineraryDetails', {
             id: notification.data.json_data.id,
           });
           break;

@@ -1,25 +1,23 @@
 import React, {useState, useRef, useMemo} from 'react';
 import {View, KeyboardAvoidingView, Platform} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import {useNavigation} from '@react-navigation/native';
 
 import {formatBRL} from '../../lib/mask';
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
 import {
-  deleteItineraryRequest,
-  notifyItineraryFinishRequest,
-} from '../../store/modules/itineraries/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {hideMyItineraryGuide} from '../../store/modules/guides/actions';
+  makeQuestionRequest,
+  leaveItineraryRequest,
+} from '../../store/modules/nextItineraries/actions';
 
 import {
   Container,
   Content,
   CardHeader,
   BackButton,
-  EditButton,
   CardContent,
   Name,
   RowGroup,
@@ -48,8 +46,8 @@ import {
   DataPriceValue,
   DeleteItineraryButton,
   DeleteItineraryButtonText,
-  FinalizeItineraryButton,
-  FinalizeItineraryButtonText,
+  SendButton,
+  SendButtonText,
   StatusContent,
   Status,
   StatusName,
@@ -59,57 +57,20 @@ import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
 import ItineraryMember from '../../components/ItineraryMember';
 import ItineraryQuestion from '../../components/ItineraryQuestion';
+import TextArea from '../../components/TextArea';
 import Alert from '../../components/Alert';
-import GuideCarousel from '../../components/GuideCarousel';
-import Ads from '../../components/Ads';
 
-const guideImages = [
-  {
-    id: 1,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary.png',
-    withInfo: true,
-    title: 'Editando Roteiro',
-    message: 'Clique no ícone de lápis para editar informações do seu roteiro.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary.png',
-    withInfo: true,
-    title: 'Finalizando Roteiros',
-    message:
-      'Após o término do seu roteiro clique em finalizar para que os membros avaliem.',
-    isAnimation: false,
-  },
-];
-
-interface MyItineraryDetailsProps {
-  route: {
-    params: {id: number};
-  };
-  navigation: any;
+interface ItineraryDetailsProps {
+  itinerary: ItineraryProps;
 }
 
-const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
-  route,
-  navigation,
-}) => {
-  const {id} = route.params;
-  const {itineraries} = useSelector(
-    (state: RootStateProps) => state.itineraries,
-  );
-  const {myItineraryGuide} = useSelector(
-    (state: RootStateProps) => state.guides,
-  );
+const NextItineraryDetail: React.FC<ItineraryDetailsProps> = ({itinerary}) => {
   const [alertVisible, setAlertVisible] = useState(false);
-  const [finishAlertVisible, setFinishAlertVisible] = useState(false);
-  const dispatch = useDispatch();
+  const [question, setQuestion] = useState('');
 
-  const itinerary: ItineraryProps = itineraries?.find(
-    (item: ItineraryProps) => item.id === id,
-  );
+  const questionRef = useRef();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   let beginDateFormated = useRef('');
   let endDateFormated = useRef('');
@@ -137,28 +98,21 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     );
   }, [itinerary]);
 
-  function showDeleteAlert() {
+  function showAlert() {
     setAlertVisible(true);
   }
 
-  function hideDeleteAlert() {
+  function hideAlert() {
     setAlertVisible(false);
   }
 
-  function handleDeleteItinerary() {
-    dispatch(deleteItineraryRequest(itinerary.id));
+  function handleLeaveItinerary() {
+    dispatch(leaveItineraryRequest(itinerary.id));
   }
 
-  function showFinishAlert() {
-    setFinishAlertVisible(true);
-  }
-
-  function handleFinishItinerary() {
-    dispatch(notifyItineraryFinishRequest(id));
-  }
-
-  function closeGuide() {
-    dispatch(hideMyItineraryGuide());
+  function handleMakeQuestion() {
+    dispatch(makeQuestionRequest(itinerary.id, question));
+    setQuestion('');
   }
 
   return (
@@ -173,10 +127,6 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               <BackButton onPress={() => navigation.goBack()}>
                 <Icon name="chevron-left" size={24} color="#3dc77b" />
               </BackButton>
-              <EditButton
-                onPress={() => navigation.navigate('EditItinerary', {id})}>
-                <Icon name="pencil-outline" size={24} color="#4885FD" />
-              </EditButton>
             </CardHeader>
             <CardContent>
               <RowGroupSpaced>
@@ -339,13 +289,24 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </RowGroup>
             </CardHeader>
             <CardContent>
-              {itinerary.questions.map((question) => (
+              {itinerary.questions.map((questionItem) => (
                 <ItineraryQuestion
-                  question={question}
-                  key={question.id}
-                  owner
+                  question={questionItem}
+                  key={questionItem.id}
                 />
               ))}
+              <>
+                <TextArea
+                  placeholder="faça uma pergunta..."
+                  value={question}
+                  ref={questionRef}
+                  onChange={setQuestion}
+                />
+                <SendButton onPress={handleMakeQuestion}>
+                  <Icon name="send-outline" size={24} color="#FFF" />
+                  <SendButtonText>Perguntar</SendButtonText>
+                </SendButton>
+              </>
             </CardContent>
           </Card>
 
@@ -360,49 +321,28 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             </CardHeader>
             <CardContent>
               {itinerary.members.map((member) => (
-                <ItineraryMember member={member} key={member.id} owner />
+                <ItineraryMember member={member} key={member.id} />
               ))}
             </CardContent>
           </Card>
-          <RowGroupSpaced>
-            <FinalizeItineraryButton onPress={showFinishAlert}>
-              <Icon name="progress-check" size={24} color="#FFF" />
-              <FinalizeItineraryButtonText>
-                Finalizer Roteiro
-              </FinalizeItineraryButtonText>
-            </FinalizeItineraryButton>
-            <DeleteItineraryButton onPress={showDeleteAlert}>
-              <Icon name="delete-forever-outline" size={24} color="#FFF" />
-              <DeleteItineraryButtonText>
-                Excluir Roteiro
-              </DeleteItineraryButtonText>
-            </DeleteItineraryButton>
-          </RowGroupSpaced>
+          <DeleteItineraryButton onPress={showAlert}>
+            <Icon name="delete-forever-outline" size={24} color="#FFF" />
+            <DeleteItineraryButtonText>
+              Sair do Roteiro
+            </DeleteItineraryButtonText>
+          </DeleteItineraryButton>
         </Content>
         <Alert
-          title="Fim do Roteiro!"
-          message="Vode deseja realmente encerrar este roteiro?"
-          icon="progress-check"
-          visible={finishAlertVisible}
-          onCancel={hideDeleteAlert}
-          onRequestClose={(value) => setFinishAlertVisible(value)}
-          onConfirm={handleFinishItinerary}
-        />
-        <Alert
           title="Ops!"
-          message="você deseja realmente excluir este roteiro?"
-          icon="delete-forever-outline"
+          message="você deseja realmente sair deste roteiro?"
           visible={alertVisible}
-          onCancel={hideDeleteAlert}
-          onRequestClose={(value) => setAlertVisible(value)}
-          onConfirm={handleDeleteItinerary}
+          onCancel={hideAlert}
+          onRequestClose={hideAlert}
+          onConfirm={() => handleLeaveItinerary()}
         />
-        <Ads visible={myItineraryGuide} onRequestClose={() => {}}>
-          <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
-        </Ads>
       </Container>
     </KeyboardAvoidingView>
   );
 };
 
-export default MyItineraryDetails;
+export default NextItineraryDetail;

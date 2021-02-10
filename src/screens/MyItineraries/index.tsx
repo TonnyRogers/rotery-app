@@ -37,7 +37,7 @@ const MyItineraries: React.FC = () => {
   }
 
   function itineraryDetail(itineraryId: number) {
-    navigation.navigate('MyItineraryDetails', {id: itineraryId});
+    navigation.navigate('DynamicItineraryDetails', {id: itineraryId});
   }
 
   return (

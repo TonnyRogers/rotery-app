@@ -19,6 +19,7 @@ import {
   paginateFeedRequest,
   paginateFeedSuccess,
 } from './actions';
+import {updateDetailsRequest} from '../dynamicItinerary/actions';
 
 export function* getItineraries() {
   try {
@@ -76,7 +77,7 @@ export function* makeQuestion({
     yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/questions`, {question});
 
-    yield put(getFeedRequest());
+    yield put(updateDetailsRequest());
     yield put(makeQuestionSuccess());
     yield put(setLoadingFalse());
     Toast.show({
@@ -107,7 +108,7 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     });
 
     yield put(joinSuccess());
-    yield put(getFeedRequest());
+    yield put(updateDetailsRequest());
     yield put(setLoadingFalse());
     Toast.show({
       text1: 'Solicitação enviada!',

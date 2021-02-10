@@ -4,6 +4,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import {useNavigation} from '@react-navigation/native';
 
 import {formatBRL} from '../../lib/mask';
 import {ItineraryProps} from '../../store/modules/itineraries/reducer';
@@ -86,30 +87,17 @@ const guideImages = [
 ];
 
 interface MyItineraryDetailsProps {
-  route: {
-    params: {id: number};
-  };
-  navigation: any;
+  itinerary: ItineraryProps;
 }
 
-const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
-  route,
-  navigation,
-}) => {
-  const {id} = route.params;
-  const {itineraries} = useSelector(
-    (state: RootStateProps) => state.itineraries,
-  );
+const MyItineraryDetail: React.FC<MyItineraryDetailsProps> = ({itinerary}) => {
   const {myItineraryGuide} = useSelector(
     (state: RootStateProps) => state.guides,
   );
   const [alertVisible, setAlertVisible] = useState(false);
   const [finishAlertVisible, setFinishAlertVisible] = useState(false);
   const dispatch = useDispatch();
-
-  const itinerary: ItineraryProps = itineraries?.find(
-    (item: ItineraryProps) => item.id === id,
-  );
+  const navigation = useNavigation();
 
   let beginDateFormated = useRef('');
   let endDateFormated = useRef('');
@@ -154,7 +142,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   }
 
   function handleFinishItinerary() {
-    dispatch(notifyItineraryFinishRequest(id));
+    dispatch(notifyItineraryFinishRequest(itinerary.id));
   }
 
   function closeGuide() {
@@ -174,7 +162,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                 <Icon name="chevron-left" size={24} color="#3dc77b" />
               </BackButton>
               <EditButton
-                onPress={() => navigation.navigate('EditItinerary', {id})}>
+                onPress={() =>
+                  navigation.navigate('EditItinerary', {id: itinerary.id})
+                }>
                 <Icon name="pencil-outline" size={24} color="#4885FD" />
               </EditButton>
             </CardHeader>
@@ -405,4 +395,4 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   );
 };
 
-export default MyItineraryDetails;
+export default MyItineraryDetail;

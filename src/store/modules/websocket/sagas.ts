@@ -1,11 +1,11 @@
 import {all, takeLatest, call, put, take, select} from 'redux-saga/effects';
 import {eventChannel, END} from 'redux-saga';
 import {Vibration} from 'react-native';
-import Toast from 'react-native-toast-message';
+// import Toast from 'react-native-toast-message';
 import Ws from '@adonisjs/websocket-client';
 
-const protocol = 'wss';
-const wsConnection = '://api.rotery.com.br';
+const protocol = __DEV__ ? 'ws' : 'wss';
+const wsConnection = __DEV__ ? '://127.0.0.1:3333' : '://api.rotery.com.br';
 
 import {
   wsNotificationMessages,
@@ -93,7 +93,7 @@ export function* subscribeUser() {
         // console.tron.log('Erro');
       });
 
-      channel.on('close', (e: any) => {
+      channel.on('close', () => {
         notificationConnection = false;
         // console.tron.log('Close Notifications', e);
       });

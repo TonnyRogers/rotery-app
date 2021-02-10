@@ -29,6 +29,7 @@ import UserConversation from '../screens/UserConversation';
 import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
+import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
@@ -149,6 +150,10 @@ const Routes = () => {
               component={UserConversation}
             />
             <Stack.Screen name="ItineraryRate" component={ItineraryRate} />
+            <Stack.Screen
+              name="DynamicItineraryDetails"
+              component={DynamicItineraryDetais}
+            />
           </>
         ) : (
           <>

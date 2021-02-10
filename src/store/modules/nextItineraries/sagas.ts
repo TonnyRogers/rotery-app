@@ -16,6 +16,7 @@ import {
   leaveItinerarySuccess,
 } from './actions';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
+import {updateDetailsRequest} from '../dynamicItinerary/actions';
 import * as RootNavigation from '../../../RootNavigation';
 
 const delay = (time: number) =>
@@ -48,7 +49,7 @@ export function* makeQuestion({
     yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/questions`, {question});
 
-    yield put(getNextItinerariesRequest());
+    yield put(updateDetailsRequest());
     yield put(makeQuestionSuccess());
     yield put(setLoadingFalse());
     Toast.show({

@@ -22,7 +22,7 @@ import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 export function* getProfile({payload}: ReturnType<typeof getProfileRequest>) {
   try {
     const {userId} = payload;
-    const response = yield call(api.get, `/profile/${userId}`);
+    const response = yield call(api.get, '/profile');
 
     const profile = response.data;
 

@@ -33,6 +33,7 @@ import {
   notifyItineraryFinishRequest,
   notifyItineraryFinishFailure,
 } from './actions';
+import {updateDetailsRequest} from '../dynamicItinerary/actions';
 
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 interface UpdateItemProps {
@@ -214,7 +215,7 @@ export function* updateItinerary({
 
     yield put(updateItinerarySuccess());
     yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
+    yield put(updateDetailsRequest());
     RootNavigation.navigate('MyItineraries', {});
     Toast.show({
       text1: 'Roteiro atualizado.',
@@ -254,7 +255,7 @@ export function* replyQuestion({
 
     yield put(replyQuestionSuccess());
     yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
+    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(replyQuestionFailure());
     yield put(setLoadingFalse());
@@ -288,7 +289,7 @@ export function* promoteMember({
 
     yield put(promoteMemberSuccess());
     yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
+    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(promoteMemberFailure());
     yield put(setLoadingFalse());
@@ -322,7 +323,7 @@ export function* demoteMember({
 
     yield put(demoteMemberSuccess());
     yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
+    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(demoteMemberFailure());
     yield put(setLoadingFalse());
@@ -356,7 +357,7 @@ export function* acceptMember({
 
     yield put(acceptMemberSuccess());
     yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
+    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(acceptMemberFailure());
     yield put(setLoadingFalse());
@@ -390,7 +391,7 @@ export function* removeMember({
 
     yield put(removeMemberSuccess());
     yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
+    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(removeMemberFailure());
     yield put(setLoadingFalse());
@@ -411,6 +412,7 @@ export function* finishItinerary({
     yield call(api.post, `/itineraries/${itineraryId}/notify`);
 
     yield put(setLoadingFalse());
+    yield put(updateDetailsRequest());
     RootNavigation.navigate('MyItineraries', {});
     Toast.show({
       text1: 'Roteiro finalizado.',
