@@ -1,5 +1,5 @@
 import produce from 'immer';
-import {localNotification} from '../../../services/notifications';
+// import {localNotification} from '../../../services/notifications';
 
 export interface NotificationsProps {
   id: number;

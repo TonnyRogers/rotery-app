@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BackgroundTimer from 'react-native-background-timer';
 import Toast from 'react-native-toast-message';
 
-import {cancelNotifications} from '../../../services/notifications';
 import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
 
@@ -98,7 +97,7 @@ export function* logout() {
   yield call([AsyncStorage, 'removeItem'], '@auth:token');
   api.defaults.headers.Authorization = 'Bearer ';
   BackgroundTimer.stopBackgroundTimer();
-  cancelNotifications();
+  // cancelNotifications();
 }
 
 export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
@@ -178,15 +177,13 @@ export function* handleRefreshToken() {
 
 export function* setDeviceToken() {
   try {
-    const deviceTokenJSON = yield call(
+    const deviceToken = yield call(
       [AsyncStorage, 'getItem'],
       '@notification:token',
     );
 
-    const deviceToken = JSON.parse(deviceTokenJSON);
-
     yield call(api.post, '/users/device', {
-      token: deviceToken.token,
+      token: deviceToken,
     });
     yield put(setDeviceTokenSuccess());
   } catch (error) {
