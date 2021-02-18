@@ -11,15 +11,19 @@ interface SplashScreenProps {
 
 const SplashScreen: React.FC<SplashScreenProps> = ({visible}) => {
   return (
-    <Container visible={visible} animationType="fade" transparent>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <Content>
-          <LottieView source={iconImage} autoPlay />
-          <Title>Carregando...</Title>
-        </Content>
-      </KeyboardAvoidingView>
-    </Container>
+    <>
+      {visible && (
+        <Container>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <Content>
+              <LottieView source={iconImage} autoPlay />
+              <Title>Carregando...</Title>
+            </Content>
+          </KeyboardAvoidingView>
+        </Container>
+      )}
+    </>
   );
 };
 

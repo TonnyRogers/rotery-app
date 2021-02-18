@@ -1,7 +1,6 @@
 import React, {useRef, useEffect, useCallback} from 'react';
 import {
   View,
-  Modal,
   Animated,
   Dimensions,
   PanResponder,
@@ -9,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import {Content, Overlay} from './styles';
+import {Content, Overlay, Container} from './styles';
 
 interface BottomSheetProps {
   visible: boolean;
@@ -70,48 +69,47 @@ const BottomSheet: React.FC<BottomSheetProps> = ({visible, onRequestClose}) => {
   }, [handleDismiss, handleOpen, visible]);
 
   return (
-    <Modal
-      animated
-      animationType="fade"
-      visible={visible}
-      transparent
-      onRequestClose={handleDismiss}>
-      <Overlay>
-        <Content
-          style={{
-            transform: [
-              {
-                translateY: panY.y.interpolate({
-                  inputRange: [-1, 0, 1],
-                  outputRange: [0, 0, 1],
-                }),
-              },
-            ],
-          }}
-          {...panRespoders.panHandlers}>
-          <View>
-            <TouchableOpacity onPress={() => handleDismiss()}>
-              <Text>FECHAR</Text>
-            </TouchableOpacity>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-            <Text>BOoooooora</Text>
-          </View>
-        </Content>
-      </Overlay>
-    </Modal>
+    <>
+      {visible && (
+        <Container>
+          <Overlay>
+            <Content
+              style={{
+                transform: [
+                  {
+                    translateY: panY.y.interpolate({
+                      inputRange: [-1, 0, 1],
+                      outputRange: [0, 0, 1],
+                    }),
+                  },
+                ],
+              }}
+              {...panRespoders.panHandlers}>
+              <View>
+                <TouchableOpacity onPress={() => handleDismiss()}>
+                  <Text>FECHAR</Text>
+                </TouchableOpacity>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+                <Text>BOoooooora</Text>
+              </View>
+            </Content>
+          </Overlay>
+        </Container>
+      )}
+    </>
   );
 };
 

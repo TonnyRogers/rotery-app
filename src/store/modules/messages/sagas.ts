@@ -54,7 +54,6 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
   try {
     const {message, userId} = payload;
 
-    yield put(setLoadingTrue());
     yield call(api.post, `/users/${userId}/message`, {
       message,
     });
@@ -62,10 +61,8 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
     yield put(sendMessageSuccess());
     yield put(getConversationRequest(userId));
     yield put(getMessagesRequest());
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(sendMessageFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao enviar mensagem.',
       position: 'bottom',

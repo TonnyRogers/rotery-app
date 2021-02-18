@@ -24,7 +24,6 @@ export const FilterButton = styled.TouchableOpacity`
   justify-content: center;
   padding: 0 1rem;
   border-radius: 4.5rem;
-  elevation: 1;
   margin: 0.5rem;
 `;
 
@@ -43,7 +42,7 @@ export const Activity = styled.TouchableOpacity`
   background: #3dc77b;
   border-radius: 1.5rem;
   margin: 0.5rem;
-  elevation: 3;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 export const ActivityName = styled.Text`
@@ -67,7 +66,7 @@ export const NewItineraryButton = styled.TouchableOpacity`
   background: #3dc77b;
   border-radius: 1.5rem;
   margin-top: -3rem;
-  elevation: 3;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
   align-self: center;
 `;
 

@@ -111,7 +111,7 @@ export const DataContent = styled.View`
   padding: 1rem;
   border-radius: 0.8rem;
   margin: 1rem 0.5rem;
-  elevation: 2;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 `;
 export const DataContentHeader = styled.View`
   flex-direction: row;

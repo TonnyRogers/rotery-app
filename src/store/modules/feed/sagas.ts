@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 import api from '../../../services/api';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 import {
-  getFeedRequest,
   getFeedSuccess,
   getFeedFailure,
   getFeedFilteredRequest,

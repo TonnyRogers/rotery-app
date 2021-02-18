@@ -5,7 +5,7 @@ export const Container = styled.TouchableOpacity`
   justify-content: space-between;
   align-items: center;
   background: #fff;
-  elevation: 3;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
   min-height: 6rem;
   margin: 0.8rem;
   border-radius: 0.8rem;

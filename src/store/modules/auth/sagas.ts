@@ -1,6 +1,5 @@
 import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
-import BackgroundTimer from 'react-native-background-timer';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
@@ -55,10 +54,6 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
-    // BackgroundTimer.runBackgroundTimer(() => {
-    //   console.tron.log('+1');
-    // }, 15 * 1000);
-
     yield put(loginSuccess(token, refreshToken, user));
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
@@ -96,7 +91,6 @@ export function* setToken({payload}: any) {
 export function* logout() {
   yield call([AsyncStorage, 'removeItem'], '@auth:token');
   api.defaults.headers.Authorization = 'Bearer ';
-  BackgroundTimer.stopBackgroundTimer();
   // cancelNotifications();
 }
 

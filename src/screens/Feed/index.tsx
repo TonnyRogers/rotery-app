@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -92,15 +92,15 @@ const Feed: React.FC = () => {
   const [filter, setFilter] = useState({} as any);
   const [page, setPage] = useState(2);
 
-  useEffect(() => {
-    dispatch(getFeedRequest());
-  }, [dispatch]);
-
   const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {itineraries} = useSelector((state: RootStateProps) => state.feed);
   const {feedGuide} = useSelector((state: RootStateProps) => state.guides);
 
   const itineraryActivities: {id: number; name: string}[] = [];
+
+  useEffect(() => {
+    dispatch(getFeedRequest());
+  }, [dispatch]);
 
   itineraries?.map((itinerary) =>
     itineraryActivities.push(...itinerary.activities),
@@ -132,81 +132,87 @@ const Feed: React.FC = () => {
       dispatch(paginateFeedRequest(page, filter.begin, filter.end));
     }
   }
-
   function closeGuide() {
     dispatch(hideFeedGuide());
   }
 
   return (
-    <Container>
-      <Header />
-      <Content>
-        <FilterContent>
-          <RowGroupSpaced>
-            <Title>Afim de se aventurar?</Title>
-            <FilterButton onPress={toggleFilter} onLongPress={clearFilter}>
-              <Icon name="filter" size={24} color="#3dc77b" />
-            </FilterButton>
-          </RowGroupSpaced>
-          <FilterInput
-            visible={filterVisible}
-            onRequestClose={toggleFilter}
-            onFiltered={(begin, end) => {
-              setFilter({begin: begin, end: end});
+    <>
+      <Container>
+        <Header />
+
+        <Content>
+          <FilterContent>
+            <RowGroupSpaced>
+              <Title>Afim de se aventurar?</Title>
+              <FilterButton onPress={toggleFilter} onLongPress={clearFilter}>
+                <Icon name="filter" size={24} color="#3dc77b" />
+              </FilterButton>
+            </RowGroupSpaced>
+            <ActivityList>
+              {removeDuplicatedActivities.map((item, index) => (
+                <Activity key={index}>
+                  <Icon name="menu" size={24} color="#FFF" />
+                  <ActivityName>{item.name}</ActivityName>
+                </Activity>
+              ))}
+            </ActivityList>
+          </FilterContent>
+          <ItineraryList
+            data={itineraries}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({item}) => (
+              <Itinerary
+                itinerary={item}
+                detailButtonAction={() => itineraryDetail(item.id)}
+              />
+            )}
+            ListEmptyComponent={() => (
+              <Card>
+                <ColumnGroup>
+                  <Icon
+                    name="alert-decagram-outline"
+                    size={30}
+                    color="#3dc77b"
+                  />
+                  <Title>Ops!</Title>
+                  <Title>Parece que não tem nada por aqui.</Title>
+                  <Title>Crie seu prório roteiro agora mesmo!</Title>
+                </ColumnGroup>
+              </Card>
+            )}
+            onRefresh={() => {
+              setPage(2);
+              dispatch(getFeedRequest());
             }}
+            onEndReached={() => loadFeed()}
+            onEndReachedThreshold={0.1}
+            refreshing={loading}
+            viewabilityConfig={{viewAreaCoveragePercentThreshold: 20}}
           />
-          <ActivityList>
-            {removeDuplicatedActivities.map((item, index) => (
-              <Activity key={index}>
-                <Icon name="menu" size={24} color="#FFF" />
-                <ActivityName>{item.name}</ActivityName>
-              </Activity>
-            ))}
-          </ActivityList>
-        </FilterContent>
-        <ItineraryList
-          data={itineraries}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({item}) => (
-            <Itinerary
-              itinerary={item}
-              detailButtonAction={() => itineraryDetail(item.id)}
-            />
-          )}
-          ListEmptyComponent={() => (
-            <Card>
-              <ColumnGroup>
-                <Icon name="alert-decagram-outline" size={30} color="#3dc77b" />
-                <Title>Ops!</Title>
-                <Title>Parece que não tem nada por aqui.</Title>
-                <Title>Crie seu prório roteiro agora mesmo!</Title>
-              </ColumnGroup>
-            </Card>
-          )}
-          onRefresh={() => {
-            setPage(2);
-            dispatch(getFeedRequest());
-          }}
-          onEndReached={() => loadFeed()}
-          onEndReachedThreshold={0.1}
-          refreshing={loading}
-          viewabilityConfig={{viewAreaCoveragePercentThreshold: 20}}
+          <FloatContent>
+            <NewItineraryButton
+              onPress={() => navigation.navigate('NewItinerary')}>
+              <Icon name="plus-box-outline" size={24} color="#FFF" />
+            </NewItineraryButton>
+          </FloatContent>
+        </Content>
+        <BottomSheet
+          visible={sheetVisible}
+          onRequestClose={(value) => setSheetVisible(value)}
         />
-        <FloatContent>
-          <NewItineraryButton
-            onPress={() => navigation.navigate('NewItinerary')}>
-            <Icon name="plus-box-outline" size={24} color="#FFF" />
-          </NewItineraryButton>
-        </FloatContent>
-      </Content>
-      <BottomSheet
-        visible={sheetVisible}
-        onRequestClose={(value) => setSheetVisible(value)}
+        <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
+          <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
+        </Ads>
+      </Container>
+      <FilterInput
+        visible={filterVisible}
+        onRequestClose={toggleFilter}
+        onFiltered={(begin, end) => {
+          setFilter({begin: begin, end: end});
+        }}
       />
-      <Ads visible={feedGuide} onRequestClose={() => {}}>
-        <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
-      </Ads>
-    </Container>
+    </>
   );
 };
 

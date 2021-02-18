@@ -36,7 +36,6 @@ import Alert from '../../components/Alert';
 import HighlightCarousel from '../../components/HighlightCarousel';
 import GuideCarousel from '../../components/GuideCarousel';
 import Ads from '../../components/Ads';
-import SplashScreen from '../../components/SplashScreen';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 const images = [
@@ -107,8 +106,6 @@ const Home: React.FC = () => {
   const emailRef = useRef() as any;
   const passwordRef = useRef() as any;
   const panY = useRef(new Animated.ValueXY({x: 0, y: 400})).current;
-
-  const {loading} = useSelector((state: RootStateProps) => state.auth);
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -248,7 +245,6 @@ const Home: React.FC = () => {
         <Ads visible={false} onRequestClose={() => {}}>
           <GuideCarousel data={guideImages} />
         </Ads>
-        <SplashScreen visible={loading} />
       </Container>
     </SafeView>
   );

@@ -1,11 +1,10 @@
 import {all, takeLatest, call, put, take, select} from 'redux-saga/effects';
 import {eventChannel, END} from 'redux-saga';
 import {Vibration} from 'react-native';
-// import Toast from 'react-native-toast-message';
 import Ws from '@adonisjs/websocket-client';
 
-const protocol = __DEV__ ? 'ws' : 'wss';
-const wsConnection = __DEV__ ? '://127.0.0.1:3333' : '://api.rotery.com.br';
+// const protocol = __DEV__ ? 'ws' : 'wss';
+// const wsConnection = __DEV__ ? '://127.0.0.1:3333' : '://api.rotery.com.br';
 
 import {
   wsNotificationMessages,
@@ -28,7 +27,7 @@ export function* subscribeUser() {
 
     function initWebsocket() {
       // console.tron.log('Connection to ws');
-      ws = Ws(`${protocol}${wsConnection}`, {reconnection: false});
+      ws = Ws('wss://api.rotery.com.br', {reconnection: false});
       ws.connect();
       isConnected = true;
 

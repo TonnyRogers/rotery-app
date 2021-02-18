@@ -41,31 +41,29 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
       handleDismiss();
     }
   }, [handleDismiss, handleOpen, visible]);
-
   return (
-    <Container
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={() => onRequestClose(false)}
-      statusBarTranslucent>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <Content
-          style={{
-            transform: [
-              {
-                translateY: panY.y.interpolate({
-                  inputRange: [-100, 0, 1],
-                  outputRange: [-100, 0, 1],
-                }),
-              },
-            ],
-          }}>
-          {children}
-        </Content>
-      </KeyboardAvoidingView>
-    </Container>
+    <>
+      {visible && (
+        <Container>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <Content
+              style={{
+                transform: [
+                  {
+                    translateY: panY.y.interpolate({
+                      inputRange: [-100, 0, 1],
+                      outputRange: [-100, 0, 1],
+                    }),
+                  },
+                ],
+              }}>
+              {children}
+            </Content>
+          </KeyboardAvoidingView>
+        </Container>
+      )}
+    </>
   );
 };
 

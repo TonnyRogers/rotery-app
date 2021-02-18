@@ -5,7 +5,7 @@ export const Container = styled.View.attrs({})`
   padding: 1rem;
   border-radius: 8px;
   margin: 1rem 5px;
-  elevation: 2;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 export const RowGroup = styled.View`

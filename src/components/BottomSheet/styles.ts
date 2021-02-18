@@ -1,7 +1,14 @@
 import styled from 'styled-native-components';
 import {Animated} from 'react-native';
 
-export const Container = styled.View``;
+export const Container = styled.View`
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  position: absolute;
+  height: 100vh;
+  width: 100%:
+`;
 
 export const Overlay = styled.View`
   background: rgba(0, 0, 0, 0.2);

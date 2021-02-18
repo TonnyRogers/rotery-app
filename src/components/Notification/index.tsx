@@ -94,47 +94,47 @@ const Notification: React.FC<NotificationProps> = ({
     onRequestClose(false);
   }
   return (
-    <Container
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={() => onRequestClose(false)}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <SafeAreaView>
-          <Content
-            style={{
-              transform: [
-                {
-                  translateY: panY.y.interpolate({
-                    inputRange: [-100, 0, 1],
-                    outputRange: [-100, 0, 1],
-                  }),
-                },
-              ],
-            }}
-            {...panRespoders.panHandlers}>
-            <Header>
-              <Icon name={icon} size={24} color={iconColor} />
-              <Title>{title}</Title>
-            </Header>
-            <NotificationList>
-              {data &&
-                data.map((item) => (
-                  <NotificationItem
-                    key={item?.id}
-                    notification={item}
-                    close={childClose}
-                  />
-                ))}
-            </NotificationList>
-            <CloseButton onPress={handleDismiss}>
-              <Icon name="chevron-up" size={24} color="#808080" />
-            </CloseButton>
-          </Content>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </Container>
+    <>
+      {visible && (
+        <Container>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <SafeAreaView>
+              <Content
+                style={{
+                  transform: [
+                    {
+                      translateY: panY.y.interpolate({
+                        inputRange: [-100, 0, 1],
+                        outputRange: [-100, 0, 1],
+                      }),
+                    },
+                  ],
+                }}
+                {...panRespoders.panHandlers}>
+                <Header>
+                  <Icon name={icon} size={24} color={iconColor} />
+                  <Title>{title}</Title>
+                </Header>
+                <NotificationList>
+                  {data &&
+                    data.map((item) => (
+                      <NotificationItem
+                        key={item?.id}
+                        notification={item}
+                        close={childClose}
+                      />
+                    ))}
+                </NotificationList>
+                <CloseButton onPress={handleDismiss}>
+                  <Icon name="chevron-up" size={24} color="#808080" />
+                </CloseButton>
+              </Content>
+            </SafeAreaView>
+          </KeyboardAvoidingView>
+        </Container>
+      )}
+    </>
   );
 };
 

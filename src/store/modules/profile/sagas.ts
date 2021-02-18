@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 import api from '../../../services/api';
 
 import {
-  getProfileRequest,
   getProfileSuccess,
   getProfileFail,
   updateProfileRequest,
@@ -19,9 +18,8 @@ import {
 import {logout} from '../auth/actions';
 import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 
-export function* getProfile({payload}: ReturnType<typeof getProfileRequest>) {
+export function* getProfile() {
   try {
-    const {userId} = payload;
     const response = yield call(api.get, '/profile');
 
     const profile = response.data;
@@ -37,6 +35,7 @@ export function* updateProfile({
 }: ReturnType<typeof updateProfileRequest>) {
   try {
     const {name, gender, birth, cpf, profission, phone} = payload;
+    yield put(setLoadingTrue());
     const response = yield call(api.put, '/profile', {
       name,
       gender,
@@ -45,8 +44,8 @@ export function* updateProfile({
       profission,
       phone,
     });
-
     yield put(updateProfileSuccess(response.data));
+    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Perfil atualizado',
       position: 'bottom',
@@ -58,6 +57,7 @@ export function* updateProfile({
       position: 'bottom',
       type: 'error',
     });
+    yield put(setLoadingFalse());
     yield put(updateProfileFailure());
   }
 }
@@ -67,11 +67,13 @@ export function* updateProfileImage({
 }: ReturnType<typeof updateProfileImageRequest>) {
   try {
     const {file_id} = payload;
+    yield put(setLoadingTrue());
     const response = yield call(api.put, '/profile/image', {
       file_id,
     });
 
     yield put(updateProfileImageSuccess(response.data));
+    yield put(setLoadingFalse());
   } catch (error) {
     Toast.show({
       text1: 'Erro ao atualizar imagem',
@@ -79,6 +81,7 @@ export function* updateProfileImage({
       type: 'error',
     });
     yield put(updateProfileImageFailure());
+    yield put(setLoadingFalse());
   }
 }
 

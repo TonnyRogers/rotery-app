@@ -124,70 +124,73 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   }
 
   return (
-    <Container
-      animated
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={() => onRequestClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <SafeAreaView>
-          <Content
-            style={{
-              transform: [
-                {
-                  translateY: panY.y.interpolate({
-                    inputRange: [-100, 0, 1],
-                    outputRange: [-100, 0, 1],
-                  }),
-                },
-              ],
-            }}
-            {...panRespoders.panHandlers}>
-            <Header>
-              <Icon name="menu" size={24} color="#3e44c7" />
-              <Title>Menu</Title>
-            </Header>
-            <Actions>
-              <MenuButton onPress={toConnections}>
-                <Icon name="link-variant" size={24} color="#FFF" />
-                <MenuButtonText>Minhas Conexões</MenuButtonText>
-              </MenuButton>
-              <MenuButton onPress={toDirecMessages}>
-                <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
-                <MenuButtonText>Mensagens Diretas</MenuButtonText>
-                <CounterContent>
-                  <Counter>{unreadCounter}</Counter>
-                </CounterContent>
-              </MenuButton>
-              <MenuButton onPress={toItineraries}>
-                <Icon name="map-outline" size={24} color="#FFF" />
-                <MenuButtonText>Meus Roteiros</MenuButtonText>
-              </MenuButton>
-              <MenuButton onPress={toNextItineraries}>
-                <Icon name="map-check" size={24} color="#FFF" />
-                <MenuButtonText>Próximos Roteiros</MenuButtonText>
-              </MenuButton>
-              <MenuButton onPress={toFavorites}>
-                <Icon name="heart-outline" size={24} color="#FFF" />
-                <MenuButtonText>Favoritos</MenuButtonText>
-              </MenuButton>
-              <MenuButton onPress={() => navigation.navigate('Feed')}>
-                <Icon name="format-list-text" size={24} color="#FFF" />
-                <MenuButtonText>Feed</MenuButtonText>
-              </MenuButton>
-            </Actions>
-            <SignOutButton onPress={() => handleLogout()}>
-              <SignOutButtonText>Sair</SignOutButtonText>
-            </SignOutButton>
-            <CloseButton onPress={handleDismiss}>
-              <Icon name="chevron-up" size={24} color="#808080" />
-            </CloseButton>
-          </Content>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </Container>
+    <>
+      {visible && (
+        <Container>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <SafeAreaView>
+              <Content
+                style={{
+                  transform: [
+                    {
+                      translateY: panY.y.interpolate({
+                        inputRange: [-100, 0, 1],
+                        outputRange: [-100, 0, 1],
+                      }),
+                    },
+                  ],
+                }}
+                {...panRespoders.panHandlers}>
+                <Header>
+                  <Icon name="menu" size={24} color="#3e44c7" />
+                  <Title>Menu</Title>
+                </Header>
+                <Actions>
+                  <MenuButton onPress={toConnections}>
+                    <Icon name="link-variant" size={24} color="#FFF" />
+                    <MenuButtonText>Minhas Conexões</MenuButtonText>
+                  </MenuButton>
+                  <MenuButton onPress={toDirecMessages}>
+                    <Icon
+                      name="inbox-arrow-down-outline"
+                      size={24}
+                      color="#FFF"
+                    />
+                    <MenuButtonText>Mensagens Diretas</MenuButtonText>
+                    <CounterContent>
+                      <Counter>{unreadCounter}</Counter>
+                    </CounterContent>
+                  </MenuButton>
+                  <MenuButton onPress={toItineraries}>
+                    <Icon name="map-outline" size={24} color="#FFF" />
+                    <MenuButtonText>Meus Roteiros</MenuButtonText>
+                  </MenuButton>
+                  <MenuButton onPress={toNextItineraries}>
+                    <Icon name="map-check" size={24} color="#FFF" />
+                    <MenuButtonText>Próximos Roteiros</MenuButtonText>
+                  </MenuButton>
+                  <MenuButton onPress={toFavorites}>
+                    <Icon name="heart-outline" size={24} color="#FFF" />
+                    <MenuButtonText>Favoritos</MenuButtonText>
+                  </MenuButton>
+                  <MenuButton onPress={() => navigation.navigate('Feed')}>
+                    <Icon name="format-list-text" size={24} color="#FFF" />
+                    <MenuButtonText>Feed</MenuButtonText>
+                  </MenuButton>
+                </Actions>
+                <SignOutButton onPress={() => handleLogout()}>
+                  <SignOutButtonText>Sair</SignOutButtonText>
+                </SignOutButton>
+                <CloseButton onPress={handleDismiss}>
+                  <Icon name="chevron-up" size={24} color="#808080" />
+                </CloseButton>
+              </Content>
+            </SafeAreaView>
+          </KeyboardAvoidingView>
+        </Container>
+      )}
+    </>
   );
 };
 

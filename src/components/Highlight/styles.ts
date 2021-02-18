@@ -17,12 +17,11 @@ export const Background = styled.Image`
   background: #fff;
 `;
 
-export const Info = styled.View.attrs({
-  elevation: 3,
-})`
+export const Info = styled.View.attrs({})`
   background: #fff;
   height: 10rem;
   border-bottom-left-radius: 0.8rem;
   border-bottom-right-radius: 0.8rem;
   padding: 0.8rem;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 `;

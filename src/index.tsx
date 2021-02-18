@@ -27,7 +27,6 @@ class App extends React.PureComponent {
   componentDidMount() {
     async function check() {
       const token = await messaging().getToken();
-      console.log('Device Token: ', token);
       await AsyncStorage.setItem('@notification:token', token);
     }
 
@@ -36,10 +35,10 @@ class App extends React.PureComponent {
 
     messaging().onNotificationOpenedApp((remoteMessage) => {
       this.notificationActions(remoteMessage);
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage,
-      );
+      // console.log(
+      //   'Notification caused app to open from background state:',
+      //   remoteMessage,
+      // );
     });
 
     messaging()
@@ -47,16 +46,16 @@ class App extends React.PureComponent {
       .then((remoteMessage) => {
         if (remoteMessage) {
           this.notificationActions(remoteMessage);
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage,
-          );
+          // console.log(
+          //   'Notification caused app to open from quit state:',
+          //   remoteMessage,
+          // );
         }
       });
 
     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       this.notificationActions(remoteMessage);
-      console.log('Notification background', remoteMessage);
+      // console.log('Notification background', remoteMessage);
     });
   }
 
@@ -71,7 +70,7 @@ class App extends React.PureComponent {
   async notificationActions(notification: any) {
     const token = await AsyncStorage.getItem('@auth:token');
 
-    console.log('ON NOTIFICATION:', notification);
+    // console.log('ON NOTIFICATION:', notification);
 
     if (token && notification) {
       switch (notification.data.alias) {

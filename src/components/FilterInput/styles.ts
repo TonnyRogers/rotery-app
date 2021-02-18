@@ -1,17 +1,16 @@
 import styled from 'styled-native-components';
-import {
-  Modal as RNModal,
-  KeyboardAvoidingView as RNKAvoidingView,
-} from 'react-native';
+import {KeyboardAvoidingView as RNKAvoidingView} from 'react-native';
 
-export const Container = styled.View`
+export const Modal = styled.View`
   flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  position: absolute;
+  height: 100vh;
+  width: 100%:
 `;
 
-export const Modal = styled(RNModal)``;
-
 export const KeyboardAvoidingView = styled(RNKAvoidingView)`
-  background: rgba(0, 0, 0, 0.8);
   flex: 1;
 `;
 
@@ -20,7 +19,8 @@ export const Content = styled.View`
   min-height: 30rem;
   border-radius: 0.8rem;
   padding: 1rem;
-  margin: 2rem 1rem;
+  margin: 10rem 1rem;
+  z-index: 101;
 `;
 
 export const ModalHeader = styled.View`

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -30,6 +30,7 @@ import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
+import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
@@ -109,62 +110,75 @@ function DirectMessagesTabs() {
 }
 
 const Routes = () => {
-  const {signed} = useSelector((state: RootStateProps) => state.auth);
+  const {signed, loading} = useSelector((state: RootStateProps) => state.auth);
+
+  const renderSplash = useCallback(() => {
+    return <SplashScreen visible={loading} />;
+  }, [loading]);
 
   return (
-    <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-        initialRouteName={signed ? 'Feed' : 'Home'}>
-        {signed ? (
-          <>
-            <Stack.Screen name="Feed" component={Feed} />
-            <Stack.Screen name="Favorites" component={Favorites} />
-            <Stack.Screen
-              name="FeedItineraryDetails"
-              component={FeedItineraryDetails}
-            />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="NewItinerary" component={NewItinerary} />
-            <Stack.Screen name="MyItineraries" component={MyItineraries} />
-            <Stack.Screen name="NextItineraries" component={NextItineraries} />
-            <Stack.Screen
-              name="NextItineraryDetails"
-              component={NextItineraryDetails}
-            />
-            <Stack.Screen
-              name="MyItineraryDetails"
-              component={MyItineraryDetails}
-            />
-            <Stack.Screen name="EditItinerary" component={EditItinerary} />
-            <Stack.Screen name="UserDetails" component={UserDetails} />
-            <Stack.Screen name="Connections" component={ConnectionTabs} />
-            <Stack.Screen
-              name="DirectMessagesTabs"
-              component={DirectMessagesTabs}
-            />
-            <Stack.Screen
-              name="UserConversation"
-              component={UserConversation}
-            />
-            <Stack.Screen name="ItineraryRate" component={ItineraryRate} />
-            <Stack.Screen
-              name="DynamicItineraryDetails"
-              component={DynamicItineraryDetais}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="SignUp" component={SignUp} />
-            <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
-            <Stack.Screen name="NewPassword" component={NewPassword} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer ref={navigationRef}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+          initialRouteName={signed ? 'Feed' : 'Home'}>
+          {signed ? (
+            <>
+              <Stack.Screen name="Feed" component={Feed} />
+              <Stack.Screen name="Favorites" component={Favorites} />
+              <Stack.Screen
+                name="FeedItineraryDetails"
+                component={FeedItineraryDetails}
+              />
+              <Stack.Screen name="Profile" component={Profile} />
+              <Stack.Screen name="NewItinerary" component={NewItinerary} />
+              <Stack.Screen name="MyItineraries" component={MyItineraries} />
+              <Stack.Screen
+                name="NextItineraries"
+                component={NextItineraries}
+              />
+              <Stack.Screen
+                name="NextItineraryDetails"
+                component={NextItineraryDetails}
+              />
+              <Stack.Screen
+                name="MyItineraryDetails"
+                component={MyItineraryDetails}
+              />
+              <Stack.Screen name="EditItinerary" component={EditItinerary} />
+              <Stack.Screen name="UserDetails" component={UserDetails} />
+              <Stack.Screen name="Connections" component={ConnectionTabs} />
+              <Stack.Screen
+                name="DirectMessagesTabs"
+                component={DirectMessagesTabs}
+              />
+              <Stack.Screen
+                name="UserConversation"
+                component={UserConversation}
+              />
+              <Stack.Screen name="ItineraryRate" component={ItineraryRate} />
+              <Stack.Screen
+                name="DynamicItineraryDetails"
+                component={DynamicItineraryDetais}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+              <Stack.Screen
+                name="RecoverPassword"
+                component={RecoverPassword}
+              />
+              <Stack.Screen name="NewPassword" component={NewPassword} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+      {renderSplash()}
+    </>
   );
 };
 

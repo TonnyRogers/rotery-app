@@ -1,6 +1,12 @@
 import React, {useRef, useCallback, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Platform, Dimensions, PanResponder, Animated, SafeAreaView} from 'react-native';
+import {
+  Platform,
+  Dimensions,
+  PanResponder,
+  Animated,
+  SafeAreaView,
+} from 'react-native';
 
 import {
   Container,
@@ -90,48 +96,48 @@ const Alert: React.FC<AlertProps> = ({
   }, [handleDismiss, handleOpen, visible]);
 
   return (
-    <Container
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={() => onRequestClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <SafeAreaView>
-        <Content
-          style={{
-            transform: [
-              {
-                translateY: panY.y.interpolate({
-                  inputRange: [-100, 0, 1],
-                  outputRange: [-100, 0, 1],
-                }),
-              },
-            ],
-          }}
-          {...panRespoders.panHandlers}>
-          <Header>
-            {icon && <Icon name={icon} size={30} color={iconColor} />}
-            <Title>{title}</Title>
-          </Header>
-          <Message>{message}</Message>
-          <AlertActions>
-            {onConfirm && (
-              <ConfirmButton onPress={onConfirm}>
-                <Icon name="check" size={24} color="#FFF" />
-                <ButtonText>Confirmar</ButtonText>
-              </ConfirmButton>
-            )}
-            <CancelButton onPress={handleDismiss}>
-              <Icon name="close" size={24} color="#FFF" />
-              <ButtonText>{onConfirm ? 'Cancelar' : 'Fechar'}</ButtonText>
-            </CancelButton>
-          </AlertActions>
-          <BaseBlock />
-        </Content>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </Container>
+    <>
+      {visible && (
+        <Container>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <SafeAreaView>
+              <Content
+                style={{
+                  transform: [
+                    {
+                      translateY: panY.y.interpolate({
+                        inputRange: [-100, 0, 1],
+                        outputRange: [-100, 0, 1],
+                      }),
+                    },
+                  ],
+                }}
+                {...panRespoders.panHandlers}>
+                <Header>
+                  {icon && <Icon name={icon} size={30} color={iconColor} />}
+                  <Title>{title}</Title>
+                </Header>
+                <Message>{message}</Message>
+                <AlertActions>
+                  {onConfirm && (
+                    <ConfirmButton onPress={onConfirm}>
+                      <Icon name="check" size={24} color="#FFF" />
+                      <ButtonText>Confirmar</ButtonText>
+                    </ConfirmButton>
+                  )}
+                  <CancelButton onPress={handleDismiss}>
+                    <Icon name="close" size={24} color="#FFF" />
+                    <ButtonText>{onConfirm ? 'Cancelar' : 'Fechar'}</ButtonText>
+                  </CancelButton>
+                </AlertActions>
+                <BaseBlock />
+              </Content>
+            </SafeAreaView>
+          </KeyboardAvoidingView>
+        </Container>
+      )}
+    </>
   );
 };
 
