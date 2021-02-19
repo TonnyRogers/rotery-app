@@ -2,6 +2,7 @@ import {takeLatest, put, call, all} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
+import NetInfo from '../../../services/netinfo';
 import {
   getNextItinerariesRequest,
   getNextItinerariesSuccess,
@@ -24,6 +25,13 @@ const delay = (time: number) =>
 
 export function* getItineraries() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
 
     const response = yield call(api.get, '/members/itineraries');
@@ -45,6 +53,13 @@ export function* makeQuestion({
   payload,
 }: ReturnType<typeof makeQuestionRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {question, itineraryId} = payload;
     yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/questions`, {question});
@@ -72,6 +87,13 @@ export function* rateItinerary({
   payload,
 }: ReturnType<typeof rateItineraryRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {
       userId,
       itineraryId,
@@ -111,6 +133,13 @@ export function* leaveItinerary({
   payload,
 }: ReturnType<typeof leaveItineraryRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {itineraryId} = payload;
 
     RootNavigation.navigate('NextItineraries');

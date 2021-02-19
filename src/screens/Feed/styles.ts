@@ -47,7 +47,7 @@ export const Activity = styled.TouchableOpacity`
 
 export const ActivityName = styled.Text`
   font-family: 'Roboto';
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #fff;
 `;

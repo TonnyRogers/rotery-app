@@ -115,9 +115,8 @@ const MyConnections: React.FC = () => {
                   <UserButton onPress={() => toUserProfile(item.owner_id)}>
                     <UserImage
                       source={{
-                        uri: item.owner.person.file
-                          ? item.owner.person.file.url
-                          : '..',
+                        uri:
+                          item.owner.person.file && item.owner.person.file.url,
                       }}
                       resizeMode="cover"
                     />
@@ -148,9 +147,9 @@ const MyConnections: React.FC = () => {
                   <UserButton onPress={() => toUserProfile(item.user_id)}>
                     <UserImage
                       source={{
-                        uri: item.target.person.file
-                          ? item.target.person.file.url
-                          : '..',
+                        uri:
+                          item.target.person.file &&
+                          item.target.person.file.url,
                       }}
                       resizeMode="cover"
                     />

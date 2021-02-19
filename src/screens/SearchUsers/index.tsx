@@ -91,7 +91,7 @@ const SearchUsers: React.FC = () => {
                   <UserButton onPress={() => viewProfile(user.id)}>
                     <UserImage
                       source={{
-                        uri: user.person.file ? user.person.file.url : '..',
+                        uri: user.person.file && user.person.file.url,
                       }}
                       resizeMode="cover"
                     />

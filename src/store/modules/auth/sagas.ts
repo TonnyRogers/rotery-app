@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
+import NetInfo from '../../../services/netinfo';
 
 import {
   loginRequest,
@@ -32,6 +33,13 @@ import {getMessagesRequest} from '../messages/actions';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {email, password} = payload;
 
     const response = yield call(api.post, '/sessions', {email, password});

@@ -3,6 +3,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
+import NetInfo from '../../../services/netinfo';
+import * as RootNavigation from '../../../RootNavigation';
 import {
   getDetailsRequest,
   getDetailsSuccess,
@@ -10,9 +12,18 @@ import {
   updateDetailsSuccess,
   updateDetailsFailure,
 } from './actions';
+import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 
 export function* getDetails({payload}: ReturnType<typeof getDetailsRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      RootNavigation.goBack();
+      return;
+    }
+
     const {itineraryId} = payload;
 
     yield call(
@@ -21,10 +32,15 @@ export function* getDetails({payload}: ReturnType<typeof getDetailsRequest>) {
       String(itineraryId),
     );
 
+    yield put(setLoadingTrue());
+
     const response = yield call(api.get, `/itineraries/${itineraryId}/details`);
+
+    yield put(setLoadingFalse());
 
     yield put(getDetailsSuccess(response.data));
   } catch (error) {
+    yield put(setLoadingFalse());
     yield put(getDetailsFailure());
     Toast.show({
       text1: 'Erro ao buscar roteiro.',
@@ -36,6 +52,13 @@ export function* getDetails({payload}: ReturnType<typeof getDetailsRequest>) {
 
 export function* updateDetails() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const itineraryId = yield call(
       [AsyncStorage, 'getItem'],
       '@dynamicItinerary:id',

@@ -156,9 +156,9 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
               </RowGroup>
               <Avatar
                 source={{
-                  uri: itinerary.owner.person.file
-                    ? itinerary.owner.person.file.url
-                    : '..',
+                  uri:
+                    itinerary.owner.person.file &&
+                    itinerary.owner.person.file.url,
                 }}
                 resizeMode="cover"
               />

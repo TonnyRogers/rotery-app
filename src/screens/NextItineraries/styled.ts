@@ -10,10 +10,13 @@ export const ContentHeader = styled.View`
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  height: 2rem;
-  width: 2rem;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
   align-items: center;
   justify-content: center;
+  background: rgba(61, 199, 123, 0.2);
+  margin-left: 1rem;
 `;
 
 export const Title = styled.Text`

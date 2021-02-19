@@ -2,6 +2,7 @@ import {takeLatest, put, call, all} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
+import NetInfo from '../../../services/netinfo';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 import {
   getFeedSuccess,
@@ -22,15 +23,18 @@ import {updateDetailsRequest} from '../dynamicItinerary/actions';
 
 export function* getItineraries() {
   try {
-    yield put(setLoadingTrue());
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
 
     const response = yield call(api.get, '/feed');
 
     yield put(getFeedSuccess(response.data.data));
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao buscar seus roteiros.',
       position: 'bottom',
@@ -43,6 +47,13 @@ export function* getFilteredItineraries({
   payload,
 }: ReturnType<typeof getFeedFilteredRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {filter} = payload;
 
     yield put(setLoadingTrue());
@@ -72,6 +83,13 @@ export function* makeQuestion({
   payload,
 }: ReturnType<typeof makeQuestionRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {question, itineraryId} = payload;
     yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/questions`, {question});
@@ -97,6 +115,13 @@ export function* makeQuestion({
 
 export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {itineraryId, userId} = payload;
     const currentDate = new Date();
 
@@ -129,6 +154,13 @@ export function* getPaginatedItineraries({
   payload,
 }: ReturnType<typeof paginateFeedRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {page, begin, end} = payload;
 
     yield put(setLoadingTrue());

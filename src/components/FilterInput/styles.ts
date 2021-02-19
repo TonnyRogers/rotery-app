@@ -1,12 +1,14 @@
 import styled from 'styled-native-components';
-import {KeyboardAvoidingView as RNKAvoidingView} from 'react-native';
+import {KeyboardAvoidingView as RNKAvoidingView, Platform} from 'react-native';
+
+const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const Modal = styled.View`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   position: absolute;
-  height: 100vh;
+  height: 100${metric};
   width: 100%:
 `;
 
@@ -34,7 +36,14 @@ export const Title = styled.Text`
   font-weight: bold;
 `;
 
-export const CloseButton = styled.TouchableOpacity``;
+export const CloseButton = styled.TouchableOpacity`
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 199, 123, 0.2);
+`;
 
 export const ModalContent = styled.View``;
 

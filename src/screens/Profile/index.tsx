@@ -179,8 +179,8 @@ const Profile: React.FC = () => {
 
   return (
     <SafeView>
+      <Header />
       <Container>
-        <Header />
         <Card>
           <CardHeader>
             <BackButton onPress={() => navigation.navigate('Feed')}>
@@ -188,10 +188,7 @@ const Profile: React.FC = () => {
             </BackButton>
           </CardHeader>
           <User>
-            <Avatar
-              source={{uri: profileImage.uri || '..'}}
-              resizeMode="cover"
-            />
+            <Avatar source={{uri: profileImage.uri}} resizeMode="cover" />
             <ChangeAvatarButton onPress={pickImage}>
               <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
             </ChangeAvatarButton>
@@ -302,17 +299,17 @@ const Profile: React.FC = () => {
           <Icon name="delete-forever-outline" size={24} color="#FFF" />
           <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
         </DeleteAccountButton>
-        <Alert
-          title="Opá!"
-          message="você deseja realmente excluir sua conta?"
-          icon="clipboard-alert-outline"
-          iconColor="#3dc77b"
-          visible={alertVisible}
-          onRequestClose={(value) => setAlertVisible(value)}
-          onCancel={alertToggle}
-          onConfirm={() => handleDeleteUser()}
-        />
       </Container>
+      <Alert
+        title="Opá!"
+        message="você deseja realmente excluir sua conta?"
+        icon="clipboard-alert-outline"
+        iconColor="#3dc77b"
+        visible={alertVisible}
+        onRequestClose={(value) => setAlertVisible(value)}
+        onCancel={alertToggle}
+        onConfirm={() => handleDeleteUser()}
+      />
     </SafeView>
   );
 };

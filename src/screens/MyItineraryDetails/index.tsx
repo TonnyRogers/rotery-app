@@ -206,7 +206,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                 <HostButton>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url || '..',
+                      uri: itinerary.owner.person.file?.url,
                     }}
                     resizeMode="cover"
                   />

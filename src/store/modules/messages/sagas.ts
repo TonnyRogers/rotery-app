@@ -2,7 +2,7 @@ import {all, call, put, takeLatest} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
-
+import NetInfo from '../../../services/netinfo';
 import {
   getMessagesRequest,
   getMessagesSuccess,
@@ -14,10 +14,17 @@ import {
   getConversationSuccess,
   getConversationFailure,
 } from './actions';
-import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
+import {setLoadingFalse} from '../auth/actions';
 
 export function* getMessages() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const response = yield call(api.get, '/messages');
 
     yield put(getMessagesSuccess(response.data));
@@ -35,6 +42,13 @@ export function* getConversation({
   payload,
 }: ReturnType<typeof getConversationRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {userId} = payload;
 
     const response = yield call(api.get, `/users/${userId}/messages`);
@@ -52,6 +66,13 @@ export function* getConversation({
 
 export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {message, userId} = payload;
 
     yield call(api.post, `/users/${userId}/message`, {

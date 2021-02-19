@@ -184,7 +184,7 @@ const Home: React.FC = () => {
             <SwitchLoginButton onPress={() => setLoginVisible(!loginVisible)}>
               <Icon
                 name={loginVisible ? 'chevron-down' : 'chevron-up'}
-                size={30}
+                size={35}
                 color="#3dc77b"
               />
             </SwitchLoginButton>

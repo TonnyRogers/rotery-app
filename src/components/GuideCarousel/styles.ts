@@ -46,6 +46,7 @@ export const Subtitle = styled.Text`
 
 export const ActionContent = styled.View`
   height: 4rem;
+  margin-bottom: 1.5rem;
 `;
 
 export const CloseButton = styled.TouchableOpacity`

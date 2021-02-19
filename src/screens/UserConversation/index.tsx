@@ -101,7 +101,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   }
 
   return (
-    <SafeView>
+    <SafeView onTouchStart={() => Keyboard.dismiss()}>
       <Header />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -121,7 +121,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
                       uri:
                         sender && sender.sender.person.file
                           ? sender.sender.person.file.url
-                          : '..',
+                          : undefined,
                     }}
                     resizeMode="cover"
                   />

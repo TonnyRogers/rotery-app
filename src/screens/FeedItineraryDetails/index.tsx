@@ -166,7 +166,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <HostButton onPress={() => viewProfile(itinerary.owner.id)}>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url || '..',
+                      uri: itinerary.owner.person.file?.url,
                     }}
                     resizeMode="cover"
                   />

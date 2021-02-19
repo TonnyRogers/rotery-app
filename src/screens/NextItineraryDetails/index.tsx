@@ -170,7 +170,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <HostButton>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url || '..',
+                      uri: itinerary.owner.person.file?.url,
                     }}
                     resizeMode="cover"
                   />

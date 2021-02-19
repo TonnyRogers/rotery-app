@@ -2,6 +2,7 @@ import {takeLatest, all, put, call} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
+import NetInfo from '../../../services/netinfo';
 import {
   getActivitiesSuccess,
   getActivitiesFailure,
@@ -14,6 +15,13 @@ import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 
 export function* getActivities() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
     const response = yield call(api.get, '/activities');
 
@@ -32,6 +40,13 @@ export function* getActivities() {
 
 export function* getLodgings() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
     const response = yield call(api.get, '/lodgings');
 
@@ -50,6 +65,13 @@ export function* getLodgings() {
 
 export function* getTransports() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
     const response = yield call(api.get, '/transports');
 

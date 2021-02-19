@@ -2,6 +2,7 @@ import {takeLatest, put, call, all} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
+import NetInfo from '../../../services/netinfo';
 import * as RootNavigation from '../../../RootNavigation';
 import {
   getItinerariesRequest,
@@ -45,6 +46,13 @@ interface UpdateItemProps {
 
 export function* getItineraries() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
 
     const response = yield call(api.get, '/itineraries');
@@ -65,6 +73,13 @@ export function* createItinerary({
   payload,
 }: ReturnType<typeof createItineraryRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {
       name,
       dateBegin,
@@ -118,6 +133,13 @@ export function* deleteItinerary({
   payload,
 }: ReturnType<typeof deleteItineraryRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
 
     const {itineraryId} = payload;
@@ -147,6 +169,13 @@ export function* updateItinerary({
   payload,
 }: ReturnType<typeof updateItineraryRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {
       itineraryId,
       name,

@@ -10,7 +10,14 @@ export const Content = styled.ScrollView`
 
 export const CardHeader = styled.View``;
 
-export const BackButton = styled.TouchableOpacity``;
+export const BackButton = styled.TouchableOpacity`
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 199, 123, 0.2);
+`;
 
 export const CardCotent = styled.View``;
 

@@ -186,7 +186,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <UserDetail>
               <Avatar
                 source={{
-                  uri: profile.file ? profile.file.url : '..',
+                  uri: profile.file && profile.file.url,
                 }}
               />
               <Name>{profile.user && profile.user.username}</Name>

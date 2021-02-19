@@ -70,7 +70,7 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
       <OwnerDetails>
         <UserImage
           source={{
-            uri: question.owner.person.file?.url || '..',
+            uri: question.owner.person.file?.url,
           }}
           resizeMode="cover"
         />

@@ -71,9 +71,9 @@ const DirectMessages: React.FC = () => {
                   <UserButton>
                     <UserImage
                       source={{
-                        uri: message.sender.person.file
-                          ? message.sender.person.file.url
-                          : '..',
+                        uri:
+                          message.sender.person.file &&
+                          message.sender.person.file.url,
                       }}
                       resizeMode="cover"
                     />

@@ -14,7 +14,7 @@ interface TextAreaProps {
   onSubmitEditing?(): void;
 }
 
-const TextArea: React.FC<TextAreaProps> = (
+const TextArea: React.FunctionComponent<TextAreaProps> = (
   {label, value, placeholder, onChange, ...props},
   ref,
 ) => {

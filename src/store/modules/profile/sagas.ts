@@ -2,7 +2,7 @@ import {all, takeLatest, put, call} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
-
+import NetInfo from '../../../services/netinfo';
 import {
   getProfileSuccess,
   getProfileFail,
@@ -20,6 +20,13 @@ import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 
 export function* getProfile() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const response = yield call(api.get, '/profile');
 
     const profile = response.data;
@@ -34,6 +41,13 @@ export function* updateProfile({
   payload,
 }: ReturnType<typeof updateProfileRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {name, gender, birth, cpf, profission, phone} = payload;
     yield put(setLoadingTrue());
     const response = yield call(api.put, '/profile', {
@@ -66,6 +80,13 @@ export function* updateProfileImage({
   payload,
 }: ReturnType<typeof updateProfileImageRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     const {file_id} = payload;
     yield put(setLoadingTrue());
     const response = yield call(api.put, '/profile/image', {
@@ -87,6 +108,13 @@ export function* updateProfileImage({
 
 export function* deleteUser() {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(setLoadingFalse());
+      return;
+    }
+
     yield put(setLoadingTrue());
     yield call(api.delete, '/users');
 

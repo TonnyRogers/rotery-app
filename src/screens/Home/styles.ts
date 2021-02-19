@@ -70,8 +70,8 @@ export const LoginHeader = styled.View`
 
 export const SwitchLoginButton = styled.TouchableOpacity`
   margin-top: 1rem;
-  height: 3rem;
-  width: 3rem;
+  height: 4rem;
+  width: 4rem;
   align-items: center;
 `;
 

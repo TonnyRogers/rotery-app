@@ -1,12 +1,18 @@
 import styled from 'styled-native-components';
-import {Animated, KeyboardAvoidingView as RNKAvoidingView} from 'react-native';
+import {
+  Animated,
+  KeyboardAvoidingView as RNKAvoidingView,
+  Platform,
+} from 'react-native';
+
+const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const Container = styled.View`
 flex: 1;
 background: rgba(0, 0, 0, 0.4);
 z-index: 100;
 position: absolute;
-height: 100vh;
+height: 100${metric};
 width: 100%:
 `;
 
