@@ -1,6 +1,8 @@
 import styled from 'styled-native-components';
 
-export const Container = styled.View``;
+export const Container = styled.View`
+  flex: 1;
+`;
 
 export const ImageList = styled.ScrollView`
   background: #e6e6e6;
@@ -19,7 +21,9 @@ export const Bullet = styled.View`
   margin: 0.5rem;
 `;
 
-export const HighlightContent = styled.View``;
+export const HighlightContent = styled.View`
+  flex: 1;
+`;
 
 export const RowGroup = styled.View`
   flex-direction: row;

@@ -1,16 +1,17 @@
 import styled from 'styled-native-components';
-import {Animated} from 'react-native';
+import {Animated, Platform} from 'react-native';
+
+const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const SafeView = styled.SafeAreaView`
   flex: 1;
 `;
 
-export const Container = styled.ScrollView.attrs({
-  showsVerticalScrollIndicator: false,
-})`
+export const Container = styled.View`
+  flex: 1;
   flex-direction: column;
   background: #f6f6f6;
-  height: 100%;
+  height: ${'100' + metric};
 `;
 
 export const Logo = styled.Image`
@@ -72,7 +73,10 @@ export const SwitchLoginButton = styled.TouchableOpacity`
   margin-top: 1rem;
   height: 4rem;
   width: 4rem;
+  border-radius: 2rem;
   align-items: center;
+  justify-content: center;
+  background: rgba(61, 199, 123, 0.2);
 `;
 
 export const HighlightContent = styled.View``;
