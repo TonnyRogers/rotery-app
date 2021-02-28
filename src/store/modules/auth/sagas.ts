@@ -1,10 +1,12 @@
 import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-toast-message';
+import messaging from '@react-native-firebase/messaging';
 
 import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
 import NetInfo from '../../../services/netinfo';
+import {translateError} from '../../../lib/utils';
 
 import {
   loginRequest,
@@ -74,7 +76,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getMessagesRequest());
   } catch (error) {
     Toast.show({
-      text1: 'Erro ao efetuar login.',
+      text1: `${translateError(error.response.data[0].message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -130,8 +132,9 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   } catch (error) {
     yield put(setLoadingFalse());
     yield put(registerFailure());
+
     Toast.show({
-      text1: `${error.response.data[0].message}`,
+      text1: `${translateError(error.response.data[0].message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -179,10 +182,14 @@ export function* handleRefreshToken() {
 
 export function* setDeviceToken() {
   try {
-    const deviceToken = yield call(
+    let deviceToken = yield call(
       [AsyncStorage, 'getItem'],
       '@notification:token',
     );
+
+    if (!deviceToken) {
+      deviceToken = yield call([messaging(), 'getToken']);
+    }
 
     yield call(api.post, '/users/device', {
       token: deviceToken,

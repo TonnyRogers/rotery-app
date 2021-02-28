@@ -3,7 +3,7 @@ import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
-import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
+import {setLoadingFalse} from '../auth/actions';
 import {
   getConnectionsRequest,
   getConnectionsSuccess,
@@ -131,7 +131,7 @@ export function* rejectConnection({
   } catch (error) {
     yield put(rejectConnectionFailure());
     Toast.show({
-      text1: 'EErro ao cancelar conexão.',
+      text1: 'Erro ao cancelar conexão.',
       position: 'bottom',
       type: 'error',
     });

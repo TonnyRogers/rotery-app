@@ -4,6 +4,8 @@ import Toast from 'react-native-toast-message';
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
 import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
+import {translateError} from '../../../lib/utils';
+
 import {
   getFeedSuccess,
   getFeedFailure,
@@ -142,8 +144,9 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
   } catch (error) {
     yield put(joinFailure());
     yield put(setLoadingFalse());
+    console.tron.log(error.response);
     Toast.show({
-      text1: 'Erro ao solicitar participação.',
+      text1: `${translateError(error.response.data[0].message)}`,
       position: 'bottom',
       type: 'error',
     });

@@ -327,9 +327,12 @@ const FeedDetail: React.FC<FeedItineraryDetailsProps> = ({itinerary}) => {
               </RowGroup>
             </CardHeader>
             <CardContent>
-              {itinerary.members.map((member) => (
-                <ItineraryMember member={member} key={member.id} />
-              ))}
+              {itinerary.members.map(
+                (member) =>
+                  member.pivot.accepted && (
+                    <ItineraryMember member={member} key={member.id} />
+                  ),
+              )}
             </CardContent>
           </Card>
         </Content>

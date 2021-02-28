@@ -75,7 +75,7 @@ const Profile: React.FC = () => {
   );
   const [alertVisible, setAlertVisible] = useState(false);
   const [profileImage, setProfileImage] = useState({
-    uri: data?.file_id && data.file ? data.file.url : '',
+    uri: data?.file_id && data.file ? data.file.url : null,
   });
 
   const nameRef = useRef() as any;
@@ -162,7 +162,7 @@ const Profile: React.FC = () => {
           const {id} = fileResponse.data;
 
           if (!id) {
-            setProfileImage({uri: ''});
+            setProfileImage({uri: null});
             return;
           }
           setProfileImage(image);
@@ -188,7 +188,11 @@ const Profile: React.FC = () => {
             </BackButton>
           </CardHeader>
           <User>
-            <Avatar source={{uri: profileImage.uri}} resizeMode="cover" />
+            <Avatar
+              source={{uri: profileImage.uri}}
+              resizeMode="cover"
+              style={{borderColor: '#e1e1e1'}}
+            />
             <ChangeAvatarButton onPress={pickImage}>
               <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
             </ChangeAvatarButton>

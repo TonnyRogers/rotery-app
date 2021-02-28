@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
 import * as RootNavigation from '../../../RootNavigation';
+
 import {
   getItinerariesRequest,
   getItinerariesSuccess,

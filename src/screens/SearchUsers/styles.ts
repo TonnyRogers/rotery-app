@@ -17,7 +17,9 @@ export const CardContent = styled.View`
 
 export const ColumnGroup = styled.View``;
 
-export const UserList = styled.ScrollView``;
+export const UserList = styled.ScrollView`
+  flex: 1;
+`;
 
 export const User = styled.View`
   flex-direction: row;

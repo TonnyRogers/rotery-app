@@ -11,14 +11,16 @@ export const Title = styled.Text`
   margin-left: 1rem;
 `;
 
-export const CardContent = styled.View``;
+export const CardContent = styled.View`
+  min-height: 46rem;
+`;
 
 export const ColumnGroup = styled.View``;
 
 export const ConnectionList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  height: 40rem;
+  flex: 1;
 `;
 
 export const User = styled.View`

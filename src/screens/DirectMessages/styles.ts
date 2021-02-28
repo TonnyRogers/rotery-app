@@ -33,12 +33,14 @@ export const Title = styled.Text`
   margin-left: 2rem;
 `;
 
-export const CardContent = styled.View``;
+export const CardContent = styled.View`
+  min-height: 38rem;
+`;
 
 export const MessageList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  height: 39rem;
+  flex: 1;
 `;
 
 export const UserMessage = styled.TouchableOpacity`

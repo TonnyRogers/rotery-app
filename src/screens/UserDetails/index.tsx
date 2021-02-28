@@ -188,6 +188,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                 source={{
                   uri: profile.file && profile.file.url,
                 }}
+                style={{borderColor: '#e1e1e1'}}
               />
               <Name>{profile.user && profile.user.username}</Name>
               <RateStars>{renderRateStars(finalRate / countRate)}</RateStars>

@@ -75,7 +75,9 @@ const SignUp: React.FC = () => {
         <Input
           icon="email-outline"
           label="Email"
+          keyboardType="email-address"
           placeholder="seu e-mail"
+          autoCapitalize="none"
           ref={emailRef}
           value={email}
           onChange={setEmail}

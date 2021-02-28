@@ -12,11 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1BBAF55F25D62A4200CA8006 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBAF55E25D62A4200CA8006 /* NotificationService.m */; };
-		1BBAF56325D62A4200CA8006 /* ImageNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1BBAF55B25D62A4200CA8006 /* ImageNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1BF00D6C2585505000292254 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1BF00D6B2585505000292254 /* GoogleService-Info.plist */; };
 		1BF00D6D2585505000292254 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1BF00D6B2585505000292254 /* GoogleService-Info.plist */; };
-		5543395C97B3AC870993DF9F /* libPods-ImageNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06FA727E07DE33B3354F9799 /* libPods-ImageNotification.a */; };
 		58C532DE7F564126BF239B0C /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42F5CC603D6940288B54560A /* Roboto-Medium.ttf */; };
 		59CBBCFE6E903C6A9C24AE19 /* libPods-roteryApp-roteryAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E5E646CE1796E1E33FEF70D /* libPods-roteryApp-roteryAppTests.a */; };
 		5C5BB7D3E1334470B509ECBD /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9217AFCA46FE4A6F9E360F41 /* Roboto-Bold.ttf */; };
@@ -42,13 +39,6 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = roteryApp;
 		};
-		1BBAF56125D62A4200CA8006 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1BBAF55A25D62A4200CA8006;
-			remoteInfo = ImageNotification;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,7 +48,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1BBAF56325D62A4200CA8006 /* ImageNotification.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,7 +69,6 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = roteryApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = roteryApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = roteryApp/main.m; sourceTree = "<group>"; };
-		1BBAF55B25D62A4200CA8006 /* ImageNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ImageNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BBAF55D25D62A4200CA8006 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
 		1BBAF55E25D62A4200CA8006 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
 		1BBAF56025D62A4200CA8006 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -126,14 +114,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2392AD336130A244290DB35 /* libPods-roteryApp.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1BBAF55825D62A4200CA8006 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5543395C97B3AC870993DF9F /* libPods-ImageNotification.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +220,6 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* roteryApp.app */,
 				00E356EE1AD99517003FC87E /* roteryAppTests.xctest */,
-				1BBAF55B25D62A4200CA8006 /* ImageNotification.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -305,30 +284,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				1BBAF56225D62A4200CA8006 /* PBXTargetDependency */,
 			);
 			name = roteryApp;
 			productName = roteryApp;
 			productReference = 13B07F961A680F5B00A75B9A /* roteryApp.app */;
 			productType = "com.apple.product-type.application";
-		};
-		1BBAF55A25D62A4200CA8006 /* ImageNotification */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1BBAF56425D62A4200CA8006 /* Build configuration list for PBXNativeTarget "ImageNotification" */;
-			buildPhases = (
-				B4337ADC08B507B5CC792D39 /* [CP] Check Pods Manifest.lock */,
-				1BBAF55725D62A4200CA8006 /* Sources */,
-				1BBAF55825D62A4200CA8006 /* Frameworks */,
-				1BBAF55925D62A4200CA8006 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ImageNotification;
-			productName = ImageNotification;
-			productReference = 1BBAF55B25D62A4200CA8006 /* ImageNotification.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -349,11 +309,6 @@
 						LastSwiftMigration = 1120;
 						ProvisioningStyle = Automatic;
 					};
-					1BBAF55A25D62A4200CA8006 = {
-						CreatedOnToolsVersion = 12.4;
-						DevelopmentTeam = 3U2R52GN5U;
-						ProvisioningStyle = Automatic;
-					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "roteryApp" */;
@@ -363,6 +318,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"pt-BR",
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -371,7 +327,6 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* roteryApp */,
 				00E356ED1AD99517003FC87E /* roteryAppTests */,
-				1BBAF55A25D62A4200CA8006 /* ImageNotification */,
 			);
 		};
 /* End PBXProject section */
@@ -405,13 +360,6 @@
 				70E1B6D6E2BC434D87E92EED /* Roboto-Thin.ttf in Resources */,
 				6B75B219724C4B81B4DD357D /* Roboto-ThinItalic.ttf in Resources */,
 				A3987C845A5A44FF8791D7FD /* Pacifico-Regular.ttf in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1BBAF55925D62A4200CA8006 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -568,28 +516,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-roteryApp/Pods-roteryApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B4337ADC08B507B5CC792D39 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ImageNotification-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		BE7236FC08732CFBD35E6B2D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -651,14 +577,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1BBAF55725D62A4200CA8006 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1BBAF55F25D62A4200CA8006 /* NotificationService.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -666,11 +584,6 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* roteryApp */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
-		};
-		1BBAF56225D62A4200CA8006 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1BBAF55A25D62A4200CA8006 /* ImageNotification */;
-			targetProxy = 1BBAF56125D62A4200CA8006 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -734,7 +647,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = roteryApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.4;
 				Multi_Deployment_Config = "";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -757,6 +670,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODEPUSH_KEY = uxqIBimi5uTPnQAHpKEdxK_kCfPGxIxO98J6l;
 				CODE_SIGN_ENTITLEMENTS = roteryApp/roteryApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -764,7 +678,7 @@
 				DEVELOPMENT_TEAM = 3U2R52GN5U;
 				INFOPLIST_FILE = roteryApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.4;
 				Multi_Deployment_Config = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -779,87 +693,6 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
-		};
-		1BBAF56525D62A4200CA8006 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCA65D789C611C2CC57DA653 /* Pods-ImageNotification.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 3U2R52GN5U;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = ImageNotification/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rotery.rotery.ImageNotification;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		1BBAF56625D62A4200CA8006 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = ECE822273949B8DA169A0EB5 /* Pods-ImageNotification.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 3U2R52GN5U;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = ImageNotification/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rotery.rotery.ImageNotification;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		1BBAF56725D62A4200CA8006 /* Staging */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = B949131E11DA4BEE39ED4AFD /* Pods-ImageNotification.staging.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 3U2R52GN5U;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = ImageNotification/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rotery.rotery.ImageNotification;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Staging;
 		};
 		1BCF9E7725709C380042225C /* Staging */ = {
 			isa = XCBuildConfiguration;
@@ -890,7 +723,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = gpgNyxnP1mWwSSI5PASx4b9SM1sQS8G8yFKpZ;
+				CODEPUSH_KEY = "7q6YLoZ_qGC8rJofaX4soeXV319tf_IRmY-ad";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -923,6 +756,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODEPUSH_KEY = "7q6YLoZ_qGC8rJofaX4soeXV319tf_IRmY-ad";
 				CODE_SIGN_ENTITLEMENTS = roteryApp/roteryApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -930,7 +764,7 @@
 				DEVELOPMENT_TEAM = 3U2R52GN5U;
 				INFOPLIST_FILE = roteryApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.4;
 				Multi_Deployment_Config = "$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -1058,7 +892,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = 8KYilEuuOb9M5t9nW3VQ1E5XRwLliHeg4T7NK;
+				CODEPUSH_KEY = uxqIBimi5uTPnQAHpKEdxK_kCfPGxIxO98J6l;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1104,16 +938,6 @@
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
 				1BCF9E7825709C380042225C /* Staging */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1BBAF56425D62A4200CA8006 /* Build configuration list for PBXNativeTarget "ImageNotification" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1BBAF56525D62A4200CA8006 /* Debug */,
-				1BBAF56625D62A4200CA8006 /* Release */,
-				1BBAF56725D62A4200CA8006 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
