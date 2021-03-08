@@ -12,7 +12,8 @@ import {
   getTransportsRequest,
 } from '../../store/modules/options/actions';
 import {InitialStateProps} from '../../store/modules/options/reducer';
-import {hideNewItineraryGuide} from '../../store/modules/guides/actions';
+import {LodgingProps, TransportProps, ActivityProps} from '../../utils/types';
+import {showNewItineraryGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
@@ -33,7 +34,8 @@ import {
   RowGroupSpaced,
   ContentTitle,
   IconHolder,
-  AddTransportButton,
+  AddButton,
+  AddButtonText,
   TransportList,
   ColumnGroup,
   FieldTitle,
@@ -41,88 +43,27 @@ import {
   RemoveButton,
   HeaderActions,
   LodgingList,
-  AddLodginButton,
   ActivityList,
-  AddActivityButton,
   AddImageButton,
   CardHeader,
   BackButton,
+  PublicButton,
+  PublicButtonText,
+  PrivateButton,
+  PrivateButtonText,
+  NewTransportButton,
+  NewLodginButton,
+  NewActivityButton,
+  ModalContent,
 } from './styles';
 
-import Header from '../../components/Header';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import DateTimeInput from '../../components/DateTimeInput';
 import FileInput from '../../components/FileInput';
 import PickerInput from '../../components/PickerInput';
-import GuideCarousel from '../../components/GuideCarousel';
-import Ads from '../../components/Ads';
-
-const guideImages = [
-  {
-    id: 1,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-1.png',
-    withInfo: true,
-    title: 'Criando Roteiros 1/4',
-    message:
-      'Ao criar um roteiro você pode adicionar fotos, descrição, quantidade de vagas, dar um nome, datas e muito mais.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-2.png',
-    withInfo: true,
-    title: 'Criando Roteiros 2/4',
-    message:
-      'Para dicionar uma Atividade, Hospedagem ou Transporte você deve clicar no "mais" após preencher os dados.',
-    isAnimation: false,
-  },
-  {
-    id: 3,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
-    withInfo: true,
-    title: 'Criando Roteiros 3/4',
-    message: 'Após isso você vai notar que um item será adicionado logo acima.',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
-    withInfo: true,
-    title: 'Criando Roteiros 4/4',
-    message: 'Você pode remove-lo clicando no ícone de lixeira.',
-    isAnimation: false,
-  },
-];
-
-interface TransportProps {
-  id: number;
-  name?: string;
-  description: string | null;
-  price: number | null;
-  capacity: number;
-}
-
-interface LodgingProps {
-  id: number;
-  name?: string;
-  description: string | null;
-  price: number | null;
-  capacity: number;
-}
-
-interface ActivityProps {
-  id: number;
-  name?: string;
-  description: string | null;
-  price: number | null;
-  capacity: number;
-}
+import Modal from '../../components/Modal';
 
 const NewItinerary: React.FC = () => {
   const dispatch = useDispatch();
@@ -132,13 +73,11 @@ const NewItinerary: React.FC = () => {
     dispatch(getActivitiesRequest());
     dispatch(getLodgingsRequest());
     dispatch(getTransportsRequest());
+    dispatch(showNewItineraryGuide());
   }, [dispatch]);
 
   const options: InitialStateProps = useSelector(
     (state: RootStateProps) => state.options,
-  );
-  const {newItineraryGuide} = useSelector(
-    (state: RootStateProps) => state.guides,
   );
 
   const [name, setName] = useState('');
@@ -165,7 +104,10 @@ const NewItinerary: React.FC = () => {
   const [activityCapacity, setActivityCapacity] = useState('');
   const [activityDescription, setActivityDescription] = useState('');
   const [images, setImages] = useState([] as any);
-  const [guideVisible, setGuideVisible] = useState(true);
+  const [privateItinerary, setPrivateItinerary] = useState(false);
+  const [addTransportVisible, setAddTransportVisible] = useState(false);
+  const [addLodgingVisible, setAddLodgingVisible] = useState(false);
+  const [addActivityVisible, setAddActivityVisible] = useState(false);
 
   const descriptionRef = useRef() as any;
   const nameRef = useRef() as any;
@@ -218,6 +160,7 @@ const NewItinerary: React.FC = () => {
     setLodgingPrice('');
     setLodgingCapacity('');
     setLodgingDescription('');
+    setAddLodgingVisible(false);
   }
 
   function removeLodgingItem(index: number) {
@@ -250,6 +193,7 @@ const NewItinerary: React.FC = () => {
     setTransportPrice('');
     setTransportCapacity('');
     setTransportDescription('');
+    setAddTransportVisible(false);
   }
 
   function removeTransportItem(index: number) {
@@ -282,6 +226,7 @@ const NewItinerary: React.FC = () => {
     setActivityPrice('');
     setActivityCapacity('');
     setActivityDescription('');
+    setAddActivityVisible(false);
   }
 
   function removeActivityItem(index: number) {
@@ -311,6 +256,7 @@ const NewItinerary: React.FC = () => {
         dateReturn,
         dateLimit,
         location,
+        privateItinerary,
         images,
         activities,
         lodgings,
@@ -328,325 +274,367 @@ const NewItinerary: React.FC = () => {
     setTransports([]);
   }
 
-  function closeGuide() {
-    dispatch(hideNewItineraryGuide());
-  }
-
   return (
-    <Container>
-      <Header />
-      <Content>
-        <Card icon="chevron-left">
-          <CardHeader>
-            <BackButton onPress={() => navigation.navigate('Feed')}>
-              <Icon name="chevron-left" size={24} color="#3dc77b" />
-            </BackButton>
-          </CardHeader>
-          <CardContent>
-            <Input
-              label="Nome do Roteiro"
-              placeholder="dê um nome para este roteiro."
-              value={name}
-              ref={nameRef}
-              onChange={setName}
-            />
-            <Title>Imagens</Title>
-            <ImageList>
-              {images.map((item: {url: string}, index: number) => (
-                <ImageButton key={index} onPress={() => removeImages(index)}>
-                  <Background
-                    resizeMode="cover"
-                    source={{
-                      uri: item.url,
-                    }}
-                  />
-                  <BackgroundCover>
-                    <SIcon
-                      name="delete-forever-outline"
-                      color="#F57373"
-                      size={30}
-                    />
-                  </BackgroundCover>
-                </ImageButton>
-              ))}
-              <FileInput onSelect={addImages}>
-                <AddImageButton>
-                  <SIcon name="image-plus" color="#D9D8D8" size={30} />
-                </AddImageButton>
-              </FileInput>
-            </ImageList>
-            <Input
-              label="Limite de Vagas"
-              placeholder="numero máximo de vagas"
-              value={vacancies}
-              ref={vacanciesRef}
-              onChange={setVacancies}
-              keyboardType="number-pad"
-            />
-            <TextArea
-              label="Descrição"
-              placeholder="infomações adicionais sobre o roteiro"
-              value={description}
-              ref={descriptionRef}
-              onChange={setDescription}
-            />
-            <DataContent>
-              <DataContentHeader>
-                <Icon name="calendar-blank-outline" color="#4885FD" size={24} />
-                <ContentTitle>Datas</ContentTitle>
-              </DataContentHeader>
-              <DateTimeInput
-                label="Saida"
-                date={dateOut}
-                onChange={setDateOut}
-              />
-              <DateTimeInput
-                label="Retorno"
-                date={dateReturn}
-                onChange={setDateReturn}
-              />
-              <DateTimeInput
-                label="Limite para inscrição"
-                date={dateLimit}
-                onChange={setDateLimit}
-              />
-            </DataContent>
-            <DataContent>
-              <DataContentHeader>
-                <Icon name="map-check-outline" color="#4885FD" size={24} />
-                <ContentTitle>Destino</ContentTitle>
-              </DataContentHeader>
+    <>
+      <Container>
+        <Content>
+          <Card>
+            <CardHeader>
+              <BackButton onPress={() => navigation.navigate('Feed')}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+            </CardHeader>
+            <CardContent>
+              <Title>Visibilidade</Title>
+              <RowGroup>
+                <PublicButton
+                  selected={privateItinerary}
+                  onPress={() => setPrivateItinerary(false)}>
+                  <PublicButtonText selected={privateItinerary}>
+                    Público
+                  </PublicButtonText>
+                </PublicButton>
+                <PrivateButton
+                  selected={privateItinerary}
+                  onPress={() => setPrivateItinerary(true)}>
+                  <PrivateButtonText selected={privateItinerary}>
+                    Privado
+                  </PrivateButtonText>
+                </PrivateButton>
+              </RowGroup>
               <Input
-                label="Endereço"
-                placeholder="endereço/cidade/local"
-                value={location}
-                ref={locationRef}
-                onChange={setLocation}
+                label="Nome do Roteiro"
+                placeholder="dê um nome para este roteiro."
+                value={name}
+                ref={nameRef}
+                onChange={setName}
+              />
+              <Title>Imagens</Title>
+              <ImageList>
+                {images.map((item: {url: string}, index: number) => (
+                  <ImageButton key={index} onPress={() => removeImages(index)}>
+                    <Background
+                      resizeMode="cover"
+                      source={{
+                        uri: item.url || undefined,
+                      }}
+                    />
+                    <BackgroundCover>
+                      <SIcon
+                        name="delete-forever-outline"
+                        color="#F57373"
+                        size={30}
+                      />
+                    </BackgroundCover>
+                  </ImageButton>
+                ))}
+                <FileInput onSelect={addImages}>
+                  <AddImageButton>
+                    <SIcon name="image-plus" color="#D9D8D8" size={30} />
+                  </AddImageButton>
+                </FileInput>
+              </ImageList>
+              <Input
+                label="Limite de Vagas"
+                placeholder="numero máximo de vagas"
+                value={vacancies}
+                ref={vacanciesRef}
+                onChange={setVacancies}
+                keyboardType="number-pad"
               />
               <TextArea
-                label="Informações"
-                placeholder="infomações adicionais..."
-                value={locationDescription}
-                ref={locationDescriptionRef}
-                onChange={setLocationDescription}
+                label="Descrição"
+                placeholder="infomações adicionais sobre o roteiro"
+                value={description}
+                ref={descriptionRef}
+                onChange={setDescription}
               />
-            </DataContent>
-            <RowGroup>
-              <IconHolder>
-                <Icon name="car" color="#FFF" size={24} />
-              </IconHolder>
-              <ContentTitle>Transporte</ContentTitle>
-            </RowGroup>
-            <TransportList>
-              {transports.map((item: TransportProps, index: number) => (
-                <DataContent key={index}>
-                  <HeaderActions>
-                    <RemoveButton onPress={() => removeTransportItem(index)}>
-                      <Icon
-                        name="delete-forever-outline"
-                        color="#F57373"
-                        size={24}
-                      />
-                    </RemoveButton>
-                  </HeaderActions>
-                  <FieldTitle>{item.name}</FieldTitle>
-                  <FieldValue>{item.description}</FieldValue>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <FieldTitle>Capacidade</FieldTitle>
-                      <FieldValue>{item.capacity}</FieldValue>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </DataContent>
-              ))}
               <DataContent>
-                <PickerInput
-                  label="Tipo"
-                  value={transportType}
-                  ref={transportTypeRef}
-                  onChange={setTransportType}
-                  options={options.transports}
+                <DataContentHeader>
+                  <Icon
+                    name="calendar-blank-outline"
+                    color="#4885FD"
+                    size={24}
+                  />
+                  <ContentTitle>Datas</ContentTitle>
+                </DataContentHeader>
+                <DateTimeInput
+                  label="Saida"
+                  date={dateOut}
+                  onChange={setDateOut}
                 />
-                <Input
-                  label="Preço"
-                  placeholder="preço por pessoa"
-                  value={formatBRL(transportPrice)}
-                  ref={transportPriceRef}
-                  onChange={setTransportPrice}
-                  keyboardType="number-pad"
+                <DateTimeInput
+                  label="Retorno"
+                  date={dateReturn}
+                  onChange={setDateReturn}
                 />
-                <Input
-                  label="Capacidade (lugares)"
-                  placeholder="quantidade máxima de pessoas"
-                  value={transportCapacity}
-                  ref={transportCapacityRef}
-                  onChange={setTransportCapacity}
-                  keyboardType="number-pad"
-                />
-                <TextArea
-                  label="Descrição"
-                  placeholder="infomações adicionais.."
-                  value={transportDescription}
-                  ref={transportDescriptionRef}
-                  onChange={setTransportDescription}
+                <DateTimeInput
+                  label="Limite para inscrição"
+                  date={dateLimit}
+                  onChange={setDateLimit}
                 />
               </DataContent>
-            </TransportList>
-            <AddTransportButton onPress={() => addTransportItem()}>
-              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-            </AddTransportButton>
-            <RowGroup>
-              <IconHolder>
-                <Icon name="bed" color="#FFF" size={24} />
-              </IconHolder>
-              <ContentTitle>Hospedagem</ContentTitle>
-            </RowGroup>
-            <LodgingList>
-              {lodgings.map((item: LodgingProps, index: number) => (
-                <DataContent key={index}>
-                  <HeaderActions>
-                    <RemoveButton onPress={() => removeLodgingItem(index)}>
-                      <Icon
-                        name="delete-forever-outline"
-                        color="#F57373"
-                        size={24}
-                      />
-                    </RemoveButton>
-                  </HeaderActions>
-                  <FieldTitle>{item.name}</FieldTitle>
-                  <FieldValue>{item.description}</FieldValue>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <FieldTitle>Capacidade</FieldTitle>
-                      <FieldValue>{item.capacity}</FieldValue>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </DataContent>
-              ))}
               <DataContent>
-                <PickerInput
-                  label="Tipo"
-                  value={lodgingType}
-                  ref={lodgingTypeRef}
-                  onChange={setLodgingType}
-                  options={options.lodgings}
-                />
+                <DataContentHeader>
+                  <Icon name="map-check-outline" color="#4885FD" size={24} />
+                  <ContentTitle>Destino</ContentTitle>
+                </DataContentHeader>
                 <Input
-                  label="Preço"
-                  placeholder="preço por pessoa"
-                  value={formatBRL(lodgingPrice)}
-                  ref={lodgingPriceRef}
-                  onChange={setLodgingPrice}
-                  keyboardType="number-pad"
-                />
-                <Input
-                  label="Capacidade (lugares)"
-                  placeholder="quantidade máxima de pessoas"
-                  value={lodgingCapacity}
-                  ref={lodgingCapacityRef}
-                  onChange={setLodgingCapacity}
-                  keyboardType="number-pad"
+                  label="Endereço"
+                  placeholder="endereço/cidade/local"
+                  value={location}
+                  ref={locationRef}
+                  onChange={setLocation}
                 />
                 <TextArea
-                  label="Descrição"
-                  placeholder="infomações adicionais.."
-                  value={lodgingDescription}
-                  ref={lodgingDescriptionRef}
-                  onChange={setLodgingDescription}
+                  label="Informações"
+                  placeholder="infomações adicionais..."
+                  value={locationDescription}
+                  ref={locationDescriptionRef}
+                  onChange={setLocationDescription}
                 />
               </DataContent>
-            </LodgingList>
-            <AddLodginButton onPress={() => addLodgingItem()}>
-              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-            </AddLodginButton>
-            <RowGroup>
-              <IconHolder>
-                <Icon name="lightning-bolt" color="#FFF" size={24} />
-              </IconHolder>
-              <ContentTitle>Atividades</ContentTitle>
-            </RowGroup>
-            <ActivityList>
-              {activities.map((item: ActivityProps, index: number) => (
-                <DataContent key={index}>
-                  <HeaderActions>
-                    <RemoveButton onPress={() => removeActivityItem(index)}>
-                      <Icon
-                        name="delete-forever-outline"
-                        color="#F57373"
-                        size={24}
-                      />
-                    </RemoveButton>
-                  </HeaderActions>
-                  <FieldTitle>{item.name}</FieldTitle>
-                  <FieldValue>{item.description}</FieldValue>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <FieldTitle>Capacidade</FieldTitle>
-                      <FieldValue>{item.capacity}</FieldValue>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <FieldTitle>Preço</FieldTitle>
-                      <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </DataContent>
-              ))}
-              <DataContent>
-                <PickerInput
-                  label="Tipo"
-                  value={activityType}
-                  ref={activityTypeRef}
-                  onChange={setActivityType}
-                  options={options.activities}
-                />
-                <Input
-                  label="Preço"
-                  placeholder="preço por pessoa"
-                  value={formatBRL(activityPrice)}
-                  ref={activityPriceRef}
-                  onChange={setActivityPrice}
-                  keyboardType="number-pad"
-                />
-                <Input
-                  label="Capacidade (lugares)"
-                  placeholder="quantidade máxima de pessoas"
-                  value={activityCapacity}
-                  ref={activityCapacityRef}
-                  onChange={setActivityCapacity}
-                  keyboardType="number-pad"
-                />
-                <TextArea
-                  label="Descrição"
-                  placeholder="infomações adicionais.."
-                  value={activityDescription}
-                  ref={activityDescriptionRef}
-                  onChange={setActivityDescription}
-                />
-              </DataContent>
-            </ActivityList>
-            <AddActivityButton onPress={() => addActivityItem()}>
-              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-            </AddActivityButton>
-          </CardContent>
-          <CardActions>
-            <SubmitButton onPress={handleSubmit}>
-              <SubmitButtonText>Salvar</SubmitButtonText>
-            </SubmitButton>
-          </CardActions>
-        </Card>
-      </Content>
-      <Ads visible={newItineraryGuide} onRequestClose={() => {}}>
-        <GuideCarousel data={guideImages} onClose={() => closeGuide()} />
-      </Ads>
-    </Container>
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="car" color="#FFF" size={24} />
+                </IconHolder>
+                <ContentTitle>Transporte</ContentTitle>
+              </RowGroup>
+              <TransportList>
+                {transports.map((item: TransportProps, index: number) => (
+                  <DataContent key={index}>
+                    <HeaderActions>
+                      <RemoveButton onPress={() => removeTransportItem(index)}>
+                        <Icon
+                          name="delete-forever-outline"
+                          color="#F57373"
+                          size={24}
+                        />
+                      </RemoveButton>
+                    </HeaderActions>
+                    <FieldTitle>{item.name}</FieldTitle>
+                    <FieldValue>{item.description}</FieldValue>
+                    <RowGroupSpaced>
+                      <ColumnGroup>
+                        <FieldTitle>Capacidade</FieldTitle>
+                        <FieldValue>{item.capacity}</FieldValue>
+                      </ColumnGroup>
+                      <ColumnGroup>
+                        <FieldTitle>Preço</FieldTitle>
+                        <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+                      </ColumnGroup>
+                    </RowGroupSpaced>
+                  </DataContent>
+                ))}
+              </TransportList>
+              <NewTransportButton onPress={() => setAddTransportVisible(true)}>
+                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+              </NewTransportButton>
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="bed" color="#FFF" size={24} />
+                </IconHolder>
+                <ContentTitle>Hospedagem</ContentTitle>
+              </RowGroup>
+              <LodgingList>
+                {lodgings.map((item: LodgingProps, index: number) => (
+                  <DataContent key={index}>
+                    <HeaderActions>
+                      <RemoveButton onPress={() => removeLodgingItem(index)}>
+                        <Icon
+                          name="delete-forever-outline"
+                          color="#F57373"
+                          size={24}
+                        />
+                      </RemoveButton>
+                    </HeaderActions>
+                    <FieldTitle>{item.name}</FieldTitle>
+                    <FieldValue>{item.description}</FieldValue>
+                    <RowGroupSpaced>
+                      <ColumnGroup>
+                        <FieldTitle>Capacidade</FieldTitle>
+                        <FieldValue>{item.capacity}</FieldValue>
+                      </ColumnGroup>
+                      <ColumnGroup>
+                        <FieldTitle>Preço</FieldTitle>
+                        <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+                      </ColumnGroup>
+                    </RowGroupSpaced>
+                  </DataContent>
+                ))}
+              </LodgingList>
+              <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
+                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+              </NewLodginButton>
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="lightning-bolt" color="#FFF" size={24} />
+                </IconHolder>
+                <ContentTitle>Atividades</ContentTitle>
+              </RowGroup>
+              <ActivityList>
+                {activities.map((item: ActivityProps, index: number) => (
+                  <DataContent key={index}>
+                    <HeaderActions>
+                      <RemoveButton onPress={() => removeActivityItem(index)}>
+                        <Icon
+                          name="delete-forever-outline"
+                          color="#F57373"
+                          size={24}
+                        />
+                      </RemoveButton>
+                    </HeaderActions>
+                    <FieldTitle>{item.name}</FieldTitle>
+                    <FieldValue>{item.description}</FieldValue>
+                    <RowGroupSpaced>
+                      <ColumnGroup>
+                        <FieldTitle>Capacidade</FieldTitle>
+                        <FieldValue>{item.capacity}</FieldValue>
+                      </ColumnGroup>
+                      <ColumnGroup>
+                        <FieldTitle>Preço</FieldTitle>
+                        <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+                      </ColumnGroup>
+                    </RowGroupSpaced>
+                  </DataContent>
+                ))}
+              </ActivityList>
+              <NewActivityButton onPress={() => setAddActivityVisible(true)}>
+                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+              </NewActivityButton>
+            </CardContent>
+            <CardActions>
+              <SubmitButton onPress={handleSubmit}>
+                <SubmitButtonText>Salvar</SubmitButtonText>
+              </SubmitButton>
+            </CardActions>
+          </Card>
+        </Content>
+      </Container>
+      <Modal
+        title="Adicionar Transporte"
+        visible={addTransportVisible}
+        onCloseRequest={async () => setAddTransportVisible(false)}
+        key="transport-modal">
+        <ModalContent>
+          <PickerInput
+            label="Tipo"
+            value={transportType}
+            ref={transportTypeRef}
+            onChange={setTransportType}
+            options={options.transports}
+          />
+          <Input
+            label="Preço"
+            placeholder="preço por pessoa"
+            value={formatBRL(transportPrice)}
+            ref={transportPriceRef}
+            onChange={setTransportPrice}
+            keyboardType="number-pad"
+          />
+          <Input
+            label="Capacidade (lugares)"
+            placeholder="quantidade máxima de pessoas"
+            value={transportCapacity}
+            ref={transportCapacityRef}
+            onChange={setTransportCapacity}
+            keyboardType="number-pad"
+          />
+          <TextArea
+            label="Descrição"
+            placeholder="infomações adicionais.."
+            value={transportDescription}
+            ref={transportDescriptionRef}
+            onChange={setTransportDescription}
+          />
+          <AddButton onPress={() => addTransportItem()}>
+            <AddButtonText>Adicionar</AddButtonText>
+          </AddButton>
+        </ModalContent>
+      </Modal>
+      <Modal
+        title="Adicionar Hospedagem"
+        visible={addLodgingVisible}
+        onCloseRequest={async () => setAddLodgingVisible(false)}
+        key="lodging-modal">
+        <ModalContent>
+          <PickerInput
+            label="Tipo"
+            value={lodgingType}
+            ref={lodgingTypeRef}
+            onChange={setLodgingType}
+            options={options.lodgings}
+          />
+          <Input
+            label="Preço"
+            placeholder="preço por pessoa"
+            value={formatBRL(lodgingPrice)}
+            ref={lodgingPriceRef}
+            onChange={setLodgingPrice}
+            keyboardType="number-pad"
+          />
+          <Input
+            label="Capacidade (lugares)"
+            placeholder="quantidade máxima de pessoas"
+            value={lodgingCapacity}
+            ref={lodgingCapacityRef}
+            onChange={setLodgingCapacity}
+            keyboardType="number-pad"
+          />
+          <TextArea
+            label="Descrição"
+            placeholder="infomações adicionais.."
+            value={lodgingDescription}
+            ref={lodgingDescriptionRef}
+            onChange={setLodgingDescription}
+          />
+          <AddButton onPress={() => addLodgingItem()}>
+            <AddButtonText>Adicionar</AddButtonText>
+          </AddButton>
+        </ModalContent>
+      </Modal>
+      <Modal
+        title="Adicionar Atividade"
+        visible={addActivityVisible}
+        onCloseRequest={async () => setAddActivityVisible(false)}
+        key="activity-modal">
+        <ModalContent>
+          <PickerInput
+            label="Tipo"
+            value={activityType}
+            ref={activityTypeRef}
+            onChange={setActivityType}
+            options={options.activities}
+          />
+          <Input
+            label="Preço"
+            placeholder="preço por pessoa"
+            value={formatBRL(activityPrice)}
+            ref={activityPriceRef}
+            onChange={setActivityPrice}
+            keyboardType="number-pad"
+          />
+          <Input
+            label="Capacidade (lugares)"
+            placeholder="quantidade máxima de pessoas"
+            value={activityCapacity}
+            ref={activityCapacityRef}
+            onChange={setActivityCapacity}
+            keyboardType="number-pad"
+          />
+          <TextArea
+            label="Descrição"
+            placeholder="infomações adicionais.."
+            value={activityDescription}
+            ref={activityDescriptionRef}
+            onChange={setActivityDescription}
+          />
+          <AddButton onPress={() => addActivityItem()}>
+            <AddButtonText>Adicionar</AddButtonText>
+          </AddButton>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

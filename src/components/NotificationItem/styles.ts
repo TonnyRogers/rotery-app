@@ -1,11 +1,17 @@
 import styled from 'styled-native-components';
+import {Platform} from 'react-native';
+
+const shadow =
+  Platform.OS === 'ios'
+    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
+    : 'elevation: 1;';
 
 export const Container = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background: #fff;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  ${shadow}
   min-height: 6rem;
   margin: 0.8rem;
   border-radius: 0.8rem;

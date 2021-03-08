@@ -11,7 +11,7 @@ const Highlight: React.FC<HighlightProps> = ({background, children}) => {
     <Container>
       <Background
         source={{
-          uri: background,
+          uri: background || undefined,
         }}
         resizeMode="cover"
       />

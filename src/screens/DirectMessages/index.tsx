@@ -1,5 +1,4 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {format, parse} from 'date-fns';
@@ -9,8 +8,6 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   Container,
-  CardHeader,
-  BackButton,
   CardContent,
   MessageList,
   UserMessage,
@@ -26,7 +23,6 @@ import {
   MessageButton,
   MessageButtonText,
 } from './styles';
-import Header from '../../components/Header';
 import Card from '../../components/Card';
 
 const DirectMessages: React.FC = () => {
@@ -50,17 +46,10 @@ const DirectMessages: React.FC = () => {
 
   return (
     <Container>
-      <Header />
+      <TitleContent>
+        <Title>Mensagens Diretas</Title>
+      </TitleContent>
       <Card>
-        <CardHeader>
-          <BackButton onPress={() => navigation.goBack()}>
-            <Icon name="chevron-left" size={24} color="#3dc77b" />
-          </BackButton>
-          <TitleContent>
-            <Icon name="inbox-arrow-down-outline" size={24} color="#4885fd" />
-            <Title>Mensagens Diretas</Title>
-          </TitleContent>
-        </CardHeader>
         <CardContent>
           <MessageList>
             {messages.map((message) => (

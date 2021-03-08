@@ -26,7 +26,8 @@ const TextArea: React.FunctionComponent<TextAreaProps> = (
         placeholder={placeholder}
         onChangeText={onChange}
         multiline
-        numberOfLines={5}
+        numberOfLines={3}
+        placeholderTextColor="#808080"
         ref={ref}
         {...props}
       />

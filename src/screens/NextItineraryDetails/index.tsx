@@ -6,8 +6,7 @@ import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {formatBRL} from '../../lib/mask';
-import {ItineraryProps} from '../../store/modules/itineraries/reducer';
-import {deleteItineraryRequest} from '../../store/modules/itineraries/actions';
+import {ItineraryProps} from '../../utils/types';
 import {
   makeQuestionRequest,
   leaveItineraryRequest,
@@ -134,7 +133,6 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{flex: 1, justifyContent: 'center'}}>
       <Container>
-        <Header />
         <Content>
           <Card>
             <CardHeader>
@@ -170,7 +168,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <HostButton>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url,
+                      uri: itinerary.owner.person.file?.url || undefined,
                     }}
                     resizeMode="cover"
                   />

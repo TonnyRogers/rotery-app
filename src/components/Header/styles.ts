@@ -1,6 +1,12 @@
 import styled from 'styled-native-components';
+import {Platform} from 'react-native';
 
-export const Container = styled.View``;
+const metric = Platform.OS === 'ios' ? '%' : 'vh';
+
+export const Container = styled.View`
+  height: ${'100' + metric};
+  margin-top: 1rem;
+`;
 
 export const Menu = styled.View`
   flex-direction: row;

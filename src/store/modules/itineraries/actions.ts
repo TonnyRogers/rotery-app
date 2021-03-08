@@ -1,4 +1,4 @@
-import {ItineraryProps} from './reducer';
+import {ItineraryProps} from '../../../utils/types';
 
 interface ImageListProps {
   id: number;
@@ -48,6 +48,7 @@ export function createItineraryRequest(
   dateEnd: Date,
   dateLimit: Date,
   location: string,
+  isPrivate: boolean,
   images?: ImageListProps[],
   activities?: CreateItemListProps[],
   lodgings?: CreateItemListProps[],
@@ -64,6 +65,7 @@ export function createItineraryRequest(
       dateEnd,
       dateLimit,
       location,
+      isPrivate,
       activities,
       lodgings,
       transports,
@@ -112,6 +114,7 @@ export function updateItineraryRequest(
   dateEnd: Date,
   dateLimit: Date,
   location: string,
+  isPrivate: boolean,
   images?: ImageListProps[],
   activities?: UpdateItemListProps[],
   lodgings?: UpdateItemListProps[],
@@ -129,6 +132,7 @@ export function updateItineraryRequest(
       dateEnd,
       dateLimit,
       location,
+      isPrivate,
       activities,
       lodgings,
       transports,

@@ -1,12 +1,31 @@
 import styled from 'styled-native-components';
+import {Platform} from 'react-native';
+
+const metric = Platform.OS === 'ios' ? 'vh' : '%';
+const shadow =
+  Platform.OS === 'ios'
+    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
+    : 'elevation: 1;';
 
 export const SafeView = styled.SafeAreaView`
   flex: 1;
+  margin-top: 6.5rem;
 `;
 
-export const Container = styled.View``;
+export const Container = styled.View`
+  flex: 1;
+`;
 
 export const ColumnGroup = styled.View``;
+
+export const RowGroup = styled.View`
+  flex-direction: row;
+`;
+
+export const RowGroupSpaced = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
 
 export const CardHeader = styled.View`
   margin: 1rem 0;
@@ -20,10 +39,11 @@ export const BackButton = styled.TouchableOpacity`
   justify-content: center;
   background: rgba(61, 199, 123, 0.2);
   margin-left: 1rem;
+  margin-right: 2rem;
 `;
 
 export const CardContent = styled.View`
-  padding: 0 1rem;
+  flex: 1;
 `;
 
 export const UserInfo = styled.View`
@@ -43,10 +63,13 @@ export const UserImage = styled.Image`
   background: #eee;
 `;
 
-export const Name = styled.Text`
+export const Name = styled.Text.attrs({
+  numberOfLines: 1,
+})`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: bold;
+  max-width: 20rem;
 `;
 
 export const JoinDate = styled.Text`
@@ -59,7 +82,7 @@ export const ConversationList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
   margin-top: 0.5rem;
-  height: 23rem;
+  padding: 0.5rem;
 `;
 
 export const MessageContent = styled.View`
@@ -115,5 +138,51 @@ export const SendButtonText = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: 700;
+  color: #fff;
+`;
+
+export const ShareContent = styled.View`
+  background: #fff;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  ${shadow}
+`;
+
+export const ShareTitle = styled.Text`
+  font-family: 'Roboto';
+  font-size: 1.6rem;
+  font-weight: bold;
+`;
+
+export const ShareSubTitle = styled.Text.attrs({
+  numberOfLines: 1,
+})`
+  font-family: 'Roboto';
+  font-size: 1.4rem;
+  color: #9d9d9d;
+  max-width: 13rem;
+`;
+
+export const ShareAsideText = styled.Text``;
+
+export const ShareButton = styled.TouchableOpacity`
+  height: 4rem;
+  width: 9rem;
+  align-items: center;
+  justify-content: center;
+  background: #3dc77b;
+  flex: 1;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  margin: 1rem 0;
+  align-self: flex-end;
+`;
+
+export const ShareButtonText = styled.Text`
+  font-family: 'Roboto';
+  font-size: 1.6rem;
+  font-weight: bold;
   color: #fff;
 `;

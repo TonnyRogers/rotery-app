@@ -1,4 +1,4 @@
-import {ItineraryProps} from './reducer';
+import {ItineraryProps} from '../../../utils/types';
 
 export function getFavoritesRequest() {
   return {

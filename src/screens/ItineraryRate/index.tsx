@@ -6,7 +6,7 @@ import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
-import {ItineraryProps} from '../../store/modules/nextItineraries/reducer';
+import {ItineraryProps} from '../../utils/types';
 import {rateItineraryRequest} from '../../store/modules/nextItineraries/actions';
 
 import {
@@ -140,7 +140,6 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
 
   return (
     <Container>
-      <Header />
       <Content>
         <Card>
           <CardHeader>

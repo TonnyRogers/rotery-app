@@ -6,7 +6,7 @@ import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {formatBRL} from '../../lib/mask';
-import {ItineraryProps} from '../../store/modules/itineraries/reducer';
+import {ItineraryProps} from '../../utils/types';
 import {
   deleteItineraryRequest,
   notifyItineraryFinishRequest,
@@ -108,7 +108,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const dispatch = useDispatch();
 
   const itinerary: ItineraryProps = itineraries?.find(
-    (item: ItineraryProps) => item.id === id,
+    (item: {id: number}) => item.id === id,
   );
 
   let beginDateFormated = useRef('');
@@ -116,25 +116,27 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   let limitDateFormated = useRef('');
 
   useMemo(() => {
-    beginDateFormated.current = format(
-      new Date(itinerary.begin),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
-    );
-    endDateFormated.current = format(
-      new Date(itinerary.end),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
-    );
-    limitDateFormated.current = format(
-      new Date(itinerary.deadline_for_join),
-      ' dd MMM yyyy H:mm',
-      {locale: pt},
-    );
+    if (itinerary) {
+      beginDateFormated.current = format(
+        new Date(itinerary.begin),
+        ' dd MMM yyyy H:mm',
+        {
+          locale: pt,
+        },
+      );
+      endDateFormated.current = format(
+        new Date(itinerary.end),
+        ' dd MMM yyyy H:mm',
+        {
+          locale: pt,
+        },
+      );
+      limitDateFormated.current = format(
+        new Date(itinerary.deadline_for_join),
+        ' dd MMM yyyy H:mm',
+        {locale: pt},
+      );
+    }
   }, [itinerary]);
 
   function showDeleteAlert() {
@@ -166,7 +168,6 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{flex: 1, justifyContent: 'center'}}>
       <Container>
-        <Header />
         <Content>
           <Card>
             <CardHeader>
@@ -206,7 +207,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                 <HostButton>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url,
+                      uri: itinerary.owner.person.file?.url || undefined,
                     }}
                     resizeMode="cover"
                   />

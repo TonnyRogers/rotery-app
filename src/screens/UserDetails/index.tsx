@@ -85,6 +85,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     }
 
     getProfile();
+
+    () => {
+      getProfile;
+    };
   }, [userId]);
 
   function renderRateStars(rate: number) {
@@ -174,7 +178,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
 
   return (
     <Container>
-      <Header />
       <Content>
         <Card>
           <CardHeader>

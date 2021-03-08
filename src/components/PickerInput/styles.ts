@@ -2,11 +2,11 @@ import styled from 'styled-native-components';
 
 export const Container = styled.View`
   margin-bottom: 2rem;
+  z-index: 50;
 `;
 
 export const Content = styled.View`
-  border-bottom-color: #cfcfcf;
-  border-bottom-width: 0.1rem;
+  margin: 0.5rem 0;
 `;
 
 export const Label = styled.Text`

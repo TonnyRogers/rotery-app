@@ -53,7 +53,7 @@ export const TipText = styled.Text`
   color: #4885fd;
 `;
 
-export const LoginHover = styled(Animated.View).attrs({})<{visible: boolean}>`
+export const LoginHover = styled(Animated.View)<{visible: boolean}>`
   height: 48rem;
   width: 100%;
   background: #fff;
@@ -61,7 +61,7 @@ export const LoginHover = styled(Animated.View).attrs({})<{visible: boolean}>`
   border-top-right-radius: 2rem;
   position: absolute;
   bottom: 0;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  elevation: 2;
 `;
 
 export const LoginHeader = styled.View`

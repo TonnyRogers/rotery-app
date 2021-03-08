@@ -1,18 +1,26 @@
 import styled from 'styled-native-components';
+import {Platform} from 'react-native';
+
+const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
+  margin-top: 6.5rem;
+`;
+
+export const TitleContent = styled.View`
+  flex-direction: row;
+  margin: 0 1rem;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  margin-left: 1rem;
 `;
 
 export const CardContent = styled.View`
-  min-height: 46rem;
+  flex: 1;
 `;
 
 export const ColumnGroup = styled.View``;

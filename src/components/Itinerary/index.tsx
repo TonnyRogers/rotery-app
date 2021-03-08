@@ -31,7 +31,7 @@ import {
 } from './styles';
 import ImageCarousel from '../ImageCarousel';
 
-import {ItineraryProps} from '../../store/modules/itineraries/reducer';
+import {ItineraryProps} from '../../utils/types';
 
 interface ItineraryItemProps {
   owner?: boolean;

@@ -10,9 +10,7 @@ export const Label = styled.Text`
   color: #808080;
 `;
 
-export const Field = styled.TextInput.attrs({
-  placeholderTextColor: '#808080',
-})`
+export const Field = styled.TextInput`
   flex: 1;
   color: #808080;
   height: 4.4rem;
@@ -25,4 +23,9 @@ export const Content = styled.View`
   border-bottom-width: 0.1rem;
   border-bottom-color: #cfcfcf;
   position: relative;
+`;
+
+export const ButtonIcon = styled.TouchableOpacity`
+  height: 3rem;
+  width: 3rem;
 `;

@@ -38,7 +38,6 @@ const Favorites: React.FC = () => {
 
   return (
     <Container>
-      <Header />
       <Content>
         <ContentHeader>
           <BackButton onPress={toFeed}>

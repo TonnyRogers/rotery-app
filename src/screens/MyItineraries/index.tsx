@@ -42,7 +42,6 @@ const MyItineraries: React.FC = () => {
 
   return (
     <Container>
-      <Header />
       <Content>
         <ContentHeader>
           <BackButton onPress={toFeed}>

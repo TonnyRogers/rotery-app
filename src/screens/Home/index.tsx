@@ -2,7 +2,7 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {Text, Animated} from 'react-native';
+import {Animated} from 'react-native';
 
 import {loginRequest} from '../../store/modules/auth/actions';
 import {setLoadingFalse} from '../../store/modules/auth/actions';
@@ -32,7 +32,6 @@ import {
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
-import Alert from '../../components/Alert';
 import HighlightCarousel from '../../components/HighlightCarousel';
 import GuideCarousel from '../../components/GuideCarousel';
 import Ads from '../../components/Ads';
@@ -43,7 +42,7 @@ const images = [
     url:
       'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-defender.jpg',
     withInfo: true,
-    title: 'Versão BETA Lançada:',
+    title: 'App Lançado:',
     message:
       'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
   },
@@ -98,6 +97,7 @@ const Home: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [loginVisible, setLoginVisible] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailRef = useRef() as any;
@@ -198,11 +198,12 @@ const Home: React.FC = () => {
             value={password}
             label="Senha"
             placeholder="digite sua senha"
-            icon="lock-outline"
             onChange={setPassword}
-            secureTextEntry
+            secureTextEntry={passwordVisible}
             ref={passwordRef}
             returnKeyType="send"
+            buttonIcon
+            onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
             onSubmitEditing={() => handleLogin()}
           />
           <Actions>

@@ -1,13 +1,20 @@
 import styled from 'styled-native-components';
+import {Platform} from 'react-native';
+
+const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
+  margin-top: 6.5rem;
 `;
 
 export const ColumnGroup = styled.View``;
 
 export const CardHeader = styled.View`
-  margin: 2rem 0;
+  flex-direction: row;
+  padding: 0 1rem;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const BackButton = styled.TouchableOpacity`
@@ -17,24 +24,23 @@ export const BackButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   background: rgba(61, 199, 123, 0.2);
+  margin-right: 2.5rem;
 `;
 
 export const TitleContent = styled.View`
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  margin: 0 1rem;
 `;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: bold;
   text-align: center;
-  margin-left: 2rem;
 `;
 
 export const CardContent = styled.View`
-  min-height: 38rem;
+  flex: 1;
 `;
 
 export const MessageList = styled.ScrollView.attrs({

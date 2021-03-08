@@ -42,7 +42,6 @@ const NextItineraries: React.FC = () => {
 
   return (
     <Container>
-      <Header />
       <Content>
         <ContentHeader>
           <BackButton onPress={toFeed}>

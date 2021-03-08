@@ -1,6 +1,7 @@
 import {all} from 'redux-saga/effects';
 
 import auth from './auth/sagas';
+import bottomSheet from './bottomsheet/sagas';
 import connections from './connections/sagas';
 import dynamicItinerary from './dynamicItinerary/sagas';
 import favorites from './favorites/sagas';
@@ -17,6 +18,7 @@ import websocket from './websocket/sagas';
 export default function* rootSaga() {
   return yield all([
     auth,
+    bottomSheet,
     connections,
     dynamicItinerary,
     favorites,

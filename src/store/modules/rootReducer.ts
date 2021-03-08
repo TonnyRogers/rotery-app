@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 
 import auth from './auth/reducer';
+import bottomSheet from './bottomsheet/reducer';
 import connections from './connections/reducer';
 import dynamicItinerary from './dynamicItinerary/reducer';
 import favorites from './favorites/reducer';
@@ -16,6 +17,7 @@ import websocket from './websocket/reducer';
 
 const rootReducer = combineReducers({
   auth,
+  bottomSheet,
   connections,
   dynamicItinerary,
   favorites,

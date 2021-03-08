@@ -1,7 +1,12 @@
 import styled from 'styled-native-components';
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 
 const {width} = Dimensions.get('screen');
+
+const shadow =
+  Platform.OS === 'ios'
+    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
+    : 'elevation: 1;';
 
 export const Container = styled.View.attrs({})`
   flex: 1;
@@ -24,5 +29,5 @@ export const Info = styled.View.attrs({})`
   border-bottom-left-radius: 0.8rem;
   border-bottom-right-radius: 0.8rem;
   padding: 0.8rem;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  ${shadow}
 `;

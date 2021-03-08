@@ -27,6 +27,7 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(true);
   const [alertMessage, setAlertMessage] = useState('');
 
   const usernameRef = useRef();
@@ -85,13 +86,14 @@ const SignUp: React.FC = () => {
           onSubmitEditing={() => passwordRef.current?.focus()}
         />
         <Input
-          icon="lock-outline"
           label="Senha"
           placeholder="sua senha"
           ref={passwordRef}
           value={password}
           onChange={setPassword}
-          secureTextEntry
+          secureTextEntry={passwordVisible}
+          buttonIcon
+          onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
           returnKeyType="send"
           onSubmitEditing={handleSubmit}
         />

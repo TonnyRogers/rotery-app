@@ -1,21 +1,26 @@
 import React, {useRef, useEffect, useCallback} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Animated, Dimensions, PanResponder} from 'react-native';
+
 import {
-  View,
-  Animated,
-  Dimensions,
-  PanResponder,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
-
-import {Content, Overlay, Container} from './styles';
-
+  Content,
+  Overlay,
+  Container,
+  Header,
+  CloseButton,
+  Title,
+  ChildrenContent,
+} from './styles';
 interface BottomSheetProps {
   visible: boolean;
   onRequestClose(state: any): any;
 }
 
-const BottomSheet: React.FC<BottomSheetProps> = ({visible, onRequestClose}) => {
+const BottomSheet: React.FC<BottomSheetProps> = ({
+  visible,
+  onRequestClose,
+  children,
+}) => {
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: height})).current;
 
@@ -83,28 +88,14 @@ const BottomSheet: React.FC<BottomSheetProps> = ({visible, onRequestClose}) => {
                     }),
                   },
                 ],
-              }}
-              {...panRespoders.panHandlers}>
-              <View>
-                <TouchableOpacity onPress={() => handleDismiss()}>
-                  <Text>FECHAR</Text>
-                </TouchableOpacity>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-                <Text>BOoooooora</Text>
-              </View>
+              }}>
+              <Header {...panRespoders.panHandlers}>
+                <Title>Convidar Para Roteiro</Title>
+                <CloseButton onPress={() => handleDismiss()}>
+                  <Icon name="chevron-down" size={24} color="#3dc77b" />
+                </CloseButton>
+              </Header>
+              <ChildrenContent>{children}</ChildrenContent>
             </Content>
           </Overlay>
         </Container>

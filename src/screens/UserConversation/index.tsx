@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
 import {format, parse} from 'date-fns';
@@ -16,11 +16,11 @@ import {
   getConversationRequest,
   sendMessageRequest,
 } from '../../store/modules/messages/actions';
-
 import {
   wsChatSubscribe,
   wsCloseChatChannel,
 } from '../../store/modules/websocket/actions';
+import {MessageProps} from '../../utils/types';
 
 import {
   SafeView,
@@ -32,6 +32,8 @@ import {
   UserButton,
   UserImage,
   ColumnGroup,
+  RowGroup,
+  RowGroupSpaced,
   Name,
   JoinDate,
   ConversationList,
@@ -42,9 +44,13 @@ import {
   MessageForm,
   SendButton,
   SendButtonText,
+  ShareContent,
+  ShareTitle,
+  ShareSubTitle,
+  ShareButton,
+  ShareButtonText,
 } from './styles';
 
-import Header from '../../components/Header';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -81,15 +87,24 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   const sender = conversation?.find((item) => item.sender_id === userId);
 
-  function formatDate(date: string) {
-    return format(
-      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      'dd MMM yyyy H:mm',
-      {
+  const formatDate = useCallback(
+    (date: string | Date, withParser: boolean = true) => {
+      if (withParser) {
+        return format(
+          parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
+          'dd MMM yyyy H:mm',
+          {
+            locale: pt,
+          },
+        );
+      }
+
+      return format(new Date(date), 'dd MMM yyyy H:mm', {
         locale: pt,
-      },
-    );
-  }
+      });
+    },
+    [],
+  );
 
   function handleSendMessage() {
     Keyboard.dismiss();
@@ -100,55 +115,87 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
     setMessage('');
   }
 
+  const renderMessage = useCallback(
+    (messageItem: MessageProps) => {
+      switch (messageItem.type) {
+        case 'message':
+          if (messageItem.sender_id === user.id) {
+            return (
+              <ReplyContent key={messageItem.id}>
+                <Message>{messageItem.message}</Message>
+                <MessageDate>{formatDate(messageItem.created_at)}</MessageDate>
+              </ReplyContent>
+            );
+          } else {
+            return (
+              <MessageContent key={messageItem.id}>
+                <Message>{messageItem.message}</Message>
+                <MessageDate>{formatDate(messageItem.created_at)}</MessageDate>
+              </MessageContent>
+            );
+          }
+        case 'itinerary_invite':
+          return (
+            <ShareContent key={messageItem.id}>
+              <ShareTitle>{messageItem.json_data?.name}</ShareTitle>
+              <RowGroupSpaced>
+                <ShareSubTitle>{messageItem.json_data?.location}</ShareSubTitle>
+                <ShareSubTitle>
+                  {formatDate(messageItem.json_data?.begin, false)}
+                </ShareSubTitle>
+              </RowGroupSpaced>
+              <ShareButton
+                onPress={() =>
+                  navigation.navigate('DynamicItineraryDetails', {
+                    id: messageItem.json_data?.id,
+                  })
+                }>
+                <ShareButtonText>Ver Mais</ShareButtonText>
+              </ShareButton>
+            </ShareContent>
+          );
+
+        default:
+          break;
+      }
+    },
+    [formatDate, navigation, user.id],
+  );
+
   return (
     <SafeView onTouchStart={() => Keyboard.dismiss()}>
-      <Header />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{justifyContent: 'flex-end', marginBottom: 50}}>
+        style={{justifyContent: 'flex-end', marginBottom: 10, flex: 1}}>
         <Container>
           <Card>
             <CardHeader>
-              <BackButton onPress={() => navigation.goBack()}>
-                <Icon name="chevron-left" size={24} color="#3dc77b" />
-              </BackButton>
+              <RowGroup>
+                <BackButton onPress={() => navigation.goBack()}>
+                  <Icon name="chevron-left" size={24} color="#3dc77b" />
+                </BackButton>
+                <UserInfo>
+                  <UserButton>
+                    <UserImage
+                      source={{
+                        uri:
+                          sender && sender.sender.person.file
+                            ? sender.sender.person.file.url
+                            : undefined,
+                      }}
+                      resizeMode="cover"
+                    />
+                  </UserButton>
+                  <ColumnGroup>
+                    <Name>{sender && sender.sender.username}</Name>
+                    <JoinDate>Conversa</JoinDate>
+                  </ColumnGroup>
+                </UserInfo>
+              </RowGroup>
             </CardHeader>
             <CardContent>
-              <UserInfo>
-                <UserButton>
-                  <UserImage
-                    source={{
-                      uri:
-                        sender && sender.sender.person.file
-                          ? sender.sender.person.file.url
-                          : undefined,
-                    }}
-                    resizeMode="cover"
-                  />
-                </UserButton>
-                <ColumnGroup>
-                  <Name>{sender && sender.sender.username}</Name>
-                  <JoinDate>Conversa</JoinDate>
-                </ColumnGroup>
-              </UserInfo>
               <ConversationList ref={scrollViewRef}>
-                {conversation.map((messageItem) =>
-                  messageItem.sender_id === user.id ? (
-                    <ReplyContent key={messageItem.id}>
-                      <Message>{messageItem.message}</Message>
-                      <MessageDate>
-                        {formatDate(messageItem.created_at)}
-                      </MessageDate>
-                    </ReplyContent>
-                  ) : (
-                    <MessageContent key={messageItem.id}>
-                      <Message>{messageItem.message}</Message>
-                      <MessageDate>
-                        {formatDate(messageItem.created_at)}
-                      </MessageDate>
-                    </MessageContent>
-                  ),
-                )}
+                {conversation.map((messageItem) => renderMessage(messageItem))}
               </ConversationList>
 
               <MessageForm>
@@ -158,6 +205,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
                   ref={messageRef}
                   returnKeyType="send"
                   onSubmitEditing={handleSendMessage}
+                  placeholder="Digite sua mensagem"
                 />
                 <SendButton onPress={handleSendMessage}>
                   <Icon name="send-outline" size={24} color="#FFF" />

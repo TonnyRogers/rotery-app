@@ -6,7 +6,7 @@ import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {formatBRL} from '../../lib/mask';
-import {ItineraryProps} from '../../store/modules/feed/reducer';
+import {ItineraryProps} from '../../utils/types';
 import {
   makeQuestionRequest,
   joinRequest,
@@ -130,7 +130,6 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{flex: 1, justifyContent: 'center'}}>
       <Container>
-        <Header />
         <Content>
           <Card>
             <CardHeader>
@@ -166,7 +165,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <HostButton onPress={() => viewProfile(itinerary.owner.id)}>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url,
+                      uri: itinerary.owner.person.file?.url || undefined,
                     }}
                     resizeMode="cover"
                   />

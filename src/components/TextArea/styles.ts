@@ -19,7 +19,8 @@ export const Field = styled.TextInput`
   border-width: 0.1rem;
   border-style: solid;
   border-color: #cfcfcf;
-  height: 10rem;
+  min-height: 4rem;
+  padding: 1rem;
 `;
 
 export const Content = styled.View``;

@@ -17,6 +17,7 @@ import {
   Name,
   JoinDate,
   Title,
+  TitleContent,
 } from './styles';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
@@ -71,8 +72,10 @@ const SearchUsers: React.FC = () => {
 
   return (
     <Container>
-      <Header />
-      <Title>Amplie suas conexões</Title>
+      <TitleContent>
+        <Title>Amplie suas conexões</Title>
+      </TitleContent>
+
       <Card>
         <CardContent>
           <Input

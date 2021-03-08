@@ -22,7 +22,7 @@ import {
 } from './styles';
 import TextArea from '../TextArea';
 
-import {QuestionProps} from '../../store/modules/itineraries/reducer';
+import {QuestionProps} from '../../utils/types';
 
 interface ItineraryQuestionProps {
   question: QuestionProps;
@@ -70,7 +70,7 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
       <OwnerDetails>
         <UserImage
           source={{
-            uri: question.owner.person.file?.url,
+            uri: question.owner.person.file?.url || undefined,
           }}
           resizeMode="cover"
         />

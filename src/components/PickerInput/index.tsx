@@ -1,7 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {forwardRef} from 'react';
-import {Picker} from '@react-native-community/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 
-import {Container, Content, Label} from './styles';
+import {Label} from './styles';
 
 interface OptionProps {
   id: number;
@@ -11,7 +12,7 @@ interface OptionProps {
 
 interface PickerInputProps {
   ref: number | any;
-  options: OptionProps[];
+  options?: OptionProps[];
   label: string;
   value: string | number;
   onChange(returnValue: any): any;
@@ -22,28 +23,30 @@ const PickerInput: React.FC<PickerInputProps> = (
   {options, label, value, onChange, byValue},
   ref,
 ) => {
+  const optionList = options?.map((option) => ({
+    label: option.name,
+    value: byValue ? option.value : option.id,
+  }));
+
   return (
-    <Container>
-      <Content>
-        <Label>{label}</Label>
-        <Picker
-          selectedValue={value}
-          onValueChange={(itemValue, intemIndex) => onChange(itemValue)}
-          ref={ref}
-          mode="dropdown"
-          style={{color: '#808080'}}>
-          <Picker.Item label="Selecione" value="" />
-          {options &&
-            options.map((option) => (
-              <Picker.Item
-                key={option.id}
-                label={option.name}
-                value={byValue ? option.value : option.id}
-              />
-            ))}
-        </Picker>
-      </Content>
-    </Container>
+    <>
+      <Label>{label}</Label>
+      <DropDownPicker
+        items={optionList}
+        onChangeItem={(item) => onChange(item.value)}
+        containerStyle={{height: 56}}
+        style={{
+          backgroundColor: '#FFF',
+          marginBottom: 10,
+        }}
+        dropDownStyle={{backgroundColor: '#fafafa'}}
+        globalTextStyle={{color: '#808080', fontSize: 16}}
+        defaultValue={value}
+        arrowSize={24}
+        arrowColor="#808080"
+        placeholder="Selecione"
+      />
+    </>
   );
 };
 

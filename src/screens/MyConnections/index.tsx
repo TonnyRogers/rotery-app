@@ -35,6 +35,7 @@ import {
   RejectButton,
   Divider,
   MessageButton,
+  TitleContent,
 } from './styles';
 import Card from '../../components/Card';
 import Header from '../../components/Header';
@@ -104,8 +105,9 @@ const MyConnections: React.FC = () => {
 
   return (
     <Container>
-      <Header />
-      <Title>Minhas Conexões</Title>
+      <TitleContent>
+        <Title>Minhas Conexões</Title>
+      </TitleContent>
       <Card>
         <CardContent>
           <ConnectionList>

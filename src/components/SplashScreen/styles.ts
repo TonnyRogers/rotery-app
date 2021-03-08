@@ -1,5 +1,10 @@
 import styled from 'styled-native-components';
-import {KeyboardAvoidingView as RNKAvoindingView} from 'react-native';
+import {KeyboardAvoidingView as RNKAvoindingView, Platform} from 'react-native';
+
+const shadow =
+  Platform.OS === 'ios'
+    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
+    : 'elevation: 1;';
 
 export const Container = styled.View`
   flex: 1;
@@ -17,13 +22,10 @@ export const KeyboardAvoidingView = styled(RNKAvoindingView)`
 
 export const Content = styled.View.attrs({})`
   background: #fff;
-  min-height: 30rem;
   padding: 1rem;
   margin: 2rem;
-  align-items: center;
-  justify-content: center;
   border-radius: 0.8rem;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  ${shadow}
 `;
 
 export const Logo = styled.Image`
@@ -36,4 +38,6 @@ export const Title = styled.Text`
   font-size: 2rem;
   font-weight: bold;
   margin-top: 21rem;
+  align-self: center;
+  margin-top: 25rem;
 `;

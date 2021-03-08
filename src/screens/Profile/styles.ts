@@ -2,6 +2,7 @@ import styled from 'styled-native-components';
 
 export const SafeView = styled.SafeAreaView`
   flex: 1;
+  margin-top: 6.5rem;
 `;
 
 export const Container = styled.ScrollView`

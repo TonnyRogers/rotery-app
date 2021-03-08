@@ -64,7 +64,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
             <ImageItem
               key={item.id}
               source={{
-                uri: item.url,
+                uri: item.url || undefined,
               }}
               resizeMode="cover"
             />

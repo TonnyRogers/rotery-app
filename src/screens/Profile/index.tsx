@@ -35,7 +35,6 @@ import {
   CardHeader,
   BackButton,
 } from './styles';
-import Header from '../../components/Header';
 
 import Card from '../../components/Card';
 import Input from '../../components/Input';
@@ -75,7 +74,7 @@ const Profile: React.FC = () => {
   );
   const [alertVisible, setAlertVisible] = useState(false);
   const [profileImage, setProfileImage] = useState({
-    uri: data?.file_id && data.file ? data.file.url : null,
+    uri: data?.file_id && data.file ? data.file.url : undefined,
   });
 
   const nameRef = useRef() as any;
@@ -162,7 +161,7 @@ const Profile: React.FC = () => {
           const {id} = fileResponse.data;
 
           if (!id) {
-            setProfileImage({uri: null});
+            setProfileImage({uri: undefined});
             return;
           }
           setProfileImage(image);
@@ -179,7 +178,6 @@ const Profile: React.FC = () => {
 
   return (
     <SafeView>
-      <Header />
       <Container>
         <Card>
           <CardHeader>

@@ -85,7 +85,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
           <UserButton onPress={() => viewProfile(member.id)}>
             <UserImage
               source={{
-                uri: member.person.file?.url,
+                uri: member.person.file?.url || undefined,
               }}
               resizeMode="cover"
             />

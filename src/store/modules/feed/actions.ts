@@ -1,4 +1,4 @@
-import {ItineraryProps} from './reducer';
+import {ItineraryProps} from '../../../utils/types';
 
 interface FilterProps {
   begin?: string;
@@ -65,10 +65,10 @@ export function makeQuestionFailure() {
   };
 }
 
-export function joinRequest(itineraryId: number, userId: number) {
+export function joinRequest(itineraryId: number) {
   return {
     type: '@feed/JOIN_REQUEST',
-    payload: {itineraryId, userId},
+    payload: {itineraryId},
   };
 }
 

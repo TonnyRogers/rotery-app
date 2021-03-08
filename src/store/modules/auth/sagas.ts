@@ -76,7 +76,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getMessagesRequest());
   } catch (error) {
     Toast.show({
-      text1: `${translateError(error.response.data[0].message)}`,
+      text1: `${translateError(error?.response.data[0].message)}`,
       position: 'bottom',
       type: 'error',
     });

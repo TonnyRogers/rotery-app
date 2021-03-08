@@ -1,22 +1,6 @@
 import produce from 'immer';
 
-export interface MessageProps {
-  id: number;
-  sender_id: number;
-  message: string;
-  readed: boolean;
-  created_at: string;
-  unreaded: number;
-  sender: {
-    username: string;
-    person: {
-      file: {
-        url: string;
-      };
-    };
-  };
-}
-
+import {MessageProps} from '../../../utils/types';
 interface InitialStateProps {
   messages: MessageProps[];
   conversation: MessageProps[];

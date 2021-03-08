@@ -31,6 +31,7 @@ import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
 import SplashScreen from '../components/SplashScreen';
+import Header from '../components/Header';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 interface RoutesProps {
@@ -121,8 +122,11 @@ const Routes = () => {
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
           screenOptions={{
-            headerShown: false,
+            headerShown: signed,
+            headerTransparent: true,
+            header: () => <Header />,
           }}
+          headerMode="screen"
           initialRouteName={signed ? 'Feed' : 'Home'}>
           {signed ? (
             <>

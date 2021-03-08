@@ -1,11 +1,17 @@
 import styled from 'styled-native-components';
+import {Platform} from 'react-native';
+
+const shadow =
+  Platform.OS === 'ios'
+    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
+    : 'elevation: 1;';
 
 export const Container = styled.View`
   background: #fff;
   margin: 1rem;
   padding: 1rem;
   border-radius: 0.8rem;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  ${shadow}
 `;
 
 export const ItineraryHeader = styled.View``;
@@ -79,7 +85,7 @@ export const Quantity = styled.Text`
 `;
 
 export const DetailsButton = styled.TouchableOpacity`
-  height: 3.7rem;
+  height: 4rem;
   align-items: center;
   justify-content: center;
   background: #3dc77b;

@@ -19,7 +19,7 @@ const GuideItem: React.FC<GuideItemProps> = ({
       ) : (
         <Background
           source={{
-            uri: background,
+            uri: background || undefined,
           }}
           resizeMode="contain"
         />

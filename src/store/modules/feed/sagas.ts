@@ -124,12 +124,11 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
       return;
     }
 
-    const {itineraryId, userId} = payload;
+    const {itineraryId} = payload;
     const currentDate = new Date();
 
     yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/join`, {
-      user_id: userId,
       current_date: currentDate,
     });
 

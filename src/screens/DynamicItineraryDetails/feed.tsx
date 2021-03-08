@@ -7,7 +7,7 @@ import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
 
 import {formatBRL} from '../../lib/mask';
-import {ItineraryProps} from '../../store/modules/feed/reducer';
+import {ItineraryProps} from '../../utils/types';
 import {
   makeQuestionRequest,
   joinRequest,
@@ -53,12 +53,12 @@ import {
   Status,
   StatusName,
 } from './styles';
-import Header from '../../components/Header';
 import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
 import ItineraryMember from '../../components/ItineraryMember';
 import ItineraryQuestion from '../../components/ItineraryQuestion';
 import TextArea from '../../components/TextArea';
+import Share from '../../components/Share';
 
 interface FeedItineraryDetailsProps {
   itinerary: ItineraryProps;
@@ -106,7 +106,7 @@ const FeedDetail: React.FC<FeedItineraryDetailsProps> = ({itinerary}) => {
   }
 
   function handleJoinItinerary() {
-    dispatch(joinRequest(itinerary.id, user.id));
+    dispatch(joinRequest(itinerary.id));
   }
 
   function viewProfile(userId: number) {
@@ -120,8 +120,14 @@ const FeedDetail: React.FC<FeedItineraryDetailsProps> = ({itinerary}) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{flex: 1, justifyContent: 'center'}}>
       <Container>
-        <Header />
         <Content>
+          <Share
+            data={{
+              id: itinerary.id,
+              type: 'itinerary',
+              componentType: 'connectionShareList',
+            }}
+          />
           <Card>
             <CardHeader>
               <BackButton onPress={() => navigation.goBack()}>
@@ -156,7 +162,7 @@ const FeedDetail: React.FC<FeedItineraryDetailsProps> = ({itinerary}) => {
                 <HostButton onPress={() => viewProfile(itinerary.owner.id)}>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url,
+                      uri: itinerary.owner.person.file?.url || undefined,
                     }}
                     resizeMode="cover"
                   />
