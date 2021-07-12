@@ -1,7 +1,7 @@
 import React, {useState, useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {format, parse} from 'date-fns';
+import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 
 import {replyQuestionRequest} from '../../store/modules/itineraries/actions';
@@ -23,6 +23,7 @@ import {
 import TextArea from '../TextArea';
 
 import {QuestionProps} from '../../utils/types';
+import {toDateTimeZone} from '../../utils/helpers';
 
 interface ItineraryQuestionProps {
   question: QuestionProps;
@@ -40,20 +41,14 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   let createDateFormated = useRef('');
   let updateDateFormated = useRef('');
   useMemo(() => {
-    createDateFormated.current = format(
-      parse(question.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
-    );
-    updateDateFormated.current = format(
-      parse(question.updated_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
-    );
+    const createdZonedDate = toDateTimeZone(question.created_at);
+    const updatedZonedDate = toDateTimeZone(question.updated_at);
+    createDateFormated.current = format(createdZonedDate, ' dd MMM yyyy H:mm', {
+      locale: pt,
+    });
+    updateDateFormated.current = format(updatedZonedDate, ' dd MMM yyyy H:mm', {
+      locale: pt,
+    });
   }, [question.created_at, question.updated_at]);
 
   function handleSubmitAnwser(questionId: number) {

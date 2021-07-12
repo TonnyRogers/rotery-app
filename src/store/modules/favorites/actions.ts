@@ -1,58 +1,72 @@
-import {ItineraryProps} from '../../../utils/types';
+import {FavoriteProps} from '../../../utils/types';
+
+export enum FavoritesActions {
+  GET_FAVORITES_REQUEST = '@favorites/GET_FAVORITES_REQUEST',
+  GET_FAVORITES_SUCCESS = '@favorites/GET_FAVORITES_SUCCESS',
+  GET_FAVORITES_FAILURE = '@favorites/GET_FAVORITES_FAILURE',
+  SET_FAVORITE_REQUEST = '@favorites/SET_FAVORITE_REQUEST',
+  SET_FAVORITE_SUCCESS = '@favorites/SET_FAVORITE_SUCCESS',
+  SET_FAVORITE_FAILURE = '@favorites/SET_FAVORITE_FAILURE',
+  REMOVE_FAVORITE_REQUEST = '@favorites/REMOVE_FAVORITE_REQUEST',
+  REMOVE_FAVORITE_SUCCESS = '@favorites/REMOVE_FAVORITE_SUCCESS',
+  REMOVE_FAVORITE_FAILURE = '@favorites/REMOVE_FAVORITE_FAILURE',
+}
 
 export function getFavoritesRequest() {
   return {
-    type: '@favorites/GET_FAVORITES_REQUEST',
+    type: FavoritesActions.GET_FAVORITES_REQUEST,
   };
 }
 
-export function getFavoritesSuccess(itineraries: ItineraryProps[]) {
+export function getFavoritesSuccess(favorites: FavoriteProps[]) {
   return {
-    type: '@favorites/GET_FAVORITES_SUCCESS',
-    payload: {itineraries},
+    type: FavoritesActions.GET_FAVORITES_SUCCESS,
+    payload: {favorites},
   };
 }
 
 export function getFavoritesFailure() {
   return {
-    type: '@favorites/GET_FAVORITES_FAILURE',
+    type: FavoritesActions.GET_FAVORITES_FAILURE,
   };
 }
 
 export function setFavoriteRequest(itineraryId: number) {
   return {
-    type: '@favorites/SET_FAVORITE_REQUEST',
+    type: FavoritesActions.SET_FAVORITE_REQUEST,
     payload: {itineraryId},
   };
 }
 
-export function setFavoriteSuccess() {
+export function setFavoriteSuccess(favorite: FavoriteProps) {
   return {
-    type: '@favorites/SET_FAVORITE_SUCCESS',
+    type: FavoritesActions.SET_FAVORITE_SUCCESS,
+    payload: {favorite},
   };
 }
 
 export function setFavoriteFailure() {
   return {
-    type: '@favorites/SET_FAVORITE_FAILURE',
+    type: FavoritesActions.SET_FAVORITE_FAILURE,
   };
 }
 
 export function removeFavoriteRequest(itineraryId: number) {
   return {
-    type: '@favorites/REMOVE_FAVORITE_REQUEST',
+    type: FavoritesActions.REMOVE_FAVORITE_REQUEST,
     payload: {itineraryId},
   };
 }
 
-export function removeFavoriteSuccess() {
+export function removeFavoriteSuccess(itineraryId: number) {
   return {
-    type: '@favorites/REMOVE_FAVORITE_SUCCESS',
+    type: FavoritesActions.REMOVE_FAVORITE_SUCCESS,
+    payload: {itineraryId},
   };
 }
 
 export function removeFavoriteFailure() {
   return {
-    type: '@favorites/REMOVE_FAVORITE_FAILURE',
+    type: FavoritesActions.REMOVE_FAVORITE_FAILURE,
   };
 }

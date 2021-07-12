@@ -3,7 +3,6 @@ import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
-import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 import {translateError} from '../../../lib/utils';
 
 import {
@@ -21,14 +20,12 @@ import {
   paginateFeedRequest,
   paginateFeedSuccess,
 } from './actions';
-import {updateDetailsRequest} from '../dynamicItinerary/actions';
 
 export function* getItineraries() {
   try {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -52,13 +49,10 @@ export function* getFilteredItineraries({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {filter} = payload;
-
-    yield put(setLoadingTrue());
 
     const response = yield call(
       api.get,
@@ -68,11 +62,8 @@ export function* getFilteredItineraries({
     if (response.data.data.length > 0) {
       yield put(getFeedFilteredSuccess(response.data.data));
     }
-
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFilteredFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao buscar seus roteiros.',
       position: 'bottom',
@@ -88,17 +79,17 @@ export function* makeQuestion({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {question, itineraryId} = payload;
-    yield put(setLoadingTrue());
-    yield call(api.post, `/itineraries/${itineraryId}/questions`, {question});
+    const response = yield call(
+      api.post,
+      `/itineraries/${itineraryId}/questions`,
+      {question},
+    );
 
-    yield put(updateDetailsRequest());
-    yield put(makeQuestionSuccess());
-    yield put(setLoadingFalse());
+    yield put(makeQuestionSuccess(response.data));
     Toast.show({
       text1: 'Pergunta enviada!',
       position: 'bottom',
@@ -106,7 +97,6 @@ export function* makeQuestion({
     });
   } catch (error) {
     yield put(makeQuestionFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao criar pergunta.',
       position: 'bottom',
@@ -120,21 +110,17 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {itineraryId} = payload;
     const currentDate = new Date();
 
-    yield put(setLoadingTrue());
-    yield call(api.post, `/itineraries/${itineraryId}/join`, {
+    const response = yield call(api.post, `/itineraries/${itineraryId}/join`, {
       current_date: currentDate,
     });
 
-    yield put(joinSuccess());
-    yield put(updateDetailsRequest());
-    yield put(setLoadingFalse());
+    yield put(joinSuccess(response.data));
     Toast.show({
       text1: 'Solicitação enviada!',
       position: 'bottom',
@@ -142,7 +128,6 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     });
   } catch (error) {
     yield put(joinFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: `${translateError(error.response.data[0].message)}`,
       position: 'bottom',
@@ -158,13 +143,10 @@ export function* getPaginatedItineraries({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {page, begin, end} = payload;
-
-    yield put(setLoadingTrue());
 
     const response = yield call(
       api.get,
@@ -176,11 +158,8 @@ export function* getPaginatedItineraries({
     if (response.data.data.length > 0) {
       yield put(paginateFeedSuccess(response.data.data));
     }
-
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFeedFilteredFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao buscar seus roteiros.',
       position: 'bottom',

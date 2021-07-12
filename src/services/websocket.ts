@@ -1,8 +1,44 @@
-import Ws from '@adonisjs/websocket-client';
+import io, {Socket} from 'socket.io-client';
 
-const protocol = __DEV__ ? 'ws' : 'wss';
-// const ws = Ws(`${protocol}://localhost:3333`);
+const wsConnection = __DEV__
+  ? 'http://127.0.0.1:3333'
+  : 'https://api.rotery.com.br';
 
-// ws.connect();
+export type SocketClient = Socket;
 
-// export default ws;
+class WebSocket {
+  private socket!: SocketClient;
+
+  public init(userId: number): SocketClient {
+    if (!this.socket) {
+      this.socket = io(wsConnection, {
+        query: {
+          userId: String(userId),
+        },
+        secure: true,
+        autoConnect: true,
+        timeout: 3000,
+        transports: ['websocket'],
+        reconnectionDelay: 5000,
+      });
+    }
+
+    return this.socket;
+  }
+
+  public set client(newSocket: SocketClient) {
+    this.socket = newSocket;
+  }
+
+  public get client() {
+    return this.socket;
+  }
+
+  public kill() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+}
+
+export default new WebSocket();

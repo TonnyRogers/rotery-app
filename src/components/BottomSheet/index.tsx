@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Animated, Dimensions, PanResponder} from 'react-native';
+import {Animated, Dimensions, PanResponder, StatusBar} from 'react-native';
 
 import {
   Content,
@@ -71,12 +71,17 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     } else {
       handleDismiss();
     }
-  }, [handleDismiss, handleOpen, visible]);
+
+    return () => {
+      onRequestClose;
+    };
+  }, [handleDismiss, handleOpen, onRequestClose, visible]);
 
   return (
     <>
       {visible && (
         <Container>
+          <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
           <Overlay>
             <Content
               style={{

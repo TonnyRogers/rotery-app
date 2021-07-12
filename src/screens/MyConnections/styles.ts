@@ -3,10 +3,9 @@ import {Platform} from 'react-native';
 
 const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
   position: relative;
-  margin-top: 6.5rem;
 `;
 
 export const TitleContent = styled.View`

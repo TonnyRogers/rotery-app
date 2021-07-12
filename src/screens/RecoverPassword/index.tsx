@@ -16,11 +16,14 @@ import {
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Keyboard} from 'react-native';
 
 interface RecoverPasswordProps {
   navigation: {
     goBack(): void;
     navigate(route: string): void;
+    canGoBack(): boolean;
   };
 }
 
@@ -54,27 +57,36 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
     }
   }
 
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
+
   return (
     <Container>
-      <Header>
-        <RowGroup>
-          <BackButton onPress={() => navigation.goBack()}>
-            <Icon name="chevron-left" size={24} color="#3dc77b" />
-          </BackButton>
-        </RowGroup>
-        <Logo source={horizontalLogo} resizeMode="contain" />
-        <Title>Recuperar acesso</Title>
-      </Header>
-      <Input
-        onChange={setEmail}
-        value={email}
-        label="E-mail"
-        placeholder="seu e-mail de acesso"
-        ref={emailRef}
-      />
-      <SubmitButton onPress={handleRecoverPassword}>
-        <SubmitButtonText>Recuperar</SubmitButtonText>
-      </SubmitButton>
+      <SafeAreaView style={{flex: 1}} onTouchStart={Keyboard.dismiss}>
+        <Header>
+          <RowGroup>
+            <BackButton onPress={goBack}>
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </BackButton>
+          </RowGroup>
+          <Logo source={horizontalLogo} resizeMode="contain" />
+          <Title>Recuperar acesso</Title>
+        </Header>
+        <Input
+          onChange={setEmail}
+          value={email}
+          label="E-mail"
+          placeholder="seu e-mail de acesso"
+          autoCapitalize="none"
+          ref={emailRef}
+        />
+        <SubmitButton onPress={handleRecoverPassword}>
+          <SubmitButtonText>Recuperar</SubmitButtonText>
+        </SubmitButton>
+      </SafeAreaView>
     </Container>
   );
 };

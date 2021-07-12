@@ -90,9 +90,15 @@ const Notification: React.FC<NotificationProps> = ({
     }
   }, [handleDismiss, handleOpen, visible]);
 
-  function childClose() {
-    onRequestClose(false);
-  }
+  const renderNotifications = useCallback(() => {
+    function childClose() {
+      onRequestClose(false);
+    }
+
+    return data?.map((item) => (
+      <NotificationItem key={item?.id} notification={item} close={childClose} />
+    ));
+  }, [data, onRequestClose]);
   return (
     <>
       {visible && (
@@ -116,16 +122,7 @@ const Notification: React.FC<NotificationProps> = ({
                   <Icon name={icon} size={24} color={iconColor} />
                   <Title>{title}</Title>
                 </Header>
-                <NotificationList>
-                  {data &&
-                    data.map((item) => (
-                      <NotificationItem
-                        key={item?.id}
-                        notification={item}
-                        close={childClose}
-                      />
-                    ))}
-                </NotificationList>
+                <NotificationList>{renderNotifications()}</NotificationList>
                 <CloseButton onPress={handleDismiss}>
                   <Icon name="chevron-up" size={24} color="#808080" />
                 </CloseButton>

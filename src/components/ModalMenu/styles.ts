@@ -5,15 +5,16 @@ import {
   Platform,
 } from 'react-native';
 
-const metric = Platform.OS === 'ios' ? 'vh' : '%';
+const metricH = Platform.OS === 'ios' ? 'vh' : '%';
+const metricW = Platform.OS === 'ios' ? 'vw' : '%';
 
-export const Container = styled.View`
+export const Container = styled.SafeAreaView`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   position: absolute;
-  height: 100${metric};
-  width: 100%:
+  height: ${'100' + metricH};
+  width: ${'100' + metricW}:;
 `;
 
 export const KeyboardAvoidingView = styled(RNKAvoidView)`
@@ -45,6 +46,7 @@ export const Actions = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
+  justify-content: center;
   margin-top: 1rem;
 `;
 
@@ -53,7 +55,7 @@ export const MenuButton = styled.TouchableOpacity`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 47%;
+  width: 30%;
   height: 10rem;
   border-radius: 0.8rem;
   margin: 0.5rem;
@@ -65,6 +67,7 @@ export const MenuButtonText = styled.Text`
   font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
+  text-align: center;
 `;
 
 export const CounterContent = styled.View`
@@ -75,7 +78,8 @@ export const CounterContent = styled.View`
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 0.5rem;
+  top: 1rem;
+  right: 1rem;
 `;
 
 export const Counter = styled.Text`

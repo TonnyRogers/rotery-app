@@ -1,5 +1,6 @@
 import styled from 'styled-native-components';
 import {Animated, Platform} from 'react-native';
+import {theme} from '../../utils/theme';
 
 const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
@@ -10,7 +11,7 @@ export const SafeView = styled.SafeAreaView`
 export const Container = styled.View`
   flex: 1;
   flex-direction: column;
-  background: #f6f6f6;
+  background: ${theme.colors.appBackground};
   height: ${'100' + metric};
 `;
 
@@ -29,6 +30,7 @@ export const Title = styled.Text`
   font-size: 2rem;
   font-family: 'Roboto-Bold';
   margin: 1rem 0;
+  color: ${theme.colors.primaryText};
 `;
 
 export const HighlightList = styled.ScrollView.attrs({
@@ -50,18 +52,14 @@ export const TipText = styled.Text`
   font-size: 1.8rem;
   font-weight: bold;
   font-family: 'Roboto';
-  color: #4885fd;
+  color: ${theme.colors.blue};
 `;
 
 export const LoginHover = styled(Animated.View)<{visible: boolean}>`
   height: 48rem;
   width: 100%;
-  background: #fff;
-  border-top-left-radius: 2rem;
-  border-top-right-radius: 2rem;
   position: absolute;
   bottom: 0;
-  elevation: 2;
 `;
 
 export const LoginHeader = styled.View`
@@ -76,7 +74,7 @@ export const SwitchLoginButton = styled.TouchableOpacity`
   border-radius: 2rem;
   align-items: center;
   justify-content: center;
-  background: rgba(61, 199, 123, 0.2);
+  background: ${theme.colors.greenTransparent};
 `;
 
 export const HighlightContent = styled.View``;
@@ -95,13 +93,13 @@ export const RowGroup = styled.View`
 export const ItineraryLocation = styled.Text`
   font-family: 'Roboto-Regular';
   font-size: 1.4rem;
-  color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const ItineraryDate = styled.Text`
   font-family: 'Roboto-Regular';
   font-size: 1.4rem;
-  color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const LoginContent = styled.View<{visible: boolean}>`
@@ -114,7 +112,7 @@ export const Actions = styled.View``;
 export const LoginButton = styled.TouchableOpacity`
   flex: 1;
   height: 4.4rem;
-  background: #4885fd;
+  background: ${theme.colors.blue};
   border-radius: 0.8rem;
 
   align-items: center;
@@ -125,7 +123,7 @@ export const LoginButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
   font-size: 2.4rem;
-  color: #fff;
+  color: ${theme.colors.white};
 `;
 
 export const ForgotPasswordButton = styled.TouchableOpacity`
@@ -135,7 +133,7 @@ export const ForgotPasswordButton = styled.TouchableOpacity`
 export const ForgotPasswordButtonText = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
-  color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const RegisterContent = styled.View`
@@ -148,7 +146,7 @@ export const RegisterContent = styled.View`
 export const RegisterText = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
-  color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const RegisterButton = styled.TouchableOpacity`
@@ -159,5 +157,5 @@ export const RegisterButtonText = styled.Text`
   font-family: 'Roboto';
   font-weight: bold;
   font-size: 1.6rem;
-  color: #3dc77b;
+  color: ${theme.colors.green};
 `;

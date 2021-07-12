@@ -1,8 +1,25 @@
 import {UserProps} from './reducer';
 
+export enum AuthActions {
+  LOGIN_REQUEST = '@auth/LOGIN_REQUEST',
+  LOGIN_SUCCESS = '@auth/LOGIN_SUCCESS',
+  LOGIN_FAILURE = '@auth/LOGIN_FAILURE',
+  LOGOUT = '@auth/LOGOUT',
+  REGISTER_REQUEST = '@auth/REGISTER_REQUEST',
+  REGISTER_SUCCESS = '@auth/REGISTER_SUCCESS',
+  REGISTER_FAILURE = '@auth/REGISTER_FAILURE',
+  REFRESH_TOKEN_REQUEST = '@auth/REFRESH_TOKEN_REQUEST',
+  REFRESH_TOKEN_SUCCESS = '@auth/REFRESH_TOKEN_SUCCESS',
+  REFRESH_TOKEN_FAILURE = '@auth/REFRESH_TOKEN_FAILURE',
+  SET_LOADING_TRUE = '@auth/SET_LOADING_TRUE',
+  SET_LOADING_FALSE = '@auth/SET_LOADING_FALSE',
+  SET_DEVICE_TOKEN_REQUEST = '@auth/SET_DEVICE_TOKEN_REQUEST',
+  SET_DEVICE_TOKEN_SUCCESS = '@auth/SET_DEVICE_TOKEN_SUCCESS',
+}
+
 export function loginRequest(email: string, password: string) {
   return {
-    type: '@auth/LOGIN_REQUEST',
+    type: AuthActions.LOGIN_REQUEST,
     payload: {email, password},
   };
 }
@@ -13,20 +30,20 @@ export function loginSuccess(
   user: UserProps,
 ) {
   return {
-    type: '@auth/LOGIN_SUCCESS',
+    type: AuthActions.LOGIN_SUCCESS,
     payload: {token, refreshToken, user},
   };
 }
 
 export function loginFailure() {
   return {
-    type: '@auth/LOGIN_FAILURE',
+    type: AuthActions.LOGIN_FAILURE,
   };
 }
 
 export function logout() {
   return {
-    type: '@auth/LOGOUT',
+    type: AuthActions.LOGOUT,
   };
 }
 
@@ -36,63 +53,63 @@ export function registerRequest(
   password: string,
 ) {
   return {
-    type: '@auth/REGISTER_REQUEST',
+    type: AuthActions.REGISTER_REQUEST,
     payload: {username, email, password},
   };
 }
 
 export function registerSuccess(id: number) {
   return {
-    type: '@auth/REGISTER_SUCCESS',
+    type: AuthActions.REGISTER_SUCCESS,
     payload: {id},
   };
 }
 
 export function registerFailure() {
   return {
-    type: '@auth/REGISTER_FAILURE',
+    type: AuthActions.REGISTER_FAILURE,
   };
 }
 
 export function refreshTokenRequest() {
   return {
-    type: '@auth/REFRESH_TOKEN_REQUEST',
+    type: AuthActions.REFRESH_TOKEN_REQUEST,
   };
 }
 
 export function refreshTokenSuccess(token: string, refreshToken: string) {
   return {
-    type: '@auth/REFRESH_TOKEN_SUCCESS',
+    type: AuthActions.REFRESH_TOKEN_SUCCESS,
     payload: {token, refreshToken},
   };
 }
 
 export function refreshTokenFailure() {
   return {
-    type: '@auth/REFRESH_TOKEN_FAILURE',
+    type: AuthActions.REFRESH_TOKEN_FAILURE,
   };
 }
 
 export function setLoadingTrue() {
   return {
-    type: '@auth/SET_LOADING_TRUE',
+    type: AuthActions.SET_LOADING_TRUE,
   };
 }
 
 export function setLoadingFalse() {
   return {
-    type: '@auth/SET_LOADING_FALSE',
+    type: AuthActions.SET_LOADING_FALSE,
   };
 }
 
 export function setDeviceTokenRequest() {
   return {
-    type: '@auth/SET_DEVICE_TOKEN_REQUEST',
+    type: AuthActions.SET_DEVICE_TOKEN_REQUEST,
   };
 }
 
 export function setDeviceTokenSuccess() {
   return {
-    type: '@auth/SET_DEVICE_TOKEN_SUCCESS',
+    type: AuthActions.SET_DEVICE_TOKEN_SUCCESS,
   };
 }

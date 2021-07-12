@@ -1,6 +1,7 @@
 import styled from 'styled-native-components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform} from 'react-native';
+// import {theme} from '../../utils/theme';
 
 const shadow =
   Platform.OS === 'ios'
@@ -9,7 +10,6 @@ const shadow =
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: 6.5rem;
 `;
 
 export const Content = styled.ScrollView.attrs({

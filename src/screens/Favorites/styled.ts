@@ -1,13 +1,13 @@
 import styled from 'styled-native-components';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
-  margin-top: 6.5rem;
 `;
 
 export const ContentHeader = styled.View`
   flex-direction: row;
   align-items: center;
+  margin-left: 1rem;
 `;
 
 export const BackButton = styled.TouchableOpacity`
@@ -25,7 +25,7 @@ export const Title = styled.Text`
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  margin-left: 2rem;
+  margin-left: 1rem;
 `;
 
 export const Content = styled.View`

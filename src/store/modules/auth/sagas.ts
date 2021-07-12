@@ -20,7 +20,6 @@ import {
   refreshTokenFailure,
   setDeviceTokenRequest,
   setDeviceTokenSuccess,
-  setLoadingFalse,
 } from './actions';
 import {
   getActivitiesRequest,
@@ -30,7 +29,6 @@ import {
 import {getProfileRequest} from '../profile/actions';
 import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
-import {getNotificationsRequest} from '../notifications/actions';
 import {getMessagesRequest} from '../messages/actions';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
@@ -38,7 +36,6 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -72,7 +69,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(getTransportsRequest());
     yield put(getConnectionsRequest());
     yield put(getItinerariesRequest());
-    yield put(getNotificationsRequest());
+    // yield put(getNotificationsRequest());
     yield put(getMessagesRequest());
   } catch (error) {
     Toast.show({
@@ -81,7 +78,6 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
       type: 'error',
     });
     yield put(loginFailure());
-    yield put(setLoadingFalse());
   }
 }
 
@@ -130,7 +126,6 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
     yield put(registerSuccess(id));
     yield put(loginRequest(email, password));
   } catch (error) {
-    yield put(setLoadingFalse());
     yield put(registerFailure());
 
     Toast.show({
@@ -187,8 +182,11 @@ export function* setDeviceToken() {
       '@notification:token',
     );
 
+    console.tron.log('Set Token:', deviceToken);
+
     if (!deviceToken) {
       deviceToken = yield call([messaging(), 'getToken']);
+      console.tron.log('Retry Set Token:', deviceToken);
     }
 
     yield call(api.post, '/users/device', {
@@ -196,7 +194,6 @@ export function* setDeviceToken() {
     });
     yield put(setDeviceTokenSuccess());
   } catch (error) {
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao registrar dispositivo',
       position: 'bottom',

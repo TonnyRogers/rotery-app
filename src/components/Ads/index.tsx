@@ -1,5 +1,5 @@
 import React, {useEffect, useCallback, useRef} from 'react';
-import {Platform, Dimensions, Animated} from 'react-native';
+import {Platform, Dimensions, Animated, StatusBar} from 'react-native';
 
 import {Container, Content, KeyboardAvoidingView} from './styles';
 
@@ -42,8 +42,9 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
     }
   }, [handleDismiss, handleOpen, visible]);
   return (
-    <>
-      {visible && (
+    visible && (
+      <>
+        <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
         <Container>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -62,8 +63,8 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
             </Content>
           </KeyboardAvoidingView>
         </Container>
-      )}
-    </>
+      </>
+    )
   );
 };
 

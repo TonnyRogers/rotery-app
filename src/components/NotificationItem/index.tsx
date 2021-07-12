@@ -1,12 +1,15 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
+import {Shadow} from 'react-native-shadow-2';
 
-import {NotificationsProps} from '../../store/modules/notifications/reducer';
+import {NotificationsProps} from '../../utils/types';
 import {setNoticationReadedRequest} from '../../store/modules/notifications/actions';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
@@ -17,7 +20,6 @@ import {
   DateText,
   NotificationButton,
 } from './styles';
-
 interface NotificationItemProps {
   notification: NotificationsProps;
   close: any;
@@ -38,63 +40,62 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
   function notificationActionHandle(item: NotificationsProps) {
     dispatch(setNoticationReadedRequest(item.id));
+    const notificationItem =
+      typeof item.json_data === 'string'
+        ? JSON.parse(item.json_data)
+        : item.json_data;
     switch (item.alias) {
       case 'new_message': {
-        navigation.navigate('DirectMessagesTabs');
+        RootNavigation.replace('DirectMessagesTabs');
         close();
         break;
       }
       case 'rate_itinerary': {
-        navigation.navigate('ItineraryRate', {id: item.json_data.id});
+        navigation.navigate('ItineraryRate', {id: notificationItem.id});
         close();
         break;
       }
       case 'new_connection': {
-        navigation.navigate('Connections');
+        RootNavigation.replace('Connections');
         close();
         break;
       }
       case 'new_connection_accepted': {
-        navigation.navigate('Connections');
-        close();
-        break;
-      }
-      case 'itinerary_update': {
-        navigation.navigate('DynamicItineraryDetails', {id: item.json_data.id});
+        RootNavigation.replace('Connections');
         close();
         break;
       }
       case 'itinerary_question': {
-        navigation.navigate('DynamicItineraryDetails', {
-          id: item.json_data.itinerary_id,
+        navigation.navigate('MyItineraryDetails', {
+          id: notificationItem.itinerary_id,
         });
         close();
         break;
       }
       case 'itinerary_member_request': {
-        navigation.navigate('DynamicItineraryDetails', {
-          id: item.json_data.itinerary_id,
+        navigation.navigate('MyItineraryDetails', {
+          id: notificationItem.pivot.itinerary_id,
         });
         close();
         break;
       }
       case 'itinerary_answer': {
-        navigation.navigate('DynamicItineraryDetails', {
-          id: item.json_data.itinerary_id,
+        navigation.navigate('FeedItineraryDetails', {
+          id: notificationItem.itinerary_id,
         });
         close();
         break;
       }
       case 'itinerary_member_accepted': {
-        navigation.navigate('DynamicItineraryDetails', {
-          id: item.json_data.itinerary_id,
+        navigation.navigate('NextItineraryDetails', {
+          id: notificationItem.id,
         });
         close();
         break;
       }
       case 'itinerary_updated': {
-        navigation.navigate('DynamicItineraryDetails', {
-          id: item.json_data.id,
+        navigation.navigate('NextItineraryDetails', {
+          id: notificationItem.id,
         });
         close();
         break;
@@ -104,18 +105,35 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   }
 
   return (
-    <Container onPress={() => notificationActionHandle(notification)}>
-      <ColumGroup>
-        <Subject>{notification.subject}</Subject>
-        <Type>{notification.content}</Type>
-      </ColumGroup>
-      <RowGroup>
-        <DateText>{formatDate(notification.created_at)}</DateText>
-        <NotificationButton>
-          <Icon name="bell-ring-outline" size={24} color="#FFF" />
-        </NotificationButton>
-      </RowGroup>
-    </Container>
+    <Shadow
+      containerViewStyle={{
+        flex: 1,
+        margin: 8,
+      }}
+      contentViewStyle={{
+        flex: 1,
+        backgroundColor: '#FFF',
+        padding: 12,
+        borderRadius: 12,
+      }}
+      radius={12}
+      startColor="#00000009"
+      finalColor="transparent"
+      offset={[0, 0, 0, 0]}
+      distance={5}>
+      <Container onPress={() => notificationActionHandle(notification)}>
+        <ColumGroup>
+          <Subject>{notification.subject}</Subject>
+          <Type>{notification.content}</Type>
+        </ColumGroup>
+        <RowGroup>
+          <DateText>{formatDate(notification.created_at)}</DateText>
+          <NotificationButton>
+            <Icon name="bell-ring-outline" size={24} color="#FFF" />
+          </NotificationButton>
+        </RowGroup>
+      </Container>
+    </Shadow>
   );
 };
 

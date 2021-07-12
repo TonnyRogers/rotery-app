@@ -11,7 +11,6 @@ export const Container = styled.View`
   margin: 1rem;
   padding: 1rem;
   border-radius: 0.8rem;
-  ${shadow}
   flex: 1;
 `;
 

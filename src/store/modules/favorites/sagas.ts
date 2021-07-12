@@ -3,9 +3,7 @@ import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
-import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 import {
-  getFavoritesRequest,
   getFavoritesSuccess,
   getFavoritesFailure,
   setFavoriteRequest,
@@ -21,19 +19,13 @@ export function* getFavoritedItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
-
-    yield put(setLoadingTrue());
-
     const response = yield call(api.get, '/favorites');
 
     yield put(getFavoritesSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getFavoritesFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao buscar favoritos.',
       position: 'bottom',
@@ -49,16 +41,17 @@ export function* favoriteItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {itineraryId} = payload;
 
-    yield call(api.post, `/itineraries/${itineraryId}/favorite`);
+    const response = yield call(
+      api.post,
+      `/itineraries/${itineraryId}/favorite`,
+    );
 
-    yield put(setFavoriteSuccess());
-    yield put(getFavoritesRequest());
+    yield put(setFavoriteSuccess(response.data));
   } catch (error) {
     yield put(setFavoriteFailure());
     Toast.show({
@@ -76,7 +69,6 @@ export function* unfavoriteItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -84,8 +76,7 @@ export function* unfavoriteItinerary({
 
     yield call(api.delete, `/itineraries/${itineraryId}/unfavorite`);
 
-    yield put(removeFavoriteSuccess());
-    yield put(getFavoritesRequest());
+    yield put(removeFavoriteSuccess(itineraryId));
   } catch (error) {
     yield put(removeFavoriteFailure());
     Toast.show({

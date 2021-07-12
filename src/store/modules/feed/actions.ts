@@ -1,4 +1,21 @@
-import {ItineraryProps} from '../../../utils/types';
+import {ItineraryProps, QuestionProps, MemberProps} from '../../../utils/types';
+
+export enum FeedActions {
+  GET_FEED_REQUEST = '@feed/GET_FEED_REQUEST',
+  GET_FEED_SUCCESS = '@feed/GET_FEED_SUCCESS',
+  GET_FEED_FAILURE = '@feed/GET_FEED_FAILURE',
+  GET_FEED_FILTERED_REQUEST = '@feed/GET_FEED_FILTERED_REQUEST',
+  GET_FEED_FILTERED_SUCCESS = '@feed/GET_FEED_FILTERED_SUCCESS',
+  GET_FEED_FILTERED_FAILURE = '@feed/GET_FEED_FILTERED_FAILURE',
+  MAKE_QUESTION_REQUEST = '@feed/MAKE_QUESTION_REQUEST',
+  MAKE_QUESTION_SUCCESS = '@feed/MAKE_QUESTION_SUCCESS',
+  MAKE_QUESTION_FAILURE = '@feed/MAKE_QUESTION_FAILURE',
+  JOIN_REQUEST = '@feed/JOIN_REQUEST',
+  JOIN_SUCCESS = '@feed/JOIN_SUCCESS',
+  JOIN_FAILURE = '@feed/JOIN_FAILURE',
+  PAGINATE_FEED_REQUEST = '@feed/PAGINATE_FEED_REQUEST',
+  PAGINATE_FEED_SUCCESS = '@feed/PAGINATE_FEED_SUCCESS',
+}
 
 interface FilterProps {
   begin?: string;
@@ -9,78 +26,80 @@ interface FilterProps {
 
 export function getFeedRequest() {
   return {
-    type: '@feed/GET_FEED_REQUEST',
+    type: FeedActions.GET_FEED_REQUEST,
   };
 }
 
 export function getFeedSuccess(itineraries: ItineraryProps) {
   return {
-    type: '@feed/GET_FEED_SUCCESS',
+    type: FeedActions.GET_FEED_SUCCESS,
     payload: {itineraries},
   };
 }
 
 export function getFeedFailure() {
   return {
-    type: '@feed/GET_FEED_FAILURE',
+    type: FeedActions.GET_FEED_FAILURE,
   };
 }
 
 export function getFeedFilteredRequest(filter: FilterProps) {
   return {
-    type: '@feed/GET_FEED_FILTERED_REQUEST',
+    type: FeedActions.GET_FEED_FILTERED_REQUEST,
     payload: {filter},
   };
 }
 
 export function getFeedFilteredSuccess(itineraries: ItineraryProps) {
   return {
-    type: '@feed/GET_FEED_FILTERED_SUCCESS',
+    type: FeedActions.GET_FEED_FILTERED_SUCCESS,
     payload: {itineraries},
   };
 }
 
 export function getFeedFilteredFailure() {
   return {
-    type: '@feed/GET_FEED_FILTERED_FAILURE',
+    type: FeedActions.GET_FEED_FILTERED_FAILURE,
   };
 }
 
 export function makeQuestionRequest(itineraryId: number, question: string) {
   return {
-    type: '@feed/MAKE_QUESTION_REQUEST',
+    type: FeedActions.MAKE_QUESTION_REQUEST,
     payload: {itineraryId, question},
   };
 }
 
-export function makeQuestionSuccess() {
+export function makeQuestionSuccess(itineraryQuestion: QuestionProps) {
   return {
-    type: '@feed/MAKE_QUESTION_SUCCESS',
+    type: FeedActions.MAKE_QUESTION_SUCCESS,
+    payload: {itineraryQuestion},
   };
 }
 
 export function makeQuestionFailure() {
   return {
-    type: '@feed/MAKE_QUESTION_FAILURE',
+    type: FeedActions.MAKE_QUESTION_FAILURE,
   };
 }
 
 export function joinRequest(itineraryId: number) {
   return {
-    type: '@feed/JOIN_REQUEST',
+    type: FeedActions.JOIN_REQUEST,
     payload: {itineraryId},
   };
 }
 
-export function joinSuccess() {
+export function joinSuccess(itineraryMember: MemberProps) {
   return {
-    type: '@feed/JOIN_SUCCESS',
+    type: FeedActions.JOIN_SUCCESS,
+    payload: {itineraryMember},
   };
 }
 
 export function joinFailure() {
   return {
-    type: '@feed/JOIN_FAILURE',
+    type: FeedActions.JOIN_FAILURE,
   };
 }
 
@@ -90,14 +109,14 @@ export function paginateFeedRequest(
   end?: string,
 ) {
   return {
-    type: '@feed/PAGINATE_FEED_REQUEST',
+    type: FeedActions.PAGINATE_FEED_REQUEST,
     payload: {page, begin, end},
   };
 }
 
 export function paginateFeedSuccess(itineraries: ItineraryProps) {
   return {
-    type: '@feed/PAGINATE_FEED_SUCCESS',
+    type: FeedActions.PAGINATE_FEED_SUCCESS,
     payload: {itineraries},
   };
 }

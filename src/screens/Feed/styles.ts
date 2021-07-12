@@ -2,37 +2,27 @@ import styled from 'styled-native-components';
 import {Platform} from 'react-native';
 
 const shadow =
-  Platform.OS === 'ios'
-    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
-    : 'elevation: 1;';
+  Platform.OS === 'ios' ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);' : '';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
-  position: relative;
-  margin-top: 6.5rem;
 `;
 
 export const Content = styled.View`
   flex: 1;
 `;
 
-export const FilterContent = styled.View``;
+export const FilterContent = styled.View`
+  margin-bottom: 0.5rem;
+`;
 
 export const Title = styled.Text`
   font-family: 'Roboto';
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
 `;
 
-export const FilterButton = styled.TouchableOpacity`
-  background: #fff;
-  height: 4.4rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1rem;
-  border-radius: 4.5rem;
-  margin: 0.5rem;
-`;
+export const FilterButton = styled.TouchableOpacity``;
 
 export const Input = styled.TextInput``;
 
@@ -63,20 +53,6 @@ export const ItineraryList = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
 })``;
 
-export const FloatContent = styled.View``;
-
-export const NewItineraryButton = styled.TouchableOpacity`
-  height: 5rem;
-  width: 5rem;
-  align-items: center;
-  justify-content: center;
-  background: #3dc77b;
-  border-radius: 1.5rem;
-  margin-top: -3rem;
-  ${shadow}
-  align-self: center;
-`;
-
 export const RowGroupSpaced = styled.View`
   flex-direction: row;
   align-items: center;
@@ -85,6 +61,11 @@ export const RowGroupSpaced = styled.View`
 `;
 
 export const ColumnGroup = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
+export const EmptyData = styled.View`
   align-items: center;
   justify-content: center;
 `;

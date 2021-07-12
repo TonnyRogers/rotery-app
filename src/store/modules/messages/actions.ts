@@ -1,59 +1,72 @@
-import {MessageProps} from './reducer';
+import {MessageProps} from '../../../utils/types';
+
+export enum MessageActions {
+  GET_REQUEST = '@messages/GET_MESSAGES_REQUEST',
+  GET_SUCCESS = '@messages/GET_MESSAGES_SUCCESS',
+  GET_FAILURE = '@messages/GET_MESSAGES_FAILURE',
+  SEND_REQUEST = '@messages/SEND_MESSAGE_REQUEST',
+  SEND_SUCCESS = '@messages/SEND_MESSAGE_SUCCESS',
+  SEND_FAILURE = '@messages/SEND_MESSAGE_FAILURE',
+  CONVERSATION_REQUEST = '@messages/GET_CONVERSATION_REQUEST',
+  CONVERSATION_SUCCESS = '@messages/GET_CONVERSATION_SUCCESS',
+  CONVERSATION_FAILURE = '@messages/GET_CONVERSATION_FAILURE',
+}
 
 export function getMessagesRequest() {
   return {
-    type: '@messages/GET_MESSAGES_REQUEST',
+    type: MessageActions.GET_REQUEST,
   };
 }
 
-export function getMessagesSuccess(messages: MessageProps) {
+export function getMessagesSuccess(messages: MessageProps[]) {
   return {
-    type: '@messages/GET_MESSAGES_SUCCESS',
+    type: MessageActions.GET_SUCCESS,
     payload: {messages},
   };
 }
 
 export function getMessagesFailure() {
   return {
-    type: '@messages/GET_MESSAGES_FAILURE',
+    type: MessageActions.GET_FAILURE,
   };
 }
 
 export function sendMessageRequest(userId: number, message: string) {
   return {
-    type: '@messages/SEND_MESSAGE_REQUEST',
+    type: MessageActions.SEND_REQUEST,
     payload: {userId, message},
   };
 }
 
-export function sendMessageSuccess() {
+export function sendMessageSuccess(message: MessageProps) {
   return {
-    type: '@messages/SEND_MESSAGE_SUCCESS',
+    type: MessageActions.SEND_SUCCESS,
+    payload: {message},
   };
 }
 
 export function sendMessageFailure() {
   return {
-    type: '@messages/SEND_MESSAGE_FAILURE',
+    type: MessageActions.SEND_FAILURE,
   };
 }
 
 export function getConversationRequest(userId: number) {
   return {
-    type: '@messages/GET_CONVERSATION_REQUEST',
+    type: MessageActions.CONVERSATION_REQUEST,
     payload: {userId},
   };
 }
 
-export function getConversationSuccess(messages: MessageProps) {
+export function getConversationSuccess(messages: MessageProps[]) {
   return {
-    type: '@messages/GET_CONVERSATION_SUCCESS',
+    type: MessageActions.CONVERSATION_SUCCESS,
     payload: {messages},
   };
 }
 
 export function getConversationFailure() {
   return {
-    type: '@messages/GET_CONVERSATION_FAILURE',
+    type: MessageActions.CONVERSATION_FAILURE,
   };
 }

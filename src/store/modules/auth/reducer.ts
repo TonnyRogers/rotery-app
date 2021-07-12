@@ -1,4 +1,5 @@
 import produce from 'immer';
+import {AuthActions} from './actions';
 
 export interface UserProps {
   id: number;
@@ -36,11 +37,11 @@ export interface ActionProps {
 export default function auth(state = INITIAL_STATE, action: ActionProps) {
   return produce(state, (draft) => {
     switch (action.type) {
-      case '@auth/LOGIN_REQUEST': {
+      case AuthActions.LOGIN_REQUEST: {
         draft.loading = true;
         break;
       }
-      case '@auth/LOGIN_SUCCESS': {
+      case AuthActions.LOGIN_SUCCESS: {
         draft.loading = false;
         draft.token = action.payload.token;
         draft.refreshToken = action.payload.refreshToken;
@@ -48,47 +49,47 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
         draft.signed = true;
         break;
       }
-      case '@auth/LOGIN_FAILURE': {
+      case AuthActions.LOGIN_FAILURE: {
         draft.loading = false;
         break;
       }
-      case '@auth/LOGOUT': {
+      case AuthActions.LOGOUT: {
         draft.token = null;
         draft.refreshToken = null;
         draft.signed = false;
         break;
       }
-      case '@auth/REGISTER_REQUEST': {
+      case AuthActions.REGISTER_REQUEST: {
         draft.loading = true;
         break;
       }
-      case '@auth/REGISTER_SUCCESS': {
+      case AuthActions.REGISTER_SUCCESS: {
         draft.loading = false;
         break;
       }
-      case '@auth/REGISTER_FAILURE': {
+      case AuthActions.REGISTER_FAILURE: {
         draft.loading = false;
         break;
       }
-      case '@auth/REFRESH_TOKEN_REQUEST': {
+      case AuthActions.REFRESH_TOKEN_REQUEST: {
         draft.loading = true;
         break;
       }
-      case '@auth/REFRESH_TOKEN_SUCCESS': {
+      case AuthActions.REFRESH_TOKEN_SUCCESS: {
         draft.loading = false;
         draft.token = action.payload.token;
         draft.refreshToken = action.payload.refreshToken;
         break;
       }
-      case '@auth/REFRESH_TOKEN_FAILURE': {
+      case AuthActions.REFRESH_TOKEN_FAILURE: {
         draft.loading = false;
         break;
       }
-      case '@auth/SET_LOADING_TRUE': {
+      case AuthActions.SET_LOADING_TRUE: {
         draft.loading = true;
         break;
       }
-      case '@auth/SET_LOADING_FALSE': {
+      case AuthActions.SET_LOADING_FALSE: {
         draft.loading = false;
         break;
       }

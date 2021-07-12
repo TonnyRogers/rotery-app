@@ -10,12 +10,6 @@ export const Container = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
-  ${shadow}
-  min-height: 6rem;
-  margin: 0.8rem;
-  border-radius: 0.8rem;
-  padding: 0.5rem 0.8rem;
 `;
 
 export const ColumGroup = styled.View``;

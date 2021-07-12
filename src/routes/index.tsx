@@ -1,13 +1,17 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useSelector} from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-community/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import {useSelector, useDispatch} from 'react-redux';
+import {Platform} from 'react-native';
 
 import {navigationRef} from '../RootNavigation';
+import * as RootNavigation from '../RootNavigation';
+import api from '../services/api';
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// const Tab = createBottomTabNavigator();
 
 import Home from '../screens/Home';
 import SignUp from '../screens/SignUp';
@@ -31,87 +35,236 @@ import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
 import SplashScreen from '../components/SplashScreen';
-import Header from '../components/Header';
 
 import {RootStateProps} from '../store/modules/rootReducer';
+import {useSocket} from '../hooks/useSocket';
+import {
+  pushNotificationNewMessage,
+  pushNotificationNewConnection,
+  pushNotificationConnectionAccepted,
+  pushNotificationItineraryQuestion,
+  pushNotificationItineraryAnswer,
+  pushNotificationItineraryNewMember,
+  pushNotificationItineraryAcceptedMember,
+  pushNotificationItineraryUpdated,
+  pushNotificationItineraryDeleted,
+  pushNotificationItineraryRejectMember,
+} from '../store/modules/pushNotifications/actions';
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
 
-function ConnectionTabs() {
-  return (
-    <Tab.Navigator
-      tabBarOptions={{
-        adaptive: true,
-        activeTintColor: '#3dc77b',
-        inactiveBackgroundColor: '#f7f7f7',
-        labelStyle: {
-          fontFamily: 'Roboto',
-        },
-        labelPosition: 'beside-icon',
-      }}>
-      <Tab.Screen
-        name="MyConnections"
-        component={MyConnections}
-        options={{
-          title: 'Conexões',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="link-variant" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="SearchUsers"
-        component={SearchUsers}
-        options={{
-          title: 'Pesquisar',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="magnify" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
+// function ConnectionTabs() {
+//   return (
+//     <Tab.Navigator
+//       tabBarOptions={{
+//         adaptive: true,
+//         activeTintColor: '#3dc77b',
+//         inactiveBackgroundColor: '#f7f7f7',
+//         labelStyle: {
+//           fontFamily: 'Roboto',
+//         },
+//         labelPosition: 'beside-icon',
+//       }}>
+//       <Tab.Screen
+//         name="MyConnections"
+//         component={MyConnections}
+//         options={{
+//           title: 'Conexões',
+//           tabBarIcon: ({color, size}) => (
+//             <Icon name="link-variant" color={color} size={size} />
+//           ),
+//         }}
+//       />
+//       <Tab.Screen
+//         name="SearchUsers"
+//         component={SearchUsers}
+//         options={{
+//           title: 'Pesquisar',
+//           tabBarIcon: ({color, size}) => (
+//             <Icon name="magnify" color={color} size={size} />
+//           ),
+//         }}
+//       />
+//     </Tab.Navigator>
+//   );
+// }
 
-function DirectMessagesTabs() {
-  return (
-    <Tab.Navigator
-      tabBarOptions={{
-        adaptive: true,
-        activeTintColor: '#3dc77b',
-        inactiveBackgroundColor: '#f7f7f7',
-        labelStyle: {
-          fontFamily: 'Roboto',
-        },
-        labelPosition: 'beside-icon',
-      }}>
-      <Tab.Screen
-        name="DirectMessages"
-        component={DirectMessages}
-        options={{
-          title: 'Mensagens',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="message-text-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="MyConnections"
-        component={MyConnections}
-        options={{
-          title: 'Conexões',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="link-variant" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
+// function DirectMessagesTabs() {
+//   return (
+//     <Tab.Navigator
+//       tabBarOptions={{
+//         adaptive: true,
+//         activeTintColor: '#3dc77b',
+//         inactiveBackgroundColor: '#f7f7f7',
+//         labelStyle: {
+//           fontFamily: 'Roboto',
+//         },
+//         labelPosition: 'beside-icon',
+//       }}>
+//       <Tab.Screen
+//         name="DirectMessages"
+//         component={DirectMessages}
+//         options={{
+//           title: 'Mensagens',
+//           tabBarIcon: ({color, size}) => (
+//             <Icon name="message-text-outline" color={color} size={size} />
+//           ),
+//         }}
+//       />
+//       <Tab.Screen
+//         name="MyConnections"
+//         component={MyConnections}
+//         options={{
+//           title: 'Conexões',
+//           tabBarIcon: ({color, size}) => (
+//             <Icon name="link-variant" color={color} size={size} />
+//           ),
+//         }}
+//       />
+//     </Tab.Navigator>
+//   );
+// }
 
 const Routes = () => {
   const {signed, loading} = useSelector((state: RootStateProps) => state.auth);
+  const dispatch = useDispatch();
+  useSocket();
+
+  useEffect(() => {
+    check();
+
+    messaging().onTokenRefresh(
+      async (token) => await AsyncStorage.setItem('@notification:token', token),
+    );
+
+    //   'Notification caused app to open from background state:'
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.tron.log('Open App: ', remoteMessage);
+      notificationActions(remoteMessage);
+    });
+
+    //   'Notification caused app to open from quit state:'
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          notificationActions(remoteMessage);
+          console.tron.log('Quit State: ', remoteMessage);
+        }
+      });
+
+    //   'Notification when app is in background or terminated'
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      console.tron.log('Terminated (Minimized): ', remoteMessage);
+      // this.notificationActions(remoteMessage);
+    });
+
+    messaging().onTokenRefresh(async (token) => {
+      await api.post('/users/device', {
+        token,
+      });
+    });
+
+    if (Platform.OS === 'android') {
+      messaging.NotificationAndroidPriority.PRIORITY_HIGH;
+    }
+
+    if (Platform.OS === 'ios') {
+      requestUserPermission();
+    }
+  });
+
+  async function check() {
+    const localToken = await AsyncStorage.getItem('@notification:token');
+    if (!localToken) {
+      const token = await messaging().getToken();
+      await AsyncStorage.setItem('@notification:token', token);
+      console.tron.log('getToken: ', token);
+    }
+  }
+
+  async function requestUserPermission() {
+    await messaging().requestPermission({
+      sound: true,
+      alert: true,
+    });
+  }
+
+  async function notificationActions(notification: any) {
+    const token = await AsyncStorage.getItem('@auth:token');
+
+    if (token && notification) {
+      const jsonData = JSON.parse(notification.data.json_data);
+      switch (notification.data.alias) {
+        case 'new_message': {
+          dispatch(pushNotificationNewMessage(jsonData));
+          RootNavigation.replace('DirectMessagesTabs');
+          break;
+        }
+        case 'rate_itinerary': {
+          RootNavigation.navigate('ItineraryRate', {
+            id: jsonData.id,
+          });
+          break;
+        }
+        case 'new_connection': {
+          dispatch(pushNotificationNewConnection(jsonData));
+          RootNavigation.replace('Connections');
+          break;
+        }
+        case 'new_connection_accepted': {
+          dispatch(pushNotificationConnectionAccepted(jsonData));
+          RootNavigation.replace('Connections');
+          break;
+        }
+        case 'itinerary_question': {
+          dispatch(pushNotificationItineraryQuestion(jsonData));
+          RootNavigation.navigate('MyItineraryDetails', {
+            id: jsonData.itinerary_id,
+          });
+          break;
+        }
+        case 'itinerary_member_request': {
+          dispatch(pushNotificationItineraryNewMember(jsonData));
+          RootNavigation.navigate('MyItineraryDetails', {
+            id: jsonData.pivot.itinerary_id,
+          });
+          break;
+        }
+        case 'itinerary_answer': {
+          dispatch(pushNotificationItineraryAnswer(jsonData));
+          RootNavigation.navigate('FeedItineraryDetails', {
+            id: jsonData.itinerary_id,
+          });
+          break;
+        }
+        case 'itinerary_member_accepted': {
+          dispatch(pushNotificationItineraryAcceptedMember(jsonData));
+          RootNavigation.navigate('NextItineraryDetails', {
+            id: jsonData.id,
+          });
+          break;
+        }
+        case 'itinerary_member_rejected': {
+          dispatch(pushNotificationItineraryRejectMember(jsonData));
+          break;
+        }
+        case 'itinerary_updated': {
+          dispatch(pushNotificationItineraryUpdated(jsonData));
+          RootNavigation.navigate('NextItineraryDetails', {
+            id: jsonData.id,
+          });
+          break;
+        }
+        case 'itinerary_deleted': {
+          dispatch(pushNotificationItineraryDeleted(jsonData));
+          break;
+        }
+        default:
+      }
+    }
+  }
 
   const renderSplash = useCallback(() => {
     return <SplashScreen visible={loading} />;
@@ -121,12 +274,10 @@ const Routes = () => {
     <>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
+          detachInactiveScreens
           screenOptions={{
-            headerShown: signed,
-            headerTransparent: true,
-            header: () => <Header />,
+            headerShown: false,
           }}
-          headerMode="screen"
           initialRouteName={signed ? 'Feed' : 'Home'}>
           {signed ? (
             <>
@@ -153,10 +304,11 @@ const Routes = () => {
               />
               <Stack.Screen name="EditItinerary" component={EditItinerary} />
               <Stack.Screen name="UserDetails" component={UserDetails} />
-              <Stack.Screen name="Connections" component={ConnectionTabs} />
+              <Stack.Screen name="Connections" component={MyConnections} />
+              <Stack.Screen name="SearchUsers" component={SearchUsers} />
               <Stack.Screen
                 name="DirectMessagesTabs"
-                component={DirectMessagesTabs}
+                component={DirectMessages}
               />
               <Stack.Screen
                 name="UserConversation"
@@ -181,7 +333,6 @@ const Routes = () => {
           )}
         </Stack.Navigator>
       </NavigationContainer>
-      {renderSplash()}
     </>
   );
 };

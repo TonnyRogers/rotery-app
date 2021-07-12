@@ -11,14 +11,9 @@ import {
 } from '../../store/modules/favorites/actions';
 
 import {
-  Container,
   ItineraryHeader,
   RowGroup,
-  Name,
   FavoriteButton,
-  Location,
-  DateText,
-  Description,
   Actions,
   Badges,
   Badge,
@@ -32,6 +27,8 @@ import {
 import ImageCarousel from '../ImageCarousel';
 
 import {ItineraryProps} from '../../utils/types';
+import Card from '../Card';
+import Text from '../Text';
 
 interface ItineraryItemProps {
   owner?: boolean;
@@ -45,10 +42,11 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
   detailButtonAction,
 }) => {
   const dispatch = useDispatch();
-  const {itineraries} = useSelector((state: RootStateProps) => state.favorites);
+  const {items} = useSelector((state: RootStateProps) => state.favorites);
 
-  const isFavorited = itineraries?.find(
-    (favorited) => favorited.itinerary.id === itinerary.id,
+  const isFavorited = useMemo(
+    () => items?.find((favorited) => favorited.itinerary.id === itinerary.id),
+    [items, itinerary.id],
   );
 
   let beginDateFormated = useRef('');
@@ -71,7 +69,7 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
   }
 
   return (
-    <Container>
+    <Card>
       <ItineraryHeader>
         <StatusContent>
           <Status>
@@ -80,7 +78,9 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
         </StatusContent>
         <ImageCarousel data={itinerary.photos} />
         <RowGroup>
-          <Name>{itinerary.name}</Name>
+          <Text.Paragraph textColor="primary" textWeight="bold">
+            {itinerary.name}
+          </Text.Paragraph>
           {owner ? (
             <FavoriteButton>
               <Icon name="book-outline" size={24} color="#3dc77b" />
@@ -95,10 +95,14 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
             </FavoriteButton>
           )}
         </RowGroup>
-        <Location>{itinerary.location}</Location>
-        <DateText>{beginDateFormated.current}</DateText>
+        <Text textWeight="light" maxLines={1}>
+          {itinerary.location}
+        </Text>
+        <Text textWeight="light">{beginDateFormated.current}</Text>
       </ItineraryHeader>
-      <Description>{itinerary.description}</Description>
+      <Text textWeight="light" maxLines={2}>
+        {itinerary.description}
+      </Text>
       <Actions>
         <Badges>
           <Badge>
@@ -122,7 +126,7 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
           <DetailsButtonText>Detalhes</DetailsButtonText>
         </DetailsButton>
       </Actions>
-    </Container>
+    </Card>
   );
 };
 

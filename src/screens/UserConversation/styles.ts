@@ -1,19 +1,19 @@
 import styled from 'styled-native-components';
 import {Platform} from 'react-native';
 
-const metric = Platform.OS === 'ios' ? 'vh' : '%';
+// const metric = Platform.OS === 'ios' ? 'vh' : '%';
 const shadow =
   Platform.OS === 'ios'
     ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
     : 'elevation: 1;';
 
-export const SafeView = styled.SafeAreaView`
+export const SafeView = styled.View`
   flex: 1;
-  margin-top: 6.5rem;
 `;
 
 export const Container = styled.View`
   flex: 1;
+  margin-top: 1rem;
 `;
 
 export const ColumnGroup = styled.View``;

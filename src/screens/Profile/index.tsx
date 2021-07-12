@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useRef, useState, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,7 +18,6 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {removeUserRequest} from '../../store/modules/profile/actions';
 
 import {
-  SafeView,
   Container,
   User,
   Avatar,
@@ -41,6 +41,7 @@ import Input from '../../components/Input';
 import Alert from '../../components/Alert';
 import DateInput from '../../components/DateInput';
 import PickerInput from '../../components/PickerInput';
+import Page from '../../components/Page';
 
 const sexOptions = [
   {
@@ -52,6 +53,11 @@ const sexOptions = [
     id: 2,
     name: 'Feminino',
     value: 'female',
+  },
+  {
+    id: 3,
+    name: 'Outro',
+    value: 'other',
   },
 ];
 
@@ -109,10 +115,10 @@ const Profile: React.FC = () => {
       updateProfileRequest(
         name,
         gender,
-        birthDate,
-        clearValue(String(cpf)),
+        birthDate.toDateString(),
+        Number(clearValue(String(cpf))),
         profission,
-        clearValue(String(phone)),
+        Number(clearValue(String(phone))),
       ),
     );
   }
@@ -176,12 +182,18 @@ const Profile: React.FC = () => {
     setAlertVisible(false);
   }
 
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
+
   return (
-    <SafeView>
+    <Page showHeader={false}>
       <Container>
         <Card>
           <CardHeader>
-            <BackButton onPress={() => navigation.navigate('Feed')}>
+            <BackButton onPress={goBack}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
           </CardHeader>
@@ -205,6 +217,7 @@ const Profile: React.FC = () => {
             <Joined>Ativo desde {useSinceDate}</Joined>
           </User>
         </Card>
+
         <Card>
           <InputContent>
             <Input
@@ -297,6 +310,7 @@ const Profile: React.FC = () => {
             </SubmitButton>
           </ActionContent>
         </Card>
+
         <DeleteAccountButton onPress={alertToggle}>
           <Icon name="delete-forever-outline" size={24} color="#FFF" />
           <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
@@ -312,7 +326,7 @@ const Profile: React.FC = () => {
         onCancel={alertToggle}
         onConfirm={() => handleDeleteUser()}
       />
-    </SafeView>
+    </Page>
   );
 };
 

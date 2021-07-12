@@ -1,6 +1,7 @@
 import produce from 'immer';
 
 import {BottomSheetData} from '../../../utils/types';
+import {BottomSheetActions} from './actions';
 
 interface DataType {
   type: string;
@@ -30,13 +31,13 @@ export default function bottomSheet(
 ) {
   return produce(state, (draft) => {
     switch (action.type) {
-      case '@bottomSheet/SHOW_BOTTOM_SHEET': {
+      case BottomSheetActions.SHOW_BOTTOM_SHEET: {
         draft.visibility = true;
         draft.data = {id: action.payload.id, type: action.payload.type};
         draft.componentType = action.payload.componentype;
         break;
       }
-      case '@bottomSheet/HIDE_BOTTOM_SHEET': {
+      case BottomSheetActions.HIDE_BOTTOM_SHEET: {
         draft.visibility = false;
         draft.data = null;
         draft.componentType = '';

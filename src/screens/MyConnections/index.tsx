@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -7,20 +7,16 @@ import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
-  getConnectionsRequest,
   acceptConnectionRequest,
   rejectConnectionRequest,
   blockConnectionRequest,
   unblockConnectionRequest,
 } from '../../store/modules/connections/actions';
-import {
-  ConnectionsProps,
-  InvitesProps,
-} from '../../store/modules/connections/reducer';
+import {ConnectionsProps, InvitesProps} from '../../utils/types';
+import {theme} from '../../utils/theme';
 
 import {
   Container,
-  Title,
   CardContent,
   ConnectionList,
   User,
@@ -28,8 +24,6 @@ import {
   UserButton,
   UserImage,
   ColumnGroup,
-  Name,
-  JoinDate,
   Actions,
   AcceptButton,
   RejectButton,
@@ -38,7 +32,9 @@ import {
   TitleContent,
 } from './styles';
 import Card from '../../components/Card';
-import Header from '../../components/Header';
+import Page from '../../components/Page';
+import FloatButton from '../../components/FloatButton';
+import Text from '../../components/Text';
 
 const MyConnections: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,34 +43,24 @@ const MyConnections: React.FC = () => {
     (state: RootStateProps) => state.connections,
   );
 
-  useEffect(() => {
-    dispatch(getConnectionsRequest());
-  }, [dispatch]);
+  const toUserProfile = useCallback(
+    (userId: number) => {
+      navigation.navigate('UserDetails', {
+        userId,
+      });
+    },
+    [navigation],
+  );
 
-  function handleAcceptConnection(userId: number) {
-    dispatch(acceptConnectionRequest(userId));
-  }
+  const handleRejectConnection = useCallback(
+    (userId: number) => {
+      dispatch(rejectConnectionRequest(userId));
+    },
+    [dispatch],
+  );
 
-  function handleRejectConnection(userId: number) {
-    dispatch(rejectConnectionRequest(userId));
-  }
-
-  function handleBlockConnection(userId: number) {
-    dispatch(blockConnectionRequest(userId));
-  }
-
-  function handleUnblockConnection(userId: number) {
-    dispatch(unblockConnectionRequest(userId));
-  }
-
-  function toUserProfile(userId: number) {
-    navigation.navigate('UserDetails', {
-      userId,
-    });
-  }
-
-  function getUserConversation(userId: number) {
-    navigation.navigate('UserConversation', {userId});
+  function toSearchUsers() {
+    navigation.navigate('SearchUsers');
   }
 
   function formatDate(date: string) {
@@ -103,99 +89,140 @@ const MyConnections: React.FC = () => {
     });
   });
 
+  const renderInvites = useCallback(() => {
+    function handleAcceptConnection(userId: number) {
+      dispatch(acceptConnectionRequest(userId));
+    }
+
+    return myInvites?.map((item) => (
+      <User key={item.id}>
+        <UserInfo>
+          <UserButton onPress={() => toUserProfile(item.owner_id)}>
+            <UserImage
+              source={{
+                uri: item.owner.person.file && item.owner.person.file.url,
+              }}
+              resizeMode="cover"
+            />
+          </UserButton>
+          <ColumnGroup>
+            <Text.Paragraph textColor="primary" textWeight="bold">
+              {item.owner.username}
+            </Text.Paragraph>
+            <Text>{formatDate(item.owner.created_at)}</Text>
+          </ColumnGroup>
+        </UserInfo>
+        <Actions>
+          <>
+            <AcceptButton onPress={() => handleAcceptConnection(item.owner_id)}>
+              <Icon name="check" size={24} color="#FFF" />
+            </AcceptButton>
+            <RejectButton onPress={() => handleRejectConnection(item.owner_id)}>
+              <Icon name="close" size={24} color="#FFF" />
+            </RejectButton>
+          </>
+        </Actions>
+      </User>
+    ));
+  }, [dispatch, handleRejectConnection, myInvites, toUserProfile]);
+
+  const renderConnections = useCallback(() => {
+    function handleBlockConnection(userId: number) {
+      dispatch(blockConnectionRequest(userId));
+    }
+
+    function handleUnblockConnection(userId: number) {
+      dispatch(unblockConnectionRequest(userId));
+    }
+
+    function getUserConversation(userId: number) {
+      navigation.navigate('UserConversation', {userId});
+    }
+
+    return myConnections?.map((item) => (
+      <User key={item.id}>
+        <UserInfo>
+          <UserButton onPress={() => toUserProfile(item.user_id)}>
+            <UserImage
+              source={{
+                uri: item.target.person.file && item.target.person.file.url,
+              }}
+              resizeMode="cover"
+            />
+          </UserButton>
+          <ColumnGroup>
+            <Text.Paragraph textColor="primary" textWeight="bold">
+              {item.target.username}
+            </Text.Paragraph>
+            <Text>{formatDate(item.target.created_at)}</Text>
+          </ColumnGroup>
+        </UserInfo>
+        <Actions>
+          <>
+            {!item.blocked && (
+              <MessageButton onPress={() => getUserConversation(item.user_id)}>
+                <Icon
+                  name="message-arrow-left-outline"
+                  size={24}
+                  color="#FFF"
+                />
+              </MessageButton>
+            )}
+            {item.blocked ? (
+              <MessageButton
+                onPress={() => handleUnblockConnection(item.user_id)}>
+                <Icon name="lock-open" size={24} color="#FFF" />
+              </MessageButton>
+            ) : (
+              <RejectButton onPress={() => handleBlockConnection(item.user_id)}>
+                <Icon name="block-helper" size={24} color="#FFF" />
+              </RejectButton>
+            )}
+            <RejectButton onPress={() => handleRejectConnection(item.user_id)}>
+              <Icon name="close" size={24} color="#FFF" />
+            </RejectButton>
+          </>
+        </Actions>
+      </User>
+    ));
+  }, [
+    dispatch,
+    handleRejectConnection,
+    myConnections,
+    navigation,
+    toUserProfile,
+  ]);
+
   return (
-    <Container>
-      <TitleContent>
-        <Title>Minhas Conexões</Title>
-      </TitleContent>
-      <Card>
-        <CardContent>
-          <ConnectionList>
-            {myInvites?.map((item) => (
-              <User key={item.id}>
-                <UserInfo>
-                  <UserButton onPress={() => toUserProfile(item.owner_id)}>
-                    <UserImage
-                      source={{
-                        uri:
-                          item.owner.person.file && item.owner.person.file.url,
-                      }}
-                      resizeMode="cover"
-                    />
-                  </UserButton>
-                  <ColumnGroup>
-                    <Name>{item.owner.username}</Name>
-                    <JoinDate>{formatDate(item.owner.created_at)}</JoinDate>
-                  </ColumnGroup>
-                </UserInfo>
-                <Actions>
-                  <>
-                    <AcceptButton
-                      onPress={() => handleAcceptConnection(item.owner_id)}>
-                      <Icon name="check" size={24} color="#FFF" />
-                    </AcceptButton>
-                    <RejectButton
-                      onPress={() => handleRejectConnection(item.owner_id)}>
-                      <Icon name="close" size={24} color="#FFF" />
-                    </RejectButton>
-                  </>
-                </Actions>
-              </User>
-            ))}
-            <Divider />
-            {myConnections?.map((item) => (
-              <User key={item.id}>
-                <UserInfo>
-                  <UserButton onPress={() => toUserProfile(item.user_id)}>
-                    <UserImage
-                      source={{
-                        uri:
-                          item.target.person.file &&
-                          item.target.person.file.url,
-                      }}
-                      resizeMode="cover"
-                    />
-                  </UserButton>
-                  <ColumnGroup>
-                    <Name>{item.target.username}</Name>
-                    <JoinDate>{formatDate(item.target.created_at)}</JoinDate>
-                  </ColumnGroup>
-                </UserInfo>
-                <Actions>
-                  <>
-                    {!item.blocked && (
-                      <MessageButton
-                        onPress={() => getUserConversation(item.user_id)}>
-                        <Icon
-                          name="message-arrow-left-outline"
-                          size={24}
-                          color="#FFF"
-                        />
-                      </MessageButton>
-                    )}
-                    {item.blocked ? (
-                      <MessageButton
-                        onPress={() => handleUnblockConnection(item.user_id)}>
-                        <Icon name="lock-open" size={24} color="#FFF" />
-                      </MessageButton>
-                    ) : (
-                      <RejectButton
-                        onPress={() => handleBlockConnection(item.user_id)}>
-                        <Icon name="block-helper" size={24} color="#FFF" />
-                      </RejectButton>
-                    )}
-                    <RejectButton
-                      onPress={() => handleRejectConnection(item.user_id)}>
-                      <Icon name="close" size={24} color="#FFF" />
-                    </RejectButton>
-                  </>
-                </Actions>
-              </User>
-            ))}
-          </ConnectionList>
-        </CardContent>
-      </Card>
-    </Container>
+    <Page>
+      <Container>
+        <TitleContent>
+          <Text.Title>Minhas Conexões</Text.Title>
+        </TitleContent>
+        <Card>
+          <CardContent>
+            <ConnectionList>
+              {renderInvites()}
+              <Divider />
+              {renderConnections()}
+            </ConnectionList>
+          </CardContent>
+        </Card>
+      </Container>
+      <FloatButton
+        alignment="right"
+        shape="circle"
+        icon={() => (
+          <Icon
+            name="account-search-outline"
+            size={24}
+            color={theme.colors.white}
+          />
+        )}
+        onPressAction={() => toSearchUsers()}
+        bgColor="secondary"
+      />
+    </Page>
   );
 };
 

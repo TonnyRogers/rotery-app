@@ -1,14 +1,12 @@
 import styled from 'styled-native-components';
-import {Dimensions} from 'react-native';
-
-const {width} = Dimensions.get('screen');
 
 export const Container = styled.View``;
 
 export const ImageList = styled.ScrollView``;
 
 export const ImageItem = styled.Image`
-  width: ${(width - 50) / 10}rem;
+  flex: 1;
+  width: 100%;
   height: 20rem;
   border-radius: 0.8rem;
   margin: 0.5rem;

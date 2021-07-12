@@ -6,7 +6,6 @@ import NetInfo from '../../../services/netinfo';
 import * as RootNavigation from '../../../RootNavigation';
 
 import {
-  getItinerariesRequest,
   getItinerariesSuccess,
   createItineraryRequest,
   createItinerarySuccess,
@@ -34,10 +33,9 @@ import {
   removeMemberFailure,
   notifyItineraryFinishRequest,
   notifyItineraryFinishFailure,
+  getItinerariesFailure,
 } from './actions';
 import {updateDetailsRequest} from '../dynamicItinerary/actions';
-
-import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
 interface UpdateItemProps {
   id: number;
   capacity: number;
@@ -50,18 +48,14 @@ export function* getItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
-
-    yield put(setLoadingTrue());
 
     const response = yield call(api.get, '/itineraries');
 
     yield put(getItinerariesSuccess(response.data.data));
-    yield put(setLoadingFalse());
   } catch (error) {
-    yield put(setLoadingFalse());
+    yield put(getItinerariesFailure());
     Toast.show({
       text1: 'Erro ao buscar seus roteiros.',
       position: 'bottom',
@@ -77,7 +71,6 @@ export function* createItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -101,7 +94,6 @@ export function* createItinerary({
     images?.forEach((image) => {
       imageArray.push({id: image.id});
     });
-    yield put(setLoadingTrue());
     const response = yield call(api.post, '/itineraries', {
       name,
       description,
@@ -118,12 +110,9 @@ export function* createItinerary({
     });
 
     yield put(createItinerarySuccess(response.data));
-    yield put(setLoadingFalse());
-    yield put(getItinerariesRequest());
-    RootNavigation.navigate('MyItineraries', {});
+    RootNavigation.replace('MyItineraries');
   } catch (error) {
     yield put(createItineraryFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao criar roteiro.',
       position: 'bottom',
@@ -139,19 +128,14 @@ export function* deleteItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
-
-    yield put(setLoadingTrue());
 
     const {itineraryId} = payload;
     yield call(api.delete, `/itineraries/${itineraryId}`);
 
-    yield put(deleteItinerarySuccess());
-    yield put(getItinerariesRequest());
-    yield put(setLoadingFalse());
-    RootNavigation.navigate('MyItineraries', {});
+    yield put(deleteItinerarySuccess(itineraryId));
+    RootNavigation.replace('MyItineraries');
     Toast.show({
       text1: 'Roteiro deletado.',
       position: 'bottom',
@@ -164,7 +148,6 @@ export function* deleteItinerary({
       type: 'error',
     });
     yield put(deleteItineraryFailure());
-    yield put(setLoadingFalse());
   }
 }
 
@@ -175,7 +158,6 @@ export function* updateItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -231,8 +213,7 @@ export function* updateItinerary({
       });
     });
 
-    yield put(setLoadingTrue());
-    yield call(api.put, `/itineraries/${itineraryId}`, {
+    const response = yield call(api.put, `/itineraries/${itineraryId}`, {
       name,
       description,
       dateBegin,
@@ -247,10 +228,9 @@ export function* updateItinerary({
       photos: imageArray,
     });
 
-    yield put(updateItinerarySuccess());
-    yield put(setLoadingFalse());
-    yield put(updateDetailsRequest());
-    RootNavigation.navigate('MyItineraries', {});
+    yield put(updateItinerarySuccess(response.data));
+    RootNavigation.goBack();
+    RootNavigation.goBack();
     Toast.show({
       text1: 'Roteiro atualizado.',
       position: 'bottom',
@@ -258,7 +238,6 @@ export function* updateItinerary({
     });
   } catch (error) {
     yield put(updateItineraryFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao atualizar roteiro.',
       position: 'bottom',
@@ -271,8 +250,6 @@ export function* replyQuestion({
   payload,
 }: ReturnType<typeof replyQuestionRequest>) {
   try {
-    yield put(setLoadingTrue());
-
     const {anwser, questionId, itineraryId} = payload;
 
     const response = yield call(
@@ -283,16 +260,12 @@ export function* replyQuestion({
 
     if (response.status !== 200) {
       yield put(replyQuestionFailure());
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(replyQuestionSuccess());
-    yield put(setLoadingFalse());
-    yield put(updateDetailsRequest());
+    yield put(replyQuestionSuccess(response.data));
   } catch (error) {
     yield put(replyQuestionFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao enviar resposta.',
       position: 'bottom',
@@ -305,8 +278,6 @@ export function* promoteMember({
   payload,
 }: ReturnType<typeof promoteMemberRequest>) {
   try {
-    yield put(setLoadingTrue());
-
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -317,16 +288,13 @@ export function* promoteMember({
 
     if (response.status === 401) {
       yield put(promoteMemberFailure());
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(promoteMemberSuccess());
-    yield put(setLoadingFalse());
+    yield put(promoteMemberSuccess(response.data));
     yield put(updateDetailsRequest());
   } catch (error) {
     yield put(promoteMemberFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao promover o membro.',
       position: 'bottom',
@@ -339,8 +307,6 @@ export function* demoteMember({
   payload,
 }: ReturnType<typeof demoteMemberRequest>) {
   try {
-    yield put(setLoadingTrue());
-
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -351,16 +317,13 @@ export function* demoteMember({
 
     if (response.status === 401) {
       yield put(demoteMemberFailure());
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(demoteMemberSuccess());
-    yield put(setLoadingFalse());
+    yield put(demoteMemberSuccess(response.data));
     yield put(updateDetailsRequest());
   } catch (error) {
     yield put(demoteMemberFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao rebaixar o membro.',
       position: 'bottom',
@@ -373,8 +336,6 @@ export function* acceptMember({
   payload,
 }: ReturnType<typeof acceptMemberRequest>) {
   try {
-    yield put(setLoadingTrue());
-
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -385,16 +346,12 @@ export function* acceptMember({
 
     if (response.status === 401) {
       yield put(acceptMemberFailure());
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(acceptMemberSuccess());
-    yield put(setLoadingFalse());
-    yield put(updateDetailsRequest());
+    yield put(acceptMemberSuccess(response.data));
   } catch (error) {
     yield put(acceptMemberFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao aceitar o membro.',
       position: 'bottom',
@@ -407,8 +364,6 @@ export function* removeMember({
   payload,
 }: ReturnType<typeof removeMemberRequest>) {
   try {
-    yield put(setLoadingTrue());
-
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -419,16 +374,12 @@ export function* removeMember({
 
     if (response.status === 401) {
       yield put(removeMemberFailure());
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(removeMemberSuccess());
-    yield put(setLoadingFalse());
-    yield put(updateDetailsRequest());
+    yield put(removeMemberSuccess(itineraryId, memberId));
   } catch (error) {
     yield put(removeMemberFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao remover o membro.',
       position: 'bottom',
@@ -442,12 +393,9 @@ export function* finishItinerary({
 }: ReturnType<typeof notifyItineraryFinishRequest>) {
   try {
     const {itineraryId} = payload;
-    yield put(setLoadingTrue());
     yield call(api.post, `/itineraries/${itineraryId}/notify`);
-
-    yield put(setLoadingFalse());
     yield put(updateDetailsRequest());
-    RootNavigation.navigate('MyItineraries', {});
+    RootNavigation.goBack();
     Toast.show({
       text1: 'Roteiro finalizado.',
       position: 'bottom',
@@ -455,7 +403,6 @@ export function* finishItinerary({
     });
   } catch (error) {
     yield put(notifyItineraryFinishFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao finizar roteiro.',
       position: 'bottom',
@@ -466,7 +413,6 @@ export function* finishItinerary({
 
 export default all([
   takeLatest('@itineraries/NOTIFY_ITINERARY_FINISH_REQUEST', finishItinerary),
-  takeLatest('@ws/NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@itineraries/UPDATE_ITINERARY_REQUEST', updateItinerary),
   takeLatest('@itineraries/DELETE_ITINERARY_REQUEST', deleteItinerary),
   takeLatest('@itineraries/REMOVE_MEMBER_REQUEST', removeMember),

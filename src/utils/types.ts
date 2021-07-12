@@ -52,6 +52,7 @@ export interface MemberProps {
     };
   };
   pivot: {
+    user_id: number;
     itinerary_id: number;
     is_admin: boolean;
     accepted: boolean;
@@ -96,6 +97,12 @@ export interface ItineraryProps {
   members: MemberProps[];
   status: StatusProps;
   owner: OwnerProps;
+}
+
+export interface FavoriteProps {
+  id: number;
+  itinerary_id: number;
+  itinerary: ItineraryProps;
 }
 
 export interface TransportProps {
@@ -164,6 +171,7 @@ export interface InvitesProps {
 export interface MessageProps {
   id: number;
   sender_id: number;
+  receiver_id: number;
   message: string;
   readed: boolean;
   created_at: string;
@@ -177,5 +185,51 @@ export interface MessageProps {
         url: string;
       };
     };
+  };
+}
+
+export interface NotificationsProps {
+  id: number;
+  user_id: number;
+  readed: boolean;
+  subject: string;
+  content: string;
+  created_at: string;
+  alias: string;
+  json_data: any;
+}
+
+export enum NotificationAlias {
+  NEW_MESSAGE = 'new_message',
+  RATE_ITINERARY = 'rate_itinerary',
+  ITINERARY_UPDATED = 'itinerary_updated',
+  ITINERARY_DELETED = 'itinerary_deleted',
+  NEW_MEMBER = 'itinerary_member_request',
+  MEMBER_ACCEPTED = 'itinerary_member_accepted',
+  MEMBER_REJECTED = 'itinerary_member_rejected',
+  NEW_QUESTION = 'itinerary_question',
+  NEW_ANSWER = 'itinerary_answer',
+  CONNECTION_ACCEPTED = 'new_connection_accepted',
+  NEW_CONNECTION = 'new_connection',
+}
+
+export interface ImageListProps {
+  id: number;
+}
+
+export interface CreateItemListProps {
+  id: number;
+  capacity: number;
+  description?: string;
+  price: number;
+}
+
+export interface UpdateItemListProps {
+  id: number;
+  name?: string;
+  pivot: {
+    description: string | null;
+    price: number | null;
+    capacity: number;
   };
 }

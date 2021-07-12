@@ -78,7 +78,6 @@ export function* updateDetails() {
 }
 
 export default all([
-  takeLatest('@dynamicItinerary/GET_DETAILS_REQUEST', getDetails),
-  takeLatest('@dynamicItinerary/UPDATE_DETAILS_REQUEST', updateDetails),
-  takeLatest('@ws/NOTIFICATION_MESSAGES', updateDetails),
+  // takeLatest('@dynamicItinerary/GET_DETAILS_REQUEST', getDetails),
+  // takeLatest('@dynamicItinerary/UPDATE_DETAILS_REQUEST', updateDetails),
 ]);

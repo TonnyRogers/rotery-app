@@ -5,7 +5,6 @@ const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: 6.5rem;
 `;
 
 export const ColumnGroup = styled.View``;

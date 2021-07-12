@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Platform, SafeAreaView} from 'react-native';
+import {Platform, SafeAreaView, StatusBar} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {format} from 'date-fns';
 
@@ -50,8 +50,9 @@ const FilterInput: React.FC<FilterInputProps> = ({
   }
 
   return (
-    <>
-      {visible && (
+    visible && (
+      <>
+        <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
         <Modal>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -90,8 +91,8 @@ const FilterInput: React.FC<FilterInputProps> = ({
             </SafeAreaView>
           </KeyboardAvoidingView>
         </Modal>
-      )}
-    </>
+      </>
+    )
   );
 };
 

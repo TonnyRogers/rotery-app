@@ -2,14 +2,21 @@ import styled from 'styled-native-components';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: 6.5rem;
 `;
 
-export const Content = styled.ScrollView`
+export const Content = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})`
   flex: 1;
 `;
 
 export const CardHeader = styled.View``;
+
+export const TitleContent = styled.View`
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
 
 export const BackButton = styled.TouchableOpacity`
   height: 4rem;

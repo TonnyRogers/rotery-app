@@ -3,9 +3,7 @@ import Toast from 'react-native-toast-message';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
-import {setLoadingFalse} from '../auth/actions';
 import {
-  getConnectionsRequest,
   getConnectionsSuccess,
   getConnectionsFailure,
   makeConnectionRequest,
@@ -30,7 +28,6 @@ export function* getConnections() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -56,15 +53,13 @@ export function* makeConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {userId} = payload;
-    yield call(api.post, `/users/${userId}/connect`);
+    const request = yield call(api.post, `/users/${userId}/connect`);
 
-    yield put(makeConnectionSuccess());
-    yield put(getConnectionsRequest());
+    yield put(makeConnectionSuccess(request.data));
 
     Toast.show({
       text1: 'Conexão solicitada.',
@@ -88,15 +83,13 @@ export function* acceptConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {userId} = payload;
-    yield call(api.put, `/users/${userId}/accept`);
+    const request = yield call(api.put, `/users/${userId}/accept`);
 
-    yield put(acceptConnectionSuccess());
-    yield put(getConnectionsRequest());
+    yield put(acceptConnectionSuccess(request.data));
     Toast.show({
       text1: 'Conexão aceita.',
       position: 'bottom',
@@ -119,15 +112,13 @@ export function* rejectConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {userId} = payload;
     yield call(api.delete, `/users/${userId}/refuse`);
 
-    yield put(rejectConnectionSuccess());
-    yield put(getConnectionsRequest());
+    yield put(rejectConnectionSuccess(userId));
   } catch (error) {
     yield put(rejectConnectionFailure());
     Toast.show({
@@ -145,7 +136,6 @@ export function* blockConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -153,7 +143,6 @@ export function* blockConnection({
     yield call(api.post, `/users/${userId}/block`);
 
     yield put(blockConnectionSuccess());
-    yield put(getConnectionsRequest());
   } catch (error) {
     yield put(blockConnectionFailure());
     Toast.show({
@@ -171,7 +160,6 @@ export function* unblockConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -179,7 +167,6 @@ export function* unblockConnection({
     yield call(api.put, `/users/${userId}/unblock`);
 
     yield put(unblockConnectionSuccess());
-    yield put(getConnectionsRequest());
   } catch (error) {
     yield put(unblockConnectionFailure());
     Toast.show({

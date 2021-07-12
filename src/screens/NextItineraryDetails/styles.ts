@@ -1,5 +1,6 @@
 import styled from 'styled-native-components';
 import {Platform} from 'react-native';
+import {theme} from '../../utils/theme';
 
 const shadow =
   Platform.OS === 'ios'
@@ -8,7 +9,6 @@ const shadow =
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: 6.5rem;
 `;
 
 export const Content = styled.ScrollView``;
@@ -19,7 +19,14 @@ export const CardHeader = styled.View`
   justify-content: space-between;
 `;
 
-export const BackButton = styled.TouchableOpacity``;
+export const BackButton = styled.TouchableOpacity`
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 199, 123, 0.2);
+`;
 
 export const EditButton = styled.TouchableOpacity``;
 
@@ -29,6 +36,7 @@ export const Name = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: bold;
+  color: ${theme.colors.primaryText};
 `;
 
 export const RowGroup = styled.View`
@@ -47,23 +55,25 @@ export const ColumnGroup = styled.View``;
 export const Location = styled.Text`
   font-family: 'Roboto';
   font-size: 1.4rem;
-  color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const DateBegin = styled.Text`
   font-family: 'Roboto';
   font-size: 1.4rem;
-  color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const DescriptionTitle = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: bold;
+  color: ${theme.colors.primaryText};
 `;
 
 export const Description = styled.Text`
   font-family: 'Roboto';
+  color: ${theme.colors.secondaryText};
 `;
 
 export const HostContent = styled.View`
@@ -130,12 +140,14 @@ export const ContentTitle = styled.Text`
   font-size: 2rem;
   font-weight: bold;
   margin-left: 1rem;
+  color: ${theme.colors.primaryText};
 `;
 
 export const Value = styled.Text`
   font-family: 'Roboto';
   font-size: 1.4rem;
   color: #9d9d9d;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const IconHolder = styled.View`
@@ -145,12 +157,14 @@ export const IconHolder = styled.View`
   background: #4885fd;
   align-items: center;
   justify-content: center;
+  margin-right: 0.5rem;
 `;
 
 export const DataName = styled.Text`
   font-family: 'Roboto';
   font-size: 2rem;
   font-weight: bold;
+  color: ${theme.colors.primaryText};
 `;
 
 export const DataDescription = styled.Text`
@@ -158,6 +172,7 @@ export const DataDescription = styled.Text`
   font-size: 1.4rem;
   color: #9d9d9d;
   margin: 1rem 0;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const DatePriceContent = styled.View`
@@ -167,12 +182,14 @@ export const DatePriceContent = styled.View`
 export const DataPriceLabel = styled.Text`
   font-family: 'Roboto';
   font-size: 1.2rem;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const DataPriceValue = styled.Text`
   font-family: 'Roboto';
   font-size: 1.2rem;
   font-weight: bold;
+  color: ${theme.colors.secondaryText};
 `;
 
 export const DeleteItineraryButton = styled.TouchableOpacity`

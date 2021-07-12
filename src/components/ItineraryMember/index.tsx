@@ -1,4 +1,4 @@
-import React, {useRef, useMemo} from 'react';
+import React, {useRef, useMemo, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -28,7 +28,7 @@ import {
   UserButton,
 } from './styles';
 
-import {MemberProps} from '../../store/modules/itineraries/reducer';
+import {MemberProps} from '../../utils/types';
 
 interface ItineraryMemberProps {
   member: MemberProps;
@@ -52,22 +52,6 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
     );
   }, [member.pivot.created_at]);
 
-  function handlePromoteMember(memberId: number) {
-    dispatch(promoteMemberRequest(member.pivot.itinerary_id, memberId));
-  }
-
-  function handleDemoteMember(memberId: number) {
-    dispatch(demoteMemberRequest(member.pivot.itinerary_id, memberId));
-  }
-
-  function handleAcceptMember(memberId: number) {
-    dispatch(acceptMemberRequest(member.pivot.itinerary_id, memberId));
-  }
-
-  function handleRemoveMember(memberId: number) {
-    dispatch(removeMemberRequest(member.pivot.itinerary_id, memberId));
-  }
-
   function viewProfile(userId: number) {
     if (userId === user.id) {
       navigation.navigate('Profile');
@@ -77,6 +61,65 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
       });
     }
   }
+
+  const renderMemberOptions = useCallback(() => {
+    function handlePromoteMember(memberId: number) {
+      dispatch(promoteMemberRequest(member.pivot.itinerary_id, memberId));
+    }
+
+    function handleDemoteMember(memberId: number) {
+      dispatch(demoteMemberRequest(member.pivot.itinerary_id, memberId));
+    }
+
+    function handleAcceptMember(memberId: number) {
+      dispatch(acceptMemberRequest(member.pivot.itinerary_id, memberId));
+    }
+
+    function handleRemoveMember(memberId: number) {
+      dispatch(removeMemberRequest(member.pivot.itinerary_id, memberId));
+    }
+
+    return (
+      <MemberActions>
+        {!member.pivot.accepted && (
+          <>
+            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+              <Icon name="delete-forever-outline" color="#FFF" size={24} />
+            </RejectButtonButton>
+            <AcceptButtonButton onPress={() => handleAcceptMember(member.id)}>
+              <Icon name="check" color="#FFF" size={24} />
+            </AcceptButtonButton>
+          </>
+        )}
+        {member.pivot.accepted && member.pivot.is_admin && (
+          <>
+            <AdminButton onPress={() => handleDemoteMember(member.id)}>
+              <Icon name="label-off-outline" color="#FFF" size={24} />
+            </AdminButton>
+            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+              <Icon name="delete-forever-outline" color="#FFF" size={24} />
+            </RejectButtonButton>
+          </>
+        )}
+        {member.pivot.accepted && !member.pivot.is_admin && (
+          <>
+            <AdminButton onPress={() => handlePromoteMember(member.id)}>
+              <Icon name="label-outline" color="#FFF" size={24} />
+            </AdminButton>
+            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+              <Icon name="delete-forever-outline" color="#FFF" size={24} />
+            </RejectButtonButton>
+          </>
+        )}
+      </MemberActions>
+    );
+  }, [
+    dispatch,
+    member.id,
+    member.pivot.accepted,
+    member.pivot.is_admin,
+    member.pivot.itinerary_id,
+  ]);
 
   return (
     <Container>
@@ -95,29 +138,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
             <JoinDate>{createDateFormated.current}</JoinDate>
           </ColumnGroup>
         </MemberDetails>
-        {owner && (
-          <MemberActions>
-            {member.pivot.is_admin ? (
-              <AdminButton onPress={() => handleDemoteMember(member.id)}>
-                <Icon name="label-off-outline" color="#FFF" size={24} />
-              </AdminButton>
-            ) : (
-              <AdminButton onPress={() => handlePromoteMember(member.id)}>
-                <Icon name="label-outline" color="#FFF" size={24} />
-              </AdminButton>
-            )}
-
-            {member.pivot.accepted ? (
-              <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
-                <Icon name="delete-forever-outline" color="#FFF" size={24} />
-              </RejectButtonButton>
-            ) : (
-              <AcceptButtonButton onPress={() => handleAcceptMember(member.id)}>
-                <Icon name="check" color="#FFF" size={24} />
-              </AcceptButtonButton>
-            )}
-          </MemberActions>
-        )}
+        {owner && renderMemberOptions()}
       </RowGroupSpaced>
     </Container>
   );

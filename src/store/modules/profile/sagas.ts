@@ -16,14 +16,12 @@ import {
   removeUserFailure,
 } from './actions';
 import {logout} from '../auth/actions';
-import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 
 export function* getProfile() {
   try {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -44,12 +42,10 @@ export function* updateProfile({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {name, gender, birth, cpf, profission, phone} = payload;
-    yield put(setLoadingTrue());
     const response = yield call(api.put, '/profile', {
       name,
       gender,
@@ -59,7 +55,6 @@ export function* updateProfile({
       phone,
     });
     yield put(updateProfileSuccess(response.data));
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Perfil atualizado',
       position: 'bottom',
@@ -71,7 +66,6 @@ export function* updateProfile({
       position: 'bottom',
       type: 'error',
     });
-    yield put(setLoadingFalse());
     yield put(updateProfileFailure());
   }
 }
@@ -83,18 +77,15 @@ export function* updateProfileImage({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {file_id} = payload;
-    yield put(setLoadingTrue());
     const response = yield call(api.put, '/profile/image', {
       file_id,
     });
 
     yield put(updateProfileImageSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
     Toast.show({
       text1: 'Erro ao atualizar imagem',
@@ -102,7 +93,6 @@ export function* updateProfileImage({
       type: 'error',
     });
     yield put(updateProfileImageFailure());
-    yield put(setLoadingFalse());
   }
 }
 
@@ -111,19 +101,15 @@ export function* deleteUser() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(setLoadingTrue());
     yield call(api.delete, '/users');
 
-    yield put(removeUserSuccess());
-    yield put(setLoadingFalse());
     yield put(logout());
+    yield put(removeUserSuccess());
   } catch (error) {
     yield put(removeUserFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao remover conta',
       position: 'bottom',

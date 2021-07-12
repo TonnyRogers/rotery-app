@@ -18,6 +18,8 @@ import {
 } from './styles';
 import Input from '../../components/Input';
 import Alert from '../../components/Alert';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Keyboard} from 'react-native';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
 const SignUp: React.FC = () => {
@@ -34,8 +36,10 @@ const SignUp: React.FC = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
 
-  function navigateBack() {
-    navigation.goBack();
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   }
 
   function openAlert(message: string) {
@@ -58,63 +62,65 @@ const SignUp: React.FC = () => {
 
   return (
     <Container>
-      <Header>
-        <Logo source={horizontalLogo} resizeMode="contain" />
-        <Title>Faça parte da Rotery.</Title>
-      </Header>
-      <Fields>
-        <Input
-          icon="account-box-outline"
-          label="Usuário"
-          placeholder="nome de usuário"
-          ref={usernameRef}
-          value={username}
-          onChange={setUsername}
-          returnKeyType="next"
-          onSubmitEditing={() => emailRef.current?.focus()}
+      <SafeAreaView style={{flex: 1}} onTouchStart={Keyboard.dismiss}>
+        <Header>
+          <Logo source={horizontalLogo} resizeMode="contain" />
+          <Title>Faça parte da Rotery.</Title>
+        </Header>
+        <Fields>
+          <Input
+            icon="account-box-outline"
+            label="Usuário"
+            placeholder="nome de usuário"
+            ref={usernameRef}
+            value={username}
+            onChange={setUsername}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current?.focus()}
+          />
+          <Input
+            icon="email-outline"
+            label="Email"
+            keyboardType="email-address"
+            placeholder="seu e-mail"
+            autoCapitalize="none"
+            ref={emailRef}
+            value={email}
+            onChange={setEmail}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+          />
+          <Input
+            label="Senha"
+            placeholder="sua senha"
+            ref={passwordRef}
+            value={password}
+            onChange={setPassword}
+            secureTextEntry={passwordVisible}
+            buttonIcon
+            onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+            returnKeyType="send"
+            onSubmitEditing={handleSubmit}
+          />
+        </Fields>
+        <Actions>
+          <BackButton onPress={goBack}>
+            <BackButtonText>Ja sou cadastrado</BackButtonText>
+          </BackButton>
+          <SubmitButton onPress={handleSubmit}>
+            <SubmitButtonText>Cadastrar-se</SubmitButtonText>
+          </SubmitButton>
+        </Actions>
+        <Alert
+          visible={alertVisible}
+          message={alertMessage}
+          title="Eita!"
+          icon="clipboard-alert-outline"
+          iconColor="#3dc77b"
+          onCancel={closeAlert}
+          onRequestClose={closeAlert}
         />
-        <Input
-          icon="email-outline"
-          label="Email"
-          keyboardType="email-address"
-          placeholder="seu e-mail"
-          autoCapitalize="none"
-          ref={emailRef}
-          value={email}
-          onChange={setEmail}
-          returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current?.focus()}
-        />
-        <Input
-          label="Senha"
-          placeholder="sua senha"
-          ref={passwordRef}
-          value={password}
-          onChange={setPassword}
-          secureTextEntry={passwordVisible}
-          buttonIcon
-          onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-          returnKeyType="send"
-          onSubmitEditing={handleSubmit}
-        />
-      </Fields>
-      <Actions>
-        <BackButton onPress={navigateBack}>
-          <BackButtonText>Ja sou cadastrado</BackButtonText>
-        </BackButton>
-        <SubmitButton onPress={handleSubmit}>
-          <SubmitButtonText>Cadastrar-se</SubmitButtonText>
-        </SubmitButton>
-      </Actions>
-      <Alert
-        visible={alertVisible}
-        message={alertMessage}
-        title="Eita!"
-        icon="clipboard-alert-outline"
-        iconColor="#3dc77b"
-        onCancel={closeAlert}
-        onRequestClose={closeAlert}
-      />
+      </SafeAreaView>
     </Container>
   );
 };

@@ -1,8 +1,10 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
-  margin: 2rem;
+  padding: 1rem;
+  background-color: ${theme.colors.appBackground};
 `;
 
 export const RowGroup = styled.View`

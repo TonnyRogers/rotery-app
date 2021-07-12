@@ -9,17 +9,16 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {
   Container,
   Content,
-  Title,
   ContentHeader,
-  BackButton,
   ItineraryList,
   ColumnGroup,
   FeedButton,
   FeedButtonText,
 } from './styled';
-import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 import Card from '../../components/Card';
+import Page from '../../components/Page';
+import Text from '../../components/Text';
 
 const NextItineraries: React.FC = () => {
   const {itineraries} = useSelector(
@@ -32,48 +31,42 @@ const NextItineraries: React.FC = () => {
     dispatch(getNextItinerariesRequest());
   }, [dispatch]);
 
-  function toFeed() {
-    navigation.navigate('Feed');
-  }
-
   function itineraryDetail(itineraryId: number) {
-    navigation.navigate('DynamicItineraryDetails', {id: itineraryId});
+    navigation.navigate('NextItineraryDetails', {id: itineraryId});
   }
 
   return (
-    <Container>
-      <Content>
-        <ContentHeader>
-          <BackButton onPress={toFeed}>
-            <Icon name="chevron-left" size={24} color="#3dc77b" />
-          </BackButton>
-          <Title>Próximos Roteiros</Title>
-        </ContentHeader>
-
-        <ItineraryList
-          data={itineraries}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({item}) => (
-            <Itinerary
-              itinerary={item}
-              detailButtonAction={() => itineraryDetail(item.id)}
-            />
-          )}
-          ListEmptyComponent={() => (
-            <Card>
-              <ColumnGroup>
-                <Icon name="bus-clock" size={30} color="#3dc77b" />
-                <Title>Que tal viajar?</Title>
-                <Title>Encontre um roteiro!</Title>
-              </ColumnGroup>
-              <FeedButton onPress={() => navigation.navigate('Feed')}>
-                <FeedButtonText>Ir para o Feed</FeedButtonText>
-              </FeedButton>
-            </Card>
-          )}
-        />
-      </Content>
-    </Container>
+    <Page>
+      <Container>
+        <Content>
+          <ContentHeader>
+            <Text.Title>Próximos Roteiros</Text.Title>
+          </ContentHeader>
+          <ItineraryList
+            data={itineraries}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({item}) => (
+              <Itinerary
+                itinerary={item}
+                detailButtonAction={() => itineraryDetail(item.id)}
+              />
+            )}
+            ListEmptyComponent={() => (
+              <Card>
+                <ColumnGroup>
+                  <Icon name="bus-clock" size={30} color="#3dc77b" />
+                  <Text.Title textColor="secondary">Que tal viajar?</Text.Title>
+                  <Text.Paragraph>Encontre um roteiro!</Text.Paragraph>
+                </ColumnGroup>
+                <FeedButton onPress={() => navigation.navigate('Feed')}>
+                  <FeedButtonText>Ir para o Feed</FeedButtonText>
+                </FeedButton>
+              </Card>
+            )}
+          />
+        </Content>
+      </Container>
+    </Page>
   );
 };
 

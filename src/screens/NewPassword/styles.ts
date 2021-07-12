@@ -1,8 +1,10 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
-  margin: 2rem;
+  padding: 1rem;
+  background-color: ${theme.colors.appBackground};
 `;
 
 export const RowGroup = styled.View`
@@ -55,6 +57,10 @@ export const NumberInput = styled.TextInput`
   font-family: 'Roboto';
   font-size: 2.4rem;
   font-weight: bold;
+  min-width: 3rem;
+  padding: 0.8rem;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ChangePasswordForm = styled.View``;

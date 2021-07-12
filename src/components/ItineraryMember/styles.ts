@@ -81,6 +81,7 @@ export const RejectButtonButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   border-radius: 0.8rem;
+  margin-right: 1rem;
 `;
 
 export const UserButton = styled.TouchableOpacity`

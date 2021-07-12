@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {format, parse} from 'date-fns';
 import {pt} from 'date-fns/locale';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import api from '../../services/api';
 
@@ -14,14 +15,14 @@ import {
   User,
   UserImage,
   ColumnGroup,
-  Name,
-  JoinDate,
-  Title,
   TitleContent,
+  ContentHeader,
+  BackButton,
 } from './styles';
-import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Input from '../../components/Input';
+import Page from '../../components/Page';
+import Text from '../../components/Text';
 
 interface UserProps {
   id: number;
@@ -70,47 +71,62 @@ const SearchUsers: React.FC = () => {
     );
   }
 
-  return (
-    <Container>
-      <TitleContent>
-        <Title>Amplie suas conexões</Title>
-      </TitleContent>
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
 
-      <Card>
-        <CardContent>
-          <Input
-            icon="magnify"
-            placeholder="pesquisar por usuário"
-            value={search}
-            onChange={setSearch}
-            ref={searchRef}
-            returnKeyType="send"
-            onSubmitEditing={searchUser}
-          />
-          <UserList>
-            {userList[0] &&
-              userList.map((user: UserProps) => (
-                <User key={user.id}>
-                  <UserButton onPress={() => viewProfile(user.id)}>
-                    <UserImage
-                      source={{
-                        uri: user.person.file && user.person.file.url,
-                      }}
-                      resizeMode="cover"
-                    />
-                  </UserButton>
-                  <ColumnGroup>
-                    <Name>{user.username}</Name>
-                    <JoinDate>
-                      Ativo desde {formatDate(user.created_at)}
-                    </JoinDate>
-                  </ColumnGroup>
-                </User>
-              ))}
-          </UserList>
-        </CardContent>
-      </Card>
-    </Container>
+  return (
+    <Page showHeader={false}>
+      <Container>
+        <ContentHeader>
+          <BackButton onPress={goBack}>
+            <Icon name="chevron-left" size={24} color="#3dc77b" />
+          </BackButton>
+          <TitleContent>
+            <Text.Title>Amplie suas conexões</Text.Title>
+          </TitleContent>
+        </ContentHeader>
+
+        <Card>
+          <CardContent>
+            <Input
+              icon="magnify"
+              placeholder="pesquisar por usuário"
+              value={search}
+              onChange={setSearch}
+              ref={searchRef}
+              returnKeyType="send"
+              onSubmitEditing={searchUser}
+            />
+            <UserList>
+              {userList[0] &&
+                userList.map((user: UserProps) => (
+                  <User key={user.id}>
+                    <UserButton onPress={() => viewProfile(user.id)}>
+                      <UserImage
+                        source={{
+                          uri: user.person.file && user.person.file.url,
+                        }}
+                        resizeMode="cover"
+                      />
+                    </UserButton>
+                    <ColumnGroup>
+                      <Text.Paragraph textColor="secondary" textWeight="bold">
+                        {user.username}
+                      </Text.Paragraph>
+                      <Text textWeight="light">
+                        Ativo desde {formatDate(user.created_at)}
+                      </Text>
+                    </ColumnGroup>
+                  </User>
+                ))}
+            </UserList>
+          </CardContent>
+        </Card>
+      </Container>
+    </Page>
   );
 };
 

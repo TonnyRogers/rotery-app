@@ -1,40 +1,55 @@
-import {ItineraryProps} from '../../../utils/types';
+import {ItineraryProps, QuestionProps} from '../../../utils/types';
+
+export enum NextItinerariesActions {
+  GET_NEXTITINERARIES_REQUEST = '@nextItineraries/GET_NEXTITINERARIES_REQUEST',
+  GET_NEXTITINERARIES_SUCCESS = '@nextItineraries/GET_NEXTITINERARIES_SUCCESS',
+  GET_NEXTITINERARIES_FAILURE = '@nextItineraries/GET_NEXTITINERARIES_FAILURE',
+  MAKE_QUESTION_REQUEST = '@nextItineraries/MAKE_QUESTION_REQUEST',
+  MAKE_QUESTION_SUCCESS = '@nextItineraries/MAKE_QUESTION_SUCCESS',
+  MAKE_QUESTION_FAILURE = '@nextItineraries/MAKE_QUESTION_FAILURE',
+  RATE_ITINERARY_REQUEST = '@nextItineraries/RATE_ITINERARY_REQUEST',
+  RATE_ITINERARY_SUCCESS = '@nextItineraries/RATE_ITINERARY_SUCCESS',
+  RATE_ITINERARY_FAILURE = '@nextItineraries/RATE_ITINERARY_FAILURE',
+  LEAVE_ITINERARY_REQUEST = '@nextItineraries/LEAVE_ITINERARY_REQUEST',
+  LEAVE_ITINERARY_SUCCESS = '@nextItineraries/LEAVE_ITINERARY_SUCCESS',
+}
 
 export function getNextItinerariesRequest() {
   return {
-    type: '@nextItineraries/GET_NEXTITINERARIES_REQUEST',
+    type: NextItinerariesActions.GET_NEXTITINERARIES_REQUEST,
   };
 }
 
 export function getNextItinerariesSuccess(itineraries: ItineraryProps) {
   return {
-    type: '@nextItineraries/GET_NEXTITINERARIES_SUCCESS',
+    type: NextItinerariesActions.GET_NEXTITINERARIES_SUCCESS,
     payload: {itineraries},
   };
 }
 
 export function getNextItinerariesFailure() {
   return {
-    type: '@nextItineraries/GET_NEXTITINERARIES_FAILURE',
+    type: NextItinerariesActions.GET_NEXTITINERARIES_FAILURE,
   };
 }
 
 export function makeQuestionRequest(itineraryId: number, question: string) {
   return {
-    type: '@nextItineraries/MAKE_QUESTION_REQUEST',
+    type: NextItinerariesActions.MAKE_QUESTION_REQUEST,
     payload: {itineraryId, question},
   };
 }
 
-export function makeQuestionSuccess() {
+export function makeQuestionSuccess(itineraryQuestion: QuestionProps) {
   return {
-    type: '@nextItineraries/MAKE_QUESTION_SUCCESS',
+    type: NextItinerariesActions.MAKE_QUESTION_SUCCESS,
+    payload: {itineraryQuestion},
   };
 }
 
 export function makeQuestionFailure() {
   return {
-    type: '@nextItineraries/MAKE_QUESTION_FAILURE',
+    type: NextItinerariesActions.MAKE_QUESTION_FAILURE,
   };
 }
 
@@ -47,7 +62,7 @@ export function rateItineraryRequest(
   userDescription: string,
 ) {
   return {
-    type: '@nextItineraries/RATE_ITINERARY_REQUEST',
+    type: NextItinerariesActions.RATE_ITINERARY_REQUEST,
     payload: {
       itineraryId,
       itineraryRate,
@@ -61,25 +76,25 @@ export function rateItineraryRequest(
 
 export function rateItinerarySuccess() {
   return {
-    type: '@nextItineraries/RATE_ITINERARY_SUCCESS',
+    type: NextItinerariesActions.RATE_ITINERARY_SUCCESS,
   };
 }
 
 export function rateItineraryFailure() {
   return {
-    type: '@nextItineraries/RATE_ITINERARY_FAILURE',
+    type: NextItinerariesActions.RATE_ITINERARY_FAILURE,
   };
 }
 
 export function leaveItineraryRequest(itineraryId: number) {
   return {
-    type: '@nextItineraries/LEAVE_ITINERARY_REQUEST',
+    type: NextItinerariesActions.LEAVE_ITINERARY_REQUEST,
     payload: {itineraryId},
   };
 }
 
 export function leaveItinerarySuccess() {
   return {
-    type: '@nextItineraries/LEAVE_ITINERARY_SUCCESS',
+    type: NextItinerariesActions.LEAVE_ITINERARY_SUCCESS,
   };
 }

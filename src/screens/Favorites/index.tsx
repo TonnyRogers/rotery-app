@@ -9,18 +9,17 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {
   Container,
   Content,
-  Title,
   ContentHeader,
-  BackButton,
   ItineraryList,
   ColumnGroup,
 } from './styled';
-import Header from '../../components/Header';
 import Itinerary from '../../components/Itinerary';
 import Card from '../../components/Card';
+import Page from '../../components/Page';
+import Text from '../../components/Text';
 
 const Favorites: React.FC = () => {
-  const {itineraries} = useSelector((state: RootStateProps) => state.favorites);
+  const {items} = useSelector((state: RootStateProps) => state.favorites);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -28,44 +27,46 @@ const Favorites: React.FC = () => {
     dispatch(getFavoritesRequest());
   }, [dispatch]);
 
-  function toFeed() {
-    navigation.navigate('Feed');
-  }
-
   function itineraryDetail(itineraryId: number) {
     navigation.navigate('FeedItineraryDetails', {id: itineraryId});
   }
 
   return (
-    <Container>
-      <Content>
-        <ContentHeader>
-          <BackButton onPress={toFeed}>
-            <Icon name="chevron-left" size={24} color="#3dc77b" />
-          </BackButton>
-          <Title>Salvos como favoritos</Title>
-        </ContentHeader>
+    <Page>
+      <Container>
+        <Content>
+          <ContentHeader>
+            <Text.Title>Salvos como favoritos</Text.Title>
+          </ContentHeader>
 
-        <ItineraryList
-          data={itineraries}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({item}) => (
-            <Itinerary
-              itinerary={item.itinerary}
-              detailButtonAction={() => itineraryDetail(item.itinerary.id)}
-            />
-          )}
-          ListEmptyComponent={() => (
-            <Card>
-              <ColumnGroup>
-                <Icon name="heart-off-outline" size={30} color="#3dc77b" />
-                <Title>Nenhum Favotiro Ainda...</Title>
-              </ColumnGroup>
-            </Card>
-          )}
-        />
-      </Content>
-    </Container>
+          <ItineraryList
+            data={items}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({item}) => {
+              return (
+                <Itinerary
+                  itinerary={item.itinerary}
+                  detailButtonAction={() => itineraryDetail(item.itinerary.id)}
+                />
+              );
+            }}
+            ListEmptyComponent={() => (
+              <Card>
+                <ColumnGroup>
+                  <Icon name="heart-off-outline" size={30} color="#3dc77b" />
+                  <Text.Title textColor="secondary">
+                    Nenhum Favotiro Ainda
+                  </Text.Title>
+                  <Text.Paragraph textColor="secondary">
+                    Vá para o Feed
+                  </Text.Paragraph>
+                </ColumnGroup>
+              </Card>
+            )}
+          />
+        </Content>
+      </Container>
+    </Page>
   );
 };
 

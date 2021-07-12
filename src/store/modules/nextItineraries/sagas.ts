@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
 import {
-  getNextItinerariesRequest,
   getNextItinerariesSuccess,
   getNextItinerariesFailure,
   makeQuestionRequest,
@@ -16,8 +15,6 @@ import {
   leaveItineraryRequest,
   leaveItinerarySuccess,
 } from './actions';
-import {setLoadingTrue, setLoadingFalse} from '../auth/actions';
-import {updateDetailsRequest} from '../dynamicItinerary/actions';
 import * as RootNavigation from '../../../RootNavigation';
 
 const delay = (time: number) =>
@@ -28,19 +25,14 @@ export function* getItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
-
-    yield put(setLoadingTrue());
 
     const response = yield call(api.get, '/members/itineraries');
 
     yield put(getNextItinerariesSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
     yield put(getNextItinerariesFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao buscar novas mensagens.',
       position: 'bottom',
@@ -56,17 +48,18 @@ export function* makeQuestion({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {question, itineraryId} = payload;
-    yield put(setLoadingTrue());
-    yield call(api.post, `/itineraries/${itineraryId}/questions`, {question});
+    const response = yield call(
+      api.post,
+      `/itineraries/${itineraryId}/questions`,
+      {question},
+    );
 
-    yield put(updateDetailsRequest());
-    yield put(makeQuestionSuccess());
-    yield put(setLoadingFalse());
+    // yield put(updateDetailsRequest());
+    yield put(makeQuestionSuccess(response.data));
     Toast.show({
       text1: 'Pergunta enviada!',
       position: 'bottom',
@@ -74,7 +67,6 @@ export function* makeQuestion({
     });
   } catch (error) {
     yield put(makeQuestionFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao criar pergunta.',
       position: 'bottom',
@@ -90,7 +82,6 @@ export function* rateItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -103,8 +94,6 @@ export function* rateItinerary({
       userDescription,
     } = payload;
 
-    yield put(setLoadingTrue());
-
     yield call(api.post, `/users/${userId}/rate`, {
       rate: userRate,
       description: userDescription,
@@ -116,11 +105,9 @@ export function* rateItinerary({
     });
 
     yield put(rateItinerarySuccess());
-    yield put(setLoadingFalse());
-    RootNavigation.navigate('MyItineraries', {});
+    RootNavigation.replace('NextItineraries');
   } catch (error) {
     yield put(rateItineraryFailure());
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao avaliar roteiro.',
       position: 'bottom',
@@ -136,21 +123,16 @@ export function* leaveItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {itineraryId} = payload;
 
-    RootNavigation.navigate('NextItineraries');
-    yield put(setLoadingTrue());
+    RootNavigation.replace('NextItineraries');
+    yield call(delay, 250);
     yield call(api.post, `/itineraries/${itineraryId}/leave`);
     yield put(leaveItinerarySuccess());
-    yield put(setLoadingFalse());
-    yield call(delay, 250);
-    yield put(getNextItinerariesRequest());
   } catch (error) {
-    yield put(setLoadingFalse());
     Toast.show({
       text1: 'Erro ao sair do roteiro.',
       position: 'bottom',
@@ -162,7 +144,6 @@ export function* leaveItinerary({
 export default all([
   takeLatest('@nextItineraries/LEAVE_ITINERARY_REQUEST', leaveItinerary),
   takeLatest('@nextItineraries/RATE_ITINERARY_REQUEST', rateItinerary),
-  takeLatest('@ws/NOTIFICATION_MESSAGES', getItineraries),
   takeLatest('@nextItineraries/MAKE_QUESTION_REQUEST', makeQuestion),
   takeLatest('@nextItineraries/GET_NEXTITINERARIES_REQUEST', getItineraries),
 ]);

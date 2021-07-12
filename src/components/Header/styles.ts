@@ -1,10 +1,9 @@
 import styled from 'styled-native-components';
-import {Platform} from 'react-native';
+// import {Platform} from 'react-native';
 
-const metric = Platform.OS === 'ios' ? '%' : 'vh';
+// const metric = Platform.OS === 'ios' ? '%' : 'vh';
 
 export const Container = styled.View`
-  height: ${'100' + metric};
   margin-top: 1rem;
 `;
 

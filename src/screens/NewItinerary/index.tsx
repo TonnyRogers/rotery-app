@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -64,6 +64,7 @@ import DateTimeInput from '../../components/DateTimeInput';
 import FileInput from '../../components/FileInput';
 import PickerInput from '../../components/PickerInput';
 import Modal from '../../components/Modal';
+import Page from '../../components/Page';
 
 const NewItinerary: React.FC = () => {
   const dispatch = useDispatch();
@@ -131,11 +132,6 @@ const NewItinerary: React.FC = () => {
     setImages([...images, ...imageList]);
   }
 
-  function removeImages(index: number) {
-    images.splice(index, 1);
-    setImages([...images]);
-  }
-
   function addLodgingItem() {
     if (!lodgingType || !lodgingPrice) {
       return;
@@ -161,12 +157,6 @@ const NewItinerary: React.FC = () => {
     setLodgingCapacity('');
     setLodgingDescription('');
     setAddLodgingVisible(false);
-  }
-
-  function removeLodgingItem(index: number) {
-    lodgings.splice(index, 1);
-
-    setLodgings([...lodgings]);
   }
 
   function addTransportItem() {
@@ -196,12 +186,6 @@ const NewItinerary: React.FC = () => {
     setAddTransportVisible(false);
   }
 
-  function removeTransportItem(index: number) {
-    transports.splice(index, 1);
-
-    setTransports([...transports]);
-  }
-
   function addActivityItem() {
     if (!activityType || !activityPrice) {
       return;
@@ -229,12 +213,6 @@ const NewItinerary: React.FC = () => {
     setAddActivityVisible(false);
   }
 
-  function removeActivityItem(index: number) {
-    activities.splice(index, 1);
-
-    setActivities([...activities]);
-  }
-
   function handleSubmit() {
     if (
       !name ||
@@ -242,7 +220,8 @@ const NewItinerary: React.FC = () => {
       !dateOut ||
       !dateReturn ||
       !dateLimit ||
-      !location
+      !location ||
+      !description
     ) {
       return;
     }
@@ -274,13 +253,128 @@ const NewItinerary: React.FC = () => {
     setTransports([]);
   }
 
+  const renderImages = useCallback(() => {
+    function removeImages(index: number) {
+      images.splice(index, 1);
+      setImages([...images]);
+    }
+
+    return images.map((item: {url: string}, index: number) => (
+      <ImageButton key={index} onPress={() => removeImages(index)}>
+        <Background
+          resizeMode="cover"
+          source={{
+            uri: item.url || undefined,
+          }}
+        />
+        <BackgroundCover>
+          <SIcon name="delete-forever-outline" color="#F57373" size={30} />
+        </BackgroundCover>
+      </ImageButton>
+    ));
+  }, [images]);
+
+  const renderTransports = useCallback(() => {
+    function removeTransportItem(index: number) {
+      transports.splice(index, 1);
+
+      setTransports([...transports]);
+    }
+    return transports.map((item: TransportProps, index: number) => (
+      <DataContent key={index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeTransportItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </DataContent>
+    ));
+  }, [transports]);
+
+  const renderLodgings = useCallback(() => {
+    function removeLodgingItem(index: number) {
+      lodgings.splice(index, 1);
+
+      setLodgings([...lodgings]);
+    }
+    return lodgings.map((item: LodgingProps, index: number) => (
+      <DataContent key={index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeLodgingItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </DataContent>
+    ));
+  }, [lodgings]);
+
+  const renderActivities = useCallback(() => {
+    function removeActivityItem(index: number) {
+      activities.splice(index, 1);
+
+      setActivities([...activities]);
+    }
+
+    return activities.map((item: ActivityProps, index: number) => (
+      <DataContent key={index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeActivityItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </DataContent>
+    ));
+  }, [activities]);
+
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
+
   return (
-    <>
+    <Page showHeader={false}>
       <Container>
         <Content>
           <Card>
             <CardHeader>
-              <BackButton onPress={() => navigation.navigate('Feed')}>
+              <BackButton onPress={goBack}>
                 <Icon name="chevron-left" size={24} color="#3dc77b" />
               </BackButton>
             </CardHeader>
@@ -311,23 +405,7 @@ const NewItinerary: React.FC = () => {
               />
               <Title>Imagens</Title>
               <ImageList>
-                {images.map((item: {url: string}, index: number) => (
-                  <ImageButton key={index} onPress={() => removeImages(index)}>
-                    <Background
-                      resizeMode="cover"
-                      source={{
-                        uri: item.url || undefined,
-                      }}
-                    />
-                    <BackgroundCover>
-                      <SIcon
-                        name="delete-forever-outline"
-                        color="#F57373"
-                        size={30}
-                      />
-                    </BackgroundCover>
-                  </ImageButton>
-                ))}
+                {renderImages()}
                 <FileInput onSelect={addImages}>
                   <AddImageButton>
                     <SIcon name="image-plus" color="#D9D8D8" size={30} />
@@ -400,33 +478,7 @@ const NewItinerary: React.FC = () => {
                 </IconHolder>
                 <ContentTitle>Transporte</ContentTitle>
               </RowGroup>
-              <TransportList>
-                {transports.map((item: TransportProps, index: number) => (
-                  <DataContent key={index}>
-                    <HeaderActions>
-                      <RemoveButton onPress={() => removeTransportItem(index)}>
-                        <Icon
-                          name="delete-forever-outline"
-                          color="#F57373"
-                          size={24}
-                        />
-                      </RemoveButton>
-                    </HeaderActions>
-                    <FieldTitle>{item.name}</FieldTitle>
-                    <FieldValue>{item.description}</FieldValue>
-                    <RowGroupSpaced>
-                      <ColumnGroup>
-                        <FieldTitle>Capacidade</FieldTitle>
-                        <FieldValue>{item.capacity}</FieldValue>
-                      </ColumnGroup>
-                      <ColumnGroup>
-                        <FieldTitle>Preço</FieldTitle>
-                        <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-                      </ColumnGroup>
-                    </RowGroupSpaced>
-                  </DataContent>
-                ))}
-              </TransportList>
+              <TransportList>{renderTransports()}</TransportList>
               <NewTransportButton onPress={() => setAddTransportVisible(true)}>
                 <Icon name="plus-box-outline" color="#3dc77b" size={30} />
               </NewTransportButton>
@@ -436,33 +488,7 @@ const NewItinerary: React.FC = () => {
                 </IconHolder>
                 <ContentTitle>Hospedagem</ContentTitle>
               </RowGroup>
-              <LodgingList>
-                {lodgings.map((item: LodgingProps, index: number) => (
-                  <DataContent key={index}>
-                    <HeaderActions>
-                      <RemoveButton onPress={() => removeLodgingItem(index)}>
-                        <Icon
-                          name="delete-forever-outline"
-                          color="#F57373"
-                          size={24}
-                        />
-                      </RemoveButton>
-                    </HeaderActions>
-                    <FieldTitle>{item.name}</FieldTitle>
-                    <FieldValue>{item.description}</FieldValue>
-                    <RowGroupSpaced>
-                      <ColumnGroup>
-                        <FieldTitle>Capacidade</FieldTitle>
-                        <FieldValue>{item.capacity}</FieldValue>
-                      </ColumnGroup>
-                      <ColumnGroup>
-                        <FieldTitle>Preço</FieldTitle>
-                        <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-                      </ColumnGroup>
-                    </RowGroupSpaced>
-                  </DataContent>
-                ))}
-              </LodgingList>
+              <LodgingList>{renderLodgings()}</LodgingList>
               <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
                 <Icon name="plus-box-outline" color="#3dc77b" size={30} />
               </NewLodginButton>
@@ -472,33 +498,7 @@ const NewItinerary: React.FC = () => {
                 </IconHolder>
                 <ContentTitle>Atividades</ContentTitle>
               </RowGroup>
-              <ActivityList>
-                {activities.map((item: ActivityProps, index: number) => (
-                  <DataContent key={index}>
-                    <HeaderActions>
-                      <RemoveButton onPress={() => removeActivityItem(index)}>
-                        <Icon
-                          name="delete-forever-outline"
-                          color="#F57373"
-                          size={24}
-                        />
-                      </RemoveButton>
-                    </HeaderActions>
-                    <FieldTitle>{item.name}</FieldTitle>
-                    <FieldValue>{item.description}</FieldValue>
-                    <RowGroupSpaced>
-                      <ColumnGroup>
-                        <FieldTitle>Capacidade</FieldTitle>
-                        <FieldValue>{item.capacity}</FieldValue>
-                      </ColumnGroup>
-                      <ColumnGroup>
-                        <FieldTitle>Preço</FieldTitle>
-                        <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-                      </ColumnGroup>
-                    </RowGroupSpaced>
-                  </DataContent>
-                ))}
-              </ActivityList>
+              <ActivityList>{renderActivities()}</ActivityList>
               <NewActivityButton onPress={() => setAddActivityVisible(true)}>
                 <Icon name="plus-box-outline" color="#3dc77b" size={30} />
               </NewActivityButton>
@@ -634,7 +634,7 @@ const NewItinerary: React.FC = () => {
           </AddButton>
         </ModalContent>
       </Modal>
-    </>
+    </Page>
   );
 };
 

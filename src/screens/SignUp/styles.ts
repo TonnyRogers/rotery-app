@@ -1,8 +1,10 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
-  margin: 2rem;
+  padding: 1rem;
+  background: ${theme.colors.appBackground};
 `;
 
 export const Fields = styled.View``;
@@ -21,6 +23,8 @@ export const BackButtonText = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
   color: #9d9d9d;
+  color: #3dc77b;
+  font-weight: bold;
 `;
 
 export const SubmitButton = styled.TouchableOpacity`

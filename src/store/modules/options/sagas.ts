@@ -11,24 +11,19 @@ import {
   getTransportsSuccess,
   getTransportsFailure,
 } from './actions';
-import {setLoadingFalse, setLoadingTrue} from '../auth/actions';
 
 export function* getActivities() {
   try {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(setLoadingTrue());
     const response = yield call(api.get, '/activities');
 
     yield put(getActivitiesSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
-    yield put(setLoadingFalse());
     yield put(getActivitiesFailure());
     Toast.show({
       text1: 'Erro ao carregar atividades.',
@@ -43,17 +38,13 @@ export function* getLodgings() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(setLoadingTrue());
     const response = yield call(api.get, '/lodgings');
 
     yield put(getLodgingsSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
-    yield put(setLoadingFalse());
     yield put(getLodgingsFailure());
     Toast.show({
       text1: 'Erro ao carregar hospedagens.',
@@ -68,17 +59,13 @@ export function* getTransports() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
-    yield put(setLoadingTrue());
     const response = yield call(api.get, '/transports');
 
     yield put(getTransportsSuccess(response.data));
-    yield put(setLoadingFalse());
   } catch (error) {
-    yield put(setLoadingFalse());
     yield put(getTransportsFailure());
     Toast.show({
       text1: 'Erro ao carregar transportes.',

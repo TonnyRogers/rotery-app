@@ -6,11 +6,10 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
-  hideFeedGuide,
   hideMyItineraryGuide,
   hideNewItineraryGuide,
 } from '../../store/modules/guides/actions';
-import {hideBottomSheet} from '../../store/modules/bottomsheet/actions';
+// import {hideBottomSheet} from '../../store/modules/bottomsheet/actions';
 
 import {
   Container,
@@ -33,60 +32,10 @@ import Ads from '../Ads';
 import BottomSheet from '../BottomSheet';
 import ConnectionShareList from '../ConnectionShareList';
 
-const feedGuideImages = [
-  {
-    id: 1,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-1.png',
-    withInfo: true,
-    title: 'Filtrando Roteiros 1/2',
-    message: 'Clique no ícone de filtro para customizar o filtro de roteiros.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-2.png',
-    withInfo: true,
-    title: 'Filtrando Roteiros 2/2',
-    message:
-      'Customize o filtro com base nas suas necessidades e clique em "filtrar".',
-    isAnimation: false,
-  },
-  {
-    id: 3,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-1.png',
-    withInfo: true,
-    title: 'Limpando filtro',
-    message: 'Clique e segure no botão de filtro até o dispositivo vibrar.',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-reload-feed.png',
-    withInfo: true,
-    title: 'Carregando novos roteiros',
-    message: 'Deslize os dedos para baixo para atualizar feed.',
-    isAnimation: false,
-  },
-  {
-    id: 5,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-new-itinerary.png',
-    withInfo: true,
-    title: 'Criando novo roteiro',
-    message: 'Clique no ícone de "mais" para criar um novo roteiro.',
-    isAnimation: false,
-  },
-];
-
 const myGuideImages = [
   {
     id: 1,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary.png',
     withInfo: true,
     title: 'Editando Roteiro',
     message: 'Clique no ícone de lápis para editar informações do seu roteiro.',
@@ -94,8 +43,7 @@ const myGuideImages = [
   },
   {
     id: 2,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary.png',
     withInfo: true,
     title: 'Finalizando Roteiros',
     message:
@@ -107,8 +55,7 @@ const myGuideImages = [
 const newGuideImages = [
   {
     id: 1,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-1.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-1.png',
     withInfo: true,
     title: 'Criando Roteiros 1/4',
     message:
@@ -117,8 +64,7 @@ const newGuideImages = [
   },
   {
     id: 2,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-2.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-2.png',
     withInfo: true,
     title: 'Criando Roteiros 2/4',
     message:
@@ -127,8 +73,7 @@ const newGuideImages = [
   },
   {
     id: 3,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
     withInfo: true,
     title: 'Criando Roteiros 3/4',
     message: 'Após isso você vai notar que um item será adicionado logo acima.',
@@ -136,8 +81,7 @@ const newGuideImages = [
   },
   {
     id: 4,
-    url:
-      'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
     withInfo: true,
     title: 'Criando Roteiros 4/4',
     message: 'Você pode remove-lo clicando no ícone de lixeira.',
@@ -152,9 +96,10 @@ const Header: React.FC<HeaderProps> = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const {counter} = useSelector((state: RootStateProps) => state.notifications);
-  const {feedGuide, myItineraryGuide, newItineraryGuide} = useSelector(
+  const {myItineraryGuide, newItineraryGuide} = useSelector(
     (state: RootStateProps) => state.guides,
   );
+
   const bottomSheet = useSelector((state: RootStateProps) => state.bottomSheet);
   function toggleNotifications() {
     setNotificationVisible(!notificationVisible);
@@ -164,27 +109,33 @@ const Header: React.FC<HeaderProps> = () => {
     setMenuVisible(!menuVisible);
   }
 
-  const handleCloseFeedGuide = useCallback(() => {
-    dispatch(hideFeedGuide());
-  }, [dispatch]);
-
-  const handleCloseMyGuide = useCallback(() => {
+  const handleCloseMyGuide = () => {
     dispatch(hideMyItineraryGuide());
-  }, [dispatch]);
+  };
 
-  const handleCloseNewGuide = useCallback(() => {
+  const handleCloseNewGuide = () => {
     dispatch(hideNewItineraryGuide());
-  }, [dispatch]);
+  };
 
-  const handleCloseBottomSheet = useCallback(() => {
+  const handleCloseBottomSheet = () => {
     dispatch(hideBottomSheet());
-  }, [dispatch]);
+  };
+
+  const renderNotificationCounter = useCallback(
+    () =>
+      counter > 0 && (
+        <Notifications>
+          <Counter>{counter}</Counter>
+        </Notifications>
+      ),
+    [counter],
+  );
 
   function toProfileScreen() {
     navigation.navigate('Profile');
   }
 
-  function renderBottomSheet() {
+  const renderBottomSheet = useCallback(() => {
     switch (bottomSheet.componentType) {
       case 'connectionShareList': {
         return (
@@ -196,7 +147,7 @@ const Header: React.FC<HeaderProps> = () => {
       default:
         break;
     }
-  }
+  }, [bottomSheet.componentType, bottomSheet.data]);
 
   return (
     <>
@@ -206,11 +157,7 @@ const Header: React.FC<HeaderProps> = () => {
             <Icon name="account-box-outline" size={24} color="#FFF" />
           </ProfileButton>
           <NotificationsButton onPress={toggleNotifications}>
-            {counter > 0 && (
-              <Notifications>
-                <Counter>{counter}</Counter>
-              </Notifications>
-            )}
+            {renderNotificationCounter()}
             <Icon name="bell-ring-outline" size={24} color="#3dc77b" />
           </NotificationsButton>
           <MenuButton onPress={toggleMenu}>
@@ -229,12 +176,7 @@ const Header: React.FC<HeaderProps> = () => {
         visible={menuVisible}
         onRequestClose={(value) => setMenuVisible(value)}
       />
-      <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
-        <GuideCarousel
-          data={feedGuideImages}
-          onClose={() => handleCloseFeedGuide()}
-        />
-      </Ads>
+
       <Ads visible={myItineraryGuide} onRequestClose={() => {}}>
         <GuideCarousel
           data={myGuideImages}
@@ -248,9 +190,7 @@ const Header: React.FC<HeaderProps> = () => {
           onClose={() => handleCloseNewGuide()}
         />
       </Ads>
-      <BottomSheet
-        visible={bottomSheet.visibility}
-        onRequestClose={() => handleCloseBottomSheet()}>
+      <BottomSheet visible={false} onRequestClose={() => {}}>
         {renderBottomSheet()}
       </BottomSheet>
     </>

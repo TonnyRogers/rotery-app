@@ -1,4 +1,5 @@
 import produce from 'immer';
+import {GuidesActions} from './actions';
 
 interface InitalStateProps {
   feedGuide: boolean;
@@ -19,27 +20,27 @@ const INITIAL_PROPS: InitalStateProps = {
 export default function guides(state = INITIAL_PROPS, action: ActionProps) {
   return produce(state, (draft) => {
     switch (action.type) {
-      case '@guides/SHOW_FEED_GUIDE_SUCCESS': {
+      case GuidesActions.SHOW_FEED_GUIDE_SUCCESS: {
         draft.feedGuide = true;
         break;
       }
-      case '@guides/SHOW_NEW_ITINERARY_GUIDE_SUCCESS': {
+      case GuidesActions.SHOW_NEW_ITINERARY_GUIDE_SUCCESS: {
         draft.newItineraryGuide = true;
         break;
       }
-      case '@guides/SHOW_MY_ITINERARY_GUIDE_SUCCESS': {
+      case GuidesActions.SHOW_MY_ITINERARY_GUIDE_SUCCESS: {
         draft.myItineraryGuide = true;
         break;
       }
-      case '@guides/HIDE_FEED_GUIDE': {
+      case GuidesActions.HIDE_FEED_GUIDE: {
         draft.feedGuide = false;
         break;
       }
-      case '@guides/HIDE_NEW_ITINERARY_GUIDE': {
+      case GuidesActions.HIDE_NEW_ITINERARY_GUIDE: {
         draft.newItineraryGuide = false;
         break;
       }
-      case '@guides/HIDE_MY_ITINERARY_GUIDE': {
+      case GuidesActions.HIDE_MY_ITINERARY_GUIDE: {
         draft.myItineraryGuide = false;
         break;
       }

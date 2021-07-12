@@ -1,4 +1,5 @@
 import React from 'react';
+import {StackActions} from '@react-navigation/native';
 
 export const navigationRef = React.createRef() as any;
 
@@ -6,8 +7,14 @@ export function navigate(name: string, params: any = {}) {
   navigationRef.current?.navigate(name, params);
 }
 
+export function replace(name: string, params: any = {}) {
+  navigationRef.current?.dispatch(StackActions.replace(name, params));
+}
+
 export function goBack() {
-  navigationRef.current?.goBack();
+  if (navigationRef.current?.canGoBack()) {
+    navigationRef.current?.goBack();
+  }
 }
 
 // let navigator;

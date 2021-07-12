@@ -29,9 +29,9 @@ import {
   ItineraryLocation,
   ItineraryDate,
 } from './styles';
-import Header from '../../components/Header';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
+import Page from '../../components/Page';
 
 interface ItineraryRateProps {
   route: {
@@ -54,12 +54,12 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     (state: RootStateProps) => state.nextItineraries,
   );
 
-  const itinerary: ItineraryProps = itineraries?.find(
+  const itinerary: ItineraryProps | any = itineraries?.find(
     (item: ItineraryProps) => item.id === id,
   );
 
-  const beginDateFormated = useRef();
-  const userJoinDateFormated = useRef();
+  const beginDateFormated = useRef('');
+  const userJoinDateFormated = useRef('');
 
   useMemo(() => {
     beginDateFormated.current = format(
@@ -138,70 +138,78 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     );
   }
 
-  return (
-    <Container>
-      <Content>
-        <Card>
-          <CardHeader>
-            <BackButton onPress={() => navigation.goBack()}>
-              <Icon name="chevron-left" size={24} color="#3dc77b" />
-            </BackButton>
-          </CardHeader>
-          <CardContent>
-            <User>
-              <RowGroup>
-                <Icon name="compass-outline" size={30} color="#3dc77b" />
-                <Title>Hóspede</Title>
-              </RowGroup>
-              <Avatar
-                source={{
-                  uri:
-                    itinerary.owner.person.file &&
-                    itinerary.owner.person.file.url,
-                }}
-                resizeMode="cover"
-              />
-              <UserName>{itinerary?.owner.username}</UserName>
-              <Joined>Ativo desde{userJoinDateFormated.current}</Joined>
-              <Reputation>{renderUserRateStars(hostStars)}</Reputation>
-            </User>
-            <TextArea
-              label="Descrição"
-              ref={hostDescriptionRef}
-              value={hostDescription}
-              onChange={setHostDescription}
-            />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader />
-          <CardContent>
-            <ColumnGroup>
-              <RowGroup>
-                <Icon name="map-outline" size={30} color="#3dc77b" />
-                <Title>Roteiro</Title>
-              </RowGroup>
-              <ItineraryName>{itinerary?.name}</ItineraryName>
-              <ItineraryLocation>{itinerary?.location}</ItineraryLocation>
-              <ItineraryDate>{beginDateFormated.current}</ItineraryDate>
-              <Reputation>
-                {renderItineraryRateStars(itineraryStars)}
-              </Reputation>
-            </ColumnGroup>
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
 
-            <TextArea
-              label="Descrição"
-              ref={itineraryDescriptionRef}
-              value={itineraryDescription}
-              onChange={setItineraryDescription}
-            />
-          </CardContent>
-        </Card>
-        <SubmitButton onPress={rateItinerary}>
-          <SubmitButtonText>Avaliar</SubmitButtonText>
-        </SubmitButton>
-      </Content>
-    </Container>
+  return (
+    <Page showHeader={false}>
+      <Container>
+        <Content>
+          <Card>
+            <CardHeader>
+              <BackButton onPress={goBack}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+            </CardHeader>
+            <CardContent>
+              <User>
+                <RowGroup>
+                  <Icon name="compass-outline" size={30} color="#3dc77b" />
+                  <Title>Hóspede</Title>
+                </RowGroup>
+                <Avatar
+                  source={{
+                    uri:
+                      itinerary.owner.person.file &&
+                      itinerary.owner.person.file.url,
+                  }}
+                  resizeMode="cover"
+                />
+                <UserName>{itinerary?.owner.username}</UserName>
+                <Joined>Ativo desde{userJoinDateFormated.current}</Joined>
+                <Reputation>{renderUserRateStars(hostStars)}</Reputation>
+              </User>
+              <TextArea
+                label="Descrição"
+                ref={hostDescriptionRef}
+                value={hostDescription}
+                onChange={setHostDescription}
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader />
+            <CardContent>
+              <ColumnGroup>
+                <RowGroup>
+                  <Icon name="map-outline" size={30} color="#3dc77b" />
+                  <Title>Roteiro</Title>
+                </RowGroup>
+                <ItineraryName>{itinerary?.name}</ItineraryName>
+                <ItineraryLocation>{itinerary?.location}</ItineraryLocation>
+                <ItineraryDate>{beginDateFormated.current}</ItineraryDate>
+                <Reputation>
+                  {renderItineraryRateStars(itineraryStars)}
+                </Reputation>
+              </ColumnGroup>
+
+              <TextArea
+                label="Descrição"
+                ref={itineraryDescriptionRef}
+                value={itineraryDescription}
+                onChange={setItineraryDescription}
+              />
+            </CardContent>
+          </Card>
+          <SubmitButton onPress={rateItinerary}>
+            <SubmitButtonText>Avaliar</SubmitButtonText>
+          </SubmitButton>
+        </Content>
+      </Container>
+    </Page>
   );
 };
 

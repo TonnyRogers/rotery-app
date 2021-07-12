@@ -8,6 +8,8 @@ import MyItineraryDetail from './my';
 import NextItineraryDetail from './next';
 import {View} from 'react-native';
 import {getDetailsRequest} from '../../store/modules/dynamicItinerary/actions';
+import Page from '../../components/Page';
+import {MemberProps} from '../../utils/types';
 
 interface DynamicItineraryDetaisProps {
   route: {
@@ -31,19 +33,21 @@ const DynamicItineraryDetais: React.FC<DynamicItineraryDetaisProps> = ({
     dispatch(getDetailsRequest(id));
   }, [id, dispatch]);
 
-  const isMember =
-    itinerary?.id && itinerary.members.find((member) => member.id === user.id);
+  const isMember = itinerary?.members.find(
+    (member: MemberProps) =>
+      member.id === user.id && member.pivot.accepted === true,
+  );
 
   const isOwner =
     itinerary?.id && itinerary.owner.id === user.id ? true : false;
 
   if (itinerary?.id) {
     return (
-      <>
+      <Page>
         {isMember && <NextItineraryDetail itinerary={itinerary} />}
         {isOwner && <MyItineraryDetail itinerary={itinerary} />}
         {!isMember && !isOwner && <FeedDetail itinerary={itinerary} />}
-      </>
+      </Page>
     );
   }
 

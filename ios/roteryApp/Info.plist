@@ -40,11 +40,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Enable Rotery to take photos with your camera and upload to the app.</string>
+	<string>Enable Rotery to take photos with your camera to change your profile photo and add photos to itineraries.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Rotery needs your location during the activity to handle with emergencies like lost of an person or something else.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Enable Rotery to access your photo galery to upload photos and save in the app.</string>
+	<string>Enable Rotery to access your photo galery to upload photos to your profile or itineraries preview.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

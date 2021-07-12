@@ -17,26 +17,18 @@ import {
   CardCotent,
   UserDetail,
   Avatar,
-  Name,
-  DateJoin,
-  Profission,
-  Age,
-  Location,
+  TitleContent,
   ConnectButton,
   ConnectButtonText,
   RateStars,
-  Title,
   RateList,
-  ItineraryName,
-  ItineraryDate,
   IconContent,
   RowGroupSpaced,
   ColumnGroup,
   UserRate,
-  RateDescription,
 } from './styles';
-import Header from '../../components/Header';
 import Card from '../../components/Card';
+import Text from '../../components/Text';
 
 interface RateProps {
   id: number;
@@ -176,12 +168,18 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     return age;
   }
 
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
+
   return (
     <Container>
       <Content>
         <Card>
           <CardHeader>
-            <BackButton onPress={() => navigation.goBack()}>
+            <BackButton onPress={goBack}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
           </CardHeader>
@@ -193,41 +191,15 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                 }}
                 style={{borderColor: '#e1e1e1'}}
               />
-              <Name>{profile.user && profile.user.username}</Name>
+              <Text.Title>{profile.user && profile.user.username}</Text.Title>
               <RateStars>{renderRateStars(finalRate / countRate)}</RateStars>
-              <DateJoin>Ativo desde {createDateFormated.current}</DateJoin>
-              <Profission>{profile.profission}</Profission>
-              <Age>{getAge(profile.birth)} Anos</Age>
-              <Location>São Paulo - SP</Location>
+              <Text textWeight="light">
+                Ativo desde {createDateFormated.current}
+              </Text>
+              <Text textWeight="light">{profile.profission}</Text>
+              <Text textWeight="light">{getAge(profile.birth)} Anos</Text>
+              <Text textWeight="light">São Paulo - SP</Text>
             </UserDetail>
-            <Title>Avaliações</Title>
-            <RateList>
-              {profile.user &&
-                profile.user.rate &&
-                profile.user.rate.map((item: RateProps) => (
-                  <Card key={item.id}>
-                    <CardHeader>
-                      <RowGroupSpaced>
-                        <ColumnGroup>
-                          <ItineraryName>Host de Roteiro</ItineraryName>
-                          <ItineraryDate>
-                            {formatDate(item.created_at)}
-                          </ItineraryDate>
-                        </ColumnGroup>
-                        <IconContent>
-                          <Icon name="content-paste" size={24} color="#FFF" />
-                        </IconContent>
-                      </RowGroupSpaced>
-                    </CardHeader>
-                    <CardCotent>
-                      <UserRate>
-                        <RateDescription>{item.description}</RateDescription>
-                        <RateStars>{renderRateStars(item.rate)}</RateStars>
-                      </UserRate>
-                    </CardCotent>
-                  </Card>
-                ))}
-            </RateList>
           </CardCotent>
         </Card>
         {!isConnection && userId !== user.id && (
@@ -236,6 +208,40 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <Icon name="account-voice" size={24} color="#FFF" />
           </ConnectButton>
         )}
+        <Card>
+          <TitleContent>
+            <Text.Title>Avaliações</Text.Title>
+          </TitleContent>
+          <RateList>
+            {profile.user &&
+              profile.user.rate &&
+              profile.user.rate.map((item: RateProps) => (
+                <Card key={item.id}>
+                  <CardHeader>
+                    <RowGroupSpaced>
+                      <ColumnGroup>
+                        <Text.Paragraph textColor="secondary" textWeight="bold">
+                          Host de Roteiro
+                        </Text.Paragraph>
+                        <Text textWeight="light">
+                          {formatDate(item.created_at)}
+                        </Text>
+                      </ColumnGroup>
+                      <IconContent>
+                        <Icon name="content-paste" size={24} color="#FFF" />
+                      </IconContent>
+                    </RowGroupSpaced>
+                  </CardHeader>
+                  <CardCotent>
+                    <UserRate>
+                      <Text textWeight="light">{item.description}</Text>
+                      <Text>{renderRateStars(item.rate)}</Text>
+                    </UserRate>
+                  </CardCotent>
+                </Card>
+              ))}
+          </RateList>
+        </Card>
       </Content>
     </Container>
   );

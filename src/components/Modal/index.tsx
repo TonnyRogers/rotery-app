@@ -24,24 +24,22 @@ const Modal: React.FC<ModalProps> = ({
   onCloseRequest,
 }) => {
   return (
-    <>
-      {visible && (
-        <Container>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ModalContent>
-              <ModalHeader>
-                <Title>{title}</Title>
-                <CloseButton onPress={onCloseRequest}>
-                  <Icon name="close" size={24} color="#3dc77b" />
-                </CloseButton>
-              </ModalHeader>
-              {children}
-            </ModalContent>
-          </KeyboardAvoidingView>
-        </Container>
-      )}
-    </>
+    visible && (
+      <Container>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <ModalContent>
+            <ModalHeader>
+              <Title>{title}</Title>
+              <CloseButton onPress={onCloseRequest}>
+                <Icon name="close" size={24} color="#3dc77b" />
+              </CloseButton>
+            </ModalHeader>
+            {children}
+          </ModalContent>
+        </KeyboardAvoidingView>
+      </Container>
+    )
   );
 };
 

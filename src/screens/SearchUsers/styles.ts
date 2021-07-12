@@ -1,11 +1,26 @@
 import styled from 'styled-native-components';
-import {Platform} from 'react-native';
+// import {Platform} from 'react-native';
 
-const metric = Platform.OS === 'ios' ? 'vh' : '%';
+// const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  margin-top: 6.5rem;
+  margin-top: 1rem;
+`;
+
+export const ContentHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const BackButton = styled.TouchableOpacity`
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 199, 123, 0.2);
+  margin-left: 1rem;
 `;
 
 export const TitleContent = styled.View`

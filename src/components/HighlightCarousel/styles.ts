@@ -5,7 +5,7 @@ export const Container = styled.View`
 `;
 
 export const ImageList = styled.ScrollView`
-  background: #e6e6e6;
+  background: #ebebeb;
 `;
 
 export const Bullets = styled.View`
@@ -31,14 +31,18 @@ export const RowGroup = styled.View`
   align-items: center;
 `;
 
-export const Title = styled.Text`
+export const Title = styled.Text.attrs({
+  numberOfLines: 1,
+})`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: bold;
   text-align: center;
 `;
 
-export const Subtitle = styled.Text`
+export const Subtitle = styled.Text.attrs({
+  numberOfLines: 4,
+})`
   font-family: 'Roboto';
   font-size: 1.6rem;
   text-align: center;

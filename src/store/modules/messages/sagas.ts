@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
 import {
-  getMessagesRequest,
   getMessagesSuccess,
   getMessagesFailure,
   sendMessageRequest,
@@ -13,15 +12,16 @@ import {
   getConversationRequest,
   getConversationSuccess,
   getConversationFailure,
+  MessageActions,
 } from './actions';
-import {setLoadingFalse} from '../auth/actions';
+import {AxiosResponse} from 'axios';
+import {MessageProps} from '../../../utils/types';
 
 export function* getMessages() {
   try {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -45,7 +45,6 @@ export function* getConversation({
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
@@ -69,19 +68,20 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
     const info = yield call(NetInfo);
 
     if (!info.status) {
-      yield put(setLoadingFalse());
       return;
     }
 
     const {message, userId} = payload;
 
-    yield call(api.post, `/users/${userId}/message`, {
-      message,
-    });
+    const messagePayload: AxiosResponse<MessageProps> = yield call(
+      api.post,
+      `/users/${userId}/message`,
+      {
+        message,
+      },
+    );
 
-    yield put(sendMessageSuccess());
-    yield put(getConversationRequest(userId));
-    yield put(getMessagesRequest());
+    yield put(sendMessageSuccess(messagePayload.data));
   } catch (error) {
     yield put(sendMessageFailure());
     Toast.show({
@@ -93,8 +93,7 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
 }
 
 export default all([
-  takeLatest('@ws/NOTIFICATION_MESSAGES', getMessages),
-  takeLatest('@messages/SEND_MESSAGE_REQUEST', sendMessage),
-  takeLatest('@messages/GET_CONVERSATION_REQUEST', getConversation),
-  takeLatest('@messages/GET_MESSAGES_REQUEST', getMessages),
+  takeLatest(MessageActions.SEND_REQUEST, sendMessage),
+  takeLatest(MessageActions.CONVERSATION_REQUEST, getConversation),
+  takeLatest(MessageActions.GET_REQUEST, getMessages),
 ]);
