@@ -11,7 +11,6 @@ import {
   Container,
   Content,
   Header,
-  Title,
   Actions,
   MenuButton,
   MenuButtonText,
@@ -21,6 +20,7 @@ import {
   SignOutButtonText,
   CloseButton,
 } from './styles';
+import Text from '../Text';
 
 interface ModalMenuProps {
   visible: boolean;
@@ -139,7 +139,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
             {...panRespoders.panHandlers}>
             <Header>
               <Icon name="menu" size={24} color="#3e44c7" />
-              <Title>Menu</Title>
+              <Text.Title>Menu</Text.Title>
             </Header>
             <Actions>
               <MenuButton onPress={toConnections}>

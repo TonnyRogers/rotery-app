@@ -35,7 +35,7 @@ export const Avatar = styled.Image`
   border-left-width: 0.1rem;
 `;
 
-export const ChangeAvatarButton = styled.TouchableOpacity`
+export const ChangeAvatarButton = styled.View`
   height: 3.1rem;
   width: 11.4rem;
   background: #3e44c7;

@@ -1,12 +1,6 @@
 import React, {useEffect, useCallback, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-  Platform,
-  Dimensions,
-  Animated,
-  PanResponder,
-  SafeAreaView,
-} from 'react-native';
+import {Dimensions, Animated, PanResponder, SafeAreaView} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -15,8 +9,6 @@ import {
   Container,
   Content,
   Header,
-  KeyboardAvoidingView,
-  Title,
   NotificationList,
   CloseButton,
 } from './styles';
@@ -29,6 +21,7 @@ interface NotificationProps {
   iconColor: string;
 }
 import NotificationItem from '../NotificationItem';
+import Text from '../Text';
 
 const Notification: React.FC<NotificationProps> = ({
   visible,
@@ -103,32 +96,29 @@ const Notification: React.FC<NotificationProps> = ({
     <>
       {visible && (
         <Container>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <SafeAreaView>
-              <Content
-                style={{
-                  transform: [
-                    {
-                      translateY: panY.y.interpolate({
-                        inputRange: [-100, 0, 1],
-                        outputRange: [-100, 0, 1],
-                      }),
-                    },
-                  ],
-                }}
-                {...panRespoders.panHandlers}>
-                <Header>
-                  <Icon name={icon} size={24} color={iconColor} />
-                  <Title>{title}</Title>
-                </Header>
-                <NotificationList>{renderNotifications()}</NotificationList>
-                <CloseButton onPress={handleDismiss}>
-                  <Icon name="chevron-up" size={24} color="#808080" />
-                </CloseButton>
-              </Content>
-            </SafeAreaView>
-          </KeyboardAvoidingView>
+          <SafeAreaView>
+            <Content
+              style={{
+                transform: [
+                  {
+                    translateY: panY.y.interpolate({
+                      inputRange: [-100, 0, 1],
+                      outputRange: [-100, 0, 1],
+                    }),
+                  },
+                ],
+              }}
+              {...panRespoders.panHandlers}>
+              <Header>
+                <Icon name={icon} size={24} color={iconColor} />
+                <Text.Title>{title}</Text.Title>
+              </Header>
+              <NotificationList>{renderNotifications()}</NotificationList>
+              <CloseButton onPress={handleDismiss}>
+                <Icon name="chevron-up" size={24} color="#808080" />
+              </CloseButton>
+            </Content>
+          </SafeAreaView>
         </Container>
       )}
     </>

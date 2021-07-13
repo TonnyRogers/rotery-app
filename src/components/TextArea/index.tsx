@@ -1,21 +1,19 @@
 import React, {forwardRef} from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {Container, Content, Field, Label} from './styles';
+import {Container, Field, Label} from './styles';
+import {TextInputProps} from 'react-native';
 
-interface TextAreaProps {
+interface TextAreaProps extends TextInputProps {
   label?: string;
   placeholder?: string;
   value: any;
   icon?: string;
   onChange: any;
-  secureTextEntry?: boolean;
-  returnKeyType?: string;
   onSubmitEditing?(): void;
 }
 
-const TextArea: React.FunctionComponent<TextAreaProps> = (
-  {label, value, placeholder, onChange, ...props},
+const TextArea = (
+  {label, value, placeholder, onChange, ...props}: TextAreaProps,
   ref,
 ) => {
   return (

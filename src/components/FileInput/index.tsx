@@ -13,13 +13,14 @@ const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
   function pickImage() {
     const options = {
       title: 'Fotos',
-      quality: 1.0,
+      quality: 0.9,
+      maxWidth: 2400,
+      maxHeight: 2400,
       takePhotoButtonTitle: 'Câmera',
       chooseFromLibraryButtonTitle: 'Galeria',
       cancelButtonTitle: 'Cancelar',
       storageOptions: {
         skipBackup: true,
-        privateDirectory: true,
       },
     };
 

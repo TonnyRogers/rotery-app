@@ -14,7 +14,6 @@ import {
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
-  Container,
   RowGroupSpaced,
   MemberDetails,
   UserImage,
@@ -29,6 +28,7 @@ import {
 } from './styles';
 
 import {MemberProps} from '../../utils/types';
+import ShadowBox from '../ShadowBox';
 
 interface ItineraryMemberProps {
   member: MemberProps;
@@ -122,7 +122,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
   ]);
 
   return (
-    <Container>
+    <ShadowBox>
       <RowGroupSpaced>
         <MemberDetails>
           <UserButton onPress={() => viewProfile(member.id)}>
@@ -140,7 +140,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
         </MemberDetails>
         {owner && renderMemberOptions()}
       </RowGroupSpaced>
-    </Container>
+    </ShadowBox>
   );
 };
 

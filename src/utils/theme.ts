@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
     white: '#FFF',
-    appBackground: '#F7F7F7',
+    appBackground: '#FAFAFA',
     appBackgroundDarker: '#ebebeb',
     green: '#3dc77b',
     greenTransparent: 'rgba(61, 199, 123, 0.2)',

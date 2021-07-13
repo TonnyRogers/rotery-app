@@ -24,20 +24,20 @@ export default function guides(state = INITIAL_PROPS, action: ActionProps) {
         draft.feedGuide = true;
         break;
       }
-      case GuidesActions.SHOW_NEW_ITINERARY_GUIDE_SUCCESS: {
-        draft.newItineraryGuide = true;
-        break;
-      }
-      case GuidesActions.SHOW_MY_ITINERARY_GUIDE_SUCCESS: {
-        draft.myItineraryGuide = true;
-        break;
-      }
       case GuidesActions.HIDE_FEED_GUIDE: {
         draft.feedGuide = false;
         break;
       }
+      case GuidesActions.SHOW_NEW_ITINERARY_GUIDE_SUCCESS: {
+        draft.newItineraryGuide = true;
+        break;
+      }
       case GuidesActions.HIDE_NEW_ITINERARY_GUIDE: {
         draft.newItineraryGuide = false;
+        break;
+      }
+      case GuidesActions.SHOW_MY_ITINERARY_GUIDE_SUCCESS: {
+        draft.myItineraryGuide = true;
         break;
       }
       case GuidesActions.HIDE_MY_ITINERARY_GUIDE: {

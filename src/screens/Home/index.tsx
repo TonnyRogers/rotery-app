@@ -3,7 +3,7 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {Animated, KeyboardAvoidingView, Platform} from 'react-native';
+import {Animated, KeyboardAvoidingView, Platform, Keyboard} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 
 import {loginRequest} from '../../store/modules/auth/actions';
@@ -154,7 +154,7 @@ const Home: React.FC = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1, flexDirection: 'column'}}>
-      <SafeView>
+      <SafeView onTouchStart={Keyboard.dismiss}>
         <Container>
           <Header>
             <Logo source={horizontalLogo} resizeMode="contain" />

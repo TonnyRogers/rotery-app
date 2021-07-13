@@ -10,7 +10,6 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {makeConnectionRequest} from '../../store/modules/connections/actions';
 
 import {
-  Container,
   Content,
   CardHeader,
   BackButton,
@@ -29,6 +28,7 @@ import {
 } from './styles';
 import Card from '../../components/Card';
 import Text from '../../components/Text';
+import Page from '../../components/Page';
 
 interface RateProps {
   id: number;
@@ -175,7 +175,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   }
 
   return (
-    <Container>
+    <Page showHeader={false}>
       <Content>
         <Card>
           <CardHeader>
@@ -243,7 +243,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
           </RateList>
         </Card>
       </Content>
-    </Container>
+    </Page>
   );
 };
 

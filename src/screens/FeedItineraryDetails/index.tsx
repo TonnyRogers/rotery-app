@@ -38,7 +38,6 @@ import {
   UserImage,
   HostDetails,
   RateStars,
-  DataContent,
   DataContentHeader,
   IconHolder,
   SendButton,
@@ -57,6 +56,7 @@ import TextArea from '../../components/TextArea';
 import Page from '../../components/Page';
 import Share from '../../components/Share';
 import Text from '../../components/Text';
+import ShadowBox from '../../components/ShadowBox';
 
 interface FeedItineraryDetailsProps {
   route: {
@@ -219,7 +219,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                   </HostDetails>
                 </HostButton>
               </HostContent>
-              <DataContent>
+              <ShadowBox>
                 <DataContentHeader>
                   <Icon
                     name="calendar-blank-outline"
@@ -248,7 +248,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                   </Text>
                   <Text textWeight="light">{limitDateFormated.current}</Text>
                 </RowGroupSpaced>
-              </DataContent>
+              </ShadowBox>
               <RowGroup>
                 <IconHolder>
                   <Icon name="car" color="#FFF" size={24} />
@@ -256,7 +256,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text.Title>Transporte</Text.Title>
               </RowGroup>
               {itinerary.transports.map((transport: TransportProps) => (
-                <DataContent key={transport.id}>
+                <ShadowBox key={transport.id}>
                   <Text.Paragraph textColor="primary" textWeight="bold">
                     {transport.name}
                   </Text.Paragraph>
@@ -273,7 +273,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                       </Text>
                     </ColumnGroup>
                   </RowGroupSpaced>
-                </DataContent>
+                </ShadowBox>
               ))}
               <RowGroup>
                 <IconHolder>
@@ -282,7 +282,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text.Title>Hospedagem</Text.Title>
               </RowGroup>
               {itinerary.lodgings.map((lodging: LodgingProps) => (
-                <DataContent key={lodging.id}>
+                <ShadowBox key={lodging.id}>
                   <Text.Paragraph textColor="primary" textWeight="bold">
                     {lodging.name}
                   </Text.Paragraph>
@@ -299,7 +299,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                       </Text>
                     </ColumnGroup>
                   </RowGroupSpaced>
-                </DataContent>
+                </ShadowBox>
               ))}
               <RowGroup>
                 <IconHolder>
@@ -308,7 +308,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text.Title>Atividades</Text.Title>
               </RowGroup>
               {itinerary.activities.map((activity: ActivityProps) => (
-                <DataContent key={activity.id}>
+                <ShadowBox key={activity.id}>
                   <Text.Paragraph textColor="primary" textWeight="bold">
                     {activity.name}
                   </Text.Paragraph>
@@ -325,7 +325,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                       </Text>
                     </ColumnGroup>
                   </RowGroupSpaced>
-                </DataContent>
+                </ShadowBox>
               ))}
 
               {!isMember && (

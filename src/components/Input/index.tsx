@@ -2,22 +2,21 @@ import React, {forwardRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, Label, Field, Content, ButtonIcon} from './styles';
+import {TextInputProps} from 'react-native';
 
-interface InputProps {
+interface InputProps extends TextInputProps {
   label?: string;
   placeholder?: string;
-  value: number | string;
+  value?: string;
   icon?: string;
   onChange: any;
   secureTextEntry?: boolean;
-  returnKeyType?: string;
-  keyboardType?: string;
   buttonIcon?: boolean;
   onClickButtonIcon?(): void;
   onSubmitEditing?(): void;
 }
 
-const Input: React.FC<InputProps> = (
+const Input = (
   {
     label,
     value,
@@ -28,7 +27,7 @@ const Input: React.FC<InputProps> = (
     secureTextEntry,
     onClickButtonIcon,
     ...props
-  },
+  }: InputProps,
   ref,
 ) => {
   return (

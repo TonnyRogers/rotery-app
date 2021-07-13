@@ -24,6 +24,7 @@ import TextArea from '../TextArea';
 
 import {QuestionProps} from '../../utils/types';
 import {toDateTimeZone} from '../../utils/helpers';
+import ShadowBox from '../ShadowBox';
 
 interface ItineraryQuestionProps {
   question: QuestionProps;
@@ -61,7 +62,7 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   }
 
   return (
-    <Container>
+    <ShadowBox>
       <OwnerDetails>
         <UserImage
           source={{
@@ -103,7 +104,7 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
           </AnswerContent>
         )
       )}
-    </Container>
+    </ShadowBox>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useMemo, useCallback} from 'react';
+import React, {useState, useRef, useMemo, useCallback, useEffect} from 'react';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -37,7 +37,6 @@ import {
   UserImage,
   HostDetails,
   RateStars,
-  DataContent,
   DataContentHeader,
   IconHolder,
   DeleteItineraryButton,
@@ -56,6 +55,13 @@ import Alert from '../../components/Alert';
 import Page from '../../components/Page';
 import Share from '../../components/Share';
 import Text from '../../components/Text';
+import {
+  showMyItineraryGuide,
+  hideMyItineraryGuide,
+} from '../../store/modules/guides/actions';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import ShadowBox from '../../components/ShadowBox';
 
 interface MyItineraryDetailsProps {
   route: {
@@ -64,6 +70,26 @@ interface MyItineraryDetailsProps {
   navigation: any;
 }
 
+const myGuideImages = [
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary.png',
+    withInfo: true,
+    title: 'Editando Roteiro',
+    message: 'Clique no ícone de lápis para editar informações do seu roteiro.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary.png',
+    withInfo: true,
+    title: 'Finalizando Roteiros',
+    message:
+      'Após o término do seu roteiro clique em finalizar para que os membros avaliem.',
+    isAnimation: false,
+  },
+];
+
 const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   route,
   navigation,
@@ -71,6 +97,9 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const {id} = route.params;
   const {itineraries} = useSelector(
     (state: RootStateProps) => state.itineraries,
+  );
+  const {myItineraryGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
   );
   const [alertVisible, setAlertVisible] = useState(false);
   const [finishAlertVisible, setFinishAlertVisible] = useState(false);
@@ -88,6 +117,10 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   let beginDateFormated = useRef('');
   let endDateFormated = useRef('');
   let limitDateFormated = useRef('');
+
+  useEffect(() => {
+    dispatch(showMyItineraryGuide());
+  }, [dispatch]);
 
   useMemo(() => {
     if (itinerary) {
@@ -133,10 +166,14 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     dispatch(notifyItineraryFinishRequest(id));
   }
 
+  const handleCloseMyGuide = () => {
+    dispatch(hideMyItineraryGuide());
+  };
+
   const renderTransports = useCallback(
     () =>
       itinerary?.transports.map((transport: TransportProps) => (
-        <DataContent key={transport.id}>
+        <ShadowBox key={transport.id}>
           <Text.Paragraph textColor="primary" textWeight="bold">
             {transport.name}
           </Text.Paragraph>
@@ -153,7 +190,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </Text>
             </ColumnGroup>
           </RowGroupSpaced>
-        </DataContent>
+        </ShadowBox>
       )),
     [itinerary],
   );
@@ -161,7 +198,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const renderLodgings = useCallback(
     () =>
       itinerary?.lodgings.map((lodging: LodgingProps) => (
-        <DataContent key={lodging.id}>
+        <ShadowBox key={lodging.id}>
           <Text.Paragraph textColor="primary" textWeight="bold">
             {lodging.name}
           </Text.Paragraph>
@@ -178,7 +215,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </Text>
             </ColumnGroup>
           </RowGroupSpaced>
-        </DataContent>
+        </ShadowBox>
       )),
     [itinerary],
   );
@@ -186,7 +223,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const renderActivities = useCallback(
     () =>
       itinerary?.activities.map((activity: ActivityProps) => (
-        <DataContent key={activity.id}>
+        <ShadowBox key={activity.id}>
           <Text.Paragraph textColor="primary" textWeight="bold">
             {activity.name}
           </Text.Paragraph>
@@ -203,7 +240,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </Text>
             </ColumnGroup>
           </RowGroupSpaced>
-        </DataContent>
+        </ShadowBox>
       )),
     [itinerary],
   );
@@ -305,7 +342,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                     </HostDetails>
                   </HostButton>
                 </HostContent>
-                <DataContent>
+                <ShadowBox>
                   <DataContentHeader>
                     <Icon
                       name="calendar-blank-outline"
@@ -334,7 +371,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
                     </Text>
                     <Text textWeight="light">{limitDateFormated.current}</Text>
                   </RowGroupSpaced>
-                </DataContent>
+                </ShadowBox>
                 <RowGroup>
                   <IconHolder>
                     <Icon name="car" color="#FFF" size={24} />
@@ -429,6 +466,14 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         onRequestClose={(value) => setAlertVisible(value)}
         onConfirm={handleDeleteItinerary}
       />
+
+      <Ads visible={myItineraryGuide} onRequestClose={() => {}}>
+        <GuideCarousel
+          data={myGuideImages}
+          onClose={() => handleCloseMyGuide()}
+          key="guide-my-itinerary"
+        />
+      </Ads>
     </Page>
   );
 };

@@ -2,12 +2,9 @@
 import React, {useRef, useState, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import ImagePicker from 'react-native-image-picker';
 import {format, parse} from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import {useNavigation} from '@react-navigation/native';
-
-import api from '../../services/api';
 
 import {phoneBR, cpfCnpj, clearValue} from '../../lib/mask';
 import {
@@ -23,9 +20,7 @@ import {
   Avatar,
   ChangeAvatarButton,
   ChangeAvatarButtonText,
-  UserName,
   Reputation,
-  Joined,
   InputContent,
   ActionContent,
   SubmitButton,
@@ -42,6 +37,8 @@ import Alert from '../../components/Alert';
 import DateInput from '../../components/DateInput';
 import PickerInput from '../../components/PickerInput';
 import Page from '../../components/Page';
+import Text from '../../components/Text';
+import FileInput from '../../components/FileInput';
 
 const sexOptions = [
   {
@@ -123,60 +120,6 @@ const Profile: React.FC = () => {
     );
   }
 
-  function pickImage() {
-    const options = {
-      title: 'Fotos',
-      quality: 1.0,
-      takePhotoButtonTitle: 'Câmera',
-      chooseFromLibraryButtonTitle: 'Galeria',
-      cancelButtonTitle: 'Cancelar',
-      storageOptions: {
-        skipBackup: true,
-        privateDirectory: true,
-      },
-    };
-
-    ImagePicker.showImagePicker(options, async (response) => {
-      // console.tron.log('Response = ', response);
-
-      if (response.didCancel) {
-        // console.tron.log('User cancelled photo picker');
-      } else if (response.error) {
-        // console.tron.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        // console.tron.log('User tapped custom button: ', response.customButton);
-      } else {
-        // console.tron.log('Response = ', response);
-
-        const image = {
-          size: response.fileSize,
-          name: response.fileName,
-          type: response.type,
-          uri: response.uri,
-        };
-
-        const formData = new FormData();
-
-        let fileResponse;
-
-        if (image.uri) {
-          formData.append('file', image);
-
-          fileResponse = await api.post('/files', formData);
-
-          const {id} = fileResponse.data;
-
-          if (!id) {
-            setProfileImage({uri: undefined});
-            return;
-          }
-          setProfileImage(image);
-          dispatch(updateProfileImageRequest(id));
-        }
-      }
-    });
-  }
-
   function handleDeleteUser() {
     dispatch(removeUserRequest());
     setAlertVisible(false);
@@ -188,6 +131,12 @@ const Profile: React.FC = () => {
     }
   }
 
+  function handleProfileImage(imageList: any) {
+    if (imageList !== undefined) {
+      setProfileImage({uri: imageList[0].uri});
+      dispatch(updateProfileImageRequest(imageList[0].id));
+    }
+  }
   return (
     <Page showHeader={false}>
       <Container>
@@ -203,10 +152,12 @@ const Profile: React.FC = () => {
               resizeMode="cover"
               style={{borderColor: '#e1e1e1'}}
             />
-            <ChangeAvatarButton onPress={pickImage}>
-              <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
-            </ChangeAvatarButton>
-            <UserName>{user.username}</UserName>
+            <FileInput onSelect={handleProfileImage}>
+              <ChangeAvatarButton>
+                <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
+              </ChangeAvatarButton>
+            </FileInput>
+            <Text.Title>{user.username}</Text.Title>
             <Reputation>
               <Icon name="star" size={24} color="#3dc77b" />
               <Icon name="star" size={24} color="#3dc77b" />
@@ -214,7 +165,7 @@ const Profile: React.FC = () => {
               <Icon name="star" size={24} color="#3dc77b" />
               <Icon name="star-outline" size={24} color="#3dc77b" />
             </Reputation>
-            <Joined>Ativo desde {useSinceDate}</Joined>
+            <Text textWeight="light">Ativo desde {useSinceDate}</Text>
           </User>
         </Card>
 
