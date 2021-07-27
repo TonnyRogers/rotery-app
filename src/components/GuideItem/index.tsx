@@ -21,7 +21,7 @@ const GuideItem: React.FC<GuideItemProps> = ({
           source={{
             uri: background || undefined,
           }}
-          resizeMode="center"
+          resizeMode="contain"
         />
       )}
       <Info>{children}</Info>

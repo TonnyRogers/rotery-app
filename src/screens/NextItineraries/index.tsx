@@ -55,8 +55,10 @@ const NextItineraries: React.FC = () => {
               <Card>
                 <ColumnGroup>
                   <Icon name="bus-clock" size={30} color="#3dc77b" />
-                  <Text.Title textColor="secondary">Que tal viajar?</Text.Title>
-                  <Text.Paragraph>Encontre um roteiro!</Text.Paragraph>
+                  <Text.Title alignment="center">Que tal viajar?</Text.Title>
+                  <Text.Paragraph alignment="center" textWeight="light">
+                    Encontre um roteiro!
+                  </Text.Paragraph>
                 </ColumnGroup>
                 <FeedButton onPress={() => navigation.navigate('Feed')}>
                   <FeedButtonText>Ir para o Feed</FeedButtonText>

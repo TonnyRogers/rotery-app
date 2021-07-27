@@ -7,19 +7,13 @@ import {KeyboardAvoidingView, Platform} from 'react-native';
 
 interface PageProps {
   showHeader?: boolean;
-  onTouchStart?: () => void;
 }
 
-const Page: React.FC<PageProps> = ({
-  children,
-  showHeader = true,
-  onTouchStart,
-}) => {
+const Page: React.FC<PageProps> = ({children, showHeader = true}) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1, flexDirection: 'column'}}
-      onTouchStart={onTouchStart}>
+      style={{flex: 1, flexDirection: 'column'}}>
       <Container>
         {showHeader && <Header />}
         {children}

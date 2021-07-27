@@ -1,10 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useState, useMemo} from 'react';
+import React, {useRef, useState, useMemo, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {format, parse} from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import {phoneBR, cpfCnpj, clearValue} from '../../lib/mask';
 import {
@@ -39,55 +42,156 @@ import PickerInput from '../../components/PickerInput';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import FileInput from '../../components/FileInput';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {
+  showProfileGuide,
+  hideProfileGuide,
+} from '../../store/modules/guides/actions';
+
+const profileGuideImages = [
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile1.png',
+    withInfo: true,
+    title: 'Adicionando Foto',
+    message:
+      'Clique no botão de alterar imagem e selecione sua foto estilosa. 📸',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile2.png',
+    withInfo: true,
+    title: 'Preenchendo seus dados',
+    message:
+      'É muito importante saber quem é você de verdade, por isso seja sincero ao preencher seu perfil.',
+    isAnimation: false,
+  },
+];
 
 const sexOptions = [
   {
-    id: 1,
     name: 'Masculino',
     value: 'male',
   },
   {
-    id: 2,
     name: 'Feminino',
     value: 'female',
   },
   {
-    id: 3,
     name: 'Outro',
     value: 'other',
   },
 ];
 
+const cityOptions = [
+  {
+    name: 'SP',
+    value: 'sp',
+  },
+  {
+    name: 'São Paulo',
+    value: 'São Paulo - SP',
+    parent: 'sp',
+  },
+  {
+    name: 'Osasco',
+    value: 'Osasco - SP',
+    parent: 'sp',
+  },
+  {
+    name: 'Campinas',
+    value: 'Campinas - SP',
+    parent: 'sp',
+  },
+  {
+    name: 'RJ',
+    value: 'rj',
+  },
+  {
+    name: 'Osascos',
+    value: 'Osasco - RJ',
+    parent: 'rj',
+  },
+];
+
+const validationSchema = yup.object().shape({
+  name: yup.string().required('campo obrigatório'),
+  gender: yup.string().required('campo obrigatório'),
+  email: yup.string().required('campo obrigatório'),
+  phone: yup
+    .string()
+    .required('campo obrigatório')
+    .min(11, 'telefone incompleto'),
+  cpf: yup.string().required('campo obrigatório').min(11, 'cpf incompleto'),
+  state: yup.string(),
+  city: yup.string(),
+  profission: yup.string().required('campo obrigatório'),
+  birthDate: yup.date().required('campo obrigatório'),
+});
+
 const Profile: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {data} = useSelector((state: RootStateProps) => state.profile);
+  const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
 
-  const [name, setName] = useState(data?.name || '');
-  const [gender, setGender] = useState(data?.gender || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [phone, setPhone] = useState(data?.phone || '');
-  const [cpf, setCpf] = useState(data?.cpf || '');
-  const [state, setState] = useState('');
-  const [city, setCity] = useState('');
-  const [profission, setProfission] = useState(data?.profission || '');
-  const [birthDate, setBirthDate] = useState(
-    data?.birth ? new Date(data?.birth) : new Date(),
-  );
+  useEffect(() => {
+    dispatch(showProfileGuide());
+  }, [dispatch]);
+
+  useEffect(() => {
+    register('name');
+    register('gender');
+    register('email');
+    register('phone');
+    register('cpf');
+    register('state');
+    register('city');
+    register('profission');
+    register('birthDate', {value: new Date(), valueAsDate: true});
+
+    setValue('name', data?.name || '');
+    setValue('gender', data?.gender || '');
+    setValue('email', user?.email || '');
+    setValue('phone', data?.phone || '');
+    setValue('cpf', data?.cpf || '');
+    setValue('profission', data?.profission || '');
+    setValue('birthDate', data?.birth);
+  }, [data, register, setValue, user]);
+
+  const watchBirthDate = watch('birthDate', new Date());
+  const watchGender = watch('gender');
+  const watchCity = watch('city');
+  const watchName = watch('name');
+  const watchEmail = watch('email');
+  const watchPhone = watch('phone', '');
+  const watchCpf = watch('cpf', '');
+  const watchProfission = watch('profission');
+
   const [alertVisible, setAlertVisible] = useState(false);
+  const [genderIsOpen, setGenderIsOpen] = useState(false);
+  const [cityIsOpen, setCityIsOpen] = useState(false);
   const [profileImage, setProfileImage] = useState({
     uri: data?.file_id && data.file ? data.file.url : undefined,
   });
 
-  const nameRef = useRef() as any;
-  const genderRef = useRef() as any;
-  const emailRef = useRef() as any;
-  const phoneRef = useRef() as any;
-  const cpfRef = useRef() as any;
-  const stateRef = useRef() as any;
-  const cityRef = useRef() as any;
-  const profissionRef = useRef() as any;
+  const nameRef = useRef<any>();
+  const emailRef = useRef<any>();
+  const phoneRef = useRef<any>();
+  const cpfRef = useRef<any>();
+  const stateRef = useRef<any>();
+  const cityRef = useRef<any>();
+  const profissionRef = useRef<any>();
 
   const useSinceDate = useMemo(
     () =>
@@ -103,22 +207,18 @@ const Profile: React.FC = () => {
     setAlertVisible(!alertVisible);
   }
 
-  function updateProfileHandle() {
-    if (!name || !gender || !birthDate || !cpf || !phone) {
-      return;
-    }
-
+  const updateProfileHandle = (data: any) => {
     dispatch(
       updateProfileRequest(
-        name,
-        gender,
-        birthDate.toDateString(),
-        Number(clearValue(String(cpf))),
-        profission,
-        Number(clearValue(String(phone))),
+        data.name,
+        data.gender,
+        data.birthDate.toDateString(),
+        Number(clearValue(String(data.cpf))),
+        data.profission,
+        Number(clearValue(String(data.phone))),
       ),
     );
-  }
+  };
 
   function handleDeleteUser() {
     dispatch(removeUserRequest());
@@ -137,139 +237,189 @@ const Profile: React.FC = () => {
       dispatch(updateProfileImageRequest(imageList[0].id));
     }
   }
+
+  const onGenderOpen = useCallback(() => {
+    setCityIsOpen(false);
+  }, []);
+
+  const onCityOpen = useCallback(() => {
+    setGenderIsOpen(false);
+  }, []);
+
   return (
     <Page showHeader={false}>
-      <Container>
-        <Card>
-          <CardHeader>
-            <BackButton onPress={goBack}>
-              <Icon name="chevron-left" size={24} color="#3dc77b" />
-            </BackButton>
-          </CardHeader>
-          <User>
-            <Avatar
-              source={{uri: profileImage.uri}}
-              resizeMode="cover"
-              style={{borderColor: '#e1e1e1'}}
-            />
-            <FileInput onSelect={handleProfileImage}>
-              <ChangeAvatarButton>
-                <ChangeAvatarButtonText>Alterar imagem</ChangeAvatarButtonText>
-              </ChangeAvatarButton>
-            </FileInput>
-            <Text.Title>{user.username}</Text.Title>
-            <Reputation>
-              <Icon name="star" size={24} color="#3dc77b" />
-              <Icon name="star" size={24} color="#3dc77b" />
-              <Icon name="star" size={24} color="#3dc77b" />
-              <Icon name="star" size={24} color="#3dc77b" />
-              <Icon name="star-outline" size={24} color="#3dc77b" />
-            </Reputation>
-            <Text textWeight="light">Ativo desde {useSinceDate}</Text>
-          </User>
-        </Card>
+      <Container
+        data={[{id: '1', name: 'Profile'}]}
+        renderItem={() => (
+          <>
+            <Card>
+              <CardHeader>
+                <BackButton onPress={goBack}>
+                  <Icon name="chevron-left" size={24} color="#3dc77b" />
+                </BackButton>
+              </CardHeader>
+              <User>
+                <Avatar
+                  source={{uri: profileImage.uri}}
+                  resizeMode="cover"
+                  style={{borderColor: '#e1e1e1'}}
+                />
+                <FileInput onSelect={handleProfileImage}>
+                  <ChangeAvatarButton>
+                    <ChangeAvatarButtonText>
+                      Alterar imagem
+                    </ChangeAvatarButtonText>
+                  </ChangeAvatarButton>
+                </FileInput>
+                <Text.Title alignment="center">{user.username}</Text.Title>
+                <Reputation>
+                  <Icon name="star" size={24} color="#3dc77b" />
+                  <Icon name="star" size={24} color="#3dc77b" />
+                  <Icon name="star" size={24} color="#3dc77b" />
+                  <Icon name="star" size={24} color="#3dc77b" />
+                  <Icon name="star-outline" size={24} color="#3dc77b" />
+                </Reputation>
+                <Text textWeight="light" alignment="center">
+                  Ativo desde {useSinceDate}
+                </Text>
+              </User>
+            </Card>
 
-        <Card>
-          <InputContent>
-            <Input
-              icon="face-recognition"
-              label="Nome"
-              placeholder="Digite seu nome completo"
-              ref={nameRef}
-              value={name}
-              onChange={setName}
-              returnKeyType="next"
-              onSubmitEditing={() => emailRef.current?.focus()}
-            />
-            <PickerInput
-              label="Sexo"
-              value={gender}
-              onChange={setGender}
-              options={sexOptions}
-              ref={genderRef}
-              byValue={true}
-            />
-            <Input
-              icon="email-outline"
-              label="Email"
-              placeholder="Digite seu e-mail"
-              ref={emailRef}
-              value={email}
-              onChange={setEmail}
-              returnKeyType="next"
-              onSubmitEditing={() => phoneRef.current?.focus()}
-              keyboardType="email-address"
-            />
-            <Input
-              icon="cellphone-iphone"
-              label="Telefone"
-              placeholder="Digite seu telefone"
-              ref={phoneRef}
-              value={phoneBR(String(phone))}
-              onChange={setPhone}
-              returnKeyType="next"
-              onSubmitEditing={() => cpfRef.current?.focus()}
-              keyboardType="number-pad"
-            />
-            <Input
-              icon="fingerprint"
-              label="CPF"
-              placeholder="Digite seu CPF"
-              ref={cpfRef}
-              value={cpfCnpj(String(cpf))}
-              onChange={setCpf}
-              returnKeyType="next"
-              onSubmitEditing={() => stateRef.current?.focus()}
-              keyboardType="number-pad"
-            />
-            <Input
-              label="Estado"
-              placeholder="Digite seu estado"
-              ref={stateRef}
-              value={state}
-              onChange={setState}
-              returnKeyType="next"
-              onSubmitEditing={() => cityRef.current?.focus()}
-            />
-            <Input
-              label="Cidade"
-              placeholder="Digite sua cidade"
-              ref={cityRef}
-              value={city}
-              onChange={setCity}
-              returnKeyType="next"
-              onSubmitEditing={() => profissionRef.current?.focus()}
-            />
-            <Input
-              icon="purse-outline"
-              label="Profissão"
-              placeholder="Digite sua profissão"
-              ref={profissionRef}
-              value={profission}
-              onChange={setProfission}
-              returnKeyType="next"
-            />
-            <DateInput
-              label="Nascimento"
-              date={birthDate}
-              onChange={setBirthDate}
-            />
-          </InputContent>
-          <ActionContent>
-            <SubmitButton onPress={() => updateProfileHandle()}>
-              <SubmitButtonText>Atualizar</SubmitButtonText>
-            </SubmitButton>
-          </ActionContent>
-        </Card>
+            <Card>
+              <InputContent>
+                <Input
+                  icon="face-recognition"
+                  label="Nome"
+                  placeholder="Digite seu nome completo"
+                  ref={nameRef}
+                  value={watchName}
+                  onChange={(value: string) => setValue('name', value)}
+                  returnKeyType="next"
+                  error={errors.name?.message}
+                  onSubmitEditing={() => emailRef.current?.focus()}
+                />
+                <PickerInput
+                  label="Sexo"
+                  value={watchGender}
+                  onChange={(value: string) => setValue('gender', value)}
+                  options={sexOptions}
+                  byValue={true}
+                  error={errors.gender?.message}
+                  categorySelectable={true}
+                  open={genderIsOpen}
+                  setOpen={setGenderIsOpen}
+                  onOpen={onGenderOpen}
+                  zIndex={200}
+                  zIndexInverse={100}
+                  key="gender"
+                  listMode="SCROLLVIEW"
+                />
+                <Input
+                  icon="email-outline"
+                  label="Email"
+                  placeholder="Digite seu e-mail"
+                  ref={emailRef}
+                  value={watchEmail}
+                  onChange={(value: string) => setValue('email', value)}
+                  returnKeyType="next"
+                  onSubmitEditing={() => phoneRef.current?.focus()}
+                  error={errors.email?.message}
+                  keyboardType="email-address"
+                />
+                <Input
+                  icon="cellphone-iphone"
+                  label="Telefone"
+                  placeholder="Digite seu telefone"
+                  ref={phoneRef}
+                  maxLength={14}
+                  value={phoneBR(watchPhone)}
+                  onChange={(value: string) =>
+                    setValue('phone', phoneBR(value))
+                  }
+                  returnKeyType="next"
+                  onSubmitEditing={() => cpfRef.current?.focus()}
+                  error={errors.phone?.message}
+                  keyboardType="number-pad"
+                />
+                <Input
+                  icon="fingerprint"
+                  label="CPF"
+                  placeholder="Digite seu CPF"
+                  ref={cpfRef}
+                  maxLength={14}
+                  value={cpfCnpj(watchCpf)}
+                  onChange={(value: string) => setValue('cpf', cpfCnpj(value))}
+                  returnKeyType="next"
+                  onSubmitEditing={() => stateRef.current?.focus()}
+                  error={errors.cpf?.message}
+                  keyboardType="number-pad"
+                />
+                <Input
+                  label="Estado"
+                  placeholder="Digite seu estado"
+                  ref={stateRef}
+                  onChange={(value: string) => setValue('state', value)}
+                  onSubmitEditing={() => cityRef.current?.focus()}
+                  returnKeyType="next"
+                />
+                {/* <Input
+                  label="Cidade"
+                  placeholder="Digite sua cidade"
+                  ref={cityRef}
+                  onChange={(value: string) => setValue('city', value)}
+                  returnKeyType="next"
+                  onSubmitEditing={() => profissionRef.current?.focus()}
+                /> */}
+                <PickerInput
+                  label="Cidade"
+                  value={watchCity}
+                  onChange={(value: string) => setValue('city', value)}
+                  options={cityOptions}
+                  byValue={true}
+                  error={errors.city?.message}
+                  open={cityIsOpen}
+                  setOpen={setCityIsOpen}
+                  onOpen={onCityOpen}
+                  zIndex={100}
+                  zIndexInverse={200}
+                  key="city"
+                  searchable
+                  listMode="MODAL"
+                  categorySelectable={false}
+                />
+                <Input
+                  icon="purse-outline"
+                  label="Profissão"
+                  placeholder="Digite sua profissão"
+                  value={watchProfission}
+                  ref={profissionRef}
+                  onChange={(value: string) => setValue('profission', value)}
+                  error={errors.profission?.message}
+                  returnKeyType="next"
+                />
+                <DateInput
+                  label="Nascimento"
+                  date={watchBirthDate}
+                  onChange={(value: Date) => setValue('birthDate', value)}
+                />
+              </InputContent>
+              <ActionContent>
+                <SubmitButton onPress={handleSubmit(updateProfileHandle)}>
+                  <SubmitButtonText>Atualizar</SubmitButtonText>
+                </SubmitButton>
+              </ActionContent>
+            </Card>
 
-        <DeleteAccountButton onPress={alertToggle}>
-          <Icon name="delete-forever-outline" size={24} color="#FFF" />
-          <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
-        </DeleteAccountButton>
-      </Container>
+            <DeleteAccountButton onPress={alertToggle}>
+              <Icon name="delete-forever-outline" size={24} color="#FFF" />
+              <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
+            </DeleteAccountButton>
+          </>
+        )}
+      />
       <Alert
         title="Opá!"
-        message="você deseja realmente excluir sua conta?"
+        message={'você deseja realmente excluir sua conta?'}
         icon="clipboard-alert-outline"
         iconColor="#3dc77b"
         visible={alertVisible}
@@ -277,6 +427,12 @@ const Profile: React.FC = () => {
         onCancel={alertToggle}
         onConfirm={() => handleDeleteUser()}
       />
+      <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
+        <GuideCarousel
+          data={profileGuideImages}
+          onClose={() => dispatch(hideProfileGuide())}
+        />
+      </Ads>
     </Page>
   );
 };

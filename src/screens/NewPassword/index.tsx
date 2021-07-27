@@ -16,13 +16,12 @@ import {
   ChangePasswordForm,
   SubmitButton,
   SubmitButtonText,
-  Title,
-  Span,
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Keyboard} from 'react-native';
+import Page from '../../components/Page';
+import Text from '../../components/Text';
+import DismissKeyboad from '../../components/DismissKeyboad';
 
 interface NewPasswordProps {
   navigation: {
@@ -42,14 +41,14 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const numberOneRef = useRef(null);
-  const numberTwoRef = useRef(null);
-  const numberThreeRef = useRef(null);
-  const numberFourRef = useRef(null);
-  const numberFiveRef = useRef(null);
-  const numberSixRef = useRef(null);
-  const passwordRef = useRef(null);
-  const confirmPasswordRef = useRef(null);
+  const numberOneRef = useRef<any>();
+  const numberTwoRef = useRef<any>();
+  const numberThreeRef = useRef<any>();
+  const numberFourRef = useRef<any>();
+  const numberFiveRef = useRef<any>();
+  const numberSixRef = useRef<any>();
+  const passwordRef = useRef<any>();
+  const confirmPasswordRef = useRef<any>();
 
   function changeCode(value: string, fieldNumber: number) {
     switch (fieldNumber) {
@@ -182,109 +181,113 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
   }
 
   return (
-    <Container>
-      <SafeAreaView style={{flex: 1}} onTouchStart={Keyboard.dismiss}>
-        <Header>
-          <RowGroup>
-            <BackButton onPress={() => navigation.navigate('Home')}>
-              <Icon name="close" size={24} color="#3dc77b" />
-            </BackButton>
-          </RowGroup>
-          <Logo source={horizontalLogo} resizeMode="contain" />
-          <Title>Nova senha</Title>
-        </Header>
-        {!isValid && (
-          <>
-            <Fields>
-              <InputField>
-                <NumberInput
-                  value={numberOne}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  ref={numberOneRef}
-                  onChangeText={(value) => changeCode(value, 1)}
-                  autoFocus
-                />
-              </InputField>
-              <InputField>
-                <NumberInput
-                  value={numberTwo}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  onChangeText={(value) => changeCode(value, 2)}
-                  ref={numberTwoRef}
-                />
-              </InputField>
-              <InputField>
-                <NumberInput
-                  value={numberThree}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  onChangeText={(value) => changeCode(value, 3)}
-                  ref={numberThreeRef}
-                />
-              </InputField>
-              <InputField>
-                <NumberInput
-                  value={numberFour}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  onChangeText={(value) => changeCode(value, 4)}
-                  ref={numberFourRef}
-                />
-              </InputField>
-              <InputField>
-                <NumberInput
-                  value={numberFive}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  onChangeText={(value) => changeCode(value, 5)}
-                  ref={numberFiveRef}
-                />
-              </InputField>
-              <InputField>
-                <NumberInput
-                  value={numberSix}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  onChangeText={(value) => changeCode(value, 6)}
-                  ref={numberSixRef}
-                />
-              </InputField>
-            </Fields>
-            <Span>digite o código enviado por e-mail para alterar a senha</Span>
-            <SubmitButton onPress={checkCode}>
-              <SubmitButtonText>Enviar</SubmitButtonText>
-            </SubmitButton>
-          </>
-        )}
-        {isValid && (
-          <ChangePasswordForm>
-            <Input
-              onChange={setPassword}
-              value={password}
-              label="Nova senha"
-              placeholder="sua nova senha"
-              buttonIcon
-              onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-              secureTextEntry={passwordVisible}
-              ref={passwordRef}
-            />
-            <Input
-              onChange={setConfirmPassword}
-              value={confirmPassword}
-              label="Confirmar senha"
-              placeholder="repita a senha"
-              secureTextEntry={passwordVisible}
-              ref={confirmPasswordRef}
-            />
-            <SubmitButton onPress={handleNewPassword}>
-              <SubmitButtonText>Salvar</SubmitButtonText>
-            </SubmitButton>
-          </ChangePasswordForm>
-        )}
-      </SafeAreaView>
-    </Container>
+    <Page showHeader={false}>
+      <DismissKeyboad>
+        <Container>
+          <Header>
+            <RowGroup>
+              <BackButton onPress={() => navigation.navigate('Home')}>
+                <Icon name="close" size={24} color="#3dc77b" />
+              </BackButton>
+            </RowGroup>
+            <Logo source={horizontalLogo} resizeMode="contain" />
+            <Text.Title alignment="center">Nova Senha</Text.Title>
+          </Header>
+          {!isValid && (
+            <>
+              <Fields>
+                <InputField>
+                  <NumberInput
+                    value={numberOne}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    ref={numberOneRef}
+                    onChangeText={(value) => changeCode(value, 1)}
+                    autoFocus
+                  />
+                </InputField>
+                <InputField>
+                  <NumberInput
+                    value={numberTwo}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    onChangeText={(value) => changeCode(value, 2)}
+                    ref={numberTwoRef}
+                  />
+                </InputField>
+                <InputField>
+                  <NumberInput
+                    value={numberThree}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    onChangeText={(value) => changeCode(value, 3)}
+                    ref={numberThreeRef}
+                  />
+                </InputField>
+                <InputField>
+                  <NumberInput
+                    value={numberFour}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    onChangeText={(value) => changeCode(value, 4)}
+                    ref={numberFourRef}
+                  />
+                </InputField>
+                <InputField>
+                  <NumberInput
+                    value={numberFive}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    onChangeText={(value) => changeCode(value, 5)}
+                    ref={numberFiveRef}
+                  />
+                </InputField>
+                <InputField>
+                  <NumberInput
+                    value={numberSix}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    onChangeText={(value) => changeCode(value, 6)}
+                    ref={numberSixRef}
+                  />
+                </InputField>
+              </Fields>
+              <Text textWeight="light">
+                digite o código enviado por e-mail para alterar a senha
+              </Text>
+              <SubmitButton onPress={checkCode}>
+                <SubmitButtonText>Enviar</SubmitButtonText>
+              </SubmitButton>
+            </>
+          )}
+          {isValid && (
+            <ChangePasswordForm>
+              <Input
+                onChange={setPassword}
+                value={password}
+                label="Nova senha"
+                placeholder="sua nova senha"
+                buttonIcon
+                onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+                secureTextEntry={passwordVisible}
+                ref={passwordRef}
+              />
+              <Input
+                onChange={setConfirmPassword}
+                value={confirmPassword}
+                label="Confirmar senha"
+                placeholder="repita a senha"
+                secureTextEntry={passwordVisible}
+                ref={confirmPasswordRef}
+              />
+              <SubmitButton onPress={handleNewPassword}>
+                <SubmitButtonText>Salvar</SubmitButtonText>
+              </SubmitButton>
+            </ChangePasswordForm>
+          )}
+        </Container>
+      </DismissKeyboad>
+    </Page>
   );
 };
 

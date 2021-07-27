@@ -4,7 +4,10 @@ export const SafeView = styled.View`
   flex: 1;
 `;
 
-export const Container = styled.ScrollView`
+export const Container = styled.FlatList.attrs({
+  showsVerticalScrollIndicator: false,
+})`
+  flex: 1;
   flex-direction: column;
 `;
 

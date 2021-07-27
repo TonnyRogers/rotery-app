@@ -51,6 +51,8 @@ export const InputField = styled.View`
   justify-content: center;
   align-items: center;
   padding: 0.4rem;
+  border-width: 0.2rem;
+  border-color: #cfcfcf;
 `;
 
 export const NumberInput = styled.TextInput`

@@ -5,6 +5,8 @@ import {
   showFeedGuideSuccess,
   showMyItineraryGuideSuccess,
   showNewItineraryGuideSuccess,
+  GuidesActions,
+  showProfileGuideSuccess,
 } from './actions';
 
 export function* handleShowFeed() {
@@ -37,8 +39,18 @@ export function* handleShowMyItinerary() {
   }
 }
 
+export function* handleShowProfile() {
+  const isVisible = yield call([AsyncStorage, 'getItem'], '@guide:profile');
+
+  if (!isVisible) {
+    yield put(showProfileGuideSuccess());
+    yield call([AsyncStorage, 'setItem'], '@guide:profile', 'true');
+  }
+}
+
 export default all([
-  takeLatest('@guides/SHOW_FEED_GUIDE', handleShowFeed),
-  takeLatest('@guides/SHOW_NEW_ITINERARY_GUIDE', handleShowNewItinerary),
-  takeLatest('@guides/SHOW_MY_ITINERARY_GUIDE', handleShowMyItinerary),
+  takeLatest(GuidesActions.SHOW_FEED_GUIDE, handleShowFeed),
+  takeLatest(GuidesActions.SHOW_NEW_ITINERARY_GUIDE, handleShowNewItinerary),
+  takeLatest(GuidesActions.SHOW_MY_ITINERARY_GUIDE, handleShowMyItinerary),
+  takeLatest(GuidesActions.SHOW_PROFILE_GUIDE, handleShowProfile),
 ]);

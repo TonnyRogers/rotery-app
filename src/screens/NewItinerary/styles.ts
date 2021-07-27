@@ -19,7 +19,10 @@ export const Content = styled.ScrollView.attrs({
   flex: 1;
 `;
 
-export const ModalContent = styled.ScrollView``;
+export const ModalContent = styled.ScrollView`
+  flex: 1;
+  flex-direction: column;
+`;
 
 export const CardHeader = styled.View``;
 

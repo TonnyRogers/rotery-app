@@ -20,7 +20,6 @@ import {
 import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
-  Container,
   Content,
   CardHeader,
   BackButton,
@@ -73,7 +72,7 @@ interface MyItineraryDetailsProps {
 const myGuideImages = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary1.png',
     withInfo: true,
     title: 'Editando Roteiro',
     message: 'Clique no ícone de lápis para editar informações do seu roteiro.',
@@ -81,7 +80,7 @@ const myGuideImages = [
   },
   {
     id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary1.png',
     withInfo: true,
     title: 'Finalizando Roteiros',
     message:
@@ -253,6 +252,14 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     [itinerary],
   );
 
+  const renderQuestions = useCallback(
+    () =>
+      itinerary?.questions.map((question: QuestionProps) => (
+        <ItineraryQuestion question={question} key={question.id} owner />
+      )),
+    [itinerary],
+  );
+
   function goBack() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -262,191 +269,186 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   return (
     <Page showHeader={false}>
       {itinerary && (
-        <Container>
-          <Content>
-            <Share
-              data={{
-                id: itinerary?.id,
-                type: 'itinerary',
-                componentType: 'connectionShareList',
-              }}
-            />
-            <Card>
-              <CardHeader>
-                <BackButton onPress={goBack}>
-                  <Icon name="chevron-left" size={24} color="#3dc77b" />
-                </BackButton>
-                <EditButton
-                  onPress={() =>
-                    navigation.navigate('EditItinerary', {id: itinerary.id})
-                  }>
-                  <Icon name="pencil-outline" size={24} color="#4885FD" />
-                </EditButton>
-              </CardHeader>
-              <CardContent>
-                <RowGroupSpaced>
-                  <Text.Paragraph
-                    textColor="primary"
-                    textWeight="bold"
-                    maxLines={1}>
-                    {itinerary.name}
-                  </Text.Paragraph>
-                  <Text.Paragraph textColor="primary" textWeight="bold">
-                    Vagas: {itinerary.capacity}
-                  </Text.Paragraph>
-                </RowGroupSpaced>
-                <RowGroupSpaced>
-                  <Text textWeight="light" maxLines={1}>
-                    {itinerary.location}
-                  </Text>
-                  <Text textWeight="light" maxLines={1}>
-                    {beginDateFormated.current}
-                  </Text>
-                </RowGroupSpaced>
-                <StatusContent>
-                  <Status>
-                    <StatusName>{itinerary?.status.name}</StatusName>
-                  </Status>
-                </StatusContent>
-                <ImageCarousel data={itinerary?.photos} />
-                <View>
-                  <Text.Paragraph textColor="primary" textWeight="bold">
-                    Descrição:
-                  </Text.Paragraph>
-                  <Text textWeight="light">{itinerary.description}</Text>
-                </View>
-                <HostContent>
-                  <HostLabel>
-                    <Icon name="compass-outline" size={24} color="#3dc77b" />
-                    <Label>Host</Label>
-                  </HostLabel>
-                  <Divider />
-                  <HostButton>
-                    <UserImage
-                      source={{
-                        uri: itinerary?.owner.person.file?.url || undefined,
-                      }}
-                      resizeMode="cover"
-                    />
-                    <HostDetails>
-                      <Text textColor="primary" textWeight="bold" maxLines={1}>
-                        {itinerary.owner.username}
-                      </Text>
-                      <RateStars>
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star-outline" size={24} color="#000" />
-                      </RateStars>
-                    </HostDetails>
-                  </HostButton>
-                </HostContent>
-                <ShadowBox>
-                  <DataContentHeader>
-                    <Icon
-                      name="calendar-blank-outline"
-                      color="#4885FD"
-                      size={24}
-                    />
-                    <Text.Paragraph textColor="primary" textWeight="bold">
-                      Datas
-                    </Text.Paragraph>
-                  </DataContentHeader>
-                  <RowGroupSpaced>
-                    <Text textColor="primary" textWeight="bold">
-                      Saida
-                    </Text>
-                    <Text textWeight="light">{beginDateFormated.current}</Text>
-                  </RowGroupSpaced>
-                  <RowGroupSpaced>
-                    <Text textColor="primary" textWeight="bold">
-                      Retorno
-                    </Text>
-                    <Text textWeight="light">{endDateFormated.current}</Text>
-                  </RowGroupSpaced>
-                  <RowGroupSpaced>
-                    <Text textColor="primary" textWeight="bold">
-                      Limite Incrição
-                    </Text>
-                    <Text textWeight="light">{limitDateFormated.current}</Text>
-                  </RowGroupSpaced>
-                </ShadowBox>
-                <RowGroup>
-                  <IconHolder>
-                    <Icon name="car" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Transporte</Text.Title>
-                </RowGroup>
-                {renderTransports()}
-                <RowGroup>
-                  <IconHolder>
-                    <Icon name="bed" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Hospedagem</Text.Title>
-                </RowGroup>
-                {renderLodgings()}
-                <RowGroup>
-                  <IconHolder>
-                    <Icon name="lightning-bolt" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Atividades</Text.Title>
-                </RowGroup>
-                {renderActivities()}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <RowGroup>
-                  <IconHolder>
-                    <Icon
-                      name="frequently-asked-questions"
-                      color="#FFF"
-                      size={24}
-                    />
-                  </IconHolder>
-                  <Text.Title>Dúvidas e Comentários</Text.Title>
-                </RowGroup>
-              </CardHeader>
-              <CardContent>
-                {itinerary.questions.map((question: QuestionProps) => (
-                  <ItineraryQuestion
-                    question={question}
-                    key={question.id}
-                    owner
+        <Content
+          renderToHardwareTextureAndroid
+          shouldRasterizeIOS
+          scrollEventThrottle={16}
+          nestedScrollEnabled
+          decelerationRate="normal">
+          <Share
+            data={{
+              id: itinerary?.id,
+              type: 'itinerary',
+              componentType: 'connectionShareList',
+            }}
+          />
+          <Card>
+            <CardHeader>
+              <BackButton onPress={goBack}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+              <EditButton
+                onPress={() =>
+                  navigation.navigate('EditItinerary', {id: itinerary.id})
+                }>
+                <Icon name="pencil-outline" size={24} color="#4885FD" />
+              </EditButton>
+            </CardHeader>
+            <CardContent>
+              <RowGroupSpaced>
+                <Text.Paragraph
+                  textColor="primary"
+                  textWeight="bold"
+                  maxLines={1}>
+                  {itinerary.name}
+                </Text.Paragraph>
+                <Text.Paragraph textColor="primary" textWeight="bold">
+                  Vagas: {itinerary.capacity}
+                </Text.Paragraph>
+              </RowGroupSpaced>
+              <RowGroupSpaced>
+                <Text textWeight="light" maxLines={1}>
+                  {itinerary.location}
+                </Text>
+                <Text textWeight="light" maxLines={1}>
+                  {beginDateFormated.current}
+                </Text>
+              </RowGroupSpaced>
+              <StatusContent>
+                <Status>
+                  <StatusName>{itinerary?.status.name}</StatusName>
+                </Status>
+              </StatusContent>
+              <ImageCarousel data={itinerary?.photos} />
+              <View>
+                <Text.Paragraph textColor="primary" textWeight="bold">
+                  Descrição:
+                </Text.Paragraph>
+                <Text textWeight="light">{itinerary.description}</Text>
+              </View>
+              <HostContent>
+                <HostLabel>
+                  <Icon name="compass-outline" size={24} color="#3dc77b" />
+                  <Label>Host</Label>
+                </HostLabel>
+                <Divider />
+                <HostButton>
+                  <UserImage
+                    source={{
+                      uri: itinerary?.owner.person.file?.url || undefined,
+                    }}
+                    resizeMode="cover"
                   />
-                ))}
-              </CardContent>
-            </Card>
+                  <HostDetails>
+                    <Text textColor="primary" textWeight="bold" maxLines={1}>
+                      {itinerary.owner.username}
+                    </Text>
+                    <RateStars>
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star-outline" size={24} color="#000" />
+                    </RateStars>
+                  </HostDetails>
+                </HostButton>
+              </HostContent>
+              <ShadowBox>
+                <DataContentHeader>
+                  <Icon
+                    name="calendar-blank-outline"
+                    color="#4885FD"
+                    size={24}
+                  />
+                  <Text.Paragraph textColor="primary" textWeight="bold">
+                    Datas
+                  </Text.Paragraph>
+                </DataContentHeader>
+                <RowGroupSpaced>
+                  <Text textColor="primary" textWeight="bold">
+                    Saida
+                  </Text>
+                  <Text textWeight="light">{beginDateFormated.current}</Text>
+                </RowGroupSpaced>
+                <RowGroupSpaced>
+                  <Text textColor="primary" textWeight="bold">
+                    Retorno
+                  </Text>
+                  <Text textWeight="light">{endDateFormated.current}</Text>
+                </RowGroupSpaced>
+                <RowGroupSpaced>
+                  <Text textColor="primary" textWeight="bold">
+                    Limite Incrição
+                  </Text>
+                  <Text textWeight="light">{limitDateFormated.current}</Text>
+                </RowGroupSpaced>
+              </ShadowBox>
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="car" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Transporte</Text.Title>
+              </RowGroup>
+              {renderTransports()}
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="bed" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Hospedagem</Text.Title>
+              </RowGroup>
+              {renderLodgings()}
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="lightning-bolt" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Atividades</Text.Title>
+              </RowGroup>
+              {renderActivities()}
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <RowGroup>
-                  <IconHolder>
-                    <Icon name="account-check-outline" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Membros</Text.Title>
-                </RowGroup>
-              </CardHeader>
-              <CardContent>{renderMembers()}</CardContent>
-            </Card>
-            <RowGroupSpaced>
-              <FinalizeItineraryButton onPress={showFinishAlert}>
-                <Icon name="progress-check" size={24} color="#FFF" />
-                <FinalizeItineraryButtonText>
-                  Finalizar Roteiro
-                </FinalizeItineraryButtonText>
-              </FinalizeItineraryButton>
-              <DeleteItineraryButton onPress={showDeleteAlert}>
-                <Icon name="delete-forever-outline" size={24} color="#FFF" />
-                <DeleteItineraryButtonText>
-                  Excluir Roteiro
-                </DeleteItineraryButtonText>
-              </DeleteItineraryButton>
-            </RowGroupSpaced>
-          </Content>
-        </Container>
+          <Card>
+            <CardHeader>
+              <RowGroup>
+                <IconHolder>
+                  <Icon
+                    name="frequently-asked-questions"
+                    color="#FFF"
+                    size={24}
+                  />
+                </IconHolder>
+                <Text.Title>Dúvidas e Comentários</Text.Title>
+              </RowGroup>
+            </CardHeader>
+            <CardContent>{renderQuestions()}</CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="account-check-outline" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Membros</Text.Title>
+              </RowGroup>
+            </CardHeader>
+            <CardContent>{renderMembers()}</CardContent>
+          </Card>
+          <RowGroupSpaced>
+            <FinalizeItineraryButton onPress={showFinishAlert}>
+              <Icon name="progress-check" size={24} color="#FFF" />
+              <FinalizeItineraryButtonText>
+                Finalizar Roteiro
+              </FinalizeItineraryButtonText>
+            </FinalizeItineraryButton>
+            <DeleteItineraryButton onPress={showDeleteAlert}>
+              <Icon name="delete-forever-outline" size={24} color="#FFF" />
+              <DeleteItineraryButtonText>
+                Excluir Roteiro
+              </DeleteItineraryButtonText>
+            </DeleteItineraryButton>
+          </RowGroupSpaced>
+        </Content>
       )}
       <Alert
         title="Fim do Roteiro!"
@@ -466,7 +468,6 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         onRequestClose={(value) => setAlertVisible(value)}
         onConfirm={handleDeleteItinerary}
       />
-
       <Ads visible={myItineraryGuide} onRequestClose={() => {}}>
         <GuideCarousel
           data={myGuideImages}

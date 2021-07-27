@@ -59,9 +59,7 @@ export function* getFilteredItineraries({
       `/feed?begin=${filter.begin}&end=${filter.end}`,
     );
 
-    if (response.data.data.length > 0) {
-      yield put(getFeedFilteredSuccess(response.data.data));
-    }
+    yield put(getFeedFilteredSuccess(response.data.data));
   } catch (error) {
     yield put(getFeedFilteredFailure());
     Toast.show({

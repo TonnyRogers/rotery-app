@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
 export const Container = styled.View`
   margin-bottom: 2rem;
@@ -10,7 +11,7 @@ export const Label = styled.Text`
   color: #808080;
 `;
 
-export const Field = styled.TextInput`
+export const Field = styled.TextInput<{hasError: boolean}>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -18,7 +19,7 @@ export const Field = styled.TextInput`
   border-radius: 0.8rem;
   border-width: 0.1rem;
   border-style: solid;
-  border-color: #cfcfcf;
+  border-color: ${(props) => (props.hasError ? theme.colors.red : '#cfcfcf')};
   min-height: 4rem;
   padding: 1rem;
 `;

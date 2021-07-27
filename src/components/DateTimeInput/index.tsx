@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useMemo, useState, forwardRef} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Platform} from 'react-native';
 import {format} from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -8,17 +8,21 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label, RowGroup} from './styles';
+import Text from '../Text';
 
 interface DateTimeInputProps {
+  error?: string;
   label: string;
   date: Date;
   onChange(date: Date): any;
 }
 
-const DateTimeInput: React.FC<DateTimeInputProps> = (
-  {label, date, onChange},
-  ref,
-) => {
+const DateTimeInput: React.FC<DateTimeInputProps> = ({
+  label,
+  date,
+  error,
+  onChange,
+}) => {
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
 
@@ -51,7 +55,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = (
   return (
     <Container>
       <Label>{label}</Label>
-      <DateButton onPress={showDatePicker}>
+      <DateButton hasError={!!error} onPress={showDatePicker}>
         <RowGroup>
           {!show && !showTime && (
             <DateText>
@@ -85,6 +89,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = (
         </RowGroup>
         <Icon name="calendar-today" color="#808080" size={24} />
       </DateButton>
+      {error && <Text textColor="red">{error}</Text>}
     </Container>
   );
 };

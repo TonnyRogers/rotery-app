@@ -54,10 +54,13 @@ const Favorites: React.FC = () => {
               <Card>
                 <ColumnGroup>
                   <Icon name="heart-off-outline" size={30} color="#3dc77b" />
-                  <Text.Title textColor="secondary">
+                  <Text.Title alignment="center">
                     Nenhum Favotiro Ainda
                   </Text.Title>
-                  <Text.Paragraph textColor="secondary">
+                  <Text.Paragraph
+                    textColor="secondary"
+                    alignment="center"
+                    textWeight="light">
                     Vá para o Feed
                   </Text.Paragraph>
                 </ColumnGroup>

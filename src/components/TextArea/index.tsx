@@ -2,33 +2,34 @@ import React, {forwardRef} from 'react';
 
 import {Container, Field, Label} from './styles';
 import {TextInputProps} from 'react-native';
+import Text from '../Text';
 
 interface TextAreaProps extends TextInputProps {
+  error?: string;
   label?: string;
   placeholder?: string;
-  value: any;
   icon?: string;
   onChange: any;
-  onSubmitEditing?(): void;
 }
 
 const TextArea = (
-  {label, value, placeholder, onChange, ...props}: TextAreaProps,
+  {label, placeholder, onChange, error, ...props}: TextAreaProps,
   ref,
 ) => {
   return (
     <Container>
       <Label>{label}</Label>
       <Field
-        value={value}
         placeholder={placeholder}
         onChangeText={onChange}
         multiline
         numberOfLines={3}
         placeholderTextColor="#808080"
         ref={ref}
+        hasError={!!error}
         {...props}
       />
+      {error && <Text textColor="red">{error}</Text>}
     </Container>
   );
 };

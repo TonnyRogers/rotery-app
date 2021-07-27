@@ -1,11 +1,6 @@
 import styled from 'styled-native-components';
 import {KeyboardAvoidingView as RNKAvoindingView, Platform} from 'react-native';
 
-const shadow =
-  Platform.OS === 'ios'
-    ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
-    : 'elevation: 1;';
-
 const metricHeight = Platform.OS === 'ios' ? 'vh' : '%';
 const metricWidth = Platform.OS === 'ios' ? 'vw' : '%';
 
@@ -26,11 +21,9 @@ export const ModalContent = styled.View.attrs({})`
   background: #fff;
   padding: 1rem;
   margin: 2rem;
-  justify-content: center;
   border-radius: 0.8rem;
-  ${shadow}
   margin-top: 6.5rem;
-  min-height: 50rem;
+  flex: 1;
 `;
 
 export const Logo = styled.Image`

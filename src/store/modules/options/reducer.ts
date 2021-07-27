@@ -4,16 +4,19 @@ import {OptionsActions} from './actions';
 export interface ActivityProps {
   id: number;
   name: string;
+  value: string;
 }
 
 export interface TransportProps {
   id: number;
   name: string;
+  value: string;
 }
 
 export interface LodgingProps {
   id: number;
   name: string;
+  value: string;
 }
 
 export interface InitialStateProps {

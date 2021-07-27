@@ -60,8 +60,10 @@ const MyItineraries: React.FC = () => {
                     size={30}
                     color="#3dc77b"
                   />
-                  <Text.Title>Nada por aqui</Text.Title>
-                  <Text.Paragraph>Crie seu primeiro roteiro!</Text.Paragraph>
+                  <Text.Title alignment="center">Nada por aqui</Text.Title>
+                  <Text.Paragraph alignment="center" textWeight="light">
+                    Crie seu primeiro roteiro!
+                  </Text.Paragraph>
                 </ColumnGroup>
                 <NewItineraryButton
                   onPress={() => navigation.navigate('NewItinerary')}>

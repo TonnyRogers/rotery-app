@@ -142,9 +142,9 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
               <Text.Title>Menu</Text.Title>
             </Header>
             <Actions>
-              <MenuButton onPress={toConnections}>
-                <Icon name="link-variant" size={24} color="#FFF" />
-                <MenuButtonText>Minhas Conexões</MenuButtonText>
+              <MenuButton onPress={toFavorites}>
+                <Icon name="heart-outline" size={24} color="#FFF" />
+                <MenuButtonText>Favoritos</MenuButtonText>
               </MenuButton>
               <MenuButton onPress={toDirecMessages}>
                 <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
@@ -161,9 +161,9 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
                 <Icon name="map-check" size={24} color="#FFF" />
                 <MenuButtonText>Próximos Roteiros</MenuButtonText>
               </MenuButton>
-              <MenuButton onPress={toFavorites}>
-                <Icon name="heart-outline" size={24} color="#FFF" />
-                <MenuButtonText>Favoritos</MenuButtonText>
+              <MenuButton onPress={toConnections}>
+                <Icon name="link-variant" size={24} color="#FFF" />
+                <MenuButtonText>Minhas Conexões</MenuButtonText>
               </MenuButton>
               <MenuButton onPress={toFeed}>
                 <Icon name="format-list-text" size={24} color="#FFF" />

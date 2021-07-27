@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import {
   Container,
@@ -6,14 +6,12 @@ import {
   Bullets,
   Bullet,
   HighlightContent,
-  Title,
-  Subtitle,
   ActionContent,
   CloseButton,
   CloseButtonText,
-  Content,
 } from './styles';
 import GuideItem from '../GuideItem';
+import Text from '../Text';
 
 interface dataProps {
   id: number;
@@ -63,6 +61,42 @@ const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
     );
   }
 
+  const renderItems = useCallback(
+    () =>
+      data.map((item) => (
+        <GuideItem
+          key={item.id}
+          background={item.url}
+          animation={item.isAnimation}>
+          {item.withInfo && (
+            <HighlightContent>
+              <Text.Paragraph
+                textColor="primary"
+                textWeight="bold"
+                alignment="center"
+                maxLines={1}>
+                {item.title}
+              </Text.Paragraph>
+              <Text alignment="center" textWeight="light" maxLines={5}>
+                {item.message}
+              </Text>
+            </HighlightContent>
+          )}
+        </GuideItem>
+      )),
+    [data],
+  );
+
+  const renderButton = useCallback(
+    () =>
+      interval === intervals && (
+        <CloseButton onPress={onClose}>
+          <CloseButtonText>Fechar</CloseButtonText>
+        </CloseButton>
+      ),
+    [interval, intervals, onClose],
+  );
+
   return (
     <Container>
       <ImageList
@@ -70,35 +104,17 @@ const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
         contentContainerStyle={{width: `${100 * intervals}%`}}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
-        onContentSizeChange={(w, h) => init(w)}
+        onContentSizeChange={(w, _) => init(w)}
         onScroll={(e) => {
           setWidth(e.nativeEvent.contentSize.width);
-          setInterval(getInterval(e.nativeEvent.contentOffset.x));
+          setInterval(getInterval(e.nativeEvent.contentOffset.x) || 0);
         }}
         decelerationRate="fast"
         pagingEnabled>
-        {data.map((item) => (
-          <GuideItem
-            key={item.id}
-            background={item.url}
-            animation={item.isAnimation}>
-            {item.withInfo && (
-              <HighlightContent>
-                <Title>{item.title}</Title>
-                <Subtitle>{item.message}</Subtitle>
-              </HighlightContent>
-            )}
-          </GuideItem>
-        ))}
+        {renderItems()}
       </ImageList>
       <Bullets>{bullets}</Bullets>
-      <ActionContent>
-        {interval === intervals && (
-          <CloseButton onPress={onClose}>
-            <CloseButtonText>Fechar</CloseButtonText>
-          </CloseButton>
-        )}
-      </ActionContent>
+      <ActionContent>{renderButton()}</ActionContent>
     </Container>
   );
 };

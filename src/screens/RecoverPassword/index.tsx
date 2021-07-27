@@ -9,15 +9,15 @@ import {
   Header,
   RowGroup,
   Logo,
-  Title,
   SubmitButton,
   SubmitButtonText,
   BackButton,
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Keyboard} from 'react-native';
+import Page from '../../components/Page';
+import Text from '../../components/Text';
+import DismissKeyboad from '../../components/DismissKeyboad';
 
 interface RecoverPasswordProps {
   navigation: {
@@ -64,30 +64,32 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
   }
 
   return (
-    <Container>
-      <SafeAreaView style={{flex: 1}} onTouchStart={Keyboard.dismiss}>
-        <Header>
-          <RowGroup>
-            <BackButton onPress={goBack}>
-              <Icon name="chevron-left" size={24} color="#3dc77b" />
-            </BackButton>
-          </RowGroup>
-          <Logo source={horizontalLogo} resizeMode="contain" />
-          <Title>Recuperar acesso</Title>
-        </Header>
-        <Input
-          onChange={setEmail}
-          value={email}
-          label="E-mail"
-          placeholder="seu e-mail de acesso"
-          autoCapitalize="none"
-          ref={emailRef}
-        />
-        <SubmitButton onPress={handleRecoverPassword}>
-          <SubmitButtonText>Recuperar</SubmitButtonText>
-        </SubmitButton>
-      </SafeAreaView>
-    </Container>
+    <Page showHeader={false}>
+      <DismissKeyboad>
+        <Container>
+          <Header>
+            <RowGroup>
+              <BackButton onPress={goBack}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+            </RowGroup>
+            <Logo source={horizontalLogo} resizeMode="contain" />
+            <Text.Title alignment="center">Recuperar acesso</Text.Title>
+          </Header>
+          <Input
+            onChange={setEmail}
+            value={email}
+            label="E-mail"
+            placeholder="seu e-mail de acesso"
+            autoCapitalize="none"
+            ref={emailRef}
+          />
+          <SubmitButton onPress={handleRecoverPassword}>
+            <SubmitButtonText>Recuperar</SubmitButtonText>
+          </SubmitButton>
+        </Container>
+      </DismissKeyboad>
+    </Page>
   );
 };
 

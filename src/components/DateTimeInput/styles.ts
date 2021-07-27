@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
 export const Container = styled.View`
   margin-bottom: 2rem;
@@ -16,14 +17,15 @@ export const RowGroup = styled.View`
   margin: 1rem 0;
 `;
 
-export const DateButton = styled.TouchableOpacity`
+export const DateButton = styled.TouchableOpacity<{hasError: boolean}>`
   height: 4.5rem;
   border-radius: 0.4rem;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   border-bottom-width: 0.1rem;
-  border-bottom-color: #cfcfcf;
+  border-bottom-color: ${(props) =>
+    props.hasError ? theme.colors.red : '#cfcfcf'};
 `;
 
 export const DateText = styled.Text`

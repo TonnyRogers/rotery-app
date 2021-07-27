@@ -1,9 +1,12 @@
-import React, {useState, useRef, useMemo, useEffect} from 'react';
+import React, {useRef, useMemo, useEffect} from 'react';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import {formatBRL} from '../../lib/mask';
 import {
@@ -58,6 +61,9 @@ import Share from '../../components/Share';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 
+const validationSchema = yup.object().shape({
+  question: yup.string().required('campo obrigatório'),
+});
 interface FeedItineraryDetailsProps {
   route: {
     params: {id: number};
@@ -72,12 +78,19 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const {id} = route.params;
   const {itineraries} = useSelector((state: RootStateProps) => state.feed);
   const {user} = useSelector((state: RootStateProps) => state.auth);
-  const [question, setQuestion] = useState('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
+
+  const watchQuestion = watch('question');
   const beginDateFormated = useRef('');
   const endDateFormated = useRef('');
   const limitDateFormated = useRef('');
-
-  const questionRef = useRef();
+  const questionRef = useRef<any>();
   const dispatch = useDispatch();
 
   const itinerary: ItineraryProps | any = useMemo(
@@ -93,6 +106,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
       itinerary.members.find((member: MemberProps) => member.id === user.id),
     [itinerary.members, user.id],
   );
+
+  useEffect(() => {
+    register('question');
+  }, [register]);
 
   useEffect(() => {
     if (isMember && isMember.pivot.accepted === true) {
@@ -122,10 +139,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     );
   }, [itinerary]);
 
-  function handleMakeQuestion() {
-    dispatch(makeQuestionRequest(itinerary.id, question));
-    setQuestion('');
-  }
+  const handleMakeQuestion = (data: any) => {
+    dispatch(makeQuestionRequest(itinerary.id, data.question));
+    setValue('question', '');
+  };
 
   function handleJoinItinerary() {
     dispatch(joinRequest(id));
@@ -366,11 +383,12 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               <>
                 <TextArea
                   placeholder="faça uma pergunta..."
-                  value={question}
+                  value={watchQuestion}
                   ref={questionRef}
-                  onChange={setQuestion}
+                  onChange={(value: string) => setValue('question', value)}
+                  error={errors.question?.message}
                 />
-                <SendButton onPress={handleMakeQuestion}>
+                <SendButton onPress={handleSubmit(handleMakeQuestion)}>
                   <Icon name="send-outline" size={24} color="#FFF" />
                   <SendButtonText>Perguntar</SendButtonText>
                 </SendButton>

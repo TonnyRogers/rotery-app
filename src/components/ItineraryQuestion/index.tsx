@@ -1,13 +1,15 @@
-import React, {useState, useRef, useMemo} from 'react';
+import React, {useRef, useMemo, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import {replyQuestionRequest} from '../../store/modules/itineraries/actions';
 
 import {
-  Container,
   OwnerDetails,
   UserImage,
   ColumnGroup,
@@ -26,6 +28,10 @@ import {QuestionProps} from '../../utils/types';
 import {toDateTimeZone} from '../../utils/helpers';
 import ShadowBox from '../ShadowBox';
 
+const validationSchema = yup.object().shape({
+  answer: yup.string().required('campo obrigatório'),
+});
+
 interface ItineraryQuestionProps {
   question: QuestionProps;
   owner?: boolean;
@@ -36,11 +42,22 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   owner,
 }) => {
   const dispatch = useDispatch();
-  const [answer, setAnswer] = useState('');
   const answerRef = useRef();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
 
   let createDateFormated = useRef('');
   let updateDateFormated = useRef('');
+
+  useEffect(() => {
+    register('answer');
+  }, [register]);
+
   useMemo(() => {
     const createdZonedDate = toDateTimeZone(question.created_at);
     const updatedZonedDate = toDateTimeZone(question.updated_at);
@@ -52,14 +69,11 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
     });
   }, [question.created_at, question.updated_at]);
 
-  function handleSubmitAnwser(questionId: number) {
-    if (!answer) {
-      return;
-    }
-
-    dispatch(replyQuestionRequest(question.itinerary_id, questionId, answer));
-    setAnswer('');
-  }
+  const handleSubmitAnwser = (data: any) => {
+    dispatch(
+      replyQuestionRequest(question.itinerary_id, question.id, data.answer),
+    );
+  };
 
   return (
     <ShadowBox>
@@ -86,11 +100,11 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
           <>
             <TextArea
               placeholder="sua resposta..."
-              value={answer}
               ref={answerRef}
-              onChange={setAnswer}
+              onChange={(value: string) => setValue('answer', value)}
+              error={errors.answer?.message}
             />
-            <SendButton onPress={() => handleSubmitAnwser(question.id)}>
+            <SendButton onPress={handleSubmit(handleSubmitAnwser)}>
               <Icon name="send-outline" size={24} color="#FFF" />
               <SendButtonText>Responder</SendButtonText>
             </SendButton>

@@ -4,6 +4,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import {formatBRL} from '../../lib/mask';
 import {
@@ -59,6 +62,9 @@ import Page from '../../components/Page';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 
+const validationSchema = yup.object().shape({
+  question: yup.string().required('campo obrigatório'),
+});
 interface ItineraryDetailsProps {
   route: {
     params: {id: number};
@@ -76,7 +82,15 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   );
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const [alertVisible, setAlertVisible] = useState(false);
-  const [question, setQuestion] = useState('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
+
+  const watchQuestion = watch('question');
   const beginDateFormated = useRef('');
   const endDateFormated = useRef('');
   const limitDateFormated = useRef('');
@@ -100,6 +114,10 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
       ),
     [itinerary, user.id],
   );
+
+  useEffect(() => {
+    register('question');
+  }, [register]);
 
   useEffect(() => {
     if (!isMember) {
@@ -141,10 +159,10 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     dispatch(leaveItineraryRequest(itinerary.id));
   }
 
-  function handleMakeQuestion() {
-    dispatch(makeQuestionRequest(itinerary.id, question));
-    setQuestion('');
-  }
+  const handleMakeQuestion = (data: any) => {
+    dispatch(makeQuestionRequest(itinerary.id, data.question));
+    setValue('question', '');
+  };
 
   function viewProfile(userId: number) {
     navigation.navigate('UserDetails', {
@@ -368,11 +386,12 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               <>
                 <TextArea
                   placeholder="faça uma pergunta..."
-                  value={question}
+                  value={watchQuestion}
                   ref={questionRef}
-                  onChange={setQuestion}
+                  onChange={(value: string) => setValue('question', value)}
+                  error={errors.question?.message}
                 />
-                <SendButton onPress={handleMakeQuestion}>
+                <SendButton onPress={handleSubmit(handleMakeQuestion)}>
                   <Icon name="send-outline" size={24} color="#FFF" />
                   <SendButtonText>Perguntar</SendButtonText>
                 </SendButton>

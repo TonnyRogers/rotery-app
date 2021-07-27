@@ -1,25 +1,25 @@
-import React, {forwardRef} from 'react';
+import React, {forwardRef, ForwardRefRenderFunction} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, Label, Field, Content, ButtonIcon} from './styles';
-import {TextInputProps} from 'react-native';
+import {TextInputProps, TextInput} from 'react-native';
+import Text from '../Text';
 
 interface InputProps extends TextInputProps {
+  error?: string;
   label?: string;
   placeholder?: string;
-  value?: string;
   icon?: string;
   onChange: any;
   secureTextEntry?: boolean;
   buttonIcon?: boolean;
   onClickButtonIcon?(): void;
-  onSubmitEditing?(): void;
 }
 
-const Input = (
+const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
   {
+    error,
     label,
-    value,
     placeholder,
     icon,
     onChange,
@@ -33,9 +33,8 @@ const Input = (
   return (
     <Container>
       {label && <Label>{label}</Label>}
-      <Content>
+      <Content hasError={!!error}>
         <Field
-          value={String(value)}
           placeholder={placeholder}
           onChangeText={onChange}
           secureTextEntry={secureTextEntry}
@@ -54,6 +53,7 @@ const Input = (
           </ButtonIcon>
         )}
       </Content>
+      {error && <Text textColor="red">{error}</Text>}
     </Container>
   );
 };

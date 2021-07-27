@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
 export const Container = styled.View`
   margin-bottom: 2rem;
@@ -16,12 +17,13 @@ export const Field = styled.TextInput`
   height: 4.4rem;
 `;
 
-export const Content = styled.View`
+export const Content = styled.View<{hasError: boolean}>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   border-bottom-width: 0.1rem;
-  border-bottom-color: #cfcfcf;
+  border-bottom-color: ${(props) =>
+    props.hasError ? theme.colors.red : '#cfcfcf'};
   position: relative;
 `;
 

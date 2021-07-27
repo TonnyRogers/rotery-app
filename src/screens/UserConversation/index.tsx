@@ -1,11 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useRef, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
 import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
 import {ScrollView, Keyboard} from 'react-native';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import {
   getConversationRequest,
@@ -51,6 +54,10 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import Page from '../../components/Page';
 import {toDateTimeZone} from '../../utils/helpers';
 
+const validationSchema = yup.object().shape({
+  message: yup.string().required('campo obrigatório'),
+});
+
 interface UserConversation {
   route: {
     params: {
@@ -62,13 +69,24 @@ interface UserConversation {
 const UserConversation: React.FC<UserConversation> = ({route}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [message, setMessage] = useState('');
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
 
+  const watchMessage = watch('message');
   const scrollViewRef = useRef<ScrollView>();
-  const messageRef = useRef();
+  const messageRef = useRef<any>();
   const {userId} = route.params;
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {conversation} = useSelector((state: RootStateProps) => state.messages);
+
+  useEffect(() => {
+    register('message');
+  }, [register]);
 
   useEffect(() => {
     dispatch(getConversationRequest(userId));
@@ -89,26 +107,25 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   const sender = conversation?.find((item) => item.sender_id === userId);
 
   const formatDate = useCallback((date: string, withParser: boolean = true) => {
-    const zonedDate = toDateTimeZone(date);
-    if (withParser) {
+    if (date) {
+      const zonedDate = toDateTimeZone(date);
+      if (withParser) {
+        return format(zonedDate, 'dd MMM yyyy H:mm', {
+          locale: pt,
+        });
+      }
+
       return format(zonedDate, 'dd MMM yyyy H:mm', {
         locale: pt,
       });
     }
-
-    return format(zonedDate, 'dd MMM yyyy H:mm', {
-      locale: pt,
-    });
   }, []);
 
-  function handleSendMessage() {
+  const handleSendMessage = (data: any) => {
     Keyboard.dismiss();
-    if (!message) {
-      return;
-    }
-    dispatch(sendMessageRequest(userId, message));
-    setMessage('');
-  }
+    dispatch(sendMessageRequest(userId, data.message));
+    setValue('message', '');
+  };
 
   const renderMessage = useCallback(() => {
     const reverseConversation: MessageProps[] = JSON.parse(
@@ -139,7 +156,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
               <RowGroupSpaced>
                 <ShareSubTitle>{messageItem.json_data?.location}</ShareSubTitle>
                 <ShareSubTitle>
-                  {formatDate(messageItem?.json_data?.begin, false)}
+                  {formatDate(messageItem.json_data?.begin, false)}
                 </ShareSubTitle>
               </RowGroupSpaced>
               <ShareButton
@@ -192,18 +209,20 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
         <Card>
           <CardHeader />
           <CardContent>
+            {/* mudar para Flatlist ou VirtualizedList */}
             <ConversationList ref={scrollViewRef}>
               {renderMessage()}
             </ConversationList>
 
             <MessageForm>
               <TextArea
-                value={message}
-                onChange={setMessage}
+                value={watchMessage}
+                onChange={(value: string) => setValue('message', value)}
                 ref={messageRef}
                 placeholder="Digite sua mensagem"
+                error={errors.message?.message}
               />
-              <SendButton onPress={handleSendMessage}>
+              <SendButton onPress={handleSubmit(handleSendMessage)}>
                 <Icon name="send-outline" size={24} color="#FFF" />
                 <SendButtonText>Enviar</SendButtonText>
               </SendButton>

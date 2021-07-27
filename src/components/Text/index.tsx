@@ -9,30 +9,49 @@ import {
 
 interface TextProps extends CustomStyledProps {
   children: ReactNode;
+  withLineBreak?: boolean;
 }
 
 interface TitleProps extends TextProps {}
 
 interface ParagraphProps extends TextProps {}
 
-const Text = ({children, textColor, textWeight, maxLines}: TextProps) => {
+const Text = ({
+  children,
+  textColor,
+  textWeight,
+  maxLines,
+  alignment,
+  withLineBreak,
+}: TextProps) => {
   return (
     <SimpleText
       textColor={textColor}
       textWeight={textWeight}
-      maxLines={maxLines}>
+      maxLines={maxLines}
+      alignment={alignment}>
       {children}
+      {withLineBreak && '\n'}
     </SimpleText>
   );
 };
 
-const Title = ({children, textColor, textWeight, maxLines}: TitleProps) => {
+const Title = ({
+  children,
+  textColor,
+  textWeight,
+  maxLines,
+  alignment,
+  withLineBreak,
+}: TitleProps) => {
   return (
     <TitleText
       textColor={textColor}
       textWeight={textWeight}
-      maxLines={maxLines}>
+      maxLines={maxLines}
+      alignment={alignment}>
       {children}
+      {withLineBreak && '\n'}
     </TitleText>
   );
 };
@@ -42,13 +61,17 @@ const Paragraph = ({
   textColor,
   textWeight,
   maxLines,
+  alignment,
+  withLineBreak,
 }: ParagraphProps) => {
   return (
     <ParagraphText
       textColor={textColor}
       textWeight={textWeight}
-      maxLines={maxLines}>
+      maxLines={maxLines}
+      alignment={alignment}>
       {children}
+      {withLineBreak && '\n'}
     </ParagraphText>
   );
 };

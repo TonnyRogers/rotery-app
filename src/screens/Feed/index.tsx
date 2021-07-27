@@ -40,15 +40,24 @@ import Text from '../../components/Text';
 const feedGuideImages = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-1.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Complete seu perfil',
+    message:
+      'Adicione foto e seus dados para uma melhor experiência na comunidade.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-filter1.png',
     withInfo: true,
     title: 'Filtrando Roteiros 1/2',
     message: 'Clique no ícone de filtro para customizar o filtro de roteiros.',
     isAnimation: false,
   },
   {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-2.png',
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-filter2.png',
     withInfo: true,
     title: 'Filtrando Roteiros 2/2',
     message:
@@ -56,24 +65,24 @@ const feedGuideImages = [
     isAnimation: false,
   },
   {
-    id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-filter-1.png',
+    id: 4,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-filter1.png',
     withInfo: true,
     title: 'Limpando filtro',
     message: 'Clique e segure no botão de filtro até o dispositivo vibrar.',
     isAnimation: false,
   },
   {
-    id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-reload-feed.png',
+    id: 5,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-reload-feed.png',
     withInfo: true,
     title: 'Carregando novos roteiros',
     message: 'Deslize os dedos para baixo para atualizar feed.',
     isAnimation: false,
   },
   {
-    id: 5,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guide-new-itinerary.png',
+    id: 6,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary.png',
     withInfo: true,
     title: 'Criando novo roteiro',
     message: 'Clique no ícone de "mais" para criar um novo roteiro.',
@@ -175,6 +184,8 @@ const Feed: React.FC = () => {
           </FilterContent>
           <ItineraryList
             data={itineraries}
+            removeClippedSubviews
+            initialNumToRender={3}
             keyExtractor={(item: any) => String(item.id)}
             renderItem={({item}: any) => (
               <Itinerary
@@ -191,11 +202,11 @@ const Feed: React.FC = () => {
                     color="#3dc77b"
                   />
 
-                  <Text.Title textColor="secondary">Ops!</Text.Title>
-                  <Text.Paragraph>
+                  <Text.Title alignment="center">Ops!</Text.Title>
+                  <Text.Paragraph alignment="center" textWeight="light">
                     Parece que não tem nada por aqui.
                   </Text.Paragraph>
-                  <Text.Paragraph>
+                  <Text.Paragraph alignment="center" textWeight="light">
                     Crie seu prório roteiro agora mesmo!
                   </Text.Paragraph>
                 </EmptyData>

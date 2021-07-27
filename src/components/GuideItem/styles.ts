@@ -1,8 +1,6 @@
 import styled from 'styled-native-components';
 import LottieView from 'lottie-react-native';
-import {Dimensions} from 'react-native';
 
-const {width} = Dimensions.get('screen');
 export const Container = styled.View.attrs({})`
   border-radius: 0.8rem;
   flex: 1;
@@ -13,12 +11,15 @@ export const Container = styled.View.attrs({})`
 export const Background = styled.Image`
   flex: 1;
   width: 100%;
+  height: 100%;
   border-top-left-radius: 0.8rem;
   border-top-right-radius: 0.8rem;
   background: #fff;
 `;
 
-export const ImageContent = styled.View``;
+export const ImageContent = styled.View`
+  flex: 1;
+`;
 
 export const Info = styled.View.attrs({})`
   background: #fff;

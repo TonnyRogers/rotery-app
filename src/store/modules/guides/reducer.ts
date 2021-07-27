@@ -5,6 +5,7 @@ interface InitalStateProps {
   feedGuide: boolean;
   newItineraryGuide: boolean;
   myItineraryGuide: boolean;
+  profileGuide: boolean;
 }
 
 interface ActionProps {
@@ -15,6 +16,7 @@ const INITIAL_PROPS: InitalStateProps = {
   feedGuide: false,
   newItineraryGuide: false,
   myItineraryGuide: false,
+  profileGuide: false,
 };
 
 export default function guides(state = INITIAL_PROPS, action: ActionProps) {
@@ -42,6 +44,14 @@ export default function guides(state = INITIAL_PROPS, action: ActionProps) {
       }
       case GuidesActions.HIDE_MY_ITINERARY_GUIDE: {
         draft.myItineraryGuide = false;
+        break;
+      }
+      case GuidesActions.SHOW_PROFILE_GUIDE_SUCCESS: {
+        draft.profileGuide = true;
+        break;
+      }
+      case GuidesActions.HIDE_PROFILE_GUIDE: {
+        draft.profileGuide = false;
         break;
       }
       default:

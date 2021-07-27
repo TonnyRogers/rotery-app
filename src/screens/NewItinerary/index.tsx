@@ -2,6 +2,9 @@ import React, {useState, useRef, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import {formatBRL, clearValue} from '../../lib/mask';
 import {createItineraryRequest} from '../../store/modules/itineraries/actions';
@@ -31,7 +34,6 @@ import {
   BackgroundCover,
   SIcon,
   Title,
-  DataContent,
   DataContentHeader,
   RowGroup,
   RowGroupSpaced,
@@ -70,20 +72,21 @@ import Modal from '../../components/Modal';
 import Page from '../../components/Page';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
+import ShadowBox from '../../components/ShadowBox';
 
 const newGuideImages = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-1.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt1.png',
     withInfo: true,
     title: 'Criando Roteiros 1/4',
     message:
-      'Ao criar um roteiro você pode adicionar fotos, descrição, quantidade de vagas, dar um nome, datas e muito mais.',
+      'Você pode criar um roteiro privado ou público, adicionar fotos, descrição, quantidade de vagas, dar um nome, datas e muito mais.',
     isAnimation: false,
   },
   {
     id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-2.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt2.png',
     withInfo: true,
     title: 'Criando Roteiros 2/4',
     message:
@@ -92,7 +95,7 @@ const newGuideImages = [
   },
   {
     id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt4.png',
     withInfo: true,
     title: 'Criando Roteiros 3/4',
     message: 'Após isso você vai notar que um item será adicionado logo acima.',
@@ -100,7 +103,7 @@ const newGuideImages = [
   },
   {
     id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-3.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt4.png',
     withInfo: true,
     title: 'Criando Roteiros 4/4',
     message: 'Você pode remove-lo clicando no ícone de lixeira.',
@@ -108,9 +111,57 @@ const newGuideImages = [
   },
 ];
 
+const validationSchema = yup.object().shape({
+  name: yup.string().required('campo obrigatório'),
+  vacancies: yup.number().required('campo obrigatório'),
+  location: yup.string().required('campo obrigatório'),
+  description: yup.string().required('campo obrigatório'),
+  dateOut: yup.date().required('campo obrigatório'),
+  dateReturn: yup.date().required('campo obrigatório'),
+  dateLimit: yup.date().required('campo obrigatório'),
+});
+
+const validationOptionsSchema = yup.object().shape({
+  type: yup.string().required('campo obrigatório'),
+  price: yup.string().required('campo obrigatório'),
+  capacity: yup.string().required('campo obrigatório'),
+  description: yup.string(),
+});
+
 const NewItinerary: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
+
+  const {
+    register: optionRegister,
+    handleSubmit: optionHandleSubmit,
+    setValue: optionSetValue,
+    watch: optionWatch,
+    formState: {errors: optionErrors},
+  } = useForm({resolver: yupResolver(validationOptionsSchema)});
+
+  useEffect(() => {
+    register('name');
+    register('vacancies');
+    register('dateOut', {value: new Date(), valueAsDate: true});
+    register('dateReturn', {value: new Date(), valueAsDate: true});
+    register('dateLimit', {value: new Date(), valueAsDate: true});
+    register('location');
+    register('description');
+
+    optionRegister('type');
+    optionRegister('price');
+    optionRegister('capacity');
+    optionRegister('description');
+  }, [getValues, optionRegister, register]);
 
   useEffect(() => {
     dispatch(getActivitiesRequest());
@@ -127,52 +178,32 @@ const NewItinerary: React.FC = () => {
     (state: RootStateProps) => state.guides,
   );
 
-  const [name, setName] = useState('');
-  const [dateOut, setDateOut] = useState(new Date());
-  const [dateReturn, setDateReturn] = useState(new Date());
-  const [dateLimit, setDateLimit] = useState(new Date());
-  const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
-  const [locationDescription, setLocationDescription] = useState('');
-  const [vacancies, setVacancies] = useState('');
+  const watchDateOut = watch('dateOut', new Date());
+  const watchDateReturn = watch('dateReturn', new Date());
+  const watchDateLimit = watch('dateLimit', new Date());
+  const watchOptionType = optionWatch('type');
+  const watchOptionPrice = optionWatch('price');
   const [transports, setTransports] = useState([] as any);
-  const [transportType, setTransportType] = useState('');
-  const [transportPrice, setTransportPrice] = useState('');
-  const [transportCapacity, setTransportCapacity] = useState('');
-  const [transportDescription, setTransportDescription] = useState('');
   const [lodgings, setLodgings] = useState([] as any);
-  const [lodgingType, setLodgingType] = useState('');
-  const [lodgingPrice, setLodgingPrice] = useState('');
-  const [lodgingCapacity, setLodgingCapacity] = useState('');
-  const [lodgingDescription, setLodgingDescription] = useState('');
   const [activities, setActivities] = useState([] as any);
-  const [activityType, setActivityType] = useState('');
-  const [activityPrice, setActivityPrice] = useState('');
-  const [activityCapacity, setActivityCapacity] = useState('');
-  const [activityDescription, setActivityDescription] = useState('');
   const [images, setImages] = useState([] as any);
   const [privateItinerary, setPrivateItinerary] = useState(false);
   const [addTransportVisible, setAddTransportVisible] = useState(false);
+  const [transportsOptionIsOpen, setTransportsOptionIsOpen] = useState(false);
+
   const [addLodgingVisible, setAddLodgingVisible] = useState(false);
+  const [lodgingOptionIsOpen, setLodgingOptionIsOpen] = useState(false);
+
   const [addActivityVisible, setAddActivityVisible] = useState(false);
+  const [activityOptionIsOpen, setActivityOptionIsOpen] = useState(false);
 
   const descriptionRef = useRef() as any;
   const nameRef = useRef() as any;
   const locationRef = useRef() as any;
-  const locationDescriptionRef = useRef() as any;
   const vacanciesRef = useRef() as any;
-  const transportTypeRef = useRef() as any;
   const transportPriceRef = useRef() as any;
   const transportCapacityRef = useRef() as any;
   const transportDescriptionRef = useRef() as any;
-  const lodgingTypeRef = useRef() as any;
-  const lodgingPriceRef = useRef() as any;
-  const lodgingCapacityRef = useRef() as any;
-  const lodgingDescriptionRef = useRef() as any;
-  const activityTypeRef = useRef() as any;
-  const activityPriceRef = useRef() as any;
-  const activityCapacityRef = useRef() as any;
-  const activityDescriptionRef = useRef() as any;
 
   const handleCloseNewGuide = () => {
     dispatch(hideNewItineraryGuide());
@@ -182,109 +213,85 @@ const NewItinerary: React.FC = () => {
     setImages([...images, ...imageList]);
   }
 
-  function addLodgingItem() {
-    if (!lodgingType || !lodgingPrice) {
-      return;
-    }
-
+  const addLodgingItem = (data: any) => {
     const optionItem = options.lodgings?.find(
-      (option) => option.id === Number(lodgingType),
+      (option) => option.id === Number(data.type),
     );
 
     const newItem: LodgingProps = {
-      id: Number(lodgingType),
-      price: Number(clearValue(lodgingPrice)),
-      capacity: Number(lodgingCapacity),
-      description: lodgingDescription,
+      id: Number(data.type),
+      price: Number(clearValue(data.price)),
+      capacity: Number(data.capacity),
+      description: data.description,
       name: optionItem?.name,
     };
 
     lodgings.push(newItem);
-
     setLodgings(lodgings);
-    setLodgingType('');
-    setLodgingPrice('');
-    setLodgingCapacity('');
-    setLodgingDescription('');
+
+    optionSetValue('type', '');
+    optionSetValue('price', '');
+    optionSetValue('capacity', '');
+    optionSetValue('description', '');
     setAddLodgingVisible(false);
-  }
+  };
 
-  function addTransportItem() {
-    if (!transportType || !transportPrice) {
-      return;
-    }
-
+  const addTransportItem = (data: any) => {
     const optionItem = options.transports?.find(
-      (option) => option.id === Number(transportType),
+      (option) => option.id === Number(data.type),
     );
 
     const newItem: TransportProps = {
-      id: Number(transportType),
-      price: Number(clearValue(transportPrice)),
-      capacity: Number(transportCapacity),
-      description: transportDescription,
+      id: Number(data.type),
+      price: Number(clearValue(data.price)),
+      capacity: Number(data.capacity),
+      description: data.description,
       name: optionItem?.name,
     };
 
     transports.push(newItem);
-
     setTransports(transports);
-    setTransportType('');
-    setTransportPrice('');
-    setTransportCapacity('');
-    setTransportDescription('');
+
+    optionSetValue('type', '');
+    optionSetValue('price', '');
+    optionSetValue('capacity', '');
+    optionSetValue('description', '');
     setAddTransportVisible(false);
-  }
+  };
 
-  function addActivityItem() {
-    if (!activityType || !activityPrice) {
-      return;
-    }
-
+  const addActivityItem = (data: any) => {
     const optionItem = options.activities?.find(
-      (option) => option.id === Number(activityType),
+      (option) => option.id === Number(data.type),
     );
 
     const newItem: ActivityProps = {
-      id: Number(activityType),
-      price: Number(clearValue(activityPrice)),
-      capacity: Number(activityCapacity),
-      description: activityDescription,
+      id: Number(data.type),
+      price: Number(clearValue(data.price)),
+      capacity: Number(data.capacity),
+      description: data.description,
       name: optionItem?.name,
     };
 
     activities.push(newItem);
-
     setActivities(activities);
-    setActivityType('');
-    setActivityPrice('');
-    setActivityCapacity('');
-    setActivityDescription('');
+
+    optionSetValue('type', '');
+    optionSetValue('price', '');
+    optionSetValue('capacity', '');
+    optionSetValue('description', '');
     setAddActivityVisible(false);
-  }
+  };
 
-  function handleSubmit() {
-    if (
-      !name ||
-      !vacancies ||
-      !dateOut ||
-      !dateReturn ||
-      !dateLimit ||
-      !location ||
-      !description
-    ) {
-      return;
-    }
-
+  const onSubmit = (data: any) => {
     dispatch(
       createItineraryRequest(
-        name,
-        Number(vacancies),
-        description,
-        dateOut,
-        dateReturn,
-        dateLimit,
-        location,
+        data.name,
+        Number(data.vacancies),
+        data.description,
+        data.dateOut,
+        data.dateReturn,
+        data.dateLimit,
+        data.location,
         privateItinerary,
         images,
         activities,
@@ -293,15 +300,11 @@ const NewItinerary: React.FC = () => {
       ),
     );
 
-    setName('');
-    setVacancies('');
-    setDescription('');
-    setLocation('');
     setImages([]);
     setActivities([]);
     setLodgings([]);
     setTransports([]);
-  }
+  };
 
   const renderImages = useCallback(() => {
     function removeImages(index: number) {
@@ -331,7 +334,7 @@ const NewItinerary: React.FC = () => {
       setTransports([...transports]);
     }
     return transports.map((item: TransportProps, index: number) => (
-      <DataContent key={index}>
+      <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeTransportItem(index)}>
             <Icon name="delete-forever-outline" color="#F57373" size={24} />
@@ -349,7 +352,7 @@ const NewItinerary: React.FC = () => {
             <FieldValue>{formatBRL(String(item.price))}</FieldValue>
           </ColumnGroup>
         </RowGroupSpaced>
-      </DataContent>
+      </ShadowBox>
     ));
   }, [transports]);
 
@@ -360,7 +363,7 @@ const NewItinerary: React.FC = () => {
       setLodgings([...lodgings]);
     }
     return lodgings.map((item: LodgingProps, index: number) => (
-      <DataContent key={index}>
+      <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeLodgingItem(index)}>
             <Icon name="delete-forever-outline" color="#F57373" size={24} />
@@ -378,7 +381,7 @@ const NewItinerary: React.FC = () => {
             <FieldValue>{formatBRL(String(item.price))}</FieldValue>
           </ColumnGroup>
         </RowGroupSpaced>
-      </DataContent>
+      </ShadowBox>
     ));
   }, [lodgings]);
 
@@ -390,7 +393,7 @@ const NewItinerary: React.FC = () => {
     }
 
     return activities.map((item: ActivityProps, index: number) => (
-      <DataContent key={index}>
+      <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeActivityItem(index)}>
             <Icon name="delete-forever-outline" color="#F57373" size={24} />
@@ -408,7 +411,7 @@ const NewItinerary: React.FC = () => {
             <FieldValue>{formatBRL(String(item.price))}</FieldValue>
           </ColumnGroup>
         </RowGroupSpaced>
-      </DataContent>
+      </ShadowBox>
     ));
   }, [activities]);
 
@@ -449,9 +452,9 @@ const NewItinerary: React.FC = () => {
               <Input
                 label="Nome do Roteiro"
                 placeholder="dê um nome para este roteiro."
-                value={name}
                 ref={nameRef}
-                onChange={setName}
+                onChange={(value: string) => setValue('name', value)}
+                error={errors.name?.message}
               />
               <Title>Imagens</Title>
               <ImageList>
@@ -465,19 +468,19 @@ const NewItinerary: React.FC = () => {
               <Input
                 label="Limite de Vagas"
                 placeholder="numero máximo de vagas"
-                value={vacancies}
                 ref={vacanciesRef}
-                onChange={setVacancies}
+                onChange={(value: string) => setValue('vacancies', value)}
+                error={errors.vacancies?.message}
                 keyboardType="number-pad"
               />
               <TextArea
                 label="Descrição"
                 placeholder="infomações adicionais sobre o roteiro"
-                value={description}
+                onChange={(value: string) => setValue('description', value)}
+                error={errors.description?.message}
                 ref={descriptionRef}
-                onChange={setDescription}
               />
-              <DataContent>
+              <ShadowBox>
                 <DataContentHeader>
                   <Icon
                     name="calendar-blank-outline"
@@ -488,21 +491,24 @@ const NewItinerary: React.FC = () => {
                 </DataContentHeader>
                 <DateTimeInput
                   label="Saida"
-                  date={dateOut}
-                  onChange={setDateOut}
+                  date={watchDateOut}
+                  onChange={(value: Date) => setValue('dateOut', value)}
+                  error={errors.dateOut?.message}
                 />
                 <DateTimeInput
                   label="Retorno"
-                  date={dateReturn}
-                  onChange={setDateReturn}
+                  date={watchDateReturn}
+                  onChange={(value: Date) => setValue('dateReturn', value)}
+                  error={errors.dateReturn?.message}
                 />
                 <DateTimeInput
                   label="Limite para inscrição"
-                  date={dateLimit}
-                  onChange={setDateLimit}
+                  date={watchDateLimit}
+                  onChange={(value: Date) => setValue('dateLimit', value)}
+                  error={errors.dateLimit?.message}
                 />
-              </DataContent>
-              <DataContent>
+              </ShadowBox>
+              <ShadowBox>
                 <DataContentHeader>
                   <Icon name="map-check-outline" color="#4885FD" size={24} />
                   <ContentTitle>Destino</ContentTitle>
@@ -510,18 +516,11 @@ const NewItinerary: React.FC = () => {
                 <Input
                   label="Endereço"
                   placeholder="endereço/cidade/local"
-                  value={location}
                   ref={locationRef}
-                  onChange={setLocation}
+                  onChange={(value: string) => setValue('location', value)}
+                  error={errors.location?.message}
                 />
-                <TextArea
-                  label="Informações"
-                  placeholder="infomações adicionais..."
-                  value={locationDescription}
-                  ref={locationDescriptionRef}
-                  onChange={setLocationDescription}
-                />
-              </DataContent>
+              </ShadowBox>
               <RowGroup>
                 <IconHolder>
                   <Icon name="car" color="#FFF" size={24} />
@@ -554,7 +553,7 @@ const NewItinerary: React.FC = () => {
               </NewActivityButton>
             </CardContent>
             <CardActions>
-              <SubmitButton onPress={handleSubmit}>
+              <SubmitButton onPress={handleSubmit(onSubmit)}>
                 <SubmitButtonText>Salvar</SubmitButtonText>
               </SubmitButton>
             </CardActions>
@@ -568,36 +567,44 @@ const NewItinerary: React.FC = () => {
         key="transport-modal">
         <ModalContent>
           <PickerInput
+            open={transportsOptionIsOpen}
+            setOpen={setTransportsOptionIsOpen}
             label="Tipo"
-            value={transportType}
-            ref={transportTypeRef}
-            onChange={setTransportType}
+            value={watchOptionType}
+            onChange={(value: string) => optionSetValue('type', value)}
             options={options.transports}
+            listMode="SCROLLVIEW"
+            onOpen={() => {}}
+            byValue={false}
+            error={optionErrors.type?.message}
           />
           <Input
             label="Preço"
             placeholder="preço por pessoa"
-            value={formatBRL(transportPrice)}
+            value={formatBRL(watchOptionPrice)}
             ref={transportPriceRef}
-            onChange={setTransportPrice}
+            onChange={(value: string) =>
+              optionSetValue('price', formatBRL(value))
+            }
             keyboardType="number-pad"
+            error={optionErrors.price?.message}
           />
           <Input
             label="Capacidade (lugares)"
             placeholder="quantidade máxima de pessoas"
-            value={transportCapacity}
             ref={transportCapacityRef}
-            onChange={setTransportCapacity}
+            onChange={(value: string) => optionSetValue('capacity', value)}
+            error={optionErrors.capacity?.message}
             keyboardType="number-pad"
           />
           <TextArea
             label="Descrição"
             placeholder="infomações adicionais.."
-            value={transportDescription}
             ref={transportDescriptionRef}
-            onChange={setTransportDescription}
+            onChange={(value: string) => optionSetValue('description', value)}
+            error={optionErrors.description?.message}
           />
-          <AddButton onPress={() => addTransportItem()}>
+          <AddButton onPress={optionHandleSubmit(addTransportItem)}>
             <AddButtonText>Adicionar</AddButtonText>
           </AddButton>
         </ModalContent>
@@ -609,77 +616,93 @@ const NewItinerary: React.FC = () => {
         key="lodging-modal">
         <ModalContent>
           <PickerInput
+            open={lodgingOptionIsOpen}
+            setOpen={setLodgingOptionIsOpen}
             label="Tipo"
-            value={lodgingType}
-            ref={lodgingTypeRef}
-            onChange={setLodgingType}
+            value={watchOptionType}
+            onChange={(value: string) => optionSetValue('type', value)}
             options={options.lodgings}
+            listMode="SCROLLVIEW"
+            onOpen={() => {}}
+            byValue={false}
+            error={optionErrors.type?.message}
           />
           <Input
             label="Preço"
             placeholder="preço por pessoa"
-            value={formatBRL(lodgingPrice)}
-            ref={lodgingPriceRef}
-            onChange={setLodgingPrice}
+            value={formatBRL(watchOptionPrice)}
+            ref={transportPriceRef}
+            onChange={(value: string) =>
+              optionSetValue('price', formatBRL(value))
+            }
             keyboardType="number-pad"
+            error={optionErrors.price?.message}
           />
           <Input
             label="Capacidade (lugares)"
             placeholder="quantidade máxima de pessoas"
-            value={lodgingCapacity}
-            ref={lodgingCapacityRef}
-            onChange={setLodgingCapacity}
+            ref={transportCapacityRef}
+            onChange={(value: string) => optionSetValue('capacity', value)}
+            error={optionErrors.capacity?.message}
             keyboardType="number-pad"
           />
           <TextArea
             label="Descrição"
             placeholder="infomações adicionais.."
-            value={lodgingDescription}
-            ref={lodgingDescriptionRef}
-            onChange={setLodgingDescription}
+            ref={transportDescriptionRef}
+            onChange={(value: string) => optionSetValue('description', value)}
+            error={optionErrors.description?.message}
           />
-          <AddButton onPress={() => addLodgingItem()}>
+          <AddButton onPress={optionHandleSubmit(addLodgingItem)}>
             <AddButtonText>Adicionar</AddButtonText>
           </AddButton>
         </ModalContent>
       </Modal>
       <Modal
-        title="Adicionar Atividade"
+        title="Adicionar Atividades"
         visible={addActivityVisible}
         onCloseRequest={async () => setAddActivityVisible(false)}
-        key="activity-modal">
+        key="activities-modal">
         <ModalContent>
           <PickerInput
+            open={activityOptionIsOpen}
+            setOpen={setActivityOptionIsOpen}
             label="Tipo"
-            value={activityType}
-            ref={activityTypeRef}
-            onChange={setActivityType}
+            value={watchOptionType}
+            onChange={(value: string) => optionSetValue('type', value)}
             options={options.activities}
+            listMode="SCROLLVIEW"
+            onOpen={() => {}}
+            byValue={false}
+            error={optionErrors.type?.message}
           />
           <Input
             label="Preço"
             placeholder="preço por pessoa"
-            value={formatBRL(activityPrice)}
-            ref={activityPriceRef}
-            onChange={setActivityPrice}
+            value={formatBRL(watchOptionPrice)}
+            ref={transportPriceRef}
+            onChange={(value: string) =>
+              optionSetValue('price', formatBRL(value))
+            }
             keyboardType="number-pad"
+            error={optionErrors.price?.message}
           />
           <Input
             label="Capacidade (lugares)"
             placeholder="quantidade máxima de pessoas"
-            value={activityCapacity}
-            ref={activityCapacityRef}
-            onChange={setActivityCapacity}
+            ref={transportCapacityRef}
+            onChange={(value: string) => optionSetValue('capacity', value)}
+            error={optionErrors.capacity?.message}
             keyboardType="number-pad"
           />
           <TextArea
             label="Descrição"
             placeholder="infomações adicionais.."
-            value={activityDescription}
-            ref={activityDescriptionRef}
-            onChange={setActivityDescription}
+            ref={transportDescriptionRef}
+            onChange={(value: string) => optionSetValue('description', value)}
+            error={optionErrors.description?.message}
           />
-          <AddButton onPress={() => addActivityItem()}>
+          <AddButton onPress={optionHandleSubmit(addActivityItem)}>
             <AddButtonText>Adicionar</AddButtonText>
           </AddButton>
         </ModalContent>

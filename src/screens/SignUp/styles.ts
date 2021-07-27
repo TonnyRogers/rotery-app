@@ -9,6 +9,11 @@ export const Container = styled.View`
 
 export const Fields = styled.View``;
 
+export const CenteredView = styled.View`
+  flex: 1;
+  align-items: center;
+`;
+
 export const Actions = styled.View`
   flex-direction: row;
   justify-content: space-between;

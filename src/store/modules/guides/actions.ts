@@ -8,6 +8,9 @@ export enum GuidesActions {
   SHOW_MY_ITINERARY_GUIDE = '@guides/SHOW_MY_ITINERARY_GUIDE',
   SHOW_MY_ITINERARY_GUIDE_SUCCESS = '@guides/SHOW_MY_ITINERARY_GUIDE_SUCCESS',
   HIDE_MY_ITINERARY_GUIDE = '@guides/HIDE_MY_ITINERARY_GUIDE',
+  SHOW_PROFILE_GUIDE = '@guides/SHOW_PROFILE_GUIDE',
+  SHOW_PROFILE_GUIDE_SUCCESS = '@guides/SHOW_PROFILE_GUIDE_SUCCESS',
+  HIDE_PROFILE_GUIDE = '@guides/HIDE_PROFILE_GUIDE',
 }
 
 export function showFeedGuide() {
@@ -61,5 +64,23 @@ export function showMyItineraryGuideSuccess() {
 export function hideMyItineraryGuide() {
   return {
     type: GuidesActions.HIDE_MY_ITINERARY_GUIDE,
+  };
+}
+
+export function showProfileGuide() {
+  return {
+    type: GuidesActions.SHOW_PROFILE_GUIDE,
+  };
+}
+
+export function showProfileGuideSuccess() {
+  return {
+    type: GuidesActions.SHOW_PROFILE_GUIDE_SUCCESS,
+  };
+}
+
+export function hideProfileGuide() {
+  return {
+    type: GuidesActions.HIDE_PROFILE_GUIDE,
   };
 }

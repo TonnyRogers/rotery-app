@@ -226,7 +226,6 @@ export default function itineraries(
         const jsonData = action.payload.customItineraryPayload;
 
         const itineraryList = draft.itineraries;
-        console.tron.log('jsonData', jsonData);
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
             (item) => item.id === jsonData.id,

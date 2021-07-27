@@ -1,4 +1,8 @@
 export function formatBRL(value: string) {
+  if (!value) {
+    return;
+  }
+
   value = value.replace(/\D/g, '');
 
   return (value = new Intl.NumberFormat('pt-BR', {
@@ -8,6 +12,9 @@ export function formatBRL(value: string) {
 }
 
 export function cpfCnpj(value: string) {
+  if (!value) {
+    return;
+  }
   value = value.replace(/\D/g, '');
 
   if (value.length > 11) {
@@ -29,6 +36,9 @@ export function cpfCnpj(value: string) {
 }
 
 export function phoneBR(value: string) {
+  if (!value) {
+    return;
+  }
   value = value.replace(/\D/g, '');
 
   if (value.length > 11) {
@@ -42,6 +52,10 @@ export function phoneBR(value: string) {
 }
 
 export function cep(value: string) {
+  if (!value) {
+    return;
+  }
+
   value = value.replace(/\D/g, '');
 
   if (value.length > 8) {
@@ -54,5 +68,9 @@ export function cep(value: string) {
 }
 
 export function clearValue(value: string) {
+  if (!value) {
+    return;
+  }
+
   return value.replace(/\D/g, '');
 }
