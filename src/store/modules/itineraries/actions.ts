@@ -36,6 +36,7 @@ export enum ItineraryActions {
   REMOVE_MEMBER_SUCCESS = '@itineraries/REMOVE_MEMBER_SUCCESS',
   REMOVE_MEMBER_FAILURE = '@itineraries/REMOVE_MEMBER_FAILURE',
   NOTIFY_ITINERARY_FINISH_REQUEST = '@itineraries/NOTIFY_ITINERARY_FINISH_REQUEST',
+  NOTIFY_ITINERARY_FINISH_SUCCESS = '@itineraries/NOTIFY_ITINERARY_FINISH_SUCCESS',
   NOTIFY_ITINERARY_FINISH_FAILURE = '@itineraries/NOTIFY_ITINERARY_FINISH_FAILURE',
 }
 
@@ -280,6 +281,12 @@ export function notifyItineraryFinishRequest(itineraryId: number) {
   return {
     type: ItineraryActions.NOTIFY_ITINERARY_FINISH_REQUEST,
     payload: {itineraryId},
+  };
+}
+
+export function notifyItineraryFinishSuccess() {
+  return {
+    type: ItineraryActions.NOTIFY_ITINERARY_FINISH_SUCCESS,
   };
 }
 

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -10,8 +10,6 @@ import {navigationRef} from '../RootNavigation';
 import * as RootNavigation from '../RootNavigation';
 import api from '../services/api';
 const Stack = createStackNavigator();
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-// const Tab = createBottomTabNavigator();
 
 import Home from '../screens/Home';
 import SignUp from '../screens/SignUp';
@@ -34,7 +32,6 @@ import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
-import SplashScreen from '../components/SplashScreen';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 import {useSocket} from '../hooks/useSocket';
@@ -54,80 +51,8 @@ interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
 
-// function ConnectionTabs() {
-//   return (
-//     <Tab.Navigator
-//       tabBarOptions={{
-//         adaptive: true,
-//         activeTintColor: '#3dc77b',
-//         inactiveBackgroundColor: '#f7f7f7',
-//         labelStyle: {
-//           fontFamily: 'Roboto',
-//         },
-//         labelPosition: 'beside-icon',
-//       }}>
-//       <Tab.Screen
-//         name="MyConnections"
-//         component={MyConnections}
-//         options={{
-//           title: 'Conexões',
-//           tabBarIcon: ({color, size}) => (
-//             <Icon name="link-variant" color={color} size={size} />
-//           ),
-//         }}
-//       />
-//       <Tab.Screen
-//         name="SearchUsers"
-//         component={SearchUsers}
-//         options={{
-//           title: 'Pesquisar',
-//           tabBarIcon: ({color, size}) => (
-//             <Icon name="magnify" color={color} size={size} />
-//           ),
-//         }}
-//       />
-//     </Tab.Navigator>
-//   );
-// }
-
-// function DirectMessagesTabs() {
-//   return (
-//     <Tab.Navigator
-//       tabBarOptions={{
-//         adaptive: true,
-//         activeTintColor: '#3dc77b',
-//         inactiveBackgroundColor: '#f7f7f7',
-//         labelStyle: {
-//           fontFamily: 'Roboto',
-//         },
-//         labelPosition: 'beside-icon',
-//       }}>
-//       <Tab.Screen
-//         name="DirectMessages"
-//         component={DirectMessages}
-//         options={{
-//           title: 'Mensagens',
-//           tabBarIcon: ({color, size}) => (
-//             <Icon name="message-text-outline" color={color} size={size} />
-//           ),
-//         }}
-//       />
-//       <Tab.Screen
-//         name="MyConnections"
-//         component={MyConnections}
-//         options={{
-//           title: 'Conexões',
-//           tabBarIcon: ({color, size}) => (
-//             <Icon name="link-variant" color={color} size={size} />
-//           ),
-//         }}
-//       />
-//     </Tab.Navigator>
-//   );
-// }
-
 const Routes = () => {
-  const {signed, loading} = useSelector((state: RootStateProps) => state.auth);
+  const {signed} = useSelector((state: RootStateProps) => state.auth);
   const dispatch = useDispatch();
   useSocket();
 
@@ -265,10 +190,6 @@ const Routes = () => {
       }
     }
   }
-
-  const renderSplash = useCallback(() => {
-    return <SplashScreen visible={loading} />;
-  }, [loading]);
 
   return (
     <>

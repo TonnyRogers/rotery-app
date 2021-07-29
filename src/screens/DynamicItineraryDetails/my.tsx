@@ -358,7 +358,7 @@ const MyItineraryDetail: React.FC<MyItineraryDetailsProps> = ({itinerary}) => {
         icon="progress-check"
         visible={finishAlertVisible}
         onCancel={hideDeleteAlert}
-        onRequestClose={(value) => setFinishAlertVisible(value)}
+        onRequestClose={() => setFinishAlertVisible(false)}
         onConfirm={handleFinishItinerary}
       />
       <Alert
@@ -367,7 +367,7 @@ const MyItineraryDetail: React.FC<MyItineraryDetailsProps> = ({itinerary}) => {
         icon="delete-forever-outline"
         visible={alertVisible}
         onCancel={hideDeleteAlert}
-        onRequestClose={(value) => setAlertVisible(value)}
+        onRequestClose={() => setAlertVisible(false)}
         onConfirm={handleDeleteItinerary}
       />
     </>

@@ -18,6 +18,7 @@ import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import DismissKeyboad from '../../components/DismissKeyboad';
+import SplashScreen from '../../components/SplashScreen';
 
 interface RecoverPasswordProps {
   navigation: {
@@ -29,7 +30,8 @@ interface RecoverPasswordProps {
 
 const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
   const [email, setEmail] = useState('');
-  const emailRef = useRef();
+  const [isOnLoading, setIsOnLoading] = useState(false);
+  const emailRef = useRef<any>();
 
   async function handleRecoverPassword() {
     if (!email) {
@@ -37,6 +39,7 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
     }
 
     try {
+      setIsOnLoading(true);
       await api.post('/users/reset-password', {
         email,
       });
@@ -47,8 +50,10 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
       });
       setEmail('');
 
+      setIsOnLoading(false);
       navigation.navigate('NewPassword');
     } catch (error) {
+      setIsOnLoading(false);
       Toast.show({
         text1: 'Erro ao solicitar recuperação.',
         position: 'bottom',
@@ -89,6 +94,7 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
           </SubmitButton>
         </Container>
       </DismissKeyboad>
+      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

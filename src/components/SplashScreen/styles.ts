@@ -22,9 +22,10 @@ export const KeyboardAvoidingView = styled(RNKAvoindingView)`
 
 export const Content = styled.View.attrs({})`
   background: #fff;
-  padding: 1rem;
+  padding: 5rem;
   margin: 2rem;
   border-radius: 0.8rem;
+  margin-top: 15rem;
   ${shadow}
 `;
 

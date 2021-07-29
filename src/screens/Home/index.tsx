@@ -2,7 +2,7 @@
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Animated} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import {useForm} from 'react-hook-form';
@@ -38,6 +38,8 @@ import Input from '../../components/Input';
 import HighlightCarousel from '../../components/HighlightCarousel';
 import Page from '../../components/Page';
 import DismissKeyboad from '../../components/DismissKeyboad';
+import {RootStateProps} from '../../store/modules/rootReducer';
+import SplashScreen from '../../components/SplashScreen';
 
 const images = [
   {
@@ -76,6 +78,8 @@ const Home: React.FC = () => {
   const dispatch = useDispatch();
   const [loginVisible, setLoginVisible] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const {loading} = useSelector((state: RootStateProps) => state.auth);
+
   const emailRef = useRef() as any;
   const passwordRef = useRef() as any;
   const panY = useRef(new Animated.ValueXY({x: 0, y: 400})).current;
@@ -228,6 +232,7 @@ const Home: React.FC = () => {
           </LoginHover>
         </Container>
       </DismissKeyboad>
+      <SplashScreen visible={loading} />
     </Page>
   );
 };

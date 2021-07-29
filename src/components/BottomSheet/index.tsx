@@ -8,16 +8,18 @@ import {
   Container,
   Header,
   CloseButton,
-  Title,
   ChildrenContent,
 } from './styles';
+import Text from '../Text';
 interface BottomSheetProps {
+  title: string;
   visible: boolean;
-  onRequestClose(state: any): any;
+  onRequestClose(): void;
 }
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
   visible,
+  title,
   onRequestClose,
   children,
 }) => {
@@ -39,7 +41,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       useNativeDriver: false,
     }).start();
     setTimeout(() => {
-      onRequestClose(false);
+      onRequestClose();
     }, 200);
   }, [height, onRequestClose, panY.y]);
 
@@ -71,41 +73,37 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     } else {
       handleDismiss();
     }
+  }, [handleDismiss, handleOpen, visible]);
 
-    return () => {
-      onRequestClose;
-    };
-  }, [handleDismiss, handleOpen, onRequestClose, visible]);
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <>
-      {visible && (
-        <Container>
-          <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
-          <Overlay>
-            <Content
-              style={{
-                transform: [
-                  {
-                    translateY: panY.y.interpolate({
-                      inputRange: [-1, 0, 1],
-                      outputRange: [0, 0, 1],
-                    }),
-                  },
-                ],
-              }}>
-              <Header {...panRespoders.panHandlers}>
-                <Title>Convidar Para Roteiro</Title>
-                <CloseButton onPress={() => handleDismiss()}>
-                  <Icon name="chevron-down" size={24} color="#3dc77b" />
-                </CloseButton>
-              </Header>
-              <ChildrenContent>{children}</ChildrenContent>
-            </Content>
-          </Overlay>
-        </Container>
-      )}
-    </>
+    <Container>
+      <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
+      <Overlay>
+        <Content
+          style={{
+            transform: [
+              {
+                translateY: panY.y.interpolate({
+                  inputRange: [-1, 0, 1],
+                  outputRange: [0, 0, 1],
+                }),
+              },
+            ],
+          }}>
+          <Header {...panRespoders.panHandlers}>
+            <Text.Title>{title}</Text.Title>
+            <CloseButton onPress={() => handleDismiss()}>
+              <Icon name="chevron-down" size={24} color="#3dc77b" />
+            </CloseButton>
+          </Header>
+          <ChildrenContent>{children}</ChildrenContent>
+        </Content>
+      </Overlay>
+    </Container>
   );
 };
 

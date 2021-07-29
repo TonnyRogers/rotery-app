@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -20,12 +20,14 @@ import {
   CenteredView,
 } from './styles';
 import Input from '../../components/Input';
-import {Keyboard, TextInput} from 'react-native';
+import {TextInput} from 'react-native';
 import Page from '../../components/Page';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
 import DismissKeyboad from '../../components/DismissKeyboad';
+import SplashScreen from '../../components/SplashScreen';
+import {RootStateProps} from '../../store/modules/rootReducer';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
 const validationSchema = yup.object().shape({
@@ -42,6 +44,7 @@ const SignUp: React.FC = () => {
   const dispatch = useDispatch();
   const [policyModalVisible, setPolicyModalVisible] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {
     register,
     setValue,
@@ -74,7 +77,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <Page showHeader={false} onTouchStart={Keyboard.dismiss}>
+    <Page showHeader={false}>
       <DismissKeyboad>
         <Container>
           <Header>
@@ -330,6 +333,7 @@ const SignUp: React.FC = () => {
           </SubmitButton>
         </ScrollView>
       </Modal>
+      <SplashScreen visible={loading} />
     </Page>
   );
 };

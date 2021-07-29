@@ -1,8 +1,9 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 
 import api from '../../services/api';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
@@ -22,10 +23,13 @@ import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import DismissKeyboad from '../../components/DismissKeyboad';
+import SplashScreen from '../../components/SplashScreen';
 
 interface NewPasswordProps {
   navigation: {
     navigate(route: string): void;
+    canGoBack(): boolean;
+    goBack(): void;
   };
 }
 
@@ -40,6 +44,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isOnLoading, setIsOnLoading] = useState(false);
 
   const numberOneRef = useRef<any>();
   const numberTwoRef = useRef<any>();
@@ -49,6 +54,12 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
   const numberSixRef = useRef<any>();
   const passwordRef = useRef<any>();
   const confirmPasswordRef = useRef<any>();
+
+  function goBack() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }
 
   function changeCode(value: string, fieldNumber: number) {
     switch (fieldNumber) {
@@ -107,78 +118,209 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
     }
   }
 
-  async function checkCode() {
-    const code =
-      '' +
-      numberOne +
-      numberTwo +
-      numberThree +
-      numberFour +
-      numberFive +
-      numberSix;
+  const renderNewPasswordForm = useCallback(() => {
+    async function handleNewPassword() {
+      const code =
+        '' +
+        numberOne +
+        numberTwo +
+        numberThree +
+        numberFour +
+        numberFive +
+        numberSix;
 
-    try {
-      await api.post(`/users/resetcode/${code}`);
-      setIsValid(true);
-    } catch (error) {
-      Toast.show({
-        text1: 'Código inválido ou expirado.',
-        text2: 'Solicite outro.',
-        position: 'bottom',
-        type: 'error',
+      if (!password || !confirmPassword) {
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        Toast.show({
+          text1: 'As senhas não são iguais.',
+          position: 'bottom',
+          type: 'error',
+        });
+        return;
+      }
+
+      setIsOnLoading(true);
+      await api.put(`/users/new-password/${code}`, {
+        password,
+        password_confirmation: confirmPassword,
       });
-      setNumberOne('');
-      setNumberTwo('');
-      setNumberThree('');
-      setNumberFour('');
-      setNumberFive('');
-      setNumberSix('');
-    }
-  }
 
-  async function handleNewPassword() {
-    const code =
-      '' +
-      numberOne +
-      numberTwo +
-      numberThree +
-      numberFour +
-      numberFive +
-      numberSix;
-
-    if (!password || !confirmPassword) {
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Toast.show({
-        text1: 'As senhas não são iguais.',
-        position: 'bottom',
-        type: 'error',
-      });
-      return;
+      setIsOnLoading(false);
+      try {
+        Toast.show({
+          text1: 'Senha alterada.',
+          position: 'bottom',
+          type: 'success',
+        });
+        RootNavigation.replace('Home');
+      } catch (error) {
+        setIsOnLoading(false);
+        Toast.show({
+          text1: 'Erro ao alterar senha, revise.',
+          position: 'bottom',
+          type: 'error',
+        });
+      }
     }
 
-    await api.put(`/users/new-password/${code}`, {
-      password,
-      password_confirmation: confirmPassword,
-    });
-
-    try {
-      Toast.show({
-        text1: 'Senha alterada.',
-        position: 'bottom',
-        type: 'success',
-      });
-      navigation.navigate('Home');
-    } catch (error) {
-      Toast.show({
-        text1: 'Erro ao alterar senha, revise.',
-        position: 'bottom',
-        type: 'error',
-      });
+    if (!isValid) {
+      return null;
     }
-  }
+
+    return (
+      <ChangePasswordForm>
+        <Input
+          onChange={setPassword}
+          value={password}
+          label="Nova senha"
+          placeholder="sua nova senha"
+          buttonIcon
+          onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+          secureTextEntry={passwordVisible}
+          ref={passwordRef}
+        />
+        <Input
+          onChange={setConfirmPassword}
+          value={confirmPassword}
+          label="Confirmar senha"
+          placeholder="repita a senha"
+          secureTextEntry={passwordVisible}
+          ref={confirmPasswordRef}
+        />
+        <SubmitButton onPress={handleNewPassword}>
+          <SubmitButtonText>Salvar</SubmitButtonText>
+        </SubmitButton>
+      </ChangePasswordForm>
+    );
+  }, [
+    confirmPassword,
+    isValid,
+    numberFive,
+    numberFour,
+    numberOne,
+    numberSix,
+    numberThree,
+    numberTwo,
+    password,
+    passwordVisible,
+  ]);
+
+  const renderCodeForm = useCallback(() => {
+    async function checkCode() {
+      const code =
+        '' +
+        numberOne +
+        numberTwo +
+        numberThree +
+        numberFour +
+        numberFive +
+        numberSix;
+
+      try {
+        setIsOnLoading(true);
+        await api.post(`/users/resetcode/${code}`);
+        setIsOnLoading(false);
+        setIsValid(true);
+      } catch (error) {
+        setIsOnLoading(false);
+        Toast.show({
+          text1: 'Código inválido ou expirado.',
+          text2: 'Solicite outro.',
+          position: 'bottom',
+          type: 'error',
+        });
+        setNumberOne('');
+        setNumberTwo('');
+        setNumberThree('');
+        setNumberFour('');
+        setNumberFive('');
+        setNumberSix('');
+      }
+    }
+
+    if (isValid) {
+      return null;
+    }
+
+    return (
+      <>
+        <Fields>
+          <InputField>
+            <NumberInput
+              value={numberOne}
+              keyboardType="number-pad"
+              maxLength={1}
+              ref={numberOneRef}
+              onChangeText={(value) => changeCode(value, 1)}
+              autoFocus
+            />
+          </InputField>
+          <InputField>
+            <NumberInput
+              value={numberTwo}
+              keyboardType="number-pad"
+              maxLength={1}
+              onChangeText={(value) => changeCode(value, 2)}
+              ref={numberTwoRef}
+            />
+          </InputField>
+          <InputField>
+            <NumberInput
+              value={numberThree}
+              keyboardType="number-pad"
+              maxLength={1}
+              onChangeText={(value) => changeCode(value, 3)}
+              ref={numberThreeRef}
+            />
+          </InputField>
+          <InputField>
+            <NumberInput
+              value={numberFour}
+              keyboardType="number-pad"
+              maxLength={1}
+              onChangeText={(value) => changeCode(value, 4)}
+              ref={numberFourRef}
+            />
+          </InputField>
+          <InputField>
+            <NumberInput
+              value={numberFive}
+              keyboardType="number-pad"
+              maxLength={1}
+              onChangeText={(value) => changeCode(value, 5)}
+              ref={numberFiveRef}
+            />
+          </InputField>
+          <InputField>
+            <NumberInput
+              value={numberSix}
+              keyboardType="number-pad"
+              maxLength={1}
+              onChangeText={(value) => changeCode(value, 6)}
+              ref={numberSixRef}
+            />
+          </InputField>
+        </Fields>
+        <Text textWeight="light">
+          digite o código enviado por e-mail para alterar a senha
+        </Text>
+        <SubmitButton onPress={checkCode}>
+          <SubmitButtonText>Enviar</SubmitButtonText>
+        </SubmitButton>
+      </>
+    );
+  }, [
+    isValid,
+    numberFive,
+    numberFour,
+    numberOne,
+    numberSix,
+    numberThree,
+    numberTwo,
+  ]);
 
   return (
     <Page showHeader={false}>
@@ -186,107 +328,18 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
         <Container>
           <Header>
             <RowGroup>
-              <BackButton onPress={() => navigation.navigate('Home')}>
+              <BackButton onPress={goBack}>
                 <Icon name="close" size={24} color="#3dc77b" />
               </BackButton>
             </RowGroup>
             <Logo source={horizontalLogo} resizeMode="contain" />
             <Text.Title alignment="center">Nova Senha</Text.Title>
           </Header>
-          {!isValid && (
-            <>
-              <Fields>
-                <InputField>
-                  <NumberInput
-                    value={numberOne}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    ref={numberOneRef}
-                    onChangeText={(value) => changeCode(value, 1)}
-                    autoFocus
-                  />
-                </InputField>
-                <InputField>
-                  <NumberInput
-                    value={numberTwo}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    onChangeText={(value) => changeCode(value, 2)}
-                    ref={numberTwoRef}
-                  />
-                </InputField>
-                <InputField>
-                  <NumberInput
-                    value={numberThree}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    onChangeText={(value) => changeCode(value, 3)}
-                    ref={numberThreeRef}
-                  />
-                </InputField>
-                <InputField>
-                  <NumberInput
-                    value={numberFour}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    onChangeText={(value) => changeCode(value, 4)}
-                    ref={numberFourRef}
-                  />
-                </InputField>
-                <InputField>
-                  <NumberInput
-                    value={numberFive}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    onChangeText={(value) => changeCode(value, 5)}
-                    ref={numberFiveRef}
-                  />
-                </InputField>
-                <InputField>
-                  <NumberInput
-                    value={numberSix}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    onChangeText={(value) => changeCode(value, 6)}
-                    ref={numberSixRef}
-                  />
-                </InputField>
-              </Fields>
-              <Text textWeight="light">
-                digite o código enviado por e-mail para alterar a senha
-              </Text>
-              <SubmitButton onPress={checkCode}>
-                <SubmitButtonText>Enviar</SubmitButtonText>
-              </SubmitButton>
-            </>
-          )}
-          {isValid && (
-            <ChangePasswordForm>
-              <Input
-                onChange={setPassword}
-                value={password}
-                label="Nova senha"
-                placeholder="sua nova senha"
-                buttonIcon
-                onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-                secureTextEntry={passwordVisible}
-                ref={passwordRef}
-              />
-              <Input
-                onChange={setConfirmPassword}
-                value={confirmPassword}
-                label="Confirmar senha"
-                placeholder="repita a senha"
-                secureTextEntry={passwordVisible}
-                ref={confirmPasswordRef}
-              />
-              <SubmitButton onPress={handleNewPassword}>
-                <SubmitButtonText>Salvar</SubmitButtonText>
-              </SubmitButton>
-            </ChangePasswordForm>
-          )}
+          {renderCodeForm()}
+          {renderNewPasswordForm()}
         </Container>
       </DismissKeyboad>
+      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

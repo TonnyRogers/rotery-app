@@ -41,7 +41,6 @@ import {
   MessageForm,
   SendButton,
   SendButtonText,
-  ShareContent,
   ShareTitle,
   ShareSubTitle,
   ShareButton,
@@ -53,6 +52,7 @@ import TextArea from '../../components/TextArea';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import Page from '../../components/Page';
 import {toDateTimeZone} from '../../utils/helpers';
+import ShadowBox from '../../components/ShadowBox';
 
 const validationSchema = yup.object().shape({
   message: yup.string().required('campo obrigatório'),
@@ -106,20 +106,23 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   const sender = conversation?.find((item) => item.sender_id === userId);
 
-  const formatDate = useCallback((date: string, withParser: boolean = true) => {
-    if (date) {
-      const zonedDate = toDateTimeZone(date);
-      if (withParser) {
+  const formatDate = useCallback(
+    (date?: string, withParser: boolean = true) => {
+      if (date) {
+        const zonedDate = toDateTimeZone(date);
+        if (withParser) {
+          return format(zonedDate, 'dd MMM yyyy H:mm', {
+            locale: pt,
+          });
+        }
+
         return format(zonedDate, 'dd MMM yyyy H:mm', {
           locale: pt,
         });
       }
-
-      return format(zonedDate, 'dd MMM yyyy H:mm', {
-        locale: pt,
-      });
-    }
-  }, []);
+    },
+    [],
+  );
 
   const handleSendMessage = (data: any) => {
     Keyboard.dismiss();
@@ -151,7 +154,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
           }
         case 'itinerary_invite':
           return (
-            <ShareContent key={messageItem.id}>
+            <ShadowBox key={messageItem.id}>
               <ShareTitle>{messageItem.json_data?.name}</ShareTitle>
               <RowGroupSpaced>
                 <ShareSubTitle>{messageItem.json_data?.location}</ShareSubTitle>
@@ -167,7 +170,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
                 }>
                 <ShareButtonText>Ver Mais</ShareButtonText>
               </ShareButton>
-            </ShareContent>
+            </ShadowBox>
           );
         default:
           break;
@@ -182,7 +185,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   }
 
   return (
-    <Page showHeader={false} onTouchStart={() => Keyboard.dismiss()}>
+    <Page showHeader={false}>
       <Container>
         <RowGroup>
           <BackButton onPress={goBack}>
@@ -210,7 +213,9 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
           <CardHeader />
           <CardContent>
             {/* mudar para Flatlist ou VirtualizedList */}
-            <ConversationList ref={scrollViewRef}>
+            <ConversationList
+              ref={scrollViewRef}
+              contentContainerStyle={{padding: 6}}>
               {renderMessage()}
             </ConversationList>
 

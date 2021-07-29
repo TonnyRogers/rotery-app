@@ -73,6 +73,7 @@ import Page from '../../components/Page';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
+import SplashScreen from '../../components/SplashScreen';
 
 const newGuideImages = [
   {
@@ -177,6 +178,8 @@ const NewItinerary: React.FC = () => {
   const {newItineraryGuide} = useSelector(
     (state: RootStateProps) => state.guides,
   );
+
+  const {loading} = useSelector((state: RootStateProps) => state.itineraries);
 
   const watchDateOut = watch('dateOut', new Date());
   const watchDateReturn = watch('dateReturn', new Date());
@@ -713,6 +716,7 @@ const NewItinerary: React.FC = () => {
           onClose={() => handleCloseNewGuide()}
         />
       </Ads>
+      <SplashScreen visible={loading} />
     </Page>
   );
 };

@@ -32,7 +32,6 @@ import {
   BackgroundCover,
   SIcon,
   AddImageButton,
-  DataContent,
   DataContentHeader,
   ContentTitle,
   TransportList,
@@ -65,6 +64,8 @@ import PickerInput from '../../components/PickerInput';
 import TextArea from '../../components/TextArea';
 import Modal from '../../components/Modal';
 import Page from '../../components/Page';
+import SplashScreen from '../../components/SplashScreen';
+import ShadowBox from '../../components/ShadowBox';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -110,7 +111,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     formState: {errors: optionErrors},
   } = useForm({resolver: yupResolver(validationOptionsSchema)});
 
-  const {itineraries} = useSelector(
+  const {itineraries, loading} = useSelector(
     (state: RootStateProps) => state.itineraries,
   );
 
@@ -339,7 +340,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const renderTransports = useCallback(
     () =>
       transports?.map((item: TransportProps, index: number) => (
-        <DataContent key={index}>
+        <ShadowBox key={'transports-' + index}>
           <HeaderActions>
             <RemoveButton onPress={() => removeTransportItem(index)}>
               <Icon name="delete-forever-outline" color="#F57373" size={24} />
@@ -357,7 +358,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
             </ColumnGroup>
           </RowGroupSpaced>
-        </DataContent>
+        </ShadowBox>
       )),
     [removeTransportItem, transports],
   );
@@ -365,7 +366,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const renderLodgings = useCallback(
     () =>
       lodgings.map((item: LodgingProps, index: number) => (
-        <DataContent key={index}>
+        <ShadowBox key={'lodgings-' + index}>
           <HeaderActions>
             <RemoveButton onPress={() => removeLodgingItem(index)}>
               <Icon name="delete-forever-outline" color="#F57373" size={24} />
@@ -383,7 +384,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
             </ColumnGroup>
           </RowGroupSpaced>
-        </DataContent>
+        </ShadowBox>
       )),
     [lodgings, removeLodgingItem],
   );
@@ -391,7 +392,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const renderActivities = useCallback(
     () =>
       activities.map((item: ActivityProps, index: number) => (
-        <DataContent key={index}>
+        <ShadowBox key={'activities-' + index}>
           <HeaderActions>
             <RemoveButton onPress={() => removeActivityItem(index)}>
               <Icon name="delete-forever-outline" color="#F57373" size={24} />
@@ -409,7 +410,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
             </ColumnGroup>
           </RowGroupSpaced>
-        </DataContent>
+        </ShadowBox>
       )),
     [activities, removeActivityItem],
   );
@@ -474,7 +475,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
                 error={errors.description?.message}
                 ref={descriptionRef}
               />
-              <DataContent>
+              <ShadowBox>
                 <DataContentHeader>
                   <Icon
                     name="calendar-blank-outline"
@@ -501,8 +502,8 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
                   onChange={(value: Date) => setValue('dateLimit', value)}
                   error={errors.dateLimit?.message}
                 />
-              </DataContent>
-              <DataContent>
+              </ShadowBox>
+              <ShadowBox>
                 <DataContentHeader>
                   <Icon name="map-check-outline" color="#4885FD" size={24} />
                   <ContentTitle>Destino</ContentTitle>
@@ -515,7 +516,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
                   onChange={(value: string) => setValue('location', value)}
                   error={errors.location?.message}
                 />
-              </DataContent>
+              </ShadowBox>
               <RowGroup>
                 <IconHolder>
                   <Icon name="car" color="#FFF" size={24} />
@@ -702,6 +703,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
           </AddButton>
         </ModalContent>
       </Modal>
+      <SplashScreen visible={loading} />
     </Page>
   );
 };

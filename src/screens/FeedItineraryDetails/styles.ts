@@ -11,7 +11,9 @@ export const Container = styled.SafeAreaView`
   flex: 1;
 `;
 
-export const Content = styled.ScrollView``;
+export const Content = styled.ScrollView`
+  flex: 1;
+`;
 
 export const CardHeader = styled.View`
   flex-direction: row;

@@ -1,39 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch} from 'react-redux';
 
-import {showBottomSheet} from '../../store/modules/bottomsheet/actions';
-import {ShareButton} from './styles';
+import {ShareButton, Container, RowGroup} from './styles';
 import Card from '../Card';
+import BottomSheet from '../BottomSheet';
+import ConnectionShareList, {DataTypes} from '../ConnectionShareList';
 
 interface ShareProps {
   data: {
     componentType: string;
-    type: string;
-    id: number;
+    type: DataTypes;
+    id?: number;
+    ownerId?: number;
   };
 }
 
 const Share: React.FC<ShareProps> = ({data}) => {
-  const dispacth = useDispatch();
-
-  const showShareComponent = () => {
-    dispacth(
-      showBottomSheet({
-        componentype: data.componentType,
-        id: data.id,
-        type: data.type,
-      }),
-    );
-  };
+  const [isSharelistVisible, setIsSharelistVisible] = useState(false);
 
   return (
     <>
-      <Card>
-        <ShareButton onPress={() => showShareComponent()}>
-          <Icon name="share" size={24} color="#3dc77b" />
-        </ShareButton>
-      </Card>
+      <Container>
+        <Card>
+          <RowGroup>
+            <ShareButton onPress={() => setIsSharelistVisible(true)}>
+              <Icon name="share" size={24} color="#3dc77b" />
+            </ShareButton>
+          </RowGroup>
+        </Card>
+      </Container>
+      <BottomSheet
+        title="Compartilhar Roteiro"
+        visible={isSharelistVisible}
+        onRequestClose={() => setIsSharelistVisible(false)}>
+        <ConnectionShareList
+          data={{id: data.id, type: data.type, ownerId: data.ownerId}}
+        />
+      </BottomSheet>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform, SafeAreaView, StatusBar} from 'react-native';
 import {useDispatch} from 'react-redux';
@@ -19,11 +19,10 @@ import {
   FilterButtonText,
 } from './styles';
 import DateInput from '../DateInput';
-import Input from '../Input';
 
 interface FilterInputProps {
   visible: boolean;
-  onRequestClose(): any;
+  onRequestClose(): void;
   onFiltered(begin: string, end: string): void;
 }
 
@@ -33,10 +32,10 @@ const FilterInput: React.FC<FilterInputProps> = ({
   onFiltered,
 }) => {
   const dispatch = useDispatch();
-  const [location, setLocation] = useState('');
+  // const [location, setLocation] = useState('');
   const [beginDate, setBeginDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const locationRef = useRef();
+  // const locationRef = useRef();
 
   function handleFilter() {
     const filter = {
@@ -49,50 +48,52 @@ const FilterInput: React.FC<FilterInputProps> = ({
     onRequestClose();
   }
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    visible && (
-      <>
-        <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
-        <Modal>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <SafeAreaView>
-              <Content>
-                <ModalHeader>
-                  <Title>Filtro</Title>
-                  <CloseButton onPress={onRequestClose}>
-                    <Icon name="close" size={24} color="#3dc77b" />
-                  </CloseButton>
-                </ModalHeader>
-                <ModalContent>
-                  <DateInput
-                    date={beginDate}
-                    onChange={setBeginDate}
-                    label="Inicio do Roteiro"
-                  />
-                  <DateInput
-                    date={endDate}
-                    onChange={setEndDate}
-                    label="Fim do Roteiro"
-                  />
-                  <Input
+    <>
+      <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
+      <Modal>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <SafeAreaView>
+            <Content>
+              <ModalHeader>
+                <Title>Filtro</Title>
+                <CloseButton onPress={onRequestClose}>
+                  <Icon name="close" size={24} color="#3dc77b" />
+                </CloseButton>
+              </ModalHeader>
+              <ModalContent>
+                <DateInput
+                  date={beginDate}
+                  onChange={setBeginDate}
+                  label="Inicio do Roteiro"
+                />
+                <DateInput
+                  date={endDate}
+                  onChange={setEndDate}
+                  label="Fim do Roteiro"
+                />
+                {/* <Input
                     value={location}
                     onChange={setLocation}
                     ref={locationRef}
                     label="Localidade"
-                  />
-                  <Actions>
-                    <FilterButton onPress={handleFilter}>
-                      <FilterButtonText>Filtrar</FilterButtonText>
-                    </FilterButton>
-                  </Actions>
-                </ModalContent>
-              </Content>
-            </SafeAreaView>
-          </KeyboardAvoidingView>
-        </Modal>
-      </>
-    )
+                  /> */}
+                <Actions>
+                  <FilterButton onPress={handleFilter}>
+                    <FilterButtonText>Filtrar</FilterButtonText>
+                  </FilterButton>
+                </Actions>
+              </ModalContent>
+            </Content>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </Modal>
+    </>
   );
 };
 

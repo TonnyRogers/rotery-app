@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {getNextItinerariesRequest} from '../../store/modules/nextItineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
@@ -35,6 +36,10 @@ const NextItineraries: React.FC = () => {
     navigation.navigate('NextItineraryDetails', {id: itineraryId});
   }
 
+  function toFeed() {
+    RootNavigation.replace('Feed');
+  }
+
   return (
     <Page>
       <Container>
@@ -60,7 +65,7 @@ const NextItineraries: React.FC = () => {
                     Encontre um roteiro!
                   </Text.Paragraph>
                 </ColumnGroup>
-                <FeedButton onPress={() => navigation.navigate('Feed')}>
+                <FeedButton onPress={toFeed}>
                   <FeedButtonText>Ir para o Feed</FeedButtonText>
                 </FeedButton>
               </Card>

@@ -34,8 +34,8 @@ import {
   notifyItineraryFinishRequest,
   notifyItineraryFinishFailure,
   getItinerariesFailure,
+  notifyItineraryFinishSuccess,
 } from './actions';
-import {updateDetailsRequest} from '../dynamicItinerary/actions';
 interface UpdateItemProps {
   id: number;
   capacity: number;
@@ -292,7 +292,6 @@ export function* promoteMember({
     }
 
     yield put(promoteMemberSuccess(response.data));
-    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(promoteMemberFailure());
     Toast.show({
@@ -321,7 +320,6 @@ export function* demoteMember({
     }
 
     yield put(demoteMemberSuccess(response.data));
-    yield put(updateDetailsRequest());
   } catch (error) {
     yield put(demoteMemberFailure());
     Toast.show({
@@ -394,7 +392,7 @@ export function* finishItinerary({
   try {
     const {itineraryId} = payload;
     yield call(api.post, `/itineraries/${itineraryId}/notify`);
-    yield put(updateDetailsRequest());
+    yield put(notifyItineraryFinishSuccess());
     RootNavigation.goBack();
     Toast.show({
       text1: 'Roteiro finalizado.',

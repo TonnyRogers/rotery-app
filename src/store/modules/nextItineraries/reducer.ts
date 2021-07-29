@@ -10,6 +10,7 @@ import {NextItinerariesActions} from './actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
 interface InitialStateProps {
   itineraries: ItineraryProps[] | null;
+  loading: boolean;
 }
 
 interface CustomMemberPayload {
@@ -34,6 +35,7 @@ interface ActionProps {
 
 const INITIAL_STATE: InitialStateProps = {
   itineraries: null,
+  loading: false,
 };
 
 export default function itineraries(

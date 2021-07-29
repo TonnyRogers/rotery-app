@@ -107,22 +107,24 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
       case FeedActions.JOIN_SUCCESS: {
         const itineraryMember = action.payload.itineraryMember;
         const itineraryList = draft.itineraries;
-        const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === itineraryMember.pivot.itinerary_id,
-        );
-
-        if (itineraryIndex !== -1) {
-          const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-            (item) => item.id === itineraryMember.id,
+        if ('pivot' in itineraryMember) {
+          const itineraryIndex = itineraryList.findIndex(
+            (item) => item.id === itineraryMember.pivot.itinerary_id,
           );
-          if (memberIndex !== -1) {
-            itineraryList[itineraryIndex].members[memberIndex] = {
-              ...itineraryMember,
-            };
-          } else {
-            itineraryList[itineraryIndex].members.push(itineraryMember);
+
+          if (itineraryIndex !== -1) {
+            const memberIndex = itineraryList[itineraryIndex].members.findIndex(
+              (item) => item.id === itineraryMember.id,
+            );
+            if (memberIndex !== -1) {
+              itineraryList[itineraryIndex].members[memberIndex] = {
+                ...itineraryMember,
+              };
+            } else {
+              itineraryList[itineraryIndex].members.push(itineraryMember);
+            }
+            draft.itineraries = itineraryList;
           }
-          draft.itineraries = itineraryList;
         }
         draft.loading = false;
         break;

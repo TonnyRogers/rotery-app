@@ -257,6 +257,18 @@ export default function itineraries(
         draft.loading = false;
         break;
       }
+      case ItineraryActions.NOTIFY_ITINERARY_FINISH_REQUEST: {
+        draft.loading = true;
+        break;
+      }
+      case ItineraryActions.NOTIFY_ITINERARY_FINISH_SUCCESS: {
+        draft.loading = false;
+        break;
+      }
+      case ItineraryActions.NOTIFY_ITINERARY_FINISH_REQUEST: {
+        draft.loading = false;
+        break;
+      }
       case WsActions.ITINERARY_QUESTION: {
         const itineraryList = draft.itineraries;
         const itineraryQuestion: QuestionProps = JSON.parse(

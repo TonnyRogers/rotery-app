@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useState, useMemo, useEffect, useCallback} from 'react';
+import React, {useRef, useState, useMemo, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {format, parse} from 'date-fns';
@@ -48,6 +48,7 @@ import {
   showProfileGuide,
   hideProfileGuide,
 } from '../../store/modules/guides/actions';
+import SplashScreen from '../../components/SplashScreen';
 
 const profileGuideImages = [
   {
@@ -85,36 +86,36 @@ const sexOptions = [
   },
 ];
 
-const cityOptions = [
-  {
-    name: 'SP',
-    value: 'sp',
-  },
-  {
-    name: 'São Paulo',
-    value: 'São Paulo - SP',
-    parent: 'sp',
-  },
-  {
-    name: 'Osasco',
-    value: 'Osasco - SP',
-    parent: 'sp',
-  },
-  {
-    name: 'Campinas',
-    value: 'Campinas - SP',
-    parent: 'sp',
-  },
-  {
-    name: 'RJ',
-    value: 'rj',
-  },
-  {
-    name: 'Osascos',
-    value: 'Osasco - RJ',
-    parent: 'rj',
-  },
-];
+// const cityOptions = [
+//   {
+//     name: 'SP',
+//     value: 'sp',
+//   },
+//   {
+//     name: 'São Paulo',
+//     value: 'São Paulo - SP',
+//     parent: 'sp',
+//   },
+//   {
+//     name: 'Osasco',
+//     value: 'Osasco - SP',
+//     parent: 'sp',
+//   },
+//   {
+//     name: 'Campinas',
+//     value: 'Campinas - SP',
+//     parent: 'sp',
+//   },
+//   {
+//     name: 'RJ',
+//     value: 'rj',
+//   },
+//   {
+//     name: 'Osascos',
+//     value: 'Osasco - RJ',
+//     parent: 'rj',
+//   },
+// ];
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -142,7 +143,7 @@ const Profile: React.FC = () => {
     formState: {errors},
   } = useForm({resolver: yupResolver(validationSchema)});
   const {user} = useSelector((state: RootStateProps) => state.auth);
-  const {data} = useSelector((state: RootStateProps) => state.profile);
+  const {data, loading} = useSelector((state: RootStateProps) => state.profile);
   const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
 
   useEffect(() => {
@@ -171,7 +172,7 @@ const Profile: React.FC = () => {
 
   const watchBirthDate = watch('birthDate', new Date());
   const watchGender = watch('gender');
-  const watchCity = watch('city');
+  // const watchCity = watch('city');
   const watchName = watch('name');
   const watchEmail = watch('email');
   const watchPhone = watch('phone', '');
@@ -180,7 +181,7 @@ const Profile: React.FC = () => {
 
   const [alertVisible, setAlertVisible] = useState(false);
   const [genderIsOpen, setGenderIsOpen] = useState(false);
-  const [cityIsOpen, setCityIsOpen] = useState(false);
+  // const [cityIsOpen, setCityIsOpen] = useState(false);
   const [profileImage, setProfileImage] = useState({
     uri: data?.file_id && data.file ? data.file.url : undefined,
   });
@@ -190,7 +191,7 @@ const Profile: React.FC = () => {
   const phoneRef = useRef<any>();
   const cpfRef = useRef<any>();
   const stateRef = useRef<any>();
-  const cityRef = useRef<any>();
+  // const cityRef = useRef<any>();
   const profissionRef = useRef<any>();
 
   const useSinceDate = useMemo(
@@ -238,13 +239,13 @@ const Profile: React.FC = () => {
     }
   }
 
-  const onGenderOpen = useCallback(() => {
-    setCityIsOpen(false);
-  }, []);
+  // const onGenderOpen = () => {
+  //   setCityIsOpen(false);
+  // };
 
-  const onCityOpen = useCallback(() => {
-    setGenderIsOpen(false);
-  }, []);
+  // const onCityOpen = () => {
+  //   setGenderIsOpen(false);
+  // };
 
   return (
     <Page showHeader={false}>
@@ -308,7 +309,7 @@ const Profile: React.FC = () => {
                   categorySelectable={true}
                   open={genderIsOpen}
                   setOpen={setGenderIsOpen}
-                  onOpen={onGenderOpen}
+                  onOpen={() => {}}
                   zIndex={200}
                   zIndexInverse={100}
                   key="gender"
@@ -354,14 +355,14 @@ const Profile: React.FC = () => {
                   error={errors.cpf?.message}
                   keyboardType="number-pad"
                 />
-                <Input
+                {/* <Input
                   label="Estado"
                   placeholder="Digite seu estado"
                   ref={stateRef}
                   onChange={(value: string) => setValue('state', value)}
                   onSubmitEditing={() => cityRef.current?.focus()}
                   returnKeyType="next"
-                />
+                /> */}
                 {/* <Input
                   label="Cidade"
                   placeholder="Digite sua cidade"
@@ -370,7 +371,7 @@ const Profile: React.FC = () => {
                   returnKeyType="next"
                   onSubmitEditing={() => profissionRef.current?.focus()}
                 /> */}
-                <PickerInput
+                {/* <PickerInput
                   label="Cidade"
                   value={watchCity}
                   onChange={(value: string) => setValue('city', value)}
@@ -386,7 +387,7 @@ const Profile: React.FC = () => {
                   searchable
                   listMode="MODAL"
                   categorySelectable={false}
-                />
+                /> */}
                 <Input
                   icon="purse-outline"
                   label="Profissão"
@@ -423,9 +424,8 @@ const Profile: React.FC = () => {
         icon="clipboard-alert-outline"
         iconColor="#3dc77b"
         visible={alertVisible}
-        onRequestClose={(value) => setAlertVisible(value)}
-        onCancel={alertToggle}
-        onConfirm={() => handleDeleteUser()}
+        onRequestClose={() => setAlertVisible(false)}
+        onConfirm={handleDeleteUser}
       />
       <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
@@ -433,6 +433,7 @@ const Profile: React.FC = () => {
           onClose={() => dispatch(hideProfileGuide())}
         />
       </Ads>
+      <SplashScreen visible={loading} />
     </Page>
   );
 };

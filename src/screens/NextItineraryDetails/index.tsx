@@ -1,5 +1,5 @@
-import React, {useState, useRef, useMemo, useEffect} from 'react';
-import {View} from 'react-native';
+import React, {useState, useRef, useMemo, useEffect, useCallback} from 'react';
+import {View, ScrollView} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -98,7 +98,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   const questionRef = useRef();
   const dispatch = useDispatch();
 
-  const itinerary: ItineraryProps | any = useMemo(
+  const itinerary = useMemo(
     () =>
       itineraries &&
       itineraries?.find((item: ItineraryProps) => item.id === id),
@@ -107,7 +107,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
 
   const isMember = useMemo(
     () =>
-      itinerary.members &&
+      itinerary?.members &&
       itinerary.members.find(
         (member: MemberProps) =>
           member.pivot.user_id === user.id && member.pivot.accepted === true,
@@ -127,21 +127,21 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
 
   useMemo(() => {
     beginDateFormated.current = format(
-      new Date(itinerary.begin),
+      new Date(itinerary?.begin || ''),
       ' dd MMM yyyy H:mm',
       {
         locale: pt,
       },
     );
     endDateFormated.current = format(
-      new Date(itinerary.end),
+      new Date(itinerary?.end || ''),
       ' dd MMM yyyy H:mm',
       {
         locale: pt,
       },
     );
     limitDateFormated.current = format(
-      new Date(itinerary.deadline_for_join),
+      new Date(itinerary?.deadline_for_join || ''),
       ' dd MMM yyyy H:mm',
       {locale: pt},
     );
@@ -156,13 +156,111 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   }
 
   function handleLeaveItinerary() {
-    dispatch(leaveItineraryRequest(itinerary.id));
+    if (itinerary) {
+      dispatch(leaveItineraryRequest(itinerary?.id));
+    }
   }
 
   const handleMakeQuestion = (data: any) => {
-    dispatch(makeQuestionRequest(itinerary.id, data.question));
-    setValue('question', '');
+    if (itinerary) {
+      dispatch(makeQuestionRequest(itinerary?.id, data.question));
+      setValue('question', '');
+    }
   };
+
+  const renderTransports = useCallback(
+    () =>
+      itinerary?.transports.map((transport: TransportProps) => (
+        <ShadowBox key={transport.id}>
+          <Text.Paragraph textColor="primary" textWeight="bold">
+            {transport.name}
+          </Text.Paragraph>
+          <Text textWeight="light">{transport.pivot?.description}</Text>
+          <RowGroupSpaced>
+            <ColumnGroup>
+              <Text textWeight="light">Capacidade</Text>
+              <Text textWeight="bold">{transport.pivot?.capacity}</Text>
+            </ColumnGroup>
+            <ColumnGroup>
+              <Text textWeight="light">Preço</Text>
+              <Text textWeight="bold">
+                {formatBRL(String(transport.pivot?.price))}
+              </Text>
+            </ColumnGroup>
+          </RowGroupSpaced>
+        </ShadowBox>
+      )),
+    [itinerary],
+  );
+
+  const renderLodgings = useCallback(
+    () =>
+      itinerary?.lodgings.map((lodging: LodgingProps) => (
+        <ShadowBox key={lodging.id}>
+          <Text.Paragraph textColor="primary" textWeight="bold">
+            {lodging.name}
+          </Text.Paragraph>
+          <Text textWeight="light">{lodging.pivot?.description}</Text>
+          <RowGroupSpaced>
+            <ColumnGroup>
+              <Text textWeight="light">Capacidade</Text>
+              <Text textWeight="bold">{lodging.pivot?.capacity}</Text>
+            </ColumnGroup>
+            <ColumnGroup>
+              <Text textWeight="light">Preço</Text>
+              <Text textWeight="bold">
+                {formatBRL(String(lodging.pivot?.price))}
+              </Text>
+            </ColumnGroup>
+          </RowGroupSpaced>
+        </ShadowBox>
+      )),
+    [itinerary],
+  );
+
+  const renderActivities = useCallback(
+    () =>
+      itinerary?.activities.map((activity: ActivityProps) => (
+        <ShadowBox key={activity.id}>
+          <Text.Paragraph textColor="primary" textWeight="bold">
+            {activity.name}
+          </Text.Paragraph>
+          <Text textWeight="light">{activity.pivot?.description}</Text>
+          <RowGroupSpaced>
+            <ColumnGroup>
+              <Text textWeight="light">Capacidade</Text>
+              <Text textWeight="bold">{activity.pivot?.capacity}</Text>
+            </ColumnGroup>
+            <ColumnGroup>
+              <Text textWeight="light">Preço</Text>
+              <Text textWeight="bold">
+                {formatBRL(String(activity.pivot?.price))}
+              </Text>
+            </ColumnGroup>
+          </RowGroupSpaced>
+        </ShadowBox>
+      )),
+    [itinerary],
+  );
+
+  const renderQuestions = useCallback(
+    () =>
+      itinerary?.questions.map((questionItem: QuestionProps) => (
+        <ItineraryQuestion question={questionItem} key={questionItem.id} />
+      )),
+    [itinerary],
+  );
+
+  const renderMembers = useCallback(
+    () =>
+      itinerary?.members.map(
+        (member: MemberProps) =>
+          member.pivot.accepted && (
+            <ItineraryMember member={member} key={member.id} />
+          ),
+      ),
+    [itinerary],
+  );
 
   function viewProfile(userId: number) {
     navigation.navigate('UserDetails', {
@@ -176,17 +274,27 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     }
   }
 
+  if (!itinerary) {
+    return null;
+  }
+
   return (
     <Page showHeader={false}>
+      <Share
+        data={{
+          id: itinerary?.id,
+          type: 'itinerary',
+          componentType: 'connectionShareList',
+          ownerId: itinerary?.owner_id,
+        }}
+      />
       <Container>
-        <Content>
-          <Share
-            data={{
-              id: itinerary.id,
-              type: 'itinerary',
-              componentType: 'connectionShareList',
-            }}
-          />
+        <Content
+          renderToHardwareTextureAndroid
+          shouldRasterizeIOS
+          scrollEventThrottle={16}
+          nestedScrollEnabled
+          decelerationRate="normal">
           <Card>
             <CardHeader>
               <BackButton onPress={goBack}>
@@ -199,15 +307,15 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                   textColor="primary"
                   textWeight="bold"
                   maxLines={1}>
-                  {itinerary.name}
+                  {itinerary?.name}
                 </Text.Paragraph>
                 <Text.Paragraph textColor="primary" textWeight="bold">
-                  Vagas: {itinerary.capacity}
+                  Vagas: {itinerary?.capacity}
                 </Text.Paragraph>
               </RowGroupSpaced>
               <RowGroupSpaced>
                 <Text textWeight="light" maxLines={1}>
-                  {itinerary.location}
+                  {itinerary?.location}
                 </Text>
                 <Text textWeight="light" maxLines={1}>
                   {beginDateFormated.current}
@@ -215,15 +323,15 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               </RowGroupSpaced>
               <StatusContent>
                 <Status>
-                  <StatusName>{itinerary.status.name}</StatusName>
+                  <StatusName>{itinerary?.status.name}</StatusName>
                 </Status>
               </StatusContent>
-              <ImageCarousel data={itinerary.photos} />
+              <ImageCarousel data={itinerary?.photos} />
               <View>
                 <Text.Paragraph textColor="primary" textWeight="bold">
                   Descrição:
                 </Text.Paragraph>
-                <Text textWeight="light">{itinerary.description}</Text>
+                <Text textWeight="light">{itinerary?.description}</Text>
               </View>
               <HostContent>
                 <HostLabel>
@@ -231,16 +339,16 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                   <Label>Host</Label>
                 </HostLabel>
                 <Divider />
-                <HostButton onPress={() => viewProfile(itinerary.owner.id)}>
+                <HostButton onPress={() => viewProfile(itinerary?.owner.id)}>
                   <UserImage
                     source={{
-                      uri: itinerary.owner.person.file?.url || undefined,
+                      uri: itinerary?.owner.person.file?.url || undefined,
                     }}
                     resizeMode="cover"
                   />
                   <HostDetails>
                     <Text textColor="primary" textWeight="bold" maxLines={1}>
-                      {itinerary.owner.username}
+                      {itinerary?.owner.username}
                     </Text>
                     <RateStars>
                       <Icon name="star" size={24} color="#3dc77b" />
@@ -288,78 +396,36 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 </IconHolder>
                 <Text.Title>Transporte</Text.Title>
               </RowGroup>
-              {itinerary.transports.map((transport: TransportProps) => (
-                <ShadowBox key={transport.id}>
-                  <Text.Paragraph textColor="primary" textWeight="bold">
-                    {transport.name}
-                  </Text.Paragraph>
-                  <Text textWeight="light">{transport.pivot?.description}</Text>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <Text textWeight="light">Capacidade</Text>
-                      <Text textWeight="bold">{transport.pivot?.capacity}</Text>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <Text textWeight="light">Preço</Text>
-                      <Text textWeight="bold">
-                        {formatBRL(String(transport.pivot?.price))}
-                      </Text>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </ShadowBox>
-              ))}
+              <ScrollView
+                renderToHardwareTextureAndroid
+                scrollEventThrottle={16}
+                contentContainerStyle={{padding: 1}}>
+                {renderTransports()}
+              </ScrollView>
               <RowGroup>
                 <IconHolder>
                   <Icon name="bed" color="#FFF" size={24} />
                 </IconHolder>
                 <Text.Title>Hospedagem</Text.Title>
               </RowGroup>
-              {itinerary.lodgings.map((lodging: LodgingProps) => (
-                <ShadowBox key={lodging.id}>
-                  <Text.Paragraph textColor="primary" textWeight="bold">
-                    {lodging.name}
-                  </Text.Paragraph>
-                  <Text textWeight="light">{lodging.pivot?.description}</Text>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <Text textWeight="light">Capacidade</Text>
-                      <Text textWeight="bold">{lodging.pivot?.capacity}</Text>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <Text textWeight="light">Preço</Text>
-                      <Text textWeight="bold">
-                        {formatBRL(String(lodging.pivot?.price))}
-                      </Text>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </ShadowBox>
-              ))}
+              <ScrollView
+                renderToHardwareTextureAndroid
+                scrollEventThrottle={16}
+                contentContainerStyle={{padding: 1}}>
+                {renderLodgings()}
+              </ScrollView>
               <RowGroup>
                 <IconHolder>
                   <Icon name="lightning-bolt" color="#FFF" size={24} />
                 </IconHolder>
                 <Text.Title>Atividades</Text.Title>
               </RowGroup>
-              {itinerary.activities.map((activity: ActivityProps) => (
-                <ShadowBox key={activity.id}>
-                  <Text.Paragraph textColor="primary" textWeight="bold">
-                    {activity.name}
-                  </Text.Paragraph>
-                  <Text textWeight="light">{activity.pivot?.description}</Text>
-                  <RowGroupSpaced>
-                    <ColumnGroup>
-                      <Text textWeight="light">Capacidade</Text>
-                      <Text textWeight="bold">{activity.pivot?.capacity}</Text>
-                    </ColumnGroup>
-                    <ColumnGroup>
-                      <Text textWeight="light">Preço</Text>
-                      <Text textWeight="bold">
-                        {formatBRL(String(activity.pivot?.price))}
-                      </Text>
-                    </ColumnGroup>
-                  </RowGroupSpaced>
-                </ShadowBox>
-              ))}
+              <ScrollView
+                renderToHardwareTextureAndroid
+                scrollEventThrottle={16}
+                contentContainerStyle={{padding: 1}}>
+                {renderActivities()}
+              </ScrollView>
             </CardContent>
           </Card>
 
@@ -376,13 +442,11 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <Text.Title>Dúvidas e Comentários</Text.Title>
               </RowGroup>
             </CardHeader>
-            <CardContent>
-              {itinerary.questions.map((questionItem: QuestionProps) => (
-                <ItineraryQuestion
-                  question={questionItem}
-                  key={questionItem.id}
-                />
-              ))}
+            <ScrollView
+              renderToHardwareTextureAndroid
+              scrollEventThrottle={16}
+              contentContainerStyle={{padding: 1}}>
+              {renderQuestions()}
               <>
                 <TextArea
                   placeholder="faça uma pergunta..."
@@ -396,7 +460,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                   <SendButtonText>Perguntar</SendButtonText>
                 </SendButton>
               </>
-            </CardContent>
+            </ScrollView>
           </Card>
 
           <Card>
@@ -408,14 +472,12 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <Text.Title>Membros</Text.Title>
               </RowGroup>
             </CardHeader>
-            <CardContent>
-              {itinerary.members.map(
-                (member: MemberProps) =>
-                  member.pivot.accepted && (
-                    <ItineraryMember member={member} key={member.id} />
-                  ),
-              )}
-            </CardContent>
+            <ScrollView
+              renderToHardwareTextureAndroid
+              scrollEventThrottle={16}
+              contentContainerStyle={{padding: 1}}>
+              {renderMembers()}
+            </ScrollView>
           </Card>
           <DeleteItineraryButton onPress={showAlert}>
             <Icon name="delete-forever-outline" size={24} color="#FFF" />

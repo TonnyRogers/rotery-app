@@ -13,23 +13,22 @@ import {
   Content,
   Header,
   KeyboardAvoidingView,
-  Title,
   AlertActions,
   ConfirmButton,
   CancelButton,
   ButtonText,
-  Message,
   BaseBlock,
 } from './styles';
+import Text from '../Text';
 
 interface AlertProps {
   title?: string;
   visible: boolean;
-  onRequestClose(value: boolean): any;
+  onRequestClose(): void;
   icon?: string;
   iconColor?: string;
   onConfirm?(): void;
-  onCancel(): void;
+  onCancel?(): void;
   message?: string;
 }
 
@@ -39,7 +38,6 @@ const Alert: React.FC<AlertProps> = ({
   icon,
   iconColor,
   title,
-  onCancel,
   onConfirm,
   message,
 }) => {
@@ -61,7 +59,7 @@ const Alert: React.FC<AlertProps> = ({
       useNativeDriver: false,
     }).start();
     setTimeout(() => {
-      onRequestClose(false);
+      onRequestClose();
     }, 400);
   }, [height, onRequestClose, panY.y]);
 
@@ -116,9 +114,12 @@ const Alert: React.FC<AlertProps> = ({
                 {...panRespoders.panHandlers}>
                 <Header>
                   {icon && <Icon name={icon} size={30} color={iconColor} />}
-                  <Title>{title}</Title>
+
+                  <Text.Title alignment="center">{title}</Text.Title>
                 </Header>
-                <Message>{message}</Message>
+                <Text.Paragraph alignment="center" textWeight="light">
+                  {message}
+                </Text.Paragraph>
                 <AlertActions>
                   {onConfirm && (
                     <ConfirmButton onPress={onConfirm}>

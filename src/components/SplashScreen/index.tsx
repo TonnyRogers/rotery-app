@@ -1,8 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, StatusBar} from 'react-native';
 import LottieView from 'lottie-react-native';
 
-import {Container, KeyboardAvoidingView, Content, Title} from './styles';
+import {Container, Content} from './styles';
+import Text from '../Text';
 const iconImage = require('../../../assets/animation_rotery.json');
 
 interface SplashScreenProps {
@@ -10,19 +12,26 @@ interface SplashScreenProps {
 }
 
 const SplashScreen: React.FC<SplashScreenProps> = ({visible}) => {
+  if (!visible) {
+    return null;
+  }
+
   return (
     <>
-      {visible && (
-        <Container>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <Content>
-              <LottieView source={iconImage} autoPlay />
-              <Title>Carregando...</Title>
-            </Content>
-          </KeyboardAvoidingView>
-        </Container>
-      )}
+      <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
+      <Container>
+        <Content>
+          <LottieView
+            source={iconImage}
+            autoPlay
+            resizeMode="contain"
+            autoSize
+            hardwareAccelerationAndroid={!!(Platform.OS === 'android')}
+            style={{alignSelf: 'center'}}
+          />
+          <Text.Title alignment="center">Carregando...</Text.Title>
+        </Content>
+      </Container>
     </>
   );
 };

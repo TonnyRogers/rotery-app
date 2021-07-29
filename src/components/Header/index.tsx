@@ -93,15 +93,15 @@ const Header: React.FC<HeaderProps> = () => {
       <Notification
         title="Notificações"
         visible={notificationVisible}
-        onRequestClose={(value) => setNotificationVisible(value)}
+        onRequestClose={() => setNotificationVisible(false)}
         icon="bell-ring-outline"
         iconColor="#3dc77b"
       />
       <ModalMenu
         visible={menuVisible}
-        onRequestClose={(value) => setMenuVisible(value)}
+        onRequestClose={() => setMenuVisible(false)}
       />
-      <BottomSheet visible={false} onRequestClose={() => {}}>
+      <BottomSheet title="" visible={false} onRequestClose={() => {}}>
         {renderBottomSheet()}
       </BottomSheet>
     </>

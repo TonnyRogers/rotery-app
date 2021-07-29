@@ -11,7 +11,11 @@ export const Container = styled.View`
   flex: 1;
 `;
 
-export const Content = styled.ScrollView`
+export const Content = styled.ScrollView.attrs({
+  scrollEventThrottle: 16,
+  nestedScrollEnabled: true,
+  shouldRasterizeIOS: true,
+})`
   flex-direction: column;
   flex: 1;
 `;
@@ -134,7 +138,11 @@ export const CardActions = styled.View`
   width: 100%;
 `;
 
-export const TransportList = styled.View``;
+export const TransportList = styled.ScrollView.attrs({
+  renderToHardwareTextureAndroid: true,
+  scrollEventThrottle: 16,
+  contentContainerStyle: {padding: 1},
+})``;
 
 export const ColumnGroup = styled.View``;
 
@@ -181,14 +189,22 @@ export const SubmitButtonText = styled.Text`
   font-size: 2rem;
 `;
 
-export const LodgingList = styled.View``;
+export const LodgingList = styled.ScrollView.attrs({
+  renderToHardwareTextureAndroid: true,
+  scrollEventThrottle: 16,
+  contentContainerStyle: {padding: 1},
+})``;
 
 export const AddLodginButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 `;
 
-export const ActivityList = styled.View``;
+export const ActivityList = styled.ScrollView.attrs({
+  renderToHardwareTextureAndroid: true,
+  scrollEventThrottle: 16,
+  contentContainerStyle: {padding: 1},
+})``;
 
 export const AddActivityButton = styled.TouchableOpacity`
   align-items: center;

@@ -231,7 +231,8 @@ const Feed: React.FC = () => {
       />
       <BottomSheet
         visible={sheetVisible}
-        onRequestClose={(value) => setSheetVisible(value)}
+        onRequestClose={() => setSheetVisible(false)}
+        title="Anuncio"
       />
       <FilterInput
         visible={filterVisible}

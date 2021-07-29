@@ -61,6 +61,18 @@ export default function profile(state = INITIAL_STATE, action: ActionProps) {
         draft.loading = false;
         break;
       }
+      case ProfileActions.REMOVE_USER_REQUEST: {
+        draft.loading = true;
+        break;
+      }
+      case ProfileActions.REMOVE_USER_SUCCESS: {
+        draft.loading = false;
+        break;
+      }
+      case ProfileActions.REMOVE_USER_FAILURE: {
+        draft.loading = false;
+        break;
+      }
       default:
     }
   });

@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {getItinerariesRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
@@ -33,6 +34,10 @@ const MyItineraries: React.FC = () => {
 
   function itineraryDetail(itineraryId: number) {
     navigation.navigate('MyItineraryDetails', {id: itineraryId});
+  }
+
+  function toNewItinerary() {
+    RootNavigation.replace('NewItinerary');
   }
 
   return (
@@ -65,8 +70,7 @@ const MyItineraries: React.FC = () => {
                     Crie seu primeiro roteiro!
                   </Text.Paragraph>
                 </ColumnGroup>
-                <NewItineraryButton
-                  onPress={() => navigation.navigate('NewItinerary')}>
+                <NewItineraryButton onPress={toNewItinerary}>
                   <NewItineraryButtonText>Novo Roteiro</NewItineraryButtonText>
                 </NewItineraryButton>
               </Card>

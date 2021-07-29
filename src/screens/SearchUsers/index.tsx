@@ -23,6 +23,7 @@ import Card from '../../components/Card';
 import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
+import SplashScreen from '../../components/SplashScreen';
 
 interface UserProps {
   id: number;
@@ -38,15 +39,19 @@ interface UserProps {
 const SearchUsers: React.FC = () => {
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
+  const [isOnLoading, setIsOnLoading] = useState(false);
   const [userList, setUserList] = useState([]);
 
   const searchRef = useRef();
 
   async function searchUser() {
     try {
+      setIsOnLoading(true);
       const response = await api.get(`/users?username=${search}`);
+      setIsOnLoading(false);
       setUserList(response.data.data);
     } catch (error) {
+      setIsOnLoading(false);
       Toast.show({
         text1: 'Erro ao buscar usuários.',
         position: 'bottom',
@@ -126,6 +131,7 @@ const SearchUsers: React.FC = () => {
           </CardContent>
         </Card>
       </Container>
+      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

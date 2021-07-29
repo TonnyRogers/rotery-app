@@ -6,7 +6,7 @@ import {Container, Content, KeyboardAvoidingView} from './styles';
 interface AdsProps {
   title?: string;
   visible: boolean;
-  onRequestClose(value: boolean): any;
+  onRequestClose(): void;
   icon?: string;
   iconColor?: string;
 }
@@ -30,7 +30,7 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
       useNativeDriver: false,
     }).start();
     setTimeout(() => {
-      onRequestClose(false);
+      onRequestClose();
     }, 400);
   }, [height, onRequestClose, panY.y]);
 
@@ -41,30 +41,33 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
       handleDismiss();
     }
   }, [handleDismiss, handleOpen, visible]);
+
+  if (!visible) {
+    return null;
+  }
+
   return (
-    visible && (
-      <>
-        <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
-        <Container>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <Content
-              style={{
-                transform: [
-                  {
-                    translateY: panY.y.interpolate({
-                      inputRange: [-100, 0, 1],
-                      outputRange: [-100, 0, 1],
-                    }),
-                  },
-                ],
-              }}>
-              {children}
-            </Content>
-          </KeyboardAvoidingView>
-        </Container>
-      </>
-    )
+    <>
+      <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
+      <Container>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <Content
+            style={{
+              transform: [
+                {
+                  translateY: panY.y.interpolate({
+                    inputRange: [-100, 0, 1],
+                    outputRange: [-100, 0, 1],
+                  }),
+                },
+              ],
+            }}>
+            {children}
+          </Content>
+        </KeyboardAvoidingView>
+      </Container>
+    </>
   );
 };
 
