@@ -191,14 +191,22 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                 }}
                 style={{borderColor: '#e1e1e1'}}
               />
-              <Text.Title>{profile.user && profile.user.username}</Text.Title>
+              <Text.Title alignment="center">
+                {profile.user && profile.user.username}
+              </Text.Title>
               <RateStars>{renderRateStars(finalRate / countRate)}</RateStars>
-              <Text textWeight="light">
+              <Text alignment="center" textWeight="light">
                 Ativo desde {createDateFormated.current}
               </Text>
-              <Text textWeight="light">{profile.profission}</Text>
-              <Text textWeight="light">{getAge(profile.birth)} Anos</Text>
-              <Text textWeight="light">São Paulo - SP</Text>
+              <Text alignment="center" textWeight="light">
+                {profile.profission}
+              </Text>
+              <Text alignment="center" textWeight="light">
+                {getAge(profile.birth)} Anos
+              </Text>
+              <Text alignment="center" textWeight="light">
+                São Paulo - SP
+              </Text>
             </UserDetail>
           </CardCotent>
         </Card>
@@ -210,7 +218,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
         )}
         <Card>
           <TitleContent>
-            <Text.Title>Avaliações</Text.Title>
+            <Text.Title alignment="center">Avaliações</Text.Title>
           </TitleContent>
           <RateList>
             {profile.user &&
