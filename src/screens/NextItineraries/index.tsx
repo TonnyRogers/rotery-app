@@ -1,25 +1,16 @@
 import React, {useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {getNextItinerariesRequest} from '../../store/modules/nextItineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import * as RootNavigation from '../../RootNavigation';
 
-import {
-  Container,
-  Content,
-  ContentHeader,
-  ItineraryList,
-  ColumnGroup,
-  FeedButton,
-  FeedButtonText,
-} from './styled';
+import {Container, Content, ContentHeader, ItineraryList} from './styled';
 import Itinerary from '../../components/Itinerary';
-import Card from '../../components/Card';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
+import Empty from '../../components/Empty';
 
 const NextItineraries: React.FC = () => {
   const {itineraries} = useSelector(
@@ -57,18 +48,12 @@ const NextItineraries: React.FC = () => {
               />
             )}
             ListEmptyComponent={() => (
-              <Card>
-                <ColumnGroup>
-                  <Icon name="bus-clock" size={30} color="#3dc77b" />
-                  <Text.Title alignment="center">Que tal viajar?</Text.Title>
-                  <Text.Paragraph alignment="center" textWeight="light">
-                    Encontre um roteiro!
-                  </Text.Paragraph>
-                </ColumnGroup>
-                <FeedButton onPress={toFeed}>
-                  <FeedButtonText>Ir para o Feed</FeedButtonText>
-                </FeedButton>
-              </Card>
+              <Empty
+                title="Nada por aqui!"
+                subTitle="Que tal viajar? Encontre um roteiro!"
+                onPressTo={toFeed}
+                buttonText="Ir para o Feed"
+              />
             )}
           />
         </Content>

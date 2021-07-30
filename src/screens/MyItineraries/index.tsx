@@ -1,25 +1,16 @@
 import React, {useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {getItinerariesRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import * as RootNavigation from '../../RootNavigation';
 
-import {
-  Container,
-  Content,
-  ContentHeader,
-  ItineraryList,
-  ColumnGroup,
-  NewItineraryButton,
-  NewItineraryButtonText,
-} from './styled';
+import {Container, Content, ContentHeader, ItineraryList} from './styled';
 import Itinerary from '../../components/Itinerary';
-import Card from '../../components/Card';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
+import Empty from '../../components/Empty';
 
 const MyItineraries: React.FC = () => {
   const {itineraries} = useSelector(
@@ -37,7 +28,7 @@ const MyItineraries: React.FC = () => {
   }
 
   function toNewItinerary() {
-    RootNavigation.replace('NewItinerary');
+    RootNavigation.navigate('NewItinerary');
   }
 
   return (
@@ -58,22 +49,12 @@ const MyItineraries: React.FC = () => {
               />
             )}
             ListEmptyComponent={() => (
-              <Card>
-                <ColumnGroup>
-                  <Icon
-                    name="bag-personal-off-outline"
-                    size={30}
-                    color="#3dc77b"
-                  />
-                  <Text.Title alignment="center">Nada por aqui</Text.Title>
-                  <Text.Paragraph alignment="center" textWeight="light">
-                    Crie seu primeiro roteiro!
-                  </Text.Paragraph>
-                </ColumnGroup>
-                <NewItineraryButton onPress={toNewItinerary}>
-                  <NewItineraryButtonText>Novo Roteiro</NewItineraryButtonText>
-                </NewItineraryButton>
-              </Card>
+              <Empty
+                title="Nada por aqui"
+                subTitle="Crie seu primeiro roteiro!"
+                onPressTo={toNewItinerary}
+                buttonText="Novo Roteiro"
+              />
             )}
           />
         </Content>

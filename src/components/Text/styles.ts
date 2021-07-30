@@ -6,6 +6,8 @@ const colors = {
   secondary: `color: ${theme.colors.secondaryText};`,
   blue: `color: ${theme.colors.blue};`,
   red: `color: ${theme.colors.red};`,
+  green: `color: ${theme.colors.green};`,
+  white: `color: ${theme.colors.white};`,
 };
 
 const alignment = {
@@ -16,7 +18,7 @@ const alignment = {
 };
 
 export interface CustomStyledProps {
-  textColor?: 'primary' | 'secondary' | 'blue' | 'red';
+  textColor?: 'primary' | 'secondary' | 'blue' | 'red' | 'green' | 'white';
   textWeight?: 'bold' | 'regular' | 'light';
   maxLines?: number;
   alignment?: 'center' | 'start' | 'end' | 'stretch';

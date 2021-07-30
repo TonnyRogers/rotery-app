@@ -19,6 +19,7 @@ import {
   wsCloseChatChannel,
 } from '../../store/modules/websocket/actions';
 import {MessageProps} from '../../utils/types';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
@@ -83,6 +84,12 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   const {userId} = route.params;
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {conversation} = useSelector((state: RootStateProps) => state.messages);
+  const {itineraries} = useSelector(
+    (state: RootStateProps) => state.itineraries,
+  );
+  const {itineraries: nextItineraries} = useSelector(
+    (state: RootStateProps) => state.nextItineraries,
+  );
 
   useEffect(() => {
     register('message');
@@ -130,6 +137,28 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
     setValue('message', '');
   };
 
+  const handleMessageNavigation = useCallback(
+    (itineraryId: number) => {
+      const isMember = nextItineraries?.find((item) => item.id === itineraryId);
+      const isOwner = itineraries?.find((item) => item.id === itineraryId);
+
+      if (isMember) {
+        RootNavigation.navigate('NextItineraryDetails', {id: itineraryId});
+      }
+
+      if (isOwner) {
+        RootNavigation.navigate('MyItineraryDetails', {id: itineraryId});
+      }
+
+      if (!isMember && !isOwner) {
+        RootNavigation.navigate('DynamicItineraryDetails', {
+          id: itineraryId,
+        });
+      }
+    },
+    [itineraries, nextItineraries],
+  );
+
   const renderMessage = useCallback(() => {
     const reverseConversation: MessageProps[] = JSON.parse(
       JSON.stringify(conversation),
@@ -164,9 +193,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
               </RowGroupSpaced>
               <ShareButton
                 onPress={() =>
-                  navigation.navigate('DynamicItineraryDetails', {
-                    id: messageItem.json_data?.id,
-                  })
+                  handleMessageNavigation(Number(messageItem.json_data?.id))
                 }>
                 <ShareButtonText>Ver Mais</ShareButtonText>
               </ShareButton>
@@ -176,7 +203,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
           break;
       }
     });
-  }, [conversation, formatDate, navigation, user.id]);
+  }, [conversation, formatDate, handleMessageNavigation, user.id]);
 
   function goBack() {
     if (navigation.canGoBack()) {

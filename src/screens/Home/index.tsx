@@ -136,18 +136,17 @@ const Home: React.FC = () => {
 
   return (
     <Page showHeader={false}>
-      <DismissKeyboad>
-        <Container>
-          <Header>
-            <Logo source={horizontalLogo} resizeMode="contain" />
-          </Header>
-          <Title>Destaques {'&'} Informações</Title>
-          <HighlightCarousel data={images} />
-          <TipContent>
-            <Icon name="chevron-double-left" size={20} color="#4885fd" />
-            <TipText> Arraste para ver mais</TipText>
-          </TipContent>
-
+      <Container>
+        <Header>
+          <Logo source={horizontalLogo} resizeMode="contain" />
+        </Header>
+        <Title>Destaques {'&'} Informações</Title>
+        <HighlightCarousel data={images} />
+        <TipContent>
+          <Icon name="chevron-double-left" size={20} color="#4885fd" />
+          <TipText> Arraste para ver mais</TipText>
+        </TipContent>
+        <DismissKeyboad>
           <LoginHover
             visible={loginVisible}
             style={{
@@ -230,8 +229,8 @@ const Home: React.FC = () => {
               </LoginContent>
             </Shadow>
           </LoginHover>
-        </Container>
-      </DismissKeyboad>
+        </DismissKeyboad>
+      </Container>
       <SplashScreen visible={loading} />
     </Page>
   );

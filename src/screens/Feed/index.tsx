@@ -24,18 +24,17 @@ import {
   ItineraryList,
   RowGroupSpaced,
   FilterButton,
-  EmptyData,
 } from './styles';
 
 import Itinerary from '../../components/Itinerary';
 import FilterInput from '../../components/FilterInput';
-import Card from '../../components/Card';
 import BottomSheet from '../../components/BottomSheet';
 import Page from '../../components/Page';
 import FloatButton from '../../components/FloatButton';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import Text from '../../components/Text';
+import Empty from '../../components/Empty';
 
 const feedGuideImages = [
   {
@@ -194,23 +193,10 @@ const Feed: React.FC = () => {
               />
             )}
             ListEmptyComponent={() => (
-              <Card>
-                <EmptyData>
-                  <Icon
-                    name="alert-decagram-outline"
-                    size={30}
-                    color="#3dc77b"
-                  />
-
-                  <Text.Title alignment="center">Ops!</Text.Title>
-                  <Text.Paragraph alignment="center" textWeight="light">
-                    Parece que não tem nada por aqui.
-                  </Text.Paragraph>
-                  <Text.Paragraph alignment="center" textWeight="light">
-                    Crie seu prório roteiro agora mesmo!
-                  </Text.Paragraph>
-                </EmptyData>
-              </Card>
+              <Empty
+                title="Parece que não tem nada por aqui."
+                subTitle="Crie seu prório roteiro agora mesmo!"
+              />
             )}
             onRefresh={() => {
               setPage(2);

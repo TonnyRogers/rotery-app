@@ -1,57 +1,55 @@
-import React, {useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useEffect, useCallback, useState} from 'react';
 
-import {RootStateProps} from '../../store/modules/rootReducer';
+import * as RootNavigation from '../../RootNavigation';
 
-import FeedDetail from './feed';
-import MyItineraryDetail from './my';
-import NextItineraryDetail from './next';
-import {View} from 'react-native';
-import {getDetailsRequest} from '../../store/modules/dynamicItinerary/actions';
 import Page from '../../components/Page';
-import {MemberProps} from '../../utils/types';
+import {ItineraryProps} from '../../utils/types';
+import api from '../../services/api';
+import SplashScreen from '../../components/SplashScreen';
+import DynamicFeedItineraryDetails from './feed';
+import Empty from '../../components/Empty';
 
 interface DynamicItineraryDetaisProps {
   route: {
     params: {id: number};
   };
-  navigation: any;
 }
 
 const DynamicItineraryDetais: React.FC<DynamicItineraryDetaisProps> = ({
   route,
-  // navigation,
 }) => {
-  const dispatch = useDispatch();
   const {id} = route.params;
-  const {user} = useSelector((state: RootStateProps) => state.auth);
-  const {itinerary} = useSelector(
-    (state: RootStateProps) => state.dynamicItinerary,
-  );
+
+  const [currentItinerary, setCurrentItinerary] = useState<ItineraryProps>();
+  const [isOnLoading, setIsOnLoading] = useState<boolean>(false);
+  const getItinerary = useCallback(async () => {
+    try {
+      setIsOnLoading(true);
+      const response = await api.get<ItineraryProps>(
+        `/itineraries/${id}/details`,
+      );
+
+      setIsOnLoading(false);
+      setCurrentItinerary(response.data);
+    } catch (error) {
+      setIsOnLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    dispatch(getDetailsRequest(id));
-  }, [id, dispatch]);
+    getItinerary();
+  }, [getItinerary]);
 
-  const isMember = itinerary?.members.find(
-    (member: MemberProps) =>
-      member.id === user.id && member.pivot.accepted === true,
+  return (
+    <Page showHeader={false}>
+      {currentItinerary ? (
+        <DynamicFeedItineraryDetails itinerary={currentItinerary} />
+      ) : (
+        <Empty onPressTo={() => RootNavigation.goBack()} buttonText="Voltar" />
+      )}
+      <SplashScreen visible={isOnLoading} />
+    </Page>
   );
-
-  const isOwner =
-    itinerary?.id && itinerary.owner.id === user.id ? true : false;
-
-  if (itinerary?.id) {
-    return (
-      <Page>
-        {isMember && <NextItineraryDetail itinerary={itinerary} />}
-        {isOwner && <MyItineraryDetail itinerary={itinerary} />}
-        {!isMember && !isOwner && <FeedDetail itinerary={itinerary} />}
-      </Page>
-    );
-  }
-
-  return <View />;
 };
 
 export default DynamicItineraryDetais;
