@@ -23,7 +23,7 @@ export const Content = styled.View<{hasError: boolean}>`
   align-items: center;
   border-bottom-width: 0.1rem;
   border-bottom-color: ${(props) =>
-    props.hasError ? theme.colors.red : '#cfcfcf'};
+    props.hasError ? theme.colors.red : theme.colors.borderBottom};
   position: relative;
 `;
 

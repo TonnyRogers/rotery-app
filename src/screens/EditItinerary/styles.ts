@@ -14,7 +14,7 @@ export const Container = styled.View`
 export const Content = styled.ScrollView.attrs({
   scrollEventThrottle: 16,
   nestedScrollEnabled: true,
-  shouldRasterizeIOS: true,
+  shouldRasterizeIOS: !!(Platform.OS === 'ios'),
 })`
   flex-direction: column;
   flex: 1;
@@ -139,7 +139,7 @@ export const CardActions = styled.View`
 `;
 
 export const TransportList = styled.ScrollView.attrs({
-  renderToHardwareTextureAndroid: true,
+  renderToHardwareTextureAndroid: !!(Platform.OS === 'android'),
   scrollEventThrottle: 16,
   contentContainerStyle: {padding: 1},
 })``;
@@ -190,7 +190,7 @@ export const SubmitButtonText = styled.Text`
 `;
 
 export const LodgingList = styled.ScrollView.attrs({
-  renderToHardwareTextureAndroid: true,
+  renderToHardwareTextureAndroid: !!(Platform.OS === 'android'),
   scrollEventThrottle: 16,
   contentContainerStyle: {padding: 1},
 })``;
@@ -201,7 +201,7 @@ export const AddLodginButton = styled.TouchableOpacity`
 `;
 
 export const ActivityList = styled.ScrollView.attrs({
-  renderToHardwareTextureAndroid: true,
+  renderToHardwareTextureAndroid: !!(Platform.OS === 'android'),
   scrollEventThrottle: 16,
   contentContainerStyle: {padding: 1},
 })``;

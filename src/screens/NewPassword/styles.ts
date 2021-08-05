@@ -52,7 +52,7 @@ export const InputField = styled.View`
   align-items: center;
   padding: 0.4rem;
   border-width: 0.2rem;
-  border-color: #cfcfcf;
+  border-color: ${theme.colors.borderBottom};
 `;
 
 export const NumberInput = styled.TextInput`

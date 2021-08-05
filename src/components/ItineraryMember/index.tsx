@@ -27,15 +27,21 @@ import {
   UserButton,
 } from './styles';
 
-import {MemberProps} from '../../utils/types';
+import {MemberProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
+import isOpen from '../../guards/itineraryStatus';
 
 interface ItineraryMemberProps {
   member: MemberProps;
   owner?: boolean;
+  itinerary: ItineraryProps;
 }
 
-const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
+const ItineraryMember: React.FC<ItineraryMemberProps> = ({
+  member,
+  owner,
+  itinerary,
+}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -138,7 +144,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({member, owner}) => {
             <JoinDate>{createDateFormated.current}</JoinDate>
           </ColumnGroup>
         </MemberDetails>
-        {owner && renderMemberOptions()}
+        {owner && isOpen(itinerary.status.id, () => renderMemberOptions())}
       </RowGroupSpaced>
     </ShadowBox>
   );

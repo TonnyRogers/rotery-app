@@ -1,5 +1,5 @@
 import React, {useRef, useMemo, useEffect, useCallback} from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -222,7 +222,11 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
         itinerary?.members.map(
           (member: MemberProps) =>
             member.pivot.accepted && (
-              <ItineraryMember member={member} key={member.id} />
+              <ItineraryMember
+                member={member}
+                key={member.id}
+                itinerary={itinerary}
+              />
             ),
         ),
       [itinerary],
@@ -231,7 +235,11 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
     const renderQuestions = useCallback(
       () =>
         itinerary?.questions.map((questionItem: QuestionProps) => (
-          <ItineraryQuestion question={questionItem} key={questionItem.id} />
+          <ItineraryQuestion
+            question={questionItem}
+            key={questionItem.id}
+            itinerary={itinerary}
+          />
         )),
       [itinerary],
     );
@@ -256,8 +264,8 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
         />
         <Container>
           <Content
-            renderToHardwareTextureAndroid
-            shouldRasterizeIOS
+            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+            shouldRasterizeIOS={!!(Platform.OS === 'ios')}
             scrollEventThrottle={16}
             nestedScrollEnabled
             decelerationRate="normal">
@@ -363,7 +371,7 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
                   <Text.Title>Transporte</Text.Title>
                 </RowGroup>
                 <ScrollView
-                  renderToHardwareTextureAndroid
+                  renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                   scrollEventThrottle={16}
                   contentContainerStyle={{padding: 1}}>
                   {renderTransports()}
@@ -375,7 +383,7 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
                   <Text.Title>Hospedagem</Text.Title>
                 </RowGroup>
                 <ScrollView
-                  renderToHardwareTextureAndroid
+                  renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                   scrollEventThrottle={16}
                   contentContainerStyle={{padding: 1}}>
                   {renderLodgings()}
@@ -387,7 +395,7 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
                   <Text.Title>Atividades</Text.Title>
                 </RowGroup>
                 <ScrollView
-                  renderToHardwareTextureAndroid
+                  renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                   scrollEventThrottle={16}
                   contentContainerStyle={{padding: 1}}>
                   {renderActivities()}
@@ -422,7 +430,7 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
                 </RowGroup>
               </CardHeader>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderQuestions()}
@@ -452,7 +460,7 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
                 </RowGroup>
               </CardHeader>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderMembers()}

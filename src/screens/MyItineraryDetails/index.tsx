@@ -1,5 +1,5 @@
 import React, {useState, useRef, useMemo, useCallback, useEffect} from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -18,6 +18,7 @@ import {
   notifyItineraryFinishRequest,
 } from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import isOpen from '../../guards/itineraryStatus';
 
 import {
   Content,
@@ -62,6 +63,7 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
+import {myGuideImages} from '../../utils/constants';
 
 interface MyItineraryDetailsProps {
   route: {
@@ -69,26 +71,6 @@ interface MyItineraryDetailsProps {
   };
   navigation: any;
 }
-
-const myGuideImages = [
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-edit-itinerary1.png',
-    withInfo: true,
-    title: 'Editando Roteiro',
-    message: 'Clique no ícone de lápis para editar informações do seu roteiro.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-finish-itinerary1.png',
-    withInfo: true,
-    title: 'Finalizando Roteiros',
-    message:
-      'Após o término do seu roteiro clique em finalizar para que os membros avaliem.',
-    isAnimation: false,
-  },
-];
 
 const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   route,
@@ -250,7 +232,12 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const renderMembers = useCallback(
     () =>
       itinerary?.members.map((member: MemberProps) => (
-        <ItineraryMember member={member} key={member.id} owner />
+        <ItineraryMember
+          member={member}
+          key={member.id}
+          owner
+          itinerary={itinerary}
+        />
       )),
     [itinerary],
   );
@@ -258,7 +245,12 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   const renderQuestions = useCallback(
     () =>
       itinerary?.questions.map((question: QuestionProps) => (
-        <ItineraryQuestion question={question} key={question.id} owner />
+        <ItineraryQuestion
+          question={question}
+          key={question.id}
+          owner
+          itinerary={itinerary}
+        />
       )),
     [itinerary],
   );
@@ -284,8 +276,8 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         }}
       />
       <Content
-        renderToHardwareTextureAndroid
-        shouldRasterizeIOS
+        renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+        shouldRasterizeIOS={!!(Platform.OS === 'ios')}
         scrollEventThrottle={16}
         nestedScrollEnabled
         decelerationRate="normal">
@@ -294,12 +286,14 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             <BackButton onPress={goBack}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
-            <EditButton
-              onPress={() =>
-                navigation.navigate('EditItinerary', {id: itinerary?.id})
-              }>
-              <Icon name="pencil-outline" size={24} color="#4885FD" />
-            </EditButton>
+            {isOpen(itinerary.status.id, () => (
+              <EditButton
+                onPress={() =>
+                  navigation.navigate('EditItinerary', {id: itinerary?.id})
+                }>
+                <Icon name="pencil-outline" size={24} color="#4885FD" />
+              </EditButton>
+            ))}
           </CardHeader>
           <CardContent>
             <RowGroupSpaced>
@@ -424,7 +418,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             </RowGroup>
           </CardHeader>
           <ScrollView
-            renderToHardwareTextureAndroid
+            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
             scrollEventThrottle={16}
             contentContainerStyle={{padding: 1}}>
             {renderQuestions()}
@@ -441,19 +435,21 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             </RowGroup>
           </CardHeader>
           <ScrollView
-            renderToHardwareTextureAndroid
+            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
             scrollEventThrottle={16}
             contentContainerStyle={{padding: 1}}>
             {renderMembers()}
           </ScrollView>
         </Card>
         <RowGroupSpaced>
-          <FinalizeItineraryButton onPress={showFinishAlert}>
-            <Icon name="progress-check" size={24} color="#FFF" />
-            <FinalizeItineraryButtonText>
-              Finalizar Roteiro
-            </FinalizeItineraryButtonText>
-          </FinalizeItineraryButton>
+          {isOpen(itinerary.status.id, () => (
+            <FinalizeItineraryButton onPress={showFinishAlert}>
+              <Icon name="progress-check" size={24} color="#FFF" />
+              <FinalizeItineraryButtonText>
+                Finalizar Roteiro
+              </FinalizeItineraryButtonText>
+            </FinalizeItineraryButton>
+          ))}
           <DeleteItineraryButton onPress={showDeleteAlert}>
             <Icon name="delete-forever-outline" size={24} color="#FFF" />
             <DeleteItineraryButtonText>

@@ -1,5 +1,5 @@
 import React, {useRef, useMemo, useEffect, useCallback} from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -23,6 +23,7 @@ import {
 } from '../../store/modules/feed/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import * as RootNavigation from '../../RootNavigation';
+import isOpen from '../../guards/itineraryStatus';
 
 import {
   Container,
@@ -142,17 +143,6 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     );
   }, [itinerary]);
 
-  const handleMakeQuestion = (data: any) => {
-    if (itinerary) {
-      dispatch(makeQuestionRequest(itinerary?.id, data.question));
-      setValue('question', '');
-    }
-  };
-
-  function handleJoinItinerary() {
-    dispatch(joinRequest(id));
-  }
-
   function viewProfile(userId: number) {
     navigation.navigate('UserDetails', {
       userId,
@@ -239,7 +229,11 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
       itinerary?.members.map(
         (member: MemberProps) =>
           member.pivot.accepted && (
-            <ItineraryMember member={member} key={member.id} />
+            <ItineraryMember
+              member={member}
+              key={member.id}
+              itinerary={itinerary}
+            />
           ),
       ),
     [itinerary],
@@ -248,10 +242,72 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const renderQuestions = useCallback(
     () =>
       itinerary?.questions.map((questionItem: QuestionProps) => (
-        <ItineraryQuestion question={questionItem} key={questionItem.id} />
+        <ItineraryQuestion
+          question={questionItem}
+          key={questionItem.id}
+          itinerary={itinerary}
+        />
       )),
     [itinerary],
   );
+
+  const renderJoinButton = useCallback(() => {
+    if (itinerary) {
+      function handleJoinItinerary() {
+        dispatch(joinRequest(id));
+      }
+
+      return isOpen(itinerary?.status.id, () =>
+        !isMember ? (
+          <JoinButton onPress={handleJoinItinerary}>
+            <Icon name="location-enter" size={24} color="#FFF" />
+            <JoinButtonText>Participar</JoinButtonText>
+          </JoinButton>
+        ) : (
+          isMember.pivot.accepted === false && (
+            <JoinButton>
+              <Icon name="location-enter" size={24} color="#FFF" />
+              <JoinButtonText>Aguardando</JoinButtonText>
+            </JoinButton>
+          )
+        ),
+      );
+    }
+  }, [dispatch, id, isMember, itinerary]);
+
+  const renderQuestionForm = useCallback(() => {
+    if (itinerary) {
+      const handleMakeQuestion = (data: any) => {
+        if (itinerary) {
+          dispatch(makeQuestionRequest(itinerary?.id, data.question));
+          setValue('question', '');
+        }
+      };
+
+      return isOpen(itinerary?.status.id, () => (
+        <>
+          <TextArea
+            placeholder="faça uma pergunta..."
+            value={watchQuestion}
+            ref={questionRef}
+            onChange={(value: string) => setValue('question', value)}
+            error={errors.question?.message}
+          />
+          <SendButton onPress={handleSubmit(handleMakeQuestion)}>
+            <Icon name="send-outline" size={24} color="#FFF" />
+            <SendButtonText>Perguntar</SendButtonText>
+          </SendButton>
+        </>
+      ));
+    }
+  }, [
+    dispatch,
+    errors.question,
+    handleSubmit,
+    itinerary,
+    setValue,
+    watchQuestion,
+  ]);
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -275,8 +331,8 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
       />
       <Container>
         <Content
-          renderToHardwareTextureAndroid
-          shouldRasterizeIOS
+          renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+          shouldRasterizeIOS={!!(Platform.OS === 'ios')}
           scrollEventThrottle={16}
           nestedScrollEnabled
           decelerationRate="normal">
@@ -382,7 +438,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text.Title>Transporte</Text.Title>
               </RowGroup>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderTransports()}
@@ -394,7 +450,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text.Title>Hospedagem</Text.Title>
               </RowGroup>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderLodgings()}
@@ -406,24 +462,12 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text.Title>Atividades</Text.Title>
               </RowGroup>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderActivities()}
               </ScrollView>
-
-              {!isMember && (
-                <JoinButton onPress={handleJoinItinerary}>
-                  <Icon name="location-enter" size={24} color="#FFF" />
-                  <JoinButtonText>Participar</JoinButtonText>
-                </JoinButton>
-              )}
-              {isMember && isMember.pivot.accepted === false && (
-                <JoinButton>
-                  <Icon name="location-enter" size={24} color="#FFF" />
-                  <JoinButtonText>Aguardando</JoinButtonText>
-                </JoinButton>
-              )}
+              {renderJoinButton()}
             </CardContent>
           </Card>
 
@@ -441,23 +485,11 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               </RowGroup>
             </CardHeader>
             <ScrollView
-              renderToHardwareTextureAndroid
+              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
               contentContainerStyle={{padding: 1}}>
               {renderQuestions()}
-              <>
-                <TextArea
-                  placeholder="faça uma pergunta..."
-                  value={watchQuestion}
-                  ref={questionRef}
-                  onChange={(value: string) => setValue('question', value)}
-                  error={errors.question?.message}
-                />
-                <SendButton onPress={handleSubmit(handleMakeQuestion)}>
-                  <Icon name="send-outline" size={24} color="#FFF" />
-                  <SendButtonText>Perguntar</SendButtonText>
-                </SendButton>
-              </>
+              {renderQuestionForm()}
             </ScrollView>
           </Card>
 
@@ -471,7 +503,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               </RowGroup>
             </CardHeader>
             <ScrollView
-              renderToHardwareTextureAndroid
+              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
               contentContainerStyle={{padding: 1}}>
               {renderMembers()}

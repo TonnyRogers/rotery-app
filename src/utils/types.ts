@@ -13,7 +13,26 @@ export interface ProfileProps {
   file?: {
     url?: string;
   };
+  location?: string;
+  location_json?: ProfileLocationJson;
 }
+
+export interface LocationJson {
+  city: string;
+  state: string;
+  country: string;
+  countryCode: string;
+  address: string;
+  position: {
+    lat: string;
+    lon: string;
+  };
+}
+
+export type ProfileLocationJson = Pick<
+  LocationJson,
+  'city' | 'state' | 'country' | 'countryCode' | 'position'
+>;
 
 export interface UserProps {
   id: number;
@@ -232,4 +251,30 @@ export interface UpdateItemListProps {
     price: number | null;
     capacity: number;
   };
+}
+
+export enum ItineraryStatusEnum {
+  'OPENED' = 1,
+  'ON_GOING' = 2,
+  'FINISHED' = 3,
+  'CANCELLED' = 4,
+}
+
+export interface PlacesSearchGeo {
+  type: string;
+  address: {
+    municipality?: string;
+    countrySubdivision?: string;
+    countryCode?: string;
+    country?: string;
+    freeformAddress?: string;
+  };
+  position: {
+    lat: string;
+    lon: string;
+  };
+}
+
+export interface TomTomResult<T> {
+  results: T[];
 }

@@ -5,7 +5,7 @@ import LottieView from 'lottie-react-native';
 
 import {Container, Content} from './styles';
 import Text from '../Text';
-const iconImage = require('../../../assets/animation_rotery.json');
+const iconImage = require('../../../assets/animations/animation_rotery.json');
 
 interface SplashScreenProps {
   visible: boolean;

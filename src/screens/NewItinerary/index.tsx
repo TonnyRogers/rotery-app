@@ -74,43 +74,7 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
-
-const newGuideImages = [
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt1.png',
-    withInfo: true,
-    title: 'Criando Roteiros 1/4',
-    message:
-      'Você pode criar um roteiro privado ou público, adicionar fotos, descrição, quantidade de vagas, dar um nome, datas e muito mais.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt2.png',
-    withInfo: true,
-    title: 'Criando Roteiros 2/4',
-    message:
-      'Para dicionar uma Atividade, Hospedagem ou Transporte você deve clicar no "mais" após preencher os dados.',
-    isAnimation: false,
-  },
-  {
-    id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt4.png',
-    withInfo: true,
-    title: 'Criando Roteiros 3/4',
-    message: 'Após isso você vai notar que um item será adicionado logo acima.',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary-pt4.png',
-    withInfo: true,
-    title: 'Criando Roteiros 4/4',
-    message: 'Você pode remove-lo clicando no ícone de lixeira.',
-    isAnimation: false,
-  },
-];
+import {newGuideImages} from '../../utils/constants';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),

@@ -1,5 +1,5 @@
 import React, {useState, useRef, useMemo, useEffect, useCallback} from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {format} from 'date-fns';
@@ -61,6 +61,7 @@ import Share from '../../components/Share';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
+import isOpen from '../../guards/itineraryStatus';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required('campo obrigatório'),
@@ -246,7 +247,11 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   const renderQuestions = useCallback(
     () =>
       itinerary?.questions.map((questionItem: QuestionProps) => (
-        <ItineraryQuestion question={questionItem} key={questionItem.id} />
+        <ItineraryQuestion
+          question={questionItem}
+          key={questionItem.id}
+          itinerary={itinerary}
+        />
       )),
     [itinerary],
   );
@@ -256,7 +261,11 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
       itinerary?.members.map(
         (member: MemberProps) =>
           member.pivot.accepted && (
-            <ItineraryMember member={member} key={member.id} />
+            <ItineraryMember
+              member={member}
+              key={member.id}
+              itinerary={itinerary}
+            />
           ),
       ),
     [itinerary],
@@ -290,8 +299,8 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
       />
       <Container>
         <Content
-          renderToHardwareTextureAndroid
-          shouldRasterizeIOS
+          renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+          shouldRasterizeIOS={!!(Platform.OS === 'ios')}
           scrollEventThrottle={16}
           nestedScrollEnabled
           decelerationRate="normal">
@@ -397,7 +406,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <Text.Title>Transporte</Text.Title>
               </RowGroup>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderTransports()}
@@ -409,7 +418,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <Text.Title>Hospedagem</Text.Title>
               </RowGroup>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderLodgings()}
@@ -421,7 +430,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                 <Text.Title>Atividades</Text.Title>
               </RowGroup>
               <ScrollView
-                renderToHardwareTextureAndroid
+                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderActivities()}
@@ -443,23 +452,25 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               </RowGroup>
             </CardHeader>
             <ScrollView
-              renderToHardwareTextureAndroid
+              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
               contentContainerStyle={{padding: 1}}>
               {renderQuestions()}
-              <>
-                <TextArea
-                  placeholder="faça uma pergunta..."
-                  value={watchQuestion}
-                  ref={questionRef}
-                  onChange={(value: string) => setValue('question', value)}
-                  error={errors.question?.message}
-                />
-                <SendButton onPress={handleSubmit(handleMakeQuestion)}>
-                  <Icon name="send-outline" size={24} color="#FFF" />
-                  <SendButtonText>Perguntar</SendButtonText>
-                </SendButton>
-              </>
+              {isOpen(itinerary.status.id, () => (
+                <>
+                  <TextArea
+                    placeholder="faça uma pergunta..."
+                    value={watchQuestion}
+                    ref={questionRef}
+                    onChange={(value: string) => setValue('question', value)}
+                    error={errors.question?.message}
+                  />
+                  <SendButton onPress={handleSubmit(handleMakeQuestion)}>
+                    <Icon name="send-outline" size={24} color="#FFF" />
+                    <SendButtonText>Perguntar</SendButtonText>
+                  </SendButton>
+                </>
+              ))}
             </ScrollView>
           </Card>
 
@@ -473,18 +484,20 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               </RowGroup>
             </CardHeader>
             <ScrollView
-              renderToHardwareTextureAndroid
+              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
               contentContainerStyle={{padding: 1}}>
               {renderMembers()}
             </ScrollView>
           </Card>
-          <DeleteItineraryButton onPress={showAlert}>
-            <Icon name="delete-forever-outline" size={24} color="#FFF" />
-            <DeleteItineraryButtonText>
-              Sair do Roteiro
-            </DeleteItineraryButtonText>
-          </DeleteItineraryButton>
+          {isOpen(itinerary.status.id, () => (
+            <DeleteItineraryButton onPress={showAlert}>
+              <Icon name="delete-forever-outline" size={24} color="#FFF" />
+              <DeleteItineraryButtonText>
+                Sair do Roteiro
+              </DeleteItineraryButtonText>
+            </DeleteItineraryButton>
+          ))}
         </Content>
       </Container>
       <Alert

@@ -25,7 +25,7 @@ export const DateButton = styled.TouchableOpacity<{hasError: boolean}>`
   justify-content: space-between;
   border-bottom-width: 0.1rem;
   border-bottom-color: ${(props) =>
-    props.hasError ? theme.colors.red : '#cfcfcf'};
+    props.hasError ? theme.colors.red : theme.colors.borderBottom};
 `;
 
 export const DateText = styled.Text`

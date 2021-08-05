@@ -8,6 +8,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import {replyQuestionRequest} from '../../store/modules/itineraries/actions';
+import isOpen from '../../guards/itineraryStatus';
 
 import {
   OwnerDetails,
@@ -24,7 +25,7 @@ import {
 } from './styles';
 import TextArea from '../TextArea';
 
-import {QuestionProps} from '../../utils/types';
+import {QuestionProps, ItineraryProps} from '../../utils/types';
 import {toDateTimeZone} from '../../utils/helpers';
 import ShadowBox from '../ShadowBox';
 
@@ -35,11 +36,13 @@ const validationSchema = yup.object().shape({
 interface ItineraryQuestionProps {
   question: QuestionProps;
   owner?: boolean;
+  itinerary: ItineraryProps;
 }
 
 const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   question,
   owner,
+  itinerary,
 }) => {
   const dispatch = useDispatch();
   const answerRef = useRef();
@@ -97,18 +100,20 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
             <Answer>{question.anwser}</Answer>
           </AnswerContent>
         ) : (
-          <>
-            <TextArea
-              placeholder="sua resposta..."
-              ref={answerRef}
-              onChange={(value: string) => setValue('answer', value)}
-              error={errors.answer?.message}
-            />
-            <SendButton onPress={handleSubmit(handleSubmitAnwser)}>
-              <Icon name="send-outline" size={24} color="#FFF" />
-              <SendButtonText>Responder</SendButtonText>
-            </SendButton>
-          </>
+          isOpen(itinerary.status.id, () => (
+            <>
+              <TextArea
+                placeholder="sua resposta..."
+                ref={answerRef}
+                onChange={(value: string) => setValue('answer', value)}
+                error={errors.answer?.message}
+              />
+              <SendButton onPress={handleSubmit(handleSubmitAnwser)}>
+                <Icon name="send-outline" size={24} color="#FFF" />
+                <SendButtonText>Responder</SendButtonText>
+              </SendButton>
+            </>
+          ))
         )
       ) : (
         question.anwser && (

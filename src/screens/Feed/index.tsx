@@ -35,59 +35,7 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import Text from '../../components/Text';
 import Empty from '../../components/Empty';
-
-const feedGuideImages = [
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Complete seu perfil',
-    message:
-      'Adicione foto e seus dados para uma melhor experiência na comunidade.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-filter1.png',
-    withInfo: true,
-    title: 'Filtrando Roteiros 1/2',
-    message: 'Clique no ícone de filtro para customizar o filtro de roteiros.',
-    isAnimation: false,
-  },
-  {
-    id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-filter2.png',
-    withInfo: true,
-    title: 'Filtrando Roteiros 2/2',
-    message:
-      'Customize o filtro com base nas suas necessidades e clique em "filtrar".',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-filter1.png',
-    withInfo: true,
-    title: 'Limpando filtro',
-    message: 'Clique e segure no botão de filtro até o dispositivo vibrar.',
-    isAnimation: false,
-  },
-  {
-    id: 5,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-reload-feed.png',
-    withInfo: true,
-    title: 'Carregando novos roteiros',
-    message: 'Deslize os dedos para baixo para atualizar feed.',
-    isAnimation: false,
-  },
-  {
-    id: 6,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-new-itinerary.png',
-    withInfo: true,
-    title: 'Criando novo roteiro',
-    message: 'Clique no ícone de "mais" para criar um novo roteiro.',
-    isAnimation: false,
-  },
-];
+import {feedGuideImages} from '../../utils/constants';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();

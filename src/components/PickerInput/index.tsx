@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {SetStateAction, Dispatch} from 'react';
+import React, {SetStateAction, Dispatch, useMemo} from 'react';
 import DropDownPicker, {
   DropDownPickerProps,
 } from 'react-native-dropdown-picker';
@@ -35,11 +35,15 @@ const PickerInput: React.FC<PickerInputProps> = ({
   byValue,
   ...props
 }) => {
-  const optionList = options?.map(({id, ...rest}) => ({
-    label: rest.name,
-    ...rest,
-    value: byValue ? rest.value : String(id),
-  }));
+  const optionList = useMemo(
+    () =>
+      options?.map(({id, ...rest}) => ({
+        label: rest.name,
+        ...rest,
+        value: byValue ? rest.value : String(id),
+      })),
+    [byValue, options],
+  );
 
   return (
     <>
@@ -53,11 +57,13 @@ const PickerInput: React.FC<PickerInputProps> = ({
           flex: 1,
           borderRadius: 0,
           borderColor: '#FFF',
-          borderBottomColor: error ? theme.colors.red : '#cfcfcf',
+          borderBottomColor: error
+            ? theme.colors.red
+            : theme.colors.borderBottom,
         }}
         dropDownContainerStyle={{
           backgroundColor: '#fafafa',
-          borderColor: '#cfcfcf',
+          borderColor: theme.colors.borderBottom,
         }}
         searchContainerStyle={{
           borderBottomColor: '#dfdfdf',
@@ -65,7 +71,7 @@ const PickerInput: React.FC<PickerInputProps> = ({
           borderTopRightRadius: 20,
         }}
         searchTextInputStyle={{
-          borderColor: '#cfcfcf',
+          borderColor: theme.colors.borderBottom,
         }}
         closeIconStyle={{
           width: 24,

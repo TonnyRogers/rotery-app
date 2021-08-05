@@ -1,7 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import LottieView from 'lottie-react-native';
 
-const emptyAnimation = require('../../../assets/animation_empty.json');
+const emptyAnimation = require('../../../assets/animations/animation_empty.json');
 import {Container, CardContainer} from './styles';
 import Card from '../Card';
 import Text from '../Text';
@@ -28,10 +29,10 @@ const Empty: React.FC<EmptyProps> = ({
           <View style={{height: 125}}>
             <LottieView
               source={emptyAnimation}
+              loop={false}
               autoPlay
               resizeMode="contain"
               hardwareAccelerationAndroid={!!(Platform.OS === 'android')}
-              loop
               renderMode="AUTOMATIC"
               style={{flex: 1}}
             />

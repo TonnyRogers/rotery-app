@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
 export const Container = styled.View`
   margin-bottom: 2rem;
@@ -17,7 +18,7 @@ export const DateButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: space-between;
   border-bottom-width: 0.1rem;
-  border-bottom-color: #cfcfcf;
+  border-bottom-color: ${theme.colors.borderBottom};
 `;
 
 export const DateText = styled.Text`

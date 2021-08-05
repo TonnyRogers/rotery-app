@@ -19,7 +19,8 @@ export const Field = styled.TextInput<{hasError: boolean}>`
   border-radius: 0.8rem;
   border-width: 0.1rem;
   border-style: solid;
-  border-color: ${(props) => (props.hasError ? theme.colors.red : '#cfcfcf')};
+  border-color: ${(props) =>
+    props.hasError ? theme.colors.red : theme.colors.borderBottom};
   min-height: 4rem;
   padding: 1rem;
 `;

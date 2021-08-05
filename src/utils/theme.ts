@@ -11,6 +11,7 @@ export const theme = {
     primaryText: '#262626',
     secondaryText: '#7a7a7a',
     darketText: '#0D0D0D',
+    borderBottom: '#cfcfcf',
   },
   textSize: {},
   textWeight: {

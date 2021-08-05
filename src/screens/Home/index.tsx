@@ -40,33 +40,7 @@ import Page from '../../components/Page';
 import DismissKeyboad from '../../components/DismissKeyboad';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import SplashScreen from '../../components/SplashScreen';
-
-const images = [
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-defender.jpg',
-    withInfo: true,
-    title: 'App Lançado:',
-    message:
-      'Chegou a hora de você voar com a gente! Cadastre-se ja e nos ajude a criar um app incrivel.',
-  },
-  {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-montanha.jpg',
-    withInfo: true,
-    title: 'Sobre a Rotery:',
-    message:
-      'Nossa missão é criar uma comunidade de aventureiros e facilitar o acesso a atividades radicais e o cuidado com a natureza.',
-  },
-  {
-    id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-banner.jpg',
-    withInfo: true,
-    title: 'Nos Apoie:',
-    message:
-      'Queremos criar a melhor plataforma para viajantes, de forma independênte, nos apoie no APOIA-SE.',
-  },
-];
+import {homeImagesCarousel} from '../../utils/constants';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('e-mail inválido').required('campo obrigatório'),
@@ -141,7 +115,7 @@ const Home: React.FC = () => {
           <Logo source={horizontalLogo} resizeMode="contain" />
         </Header>
         <Title>Destaques {'&'} Informações</Title>
-        <HighlightCarousel data={images} />
+        <HighlightCarousel data={homeImagesCarousel} />
         <TipContent>
           <Icon name="chevron-double-left" size={20} color="#4885fd" />
           <TipText> Arraste para ver mais</TipText>
