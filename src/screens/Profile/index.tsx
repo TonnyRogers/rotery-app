@@ -49,73 +49,13 @@ import {
   hideProfileGuide,
 } from '../../store/modules/guides/actions';
 import SplashScreen from '../../components/SplashScreen';
-
-const profileGuideImages = [
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile1.png',
-    withInfo: true,
-    title: 'Adicionando Foto',
-    message:
-      'Clique no botão de alterar imagem e selecione sua foto estilosa. 📸',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile2.png',
-    withInfo: true,
-    title: 'Preenchendo seus dados',
-    message:
-      'É muito importante saber quem é você de verdade, por isso seja sincero ao preencher seu perfil.',
-    isAnimation: false,
-  },
-];
-
-const sexOptions = [
-  {
-    name: 'Masculino',
-    value: 'male',
-  },
-  {
-    name: 'Feminino',
-    value: 'female',
-  },
-  {
-    name: 'Outro',
-    value: 'other',
-  },
-];
-
-// const cityOptions = [
-//   {
-//     name: 'SP',
-//     value: 'sp',
-//   },
-//   {
-//     name: 'São Paulo',
-//     value: 'São Paulo - SP',
-//     parent: 'sp',
-//   },
-//   {
-//     name: 'Osasco',
-//     value: 'Osasco - SP',
-//     parent: 'sp',
-//   },
-//   {
-//     name: 'Campinas',
-//     value: 'Campinas - SP',
-//     parent: 'sp',
-//   },
-//   {
-//     name: 'RJ',
-//     value: 'rj',
-//   },
-//   {
-//     name: 'Osascos',
-//     value: 'Osasco - RJ',
-//     parent: 'rj',
-//   },
-// ];
+import LocationPickerInput from '../../components/LocationPickerInput';
+import {sexOptions, profileGuideImages} from '../../utils/constants';
+import {
+  TomTomApiResponse,
+  ProfileLocationJson,
+  LocationPickerInputSetItem,
+} from '../../utils/types';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -168,11 +108,12 @@ const Profile: React.FC = () => {
     setValue('cpf', data?.cpf || '');
     setValue('profission', data?.profission || '');
     setValue('birthDate', data?.birth);
+    setValue('city', data?.location);
   }, [data, register, setValue, user]);
 
   const watchBirthDate = watch('birthDate', new Date());
   const watchGender = watch('gender');
-  // const watchCity = watch('city');
+  const watchCity = watch('city');
   const watchName = watch('name');
   const watchEmail = watch('email');
   const watchPhone = watch('phone', '');
@@ -181,7 +122,8 @@ const Profile: React.FC = () => {
 
   const [alertVisible, setAlertVisible] = useState(false);
   const [genderIsOpen, setGenderIsOpen] = useState(false);
-  // const [cityIsOpen, setCityIsOpen] = useState(false);
+  const [cityIsOpen, setCityIsOpen] = useState(false);
+  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
   const [profileImage, setProfileImage] = useState({
     uri: data?.file_id && data.file ? data.file.url : undefined,
   });
@@ -209,6 +151,14 @@ const Profile: React.FC = () => {
   }
 
   const updateProfileHandle = (data: any) => {
+    const jsonContent: ProfileLocationJson = {
+      city: locationJson.current?.value.address.municipality,
+      country: locationJson.current?.value.address.country,
+      countryCode: locationJson.current?.value.address.countryCode,
+      position: locationJson.current?.value.position,
+      state: locationJson.current?.value.address.countrySubdivision,
+    };
+
     dispatch(
       updateProfileRequest(
         data.name,
@@ -217,6 +167,8 @@ const Profile: React.FC = () => {
         Number(clearValue(String(data.cpf))),
         data.profission,
         Number(clearValue(String(data.phone))),
+        data.city,
+        locationJson.current ? jsonContent : undefined,
       ),
     );
   };
@@ -239,9 +191,9 @@ const Profile: React.FC = () => {
     }
   }
 
-  // const onGenderOpen = () => {
-  //   setCityIsOpen(false);
-  // };
+  const handleNew = (value: any) => {
+    locationJson.current = value;
+  };
 
   // const onCityOpen = () => {
   //   setGenderIsOpen(false);
@@ -355,39 +307,12 @@ const Profile: React.FC = () => {
                   error={errors.cpf?.message}
                   keyboardType="number-pad"
                 />
-                {/* <Input
-                  label="Estado"
-                  placeholder="Digite seu estado"
-                  ref={stateRef}
-                  onChange={(value: string) => setValue('state', value)}
-                  onSubmitEditing={() => cityRef.current?.focus()}
-                  returnKeyType="next"
-                /> */}
-                {/* <Input
-                  label="Cidade"
-                  placeholder="Digite sua cidade"
-                  ref={cityRef}
-                  onChange={(value: string) => setValue('city', value)}
-                  returnKeyType="next"
-                  onSubmitEditing={() => profissionRef.current?.focus()}
-                /> */}
-                {/* <PickerInput
-                  label="Cidade"
+                <LocationPickerInput.Button
+                  title="Localização (Cidade)"
                   value={watchCity}
-                  onChange={(value: string) => setValue('city', value)}
-                  options={cityOptions}
-                  byValue={true}
+                  onPress={() => setCityIsOpen(true)}
                   error={errors.city?.message}
-                  open={cityIsOpen}
-                  setOpen={setCityIsOpen}
-                  onOpen={onCityOpen}
-                  zIndex={100}
-                  zIndexInverse={200}
-                  key="city"
-                  searchable
-                  listMode="MODAL"
-                  categorySelectable={false}
-                /> */}
+                />
                 <Input
                   icon="purse-outline"
                   label="Profissão"
@@ -417,6 +342,13 @@ const Profile: React.FC = () => {
             </DeleteAccountButton>
           </>
         )}
+      />
+      <LocationPickerInput
+        visible={cityIsOpen}
+        setLocationJson={(json: any) => handleNew(json)}
+        onCloseRequest={() => setCityIsOpen(false)}
+        onSelectItem={(value: string) => setValue('city', value)}
+        placeholder="Digite sua cidade"
       />
       <Alert
         title="Opá!"

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState, useMemo, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -29,25 +30,13 @@ import {
 import Card from '../../components/Card';
 import Text from '../../components/Text';
 import Page from '../../components/Page';
+import {ProfileProps} from '../../utils/types';
 
 interface RateProps {
   id: number;
   description: string;
   rate: number;
   created_at: string;
-}
-interface ProfileProps {
-  profission: string;
-  created_at: string;
-  birth: string;
-  file: {
-    url: string;
-  };
-  user: {
-    username: string;
-    created_at: string;
-    rate: RateProps[];
-  };
 }
 
 interface UserDetailsProps {
@@ -59,7 +48,7 @@ interface UserDetailsProps {
 
 const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const [profile, setProfile] = useState([] as any);
+  const [profile, setProfile] = useState<ProfileProps | undefined>(undefined);
   const {userId} = route.params;
 
   useEffect(() => {
@@ -107,7 +96,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   useMemo(() => {
     createDateFormated.current = format(
       parse(
-        profile.created_at || '2020-08-10 10:00:00',
+        profile?.created_at || '2020-08-10 10:00:00',
         'yyyy-MM-dd HH:mm:ss',
         new Date(),
       ),
@@ -125,7 +114,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
 
   let finalRate = 0;
   let countRate = 0;
-  profile.user &&
+  profile?.user &&
     profile.user.rate &&
     profile.user.rate.map((rate: RateProps) => {
       finalRate += rate.rate;
@@ -187,25 +176,25 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <UserDetail>
               <Avatar
                 source={{
-                  uri: profile.file && profile.file.url,
+                  uri: profile?.file && profile.file.url,
                 }}
                 style={{borderColor: '#e1e1e1'}}
               />
               <Text.Title alignment="center">
-                {profile.user && profile.user.username}
+                {profile?.user && profile.user.username}
               </Text.Title>
               <RateStars>{renderRateStars(finalRate / countRate)}</RateStars>
               <Text alignment="center" textWeight="light">
                 Ativo desde {createDateFormated.current}
               </Text>
               <Text alignment="center" textWeight="light">
-                {profile.profission}
+                {profile?.profission}
               </Text>
               <Text alignment="center" textWeight="light">
-                {getAge(profile.birth)} Anos
+                {profile?.birth ? `${getAge(profile?.birth)} Anos` : null}
               </Text>
               <Text alignment="center" textWeight="light">
-                São Paulo - SP
+                {profile?.location}
               </Text>
             </UserDetail>
           </CardCotent>
@@ -221,7 +210,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <Text.Title alignment="center">Avaliações</Text.Title>
           </TitleContent>
           <RateList>
-            {profile.user &&
+            {profile?.user &&
               profile.user.rate &&
               profile.user.rate.map((item: RateProps) => (
                 <Card key={item.id}>

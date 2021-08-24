@@ -1,4 +1,4 @@
-import {ProfileProps} from '../../../utils/types';
+import {ProfileProps, ProfileLocationJson} from '../../../utils/types';
 
 export enum ProfileActions {
   GET_PROFILE_REQUEST = '@profile/GET_PROFILE_REQUEST',
@@ -42,10 +42,21 @@ export function updateProfileRequest(
   cpf: number,
   profission: string,
   phone: number,
+  location: string,
+  location_json?: ProfileLocationJson,
 ) {
   return {
     type: ProfileActions.UPDATE_PROFILE_REQUEST,
-    payload: {name, gender, birth, cpf, profission, phone},
+    payload: {
+      name,
+      gender,
+      birth,
+      cpf,
+      profission,
+      phone,
+      location,
+      location_json,
+    },
   };
 }
 

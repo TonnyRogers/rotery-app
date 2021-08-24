@@ -45,15 +45,22 @@ export function* updateProfile({
       return;
     }
 
-    const {name, gender, birth, cpf, profission, phone} = payload;
-    const response = yield call(api.put, '/profile', {
-      name,
-      gender,
-      birth,
-      cpf,
-      profission,
-      phone,
+    let updatePayload = {};
+
+    Object.entries(payload).forEach((item) => {
+      if (item[1] !== undefined) {
+        updatePayload = {
+          ...updatePayload,
+          [item[0]]: item[1],
+        };
+      }
     });
+
+    const response = yield call(
+      api.put,
+      '/profile',
+      Object.assign({}, updatePayload),
+    );
     yield put(updateProfileSuccess(response.data));
     Toast.show({
       text1: 'Perfil atualizado',

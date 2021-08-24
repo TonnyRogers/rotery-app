@@ -15,17 +15,18 @@ export interface ProfileProps {
   };
   location?: string;
   location_json?: ProfileLocationJson;
+  user: UserProps;
 }
 
 export interface LocationJson {
-  city: string;
-  state: string;
-  country: string;
-  countryCode: string;
-  address: string;
-  position: {
-    lat: string;
-    lon: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  countryCode?: string;
+  address?: string;
+  position?: {
+    lat?: string;
+    lon?: string;
   };
 }
 
@@ -34,12 +35,22 @@ export type ProfileLocationJson = Pick<
   'city' | 'state' | 'country' | 'countryCode' | 'position'
 >;
 
+export interface RateProps {
+  id: number;
+  rate: number;
+  description: string;
+  user_id: number;
+  updated_at: string;
+  created_at: string;
+}
+
 export interface UserProps {
   id: number;
   email: string;
   username: string;
   person: ProfileProps;
   created_at: string;
+  rate?: RateProps[];
 }
 
 export interface OwnerProps extends UserProps {}
@@ -277,4 +288,26 @@ export interface PlacesSearchGeo {
 
 export interface TomTomResult<T> {
   results: T[];
+}
+
+export interface LocationPickerInputSetItem<T> {
+  id: number;
+  name: string;
+  value: T;
+}
+
+export interface TomTomApiResponse {
+  type: string;
+  address: {
+    municipality: string;
+    countrySubdivision: string;
+    countryCode: string;
+    country: string;
+    countryCodeISO3: string;
+    freeformAddress: string;
+  };
+  position: {
+    lat: string;
+    lon: string;
+  };
 }
