@@ -7,7 +7,12 @@ export const Container = styled.View`
 `;
 
 export const TextLimitter = styled.View`
-  width: 28rem;
+  width: 27rem;
+`;
+
+export const RowGroup = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const ListItem = styled.TouchableOpacity`

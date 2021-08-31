@@ -19,6 +19,7 @@ import {
   joinFailure,
   paginateFeedRequest,
   paginateFeedSuccess,
+  paginateFeedFailure,
 } from './actions';
 
 export function* getItineraries() {
@@ -56,7 +57,11 @@ export function* getFilteredItineraries({
 
     const response = yield call(
       api.get,
-      `/feed?begin=${filter.begin}&end=${filter.end}`,
+      `/feed?page=1&begin=${filter.begin}&end=${filter.end}${
+        filter.location
+          ? `&city=${filter.location.city}&state=${filter.location.state}`
+          : ''
+      }`,
     );
 
     yield put(getFeedFilteredSuccess(response.data.data));
@@ -144,17 +149,23 @@ export function* getPaginatedItineraries({
       return;
     }
 
-    const {page, begin, end} = payload;
+    const {
+      filter: {page, begin, end, location},
+    } = payload;
 
-    const response = yield call(
-      api.get,
-      `/feed?${begin ? `begin=${begin}&` : ''}${end ? `end=${end}&` : ''}page=${
-        page || 1
-      }`,
-    );
+    const url = `/feed?page=${page || 1}${begin ? `&begin=${begin}` : ''}${
+      end ? `&end=${end}` : ''
+    }${location ? `&city=${location.city}&state=${location.state}` : ''}`;
+
+    // TRIM and sanization
+    // url.replace(/\s+/g, '').trim()
+
+    const response = yield call(api.get, url);
 
     if (response.data.data.length > 0) {
       yield put(paginateFeedSuccess(response.data.data));
+    } else {
+      yield put(paginateFeedFailure());
     }
   } catch (error) {
     yield put(getFeedFilteredFailure());

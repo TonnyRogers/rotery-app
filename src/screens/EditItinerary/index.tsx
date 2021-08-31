@@ -14,7 +14,14 @@ import {
 } from '../../store/modules/options/actions';
 import {updateItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
-import {TransportProps, LodgingProps, ActivityProps} from '../../utils/types';
+import {
+  TransportProps,
+  LodgingProps,
+  ActivityProps,
+  LocationPickerInputSetItem,
+  TomTomApiResponse,
+  LocationJson,
+} from '../../utils/types';
 
 import {
   Container,
@@ -66,6 +73,7 @@ import Modal from '../../components/Modal';
 import Page from '../../components/Page';
 import SplashScreen from '../../components/SplashScreen';
 import ShadowBox from '../../components/ShadowBox';
+import LocationPickerInput from '../../components/LocationPickerInput';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -167,6 +175,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const [lodgingOptionIsOpen, setLodgingOptionIsOpen] = useState(false);
   const [addActivityVisible, setAddActivityVisible] = useState(false);
   const [activityOptionIsOpen, setActivityOptionIsOpen] = useState(false);
+  const [locationIsOpen, setLocationIsOpen] = useState(false);
 
   const watchDateOut = watch('dateOut', new Date());
   const watchDateReturn = watch('dateReturn', new Date());
@@ -179,10 +188,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const watchOptionPrice = optionWatch('price');
 
   const descriptionRef = useRef() as any;
-  const locationRef = useRef() as any;
   const transportPriceRef = useRef() as any;
   const transportCapacityRef = useRef() as any;
   const transportDescriptionRef = useRef() as any;
+  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
 
   function addImages(imageList: []) {
     setImages([...images, ...imageList]);
@@ -300,6 +309,15 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   );
 
   const onSubmit = (data: any) => {
+    const jsonContent: LocationJson = {
+      city: locationJson.current?.value.address.municipality,
+      country: locationJson.current?.value.address.country,
+      countryCode: locationJson.current?.value.address.countryCode,
+      position: locationJson.current?.value.position,
+      state: locationJson.current?.value.address.countrySubdivision,
+      address: locationJson.current?.value.address.freeformAddress,
+    };
+
     dispatch(
       updateItineraryRequest(
         id,
@@ -315,8 +333,13 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
         activities,
         lodgings,
         transports,
+        locationJson.current ? jsonContent : undefined,
       ),
     );
+  };
+
+  const handleNewLocation = (value: any) => {
+    locationJson.current = value;
   };
 
   const renderImages = useCallback(
@@ -508,12 +531,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
                   <Icon name="map-check-outline" color="#4885FD" size={24} />
                   <ContentTitle>Destino</ContentTitle>
                 </DataContentHeader>
-                <Input
-                  label="Endereço"
-                  placeholder="endereço completo"
+                <LocationPickerInput.Button
+                  title="Endereço"
                   value={watchLocation}
-                  ref={locationRef}
-                  onChange={(value: string) => setValue('location', value)}
+                  onPress={() => setLocationIsOpen(true)}
                   error={errors.location?.message}
                 />
               </ShadowBox>
@@ -704,6 +725,14 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
         </ModalContent>
       </Modal>
       <SplashScreen visible={loading} />
+      <LocationPickerInput
+        visible={locationIsOpen}
+        placeholder="Digite o endereço/local/cidade para buscar"
+        setLocationJson={(json: any) => handleNewLocation(json)}
+        onCloseRequest={() => setLocationIsOpen(false)}
+        nameFormatType="general"
+        onSelectItem={(value: string) => setValue('location', value)}
+      />
     </Page>
   );
 };

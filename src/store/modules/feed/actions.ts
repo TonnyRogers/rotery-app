@@ -15,12 +15,17 @@ export enum FeedActions {
   JOIN_FAILURE = '@feed/JOIN_FAILURE',
   PAGINATE_FEED_REQUEST = '@feed/PAGINATE_FEED_REQUEST',
   PAGINATE_FEED_SUCCESS = '@feed/PAGINATE_FEED_SUCCESS',
+  PAGINATE_FEED_FAILURE = '@feed/PAGINATE_FEED_FAILURE',
 }
 
 interface FilterProps {
   begin?: string;
   end?: string;
-  city?: string;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
   page?: number;
 }
 
@@ -103,14 +108,10 @@ export function joinFailure() {
   };
 }
 
-export function paginateFeedRequest(
-  page: number,
-  begin?: string,
-  end?: string,
-) {
+export function paginateFeedRequest(filter: FilterProps) {
   return {
     type: FeedActions.PAGINATE_FEED_REQUEST,
-    payload: {page, begin, end},
+    payload: {filter},
   };
 }
 
@@ -118,5 +119,11 @@ export function paginateFeedSuccess(itineraries: ItineraryProps) {
   return {
     type: FeedActions.PAGINATE_FEED_SUCCESS,
     payload: {itineraries},
+  };
+}
+
+export function paginateFeedFailure() {
+  return {
+    type: FeedActions.PAGINATE_FEED_FAILURE,
   };
 }

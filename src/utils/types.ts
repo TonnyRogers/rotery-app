@@ -296,15 +296,24 @@ export interface LocationPickerInputSetItem<T> {
   value: T;
 }
 
+export type TomTomApiResponseTypes =
+  | 'Street'
+  | 'Geography'
+  | 'POI'
+  | 'Point Address';
+
 export interface TomTomApiResponse {
-  type: string;
+  type: TomTomApiResponseTypes;
   address: {
+    streetName?: string;
+    municipalitySubdivision?: string;
     municipality: string;
     countrySubdivision: string;
     countryCode: string;
     country: string;
     countryCodeISO3: string;
     freeformAddress: string;
+    extendedPostalCode?: string;
   };
   position: {
     lat: string;

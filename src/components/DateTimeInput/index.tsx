@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-catch-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useMemo, useState} from 'react';
 import {Platform} from 'react-native';
@@ -83,6 +85,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
               display="default"
               onChange={onChangeTime}
               textColor="#808080"
+              is24Hour
               style={{width: 100}}
             />
           )}

@@ -78,6 +78,10 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         draft.loading = false;
         break;
       }
+      case FeedActions.PAGINATE_FEED_FAILURE: {
+        draft.loading = false;
+        break;
+      }
       case FeedActions.MAKE_QUESTION_REQUEST: {
         draft.loading = true;
         break;

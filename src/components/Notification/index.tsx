@@ -78,14 +78,12 @@ const Notification: React.FC<NotificationProps> = ({
   useEffect(() => {
     if (visible === true) {
       handleOpen();
-    } else {
-      handleDismiss();
     }
 
     return () => {
       onRequestClose;
     };
-  }, [handleDismiss, handleOpen, onRequestClose, visible]);
+  }, [handleOpen, onRequestClose, visible]);
 
   const renderNotifications = useCallback(() => {
     function childClose() {

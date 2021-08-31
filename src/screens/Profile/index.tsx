@@ -349,6 +349,8 @@ const Profile: React.FC = () => {
         onCloseRequest={() => setCityIsOpen(false)}
         onSelectItem={(value: string) => setValue('city', value)}
         placeholder="Digite sua cidade"
+        searchType="Geo"
+        nameFormatType="city"
       />
       <Alert
         title="Opá!"

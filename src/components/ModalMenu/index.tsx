@@ -76,8 +76,6 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   useEffect(() => {
     if (visible === true) {
       handleOpen();
-    } else {
-      handleDismiss();
     }
   }, [handleDismiss, handleOpen, visible]);
 

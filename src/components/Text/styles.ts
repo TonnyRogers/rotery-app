@@ -60,3 +60,7 @@ export const ParagraphText = styled.Text<CustomStyledProps>`
   ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
   ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
 `;
+
+export const Limiter = styled.View<{maxWidth?: number}>`
+  ${(props) => (props.maxWidth ? `max-width: ${props.maxWidth}rem` : '')}
+`;

@@ -37,8 +37,6 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
   useEffect(() => {
     if (visible === true) {
       handleOpen();
-    } else {
-      handleDismiss();
     }
   }, [handleDismiss, handleOpen, visible]);
 

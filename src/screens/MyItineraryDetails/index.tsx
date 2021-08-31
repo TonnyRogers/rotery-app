@@ -308,7 +308,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </Text.Paragraph>
             </RowGroupSpaced>
             <RowGroupSpaced>
-              <Text textWeight="light" maxLines={1}>
+              <Text limitter={19} textWeight="light" maxLines={1}>
                 {itinerary?.location}
               </Text>
               <Text textWeight="light" maxLines={1}>

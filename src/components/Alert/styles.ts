@@ -5,15 +5,16 @@ import {
   Platform,
 } from 'react-native';
 
-const metric = Platform.OS === 'ios' ? 'vh' : '%';
+const metricH = Platform.OS === 'ios' ? 'vh' : '%';
+const metricW = Platform.OS === 'ios' ? 'vw' : '%';
 
 export const Container = styled.View`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   position: absolute;
-  height: 100${metric};
-  width: 100%:
+  height: ${'100' + metricH};
+  width: ${'100' + metricW};
 `;
 
 export const KeyboardAvoidingView = styled(RNKAvoidingView)`

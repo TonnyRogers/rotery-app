@@ -6,13 +6,16 @@ const shadow =
     ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
     : 'elevation: 1;';
 
+const metricH = Platform.OS === 'ios' ? 'vh' : '%';
+const metricW = Platform.OS === 'ios' ? 'vw' : '%';
+
 export const Container = styled.View`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   position: absolute;
-  height: 100%;
-  width: 100%:
+  height: ${'100' + metricH};
+  width: ${'100' + metricW};
 `;
 
 export const KeyboardAvoidingView = styled(RNKAvoindingView)`

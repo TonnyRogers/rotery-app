@@ -19,7 +19,7 @@ export const KeyboardAvoidingView = styled(RNKAvoidingView)`
 
 export const Content = styled.View`
   background: #fff;
-  min-height: 30rem;
+  min-height: 36rem;
   border-radius: 0.8rem;
   padding: 1rem;
   margin: 10rem 1rem;
@@ -46,7 +46,9 @@ export const CloseButton = styled.TouchableOpacity`
   background: rgba(61, 199, 123, 0.2);
 `;
 
-export const ModalContent = styled.View``;
+export const ModalContent = styled.View`
+  flex: 1;
+`;
 
 export const Actions = styled.View``;
 

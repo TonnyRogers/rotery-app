@@ -5,11 +5,13 @@ import {
   TitleText,
   ParagraphText,
   CustomStyledProps,
+  Limiter,
 } from './styles';
 
 interface TextProps extends CustomStyledProps {
   children: ReactNode;
   withLineBreak?: boolean;
+  limitter?: number;
 }
 
 interface TitleProps extends TextProps {}
@@ -23,16 +25,19 @@ const Text = ({
   maxLines,
   alignment,
   withLineBreak,
+  limitter,
 }: TextProps) => {
   return (
-    <SimpleText
-      textColor={textColor}
-      textWeight={textWeight}
-      maxLines={maxLines}
-      alignment={alignment}>
-      {children}
-      {withLineBreak && '\n'}
-    </SimpleText>
+    <Limiter maxWidth={limitter}>
+      <SimpleText
+        textColor={textColor}
+        textWeight={textWeight}
+        maxLines={maxLines}
+        alignment={alignment}>
+        {children}
+        {withLineBreak && '\n'}
+      </SimpleText>
+    </Limiter>
   );
 };
 
@@ -43,16 +48,19 @@ const Title = ({
   maxLines,
   alignment,
   withLineBreak,
+  limitter,
 }: TitleProps) => {
   return (
-    <TitleText
-      textColor={textColor}
-      textWeight={textWeight}
-      maxLines={maxLines}
-      alignment={alignment}>
-      {children}
-      {withLineBreak && '\n'}
-    </TitleText>
+    <Limiter maxWidth={limitter}>
+      <TitleText
+        textColor={textColor}
+        textWeight={textWeight}
+        maxLines={maxLines}
+        alignment={alignment}>
+        {children}
+        {withLineBreak && '\n'}
+      </TitleText>
+    </Limiter>
   );
 };
 
@@ -63,16 +71,19 @@ const Paragraph = ({
   maxLines,
   alignment,
   withLineBreak,
+  limitter,
 }: ParagraphProps) => {
   return (
-    <ParagraphText
-      textColor={textColor}
-      textWeight={textWeight}
-      maxLines={maxLines}
-      alignment={alignment}>
-      {children}
-      {withLineBreak && '\n'}
-    </ParagraphText>
+    <Limiter maxWidth={limitter}>
+      <ParagraphText
+        textColor={textColor}
+        textWeight={textWeight}
+        maxLines={maxLines}
+        alignment={alignment}>
+        {children}
+        {withLineBreak && '\n'}
+      </ParagraphText>
+    </Limiter>
   );
 };
 

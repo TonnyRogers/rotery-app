@@ -5,6 +5,7 @@ import {
   UpdateItemListProps,
   QuestionProps,
   MemberProps,
+  LocationJson,
 } from '../../../utils/types';
 
 export enum ItineraryActions {
@@ -72,6 +73,7 @@ export function createItineraryRequest(
   activities?: CreateItemListProps[],
   lodgings?: CreateItemListProps[],
   transports?: CreateItemListProps[],
+  location_json?: LocationJson,
 ) {
   return {
     type: ItineraryActions.CREATE_ITINERARY_REQUEST,
@@ -88,6 +90,7 @@ export function createItineraryRequest(
       activities,
       lodgings,
       transports,
+      location_json,
     },
   };
 }
@@ -139,6 +142,7 @@ export function updateItineraryRequest(
   activities?: UpdateItemListProps[],
   lodgings?: UpdateItemListProps[],
   transports?: UpdateItemListProps[],
+  location_json?: LocationJson,
 ) {
   return {
     type: ItineraryActions.UPDATE_ITINERARY_REQUEST,
@@ -156,6 +160,7 @@ export function updateItineraryRequest(
       activities,
       lodgings,
       transports,
+      location_json,
     },
   };
 }

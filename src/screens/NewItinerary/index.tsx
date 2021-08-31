@@ -15,7 +15,14 @@ import {
   getTransportsRequest,
 } from '../../store/modules/options/actions';
 import {InitialStateProps} from '../../store/modules/options/reducer';
-import {LodgingProps, TransportProps, ActivityProps} from '../../utils/types';
+import {
+  LodgingProps,
+  TransportProps,
+  ActivityProps,
+  LocationJson,
+  LocationPickerInputSetItem,
+  TomTomApiResponse,
+} from '../../utils/types';
 import {
   showNewItineraryGuide,
   hideNewItineraryGuide,
@@ -75,6 +82,7 @@ import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import {newGuideImages} from '../../utils/constants';
+import LocationPickerInput from '../../components/LocationPickerInput';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -150,6 +158,7 @@ const NewItinerary: React.FC = () => {
   const watchDateLimit = watch('dateLimit', new Date());
   const watchOptionType = optionWatch('type');
   const watchOptionPrice = optionWatch('price');
+  const watchLocation = watch('location');
   const [transports, setTransports] = useState([] as any);
   const [lodgings, setLodgings] = useState([] as any);
   const [activities, setActivities] = useState([] as any);
@@ -157,20 +166,19 @@ const NewItinerary: React.FC = () => {
   const [privateItinerary, setPrivateItinerary] = useState(false);
   const [addTransportVisible, setAddTransportVisible] = useState(false);
   const [transportsOptionIsOpen, setTransportsOptionIsOpen] = useState(false);
-
   const [addLodgingVisible, setAddLodgingVisible] = useState(false);
   const [lodgingOptionIsOpen, setLodgingOptionIsOpen] = useState(false);
-
   const [addActivityVisible, setAddActivityVisible] = useState(false);
   const [activityOptionIsOpen, setActivityOptionIsOpen] = useState(false);
+  const [locationIsOpen, setLocationIsOpen] = useState(false);
 
   const descriptionRef = useRef() as any;
   const nameRef = useRef() as any;
-  const locationRef = useRef() as any;
   const vacanciesRef = useRef() as any;
   const transportPriceRef = useRef() as any;
   const transportCapacityRef = useRef() as any;
   const transportDescriptionRef = useRef() as any;
+  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
 
   const handleCloseNewGuide = () => {
     dispatch(hideNewItineraryGuide());
@@ -249,7 +257,20 @@ const NewItinerary: React.FC = () => {
     setAddActivityVisible(false);
   };
 
+  const handleNewLocation = (value: any) => {
+    locationJson.current = value;
+  };
+
   const onSubmit = (data: any) => {
+    const jsonContent: LocationJson = {
+      city: locationJson.current?.value.address.municipality,
+      country: locationJson.current?.value.address.country,
+      countryCode: locationJson.current?.value.address.countryCode,
+      position: locationJson.current?.value.position,
+      state: locationJson.current?.value.address.countrySubdivision,
+      address: locationJson.current?.value.address.freeformAddress,
+    };
+
     dispatch(
       createItineraryRequest(
         data.name,
@@ -264,6 +285,7 @@ const NewItinerary: React.FC = () => {
         activities,
         lodgings,
         transports,
+        locationJson.current ? jsonContent : undefined,
       ),
     );
 
@@ -480,11 +502,10 @@ const NewItinerary: React.FC = () => {
                   <Icon name="map-check-outline" color="#4885FD" size={24} />
                   <ContentTitle>Destino</ContentTitle>
                 </DataContentHeader>
-                <Input
-                  label="Endereço"
-                  placeholder="endereço/cidade/local"
-                  ref={locationRef}
-                  onChange={(value: string) => setValue('location', value)}
+                <LocationPickerInput.Button
+                  title="Endereço"
+                  value={watchLocation}
+                  onPress={() => setLocationIsOpen(true)}
                   error={errors.location?.message}
                 />
               </ShadowBox>
@@ -681,6 +702,14 @@ const NewItinerary: React.FC = () => {
         />
       </Ads>
       <SplashScreen visible={loading} />
+      <LocationPickerInput
+        visible={locationIsOpen}
+        setLocationJson={(json) => handleNewLocation(json)}
+        placeholder="Digite o endereço/local/cidade para buscar"
+        onCloseRequest={() => setLocationIsOpen(false)}
+        onSelectItem={(value: string) => setValue('location', value)}
+        nameFormatType="general"
+      />
     </Page>
   );
 };

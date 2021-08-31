@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform, SafeAreaView, StatusBar} from 'react-native';
 import {useDispatch} from 'react-redux';
@@ -19,11 +19,27 @@ import {
   FilterButtonText,
 } from './styles';
 import DateInput from '../DateInput';
+import LocationPickerInput from '../LocationPickerInput';
+import {
+  LocationPickerInputSetItem,
+  TomTomApiResponse,
+  ProfileLocationJson,
+} from '../../utils/types';
 
 interface FilterInputProps {
   visible: boolean;
   onRequestClose(): void;
-  onFiltered(begin: string, end: string): void;
+  onFiltered(filter: FilterReturnProps): void;
+}
+
+interface FilterReturnProps {
+  begin: string;
+  end: string;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
 }
 
 const FilterInput: React.FC<FilterInputProps> = ({
@@ -32,21 +48,36 @@ const FilterInput: React.FC<FilterInputProps> = ({
   onFiltered,
 }) => {
   const dispatch = useDispatch();
-  // const [location, setLocation] = useState('');
+  const [location, setLocation] = useState('');
   const [beginDate, setBeginDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  // const locationRef = useRef();
+  const [locationIsOpen, setLocationIsOpen] = useState(false);
+  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
 
   function handleFilter() {
-    const filter = {
+    let filter: FilterReturnProps = {
       begin: format(beginDate, 'yyyy-MM-dd'),
       end: format(endDate, 'yyyy-MM-dd'),
     };
 
+    const jsonContent: ProfileLocationJson = {
+      city: locationJson.current?.value.address.municipality,
+      country: locationJson.current?.value.address.country,
+      state: locationJson.current?.value.address.countrySubdivision,
+    };
+
+    if (locationJson.current) {
+      filter.location = jsonContent;
+    }
+
     dispatch(getFeedFilteredRequest(filter));
-    onFiltered(filter.begin, filter.end);
+    onFiltered(filter);
     onRequestClose();
   }
+
+  const handleSetLocation = (value: any) => {
+    locationJson.current = value;
+  };
 
   if (!visible) {
     return null;
@@ -77,12 +108,12 @@ const FilterInput: React.FC<FilterInputProps> = ({
                   onChange={setEndDate}
                   label="Fim do Roteiro"
                 />
-                {/* <Input
-                    value={location}
-                    onChange={setLocation}
-                    ref={locationRef}
-                    label="Localidade"
-                  /> */}
+                <LocationPickerInput.Button
+                  title="Localidade"
+                  onPress={() => setLocationIsOpen(true)}
+                  value={location}
+                  error={undefined}
+                />
                 <Actions>
                   <FilterButton onPress={handleFilter}>
                     <FilterButtonText>Filtrar</FilterButtonText>
@@ -93,6 +124,15 @@ const FilterInput: React.FC<FilterInputProps> = ({
           </SafeAreaView>
         </KeyboardAvoidingView>
       </Modal>
+      <LocationPickerInput
+        nameFormatType="city"
+        visible={locationIsOpen}
+        placeholder="Digite a cidade para buscar"
+        searchType="Geo"
+        onSelectItem={(value: string) => setLocation(value)}
+        onCloseRequest={() => setLocationIsOpen(false)}
+        setLocationJson={(json) => handleSetLocation(json)}
+      />
     </>
   );
 };

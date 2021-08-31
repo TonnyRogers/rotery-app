@@ -88,57 +88,55 @@ const Alert: React.FC<AlertProps> = ({
   useEffect(() => {
     if (visible === true) {
       handleOpen();
-    } else {
-      handleDismiss();
     }
-  }, [handleDismiss, handleOpen, visible]);
+  }, [handleOpen, visible]);
+
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <>
-      {visible && (
-        <Container>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <SafeAreaView>
-              <Content
-                style={{
-                  transform: [
-                    {
-                      translateY: panY.y.interpolate({
-                        inputRange: [-100, 0, 1],
-                        outputRange: [-100, 0, 1],
-                      }),
-                    },
-                  ],
-                }}
-                {...panRespoders.panHandlers}>
-                <Header>
-                  {icon && <Icon name={icon} size={30} color={iconColor} />}
+    <Container>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <SafeAreaView>
+          <Content
+            style={{
+              transform: [
+                {
+                  translateY: panY.y.interpolate({
+                    inputRange: [-100, 0, 1],
+                    outputRange: [-100, 0, 1],
+                  }),
+                },
+              ],
+            }}
+            {...panRespoders.panHandlers}>
+            <Header>
+              {icon && <Icon name={icon} size={30} color={iconColor} />}
 
-                  <Text.Title alignment="center">{title}</Text.Title>
-                </Header>
-                <Text.Paragraph alignment="center" textWeight="light">
-                  {message}
-                </Text.Paragraph>
-                <AlertActions>
-                  {onConfirm && (
-                    <ConfirmButton onPress={onConfirm}>
-                      <Icon name="check" size={24} color="#FFF" />
-                      <ButtonText>Confirmar</ButtonText>
-                    </ConfirmButton>
-                  )}
-                  <CancelButton onPress={handleDismiss}>
-                    <Icon name="close" size={24} color="#FFF" />
-                    <ButtonText>{onConfirm ? 'Cancelar' : 'Fechar'}</ButtonText>
-                  </CancelButton>
-                </AlertActions>
-                <BaseBlock />
-              </Content>
-            </SafeAreaView>
-          </KeyboardAvoidingView>
-        </Container>
-      )}
-    </>
+              <Text.Title alignment="center">{title}</Text.Title>
+            </Header>
+            <Text.Paragraph alignment="center" textWeight="light">
+              {message}
+            </Text.Paragraph>
+            <AlertActions>
+              {onConfirm && (
+                <ConfirmButton onPress={onConfirm}>
+                  <Icon name="check" size={24} color="#FFF" />
+                  <ButtonText>Confirmar</ButtonText>
+                </ConfirmButton>
+              )}
+              <CancelButton onPress={handleDismiss}>
+                <Icon name="close" size={24} color="#FFF" />
+                <ButtonText>{onConfirm ? 'Cancelar' : 'Fechar'}</ButtonText>
+              </CancelButton>
+            </AlertActions>
+            <BaseBlock />
+          </Content>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
+    </Container>
   );
 };
 

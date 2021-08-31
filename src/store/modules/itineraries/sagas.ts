@@ -87,6 +87,7 @@ export function* createItinerary({
       isPrivate,
       activities,
       transports,
+      location_json,
     } = payload;
 
     const imageArray: {id: number}[] = [];
@@ -94,12 +95,15 @@ export function* createItinerary({
     images?.forEach((image) => {
       imageArray.push({id: image.id});
     });
-    const response = yield call(api.post, '/itineraries', {
+
+    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+
+    const payloadRequest: any = {
       name,
       description,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      dateBegin: new Date(dateBegin.getTime() - userTimezoneOffset),
+      dateEnd: new Date(dateEnd.getTime() - userTimezoneOffset),
+      dateLimit: new Date(dateLimit.getTime() - userTimezoneOffset),
       capacity,
       location,
       isPrivate,
@@ -107,9 +111,15 @@ export function* createItinerary({
       activities,
       transports,
       photos: imageArray,
-    });
+    };
+
+    if (location_json) {
+      payloadRequest.location_json = location_json;
+    }
+    const response = yield call(api.post, '/itineraries', payloadRequest);
 
     yield put(createItinerarySuccess(response.data));
+    RootNavigation.goBack();
     RootNavigation.replace('MyItineraries');
   } catch (error) {
     yield put(createItineraryFailure());
@@ -175,6 +185,7 @@ export function* updateItinerary({
       lodgings,
       activities,
       transports,
+      location_json,
     } = payload;
 
     const imageArray: {id: number}[] = [];
@@ -213,12 +224,14 @@ export function* updateItinerary({
       });
     });
 
-    const response = yield call(api.put, `/itineraries/${itineraryId}`, {
+    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+
+    const updatePayload: any = {
       name,
       description,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      dateBegin: new Date(dateBegin.getTime() - userTimezoneOffset),
+      dateEnd: new Date(dateEnd.getTime() - userTimezoneOffset),
+      dateLimit: new Date(dateLimit.getTime() - userTimezoneOffset),
       capacity,
       location,
       isPrivate,
@@ -226,7 +239,17 @@ export function* updateItinerary({
       activities: activityArray,
       transports: transportArray,
       photos: imageArray,
-    });
+    };
+
+    if (location_json) {
+      updatePayload.location_json = location_json;
+    }
+
+    const response = yield call(
+      api.put,
+      `/itineraries/${itineraryId}`,
+      updatePayload,
+    );
 
     yield put(updateItinerarySuccess(response.data));
     RootNavigation.goBack();

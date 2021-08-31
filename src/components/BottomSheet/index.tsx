@@ -70,10 +70,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   useEffect(() => {
     if (visible) {
       handleOpen();
-    } else {
-      handleDismiss();
     }
-  }, [handleDismiss, handleOpen, visible]);
+  }, [handleOpen, visible]);
 
   if (!visible) {
     return null;

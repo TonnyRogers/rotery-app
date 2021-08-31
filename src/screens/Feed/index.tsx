@@ -85,9 +85,16 @@ const Feed: React.FC = () => {
   const loadFeed = useCallback(() => {
     if (itineraries.length > 3) {
       setPage(page + 1);
-      dispatch(paginateFeedRequest(page, filter.begin, filter.end));
+      dispatch(
+        paginateFeedRequest({
+          page,
+          begin: filter.begin,
+          end: filter.end,
+          location: filter.location,
+        }),
+      );
     }
-  }, [dispatch, filter.begin, filter.end, itineraries.length, page]);
+  }, [dispatch, filter, itineraries.length, page]);
 
   const handleCloseFeedGuide = () => {
     dispatch(hideFeedGuide());
@@ -151,7 +158,7 @@ const Feed: React.FC = () => {
               dispatch(getFeedRequest());
             }}
             onEndReached={() => loadFeed()}
-            onEndReachedThreshold={0.1}
+            onEndReachedThreshold={0.5}
             refreshing={loading}
             viewabilityConfig={{viewAreaCoveragePercentThreshold: 20}}
           />
@@ -171,8 +178,8 @@ const Feed: React.FC = () => {
       <FilterInput
         visible={filterVisible}
         onRequestClose={toggleFilter}
-        onFiltered={(begin, end) => {
-          setFilter({begin: begin, end: end});
+        onFiltered={({begin, end, location}) => {
+          setFilter({begin: begin, end: end, location: location || undefined});
         }}
       />
       <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
