@@ -128,14 +128,6 @@ const Feed: React.FC = () => {
                 </Shadow>
               </FilterButton>
             </RowGroupSpaced>
-            <ActivityList>
-              {removeDuplicatedActivities.map((item, index) => (
-                <Activity key={index}>
-                  <Icon name="menu" size={24} color="#FFF" />
-                  <ActivityName>{item.name}</ActivityName>
-                </Activity>
-              ))}
-            </ActivityList>
           </FilterContent>
           <ItineraryList
             data={itineraries}
@@ -153,6 +145,16 @@ const Feed: React.FC = () => {
                 title="Parece que não tem nada por aqui."
                 subTitle="Crie seu prório roteiro agora mesmo!"
               />
+            )}
+            ListHeaderComponent={() => (
+              <ActivityList>
+                {removeDuplicatedActivities.map((item, index) => (
+                  <Activity key={index}>
+                    <Icon name="menu" size={24} color="#FFF" />
+                    <ActivityName>{item.name}</ActivityName>
+                  </Activity>
+                ))}
+              </ActivityList>
             )}
             onRefresh={() => {
               setPage(2);
