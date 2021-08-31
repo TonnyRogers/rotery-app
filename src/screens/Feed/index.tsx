@@ -45,8 +45,9 @@ const Feed: React.FC = () => {
   const [filter, setFilter] = useState({} as any);
   const [page, setPage] = useState(2);
 
-  const {loading} = useSelector((state: RootStateProps) => state.auth);
-  const {itineraries} = useSelector((state: RootStateProps) => state.feed);
+  const {itineraries, loading} = useSelector(
+    (state: RootStateProps) => state.feed,
+  );
   const {feedGuide} = useSelector((state: RootStateProps) => state.guides);
 
   const itineraryActivities: {id: number; name: string}[] = [];
