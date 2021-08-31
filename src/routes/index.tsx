@@ -65,7 +65,7 @@ const Routes = () => {
 
     //   'Notification caused app to open from background state:'
     messaging().onNotificationOpenedApp((remoteMessage) => {
-      console.tron.log('Open App: ', remoteMessage);
+      // console.tron.log('Open App: ', remoteMessage);
       notificationActions(remoteMessage);
     });
 
@@ -75,13 +75,13 @@ const Routes = () => {
       .then((remoteMessage) => {
         if (remoteMessage) {
           notificationActions(remoteMessage);
-          console.tron.log('Quit State: ', remoteMessage);
+          // console.tron.log('Quit State: ', remoteMessage);
         }
       });
 
     //   'Notification when app is in background or terminated'
     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-      console.tron.log('Terminated (Minimized): ', remoteMessage);
+      // console.tron.log('Terminated (Minimized): ', remoteMessage);
       // this.notificationActions(remoteMessage);
     });
 
@@ -105,7 +105,6 @@ const Routes = () => {
     if (!localToken) {
       const token = await messaging().getToken();
       await AsyncStorage.setItem('@notification:token', token);
-      console.tron.log('getToken: ', token);
     }
   }
 

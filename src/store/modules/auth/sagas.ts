@@ -182,11 +182,8 @@ export function* setDeviceToken() {
       '@notification:token',
     );
 
-    console.tron.log('Set Token:', deviceToken);
-
     if (!deviceToken) {
       deviceToken = yield call([messaging(), 'getToken']);
-      console.tron.log('Retry Set Token:', deviceToken);
     }
 
     yield call(api.post, '/users/device', {

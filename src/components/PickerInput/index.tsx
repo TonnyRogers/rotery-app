@@ -95,7 +95,6 @@ const PickerInput: React.FC<PickerInputProps> = ({
         {...props}
         items={optionList}
         setValue={(item) => {
-          console.tron.log('Item: ', item());
           return onChange(item());
         }}
       />
