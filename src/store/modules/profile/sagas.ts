@@ -22,6 +22,7 @@ export function* getProfile() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getProfileFail());
       return;
     }
 
@@ -42,6 +43,7 @@ export function* updateProfile({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(updateProfileFailure());
       return;
     }
 
@@ -84,6 +86,7 @@ export function* updateProfileImage({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(updateProfileImageFailure());
       return;
     }
 
@@ -108,6 +111,7 @@ export function* deleteUser() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(removeUserFailure());
       return;
     }
 

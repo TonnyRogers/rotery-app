@@ -19,6 +19,7 @@ export function* getFavoritedItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getFavoritesFailure());
       return;
     }
     const response = yield call(api.get, '/favorites');
@@ -41,6 +42,7 @@ export function* favoriteItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(setFavoriteFailure());
       return;
     }
 
@@ -69,6 +71,7 @@ export function* unfavoriteItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(removeFavoriteFailure());
       return;
     }
 

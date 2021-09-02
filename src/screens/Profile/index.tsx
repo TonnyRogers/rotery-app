@@ -88,7 +88,10 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     dispatch(showProfileGuide());
-  }, [dispatch]);
+    if (data?.file_id && data.file?.url) {
+      setProfileImage({uri: data.file.url});
+    }
+  }, [data, dispatch]);
 
   useEffect(() => {
     register('name');
@@ -124,8 +127,8 @@ const Profile: React.FC = () => {
   const [genderIsOpen, setGenderIsOpen] = useState(false);
   const [cityIsOpen, setCityIsOpen] = useState(false);
   const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
-  const [profileImage, setProfileImage] = useState({
-    uri: data?.file_id && data.file ? data.file.url : undefined,
+  const [profileImage, setProfileImage] = useState<{uri: string | undefined}>({
+    uri: undefined,
   });
 
   const nameRef = useRef<any>();

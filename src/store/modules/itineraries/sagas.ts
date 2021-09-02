@@ -48,6 +48,7 @@ export function* getItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getItinerariesFailure());
       return;
     }
 
@@ -71,6 +72,7 @@ export function* createItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(createItineraryFailure());
       return;
     }
 
@@ -138,6 +140,7 @@ export function* deleteItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(deleteItineraryFailure());
       return;
     }
 
@@ -168,6 +171,7 @@ export function* updateItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(updateItineraryFailure());
       return;
     }
 
@@ -273,6 +277,13 @@ export function* replyQuestion({
   payload,
 }: ReturnType<typeof replyQuestionRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(replyQuestionFailure());
+      return;
+    }
+
     const {anwser, questionId, itineraryId} = payload;
 
     const response = yield call(
@@ -301,6 +312,13 @@ export function* promoteMember({
   payload,
 }: ReturnType<typeof promoteMemberRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(promoteMemberFailure());
+      return;
+    }
+
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -329,6 +347,13 @@ export function* demoteMember({
   payload,
 }: ReturnType<typeof demoteMemberRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(demoteMemberFailure());
+      return;
+    }
+
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -357,6 +382,13 @@ export function* acceptMember({
   payload,
 }: ReturnType<typeof acceptMemberRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(acceptMemberFailure());
+      return;
+    }
+
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -385,6 +417,13 @@ export function* removeMember({
   payload,
 }: ReturnType<typeof removeMemberRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(removeMemberFailure());
+      return;
+    }
+
     const {memberId, itineraryId} = payload;
 
     const response = yield call(
@@ -413,9 +452,18 @@ export function* finishItinerary({
   payload,
 }: ReturnType<typeof notifyItineraryFinishRequest>) {
   try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(notifyItineraryFinishFailure());
+      return;
+    }
+
     const {itineraryId} = payload;
+
     yield call(api.post, `/itineraries/${itineraryId}/notify`);
     yield put(notifyItineraryFinishSuccess());
+
     RootNavigation.goBack();
     Toast.show({
       text1: 'Roteiro finalizado.',

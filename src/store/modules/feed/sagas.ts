@@ -27,6 +27,7 @@ export function* getItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getFeedFailure());
       return;
     }
 
@@ -50,6 +51,7 @@ export function* getFilteredItineraries({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getFeedFilteredFailure());
       return;
     }
 
@@ -82,6 +84,7 @@ export function* makeQuestion({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(makeQuestionFailure());
       return;
     }
 
@@ -113,6 +116,7 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(joinFailure());
       return;
     }
 
@@ -146,6 +150,7 @@ export function* getPaginatedItineraries({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getFeedFilteredFailure());
       return;
     }
 

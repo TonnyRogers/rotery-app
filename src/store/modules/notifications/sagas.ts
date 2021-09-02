@@ -1,4 +1,4 @@
-import {takeLatest, put, all, call} from 'redux-saga/effects';
+import {takeLatest, put, all, call, select} from 'redux-saga/effects';
 import {AxiosResponse} from 'axios';
 
 import {NotificationAlias, NotificationsProps} from '../../../utils/types';
@@ -24,8 +24,14 @@ import {
   wsItineraryAnswerNotification,
 } from '../websocket/actions';
 import {NotificationsActions} from './actions';
+import {RootStateProps} from '../rootReducer';
 
 export function* getNotifications() {
+  const {signed} = yield select((state: RootStateProps) => state.auth);
+
+  if (!signed) {
+    return;
+  }
   try {
     const response: AxiosResponse<NotificationsProps[]> = yield call(
       api.get,

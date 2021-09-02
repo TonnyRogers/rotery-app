@@ -21,21 +21,18 @@ import {
   setDeviceTokenRequest,
   setDeviceTokenSuccess,
 } from './actions';
-import {
-  getActivitiesRequest,
-  getLodgingsRequest,
-  getTransportsRequest,
-} from '../options/actions';
 import {getProfileRequest} from '../profile/actions';
 import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {getMessagesRequest} from '../messages/actions';
+import {getNextItinerariesRequest} from '../nextItineraries/actions';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(loginFailure());
       return;
     }
 
@@ -64,13 +61,11 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(loginSuccess(token, refreshToken, user));
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
-    yield put(getActivitiesRequest());
-    yield put(getLodgingsRequest());
-    yield put(getTransportsRequest());
     yield put(getConnectionsRequest());
     yield put(getItinerariesRequest());
-    // yield put(getNotificationsRequest());
+    yield put(getNextItinerariesRequest());
     yield put(getMessagesRequest());
+    // yield put(getNotificationsRequest());
   } catch (error) {
     Toast.show({
       text1: `${translateError(error?.response.data[0].message)}`,
@@ -101,6 +96,13 @@ export function* logout() {
 }
 
 export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
+  const info = yield call(NetInfo);
+
+  if (!info.status) {
+    yield put(registerFailure());
+    return;
+  }
+
   try {
     const {username, email, password} = payload;
 

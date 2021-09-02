@@ -14,6 +14,7 @@ import {
   rateItineraryFailure,
   leaveItineraryRequest,
   leaveItinerarySuccess,
+  leaveItineraryFailure,
 } from './actions';
 import * as RootNavigation from '../../../RootNavigation';
 
@@ -25,6 +26,7 @@ export function* getItineraries() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getNextItinerariesFailure());
       return;
     }
 
@@ -48,6 +50,7 @@ export function* makeQuestion({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(makeQuestionFailure());
       return;
     }
 
@@ -58,7 +61,6 @@ export function* makeQuestion({
       {question},
     );
 
-    // yield put(updateDetailsRequest());
     yield put(makeQuestionSuccess(response.data));
     Toast.show({
       text1: 'Pergunta enviada!',
@@ -82,6 +84,7 @@ export function* rateItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(rateItineraryFailure());
       return;
     }
 
@@ -123,6 +126,7 @@ export function* leaveItinerary({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(leaveItineraryFailure());
       return;
     }
 
@@ -133,6 +137,7 @@ export function* leaveItinerary({
     yield call(api.post, `/itineraries/${itineraryId}/leave`);
     yield put(leaveItinerarySuccess());
   } catch (error) {
+    yield put(leaveItineraryFailure());
     Toast.show({
       text1: 'Erro ao sair do roteiro.',
       position: 'bottom',

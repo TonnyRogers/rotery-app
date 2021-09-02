@@ -141,15 +141,11 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Antes de utilizar nosso app gostariamos que você conhecesse um pouco
-            mais sobre nossos{' '}
-            <Text.Paragraph textWeight="bold">termos de uso</Text.Paragraph>,
-            eles foram criados{' '}
-            <Text.Paragraph textWeight="bold">
-              pensando na sua segurança no mundo digital
-            </Text.Paragraph>
-            , afim de firmar uma ótima relação entre usuários e empresa,
-            contamos com sua atenção ao ler e aceitar (ou não) estes termos.
+            Antes de utilizar nosso app gostaríamos que você conhecesse um pouco
+            mais sobre nossos termos de uso, eles foram criados pensando na sua
+            segurança no mundo digital , para firmar uma ótima relação entre
+            usuários e empresa, contamos com sua atenção ao ler e aceitar (ou
+            não) estes termos.
           </Text.Paragraph>
 
           <Text withLineBreak textWeight="light">
@@ -168,23 +164,22 @@ const SignUp: React.FC = () => {
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Somos um app que conecta pessoas que buscam atividades radicais,
             turismo, encontros em grupos relacionados a esportes ou aventuras,
-            viagens e passeios, essas atividades podem ser gratuítas ou pagas e
-            os próprios usuários denomidados como{' '}
-            <Text.Paragraph textWeight="bold">Host </Text.Paragraph>
-            são os responsáveis por promover estes eventos dentro do app.
+            viagens e passeios, essas atividades podem ser gratuitas ou pagas e
+            os próprios usuários denominados como Host são os responsáveis por
+            promover estes eventos dentro do app.
           </Text.Paragraph>
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Os Hosts também detem toda a responsabilidade sobre o que ocorre nos
+            Os Hosts também detêm toda a responsabilidade sobre o que ocorre nos
             seus Roteiros, por isso se você deseja promover atividades no app,
-            tenha muito cuidado, deixe as informações o mais claro possivel,
+            tenha muito cuidado, deixe as informações o mais claro possível,
             trabalhe com segurança e atenção, em caso de dúvida não deixe de nos
             mandar um e-mail (contato@rotery.com.br) estamos aqui para ajudar.
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Nossa missão é tornar o acesso a essas atividades muito mais fácil,
-            confiável para o máximo de pessoas possivel, através deste app,
-            criando um ambiente seguro e saúdavel, por isso se você aceitar os
+            confiável para o máximo de pessoas possível, através deste app,
+            criando um ambiente seguro e saudável, por isso se você aceitar os
             termos contamos com sua colaboração para manter o ambiente dentro do
             app assim.
           </Text.Paragraph>
@@ -213,7 +208,7 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Para participar de roteiros você deve ser maior de 16 (dezeseis)
+            Para participar de roteiros você deve ser maior de 16 (dezesseis)
             anos e acompanhado(a) de um maior (que não seja o próprio dono do
             roteiro) ou com autorização reconhecida por cartório em nome de seu
             responsável.
@@ -245,11 +240,11 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Dentro das atividades que podem ser promovidas no app é necessário
-            ter o máximo de cuidado possivel, rotineiramente acontecem diversos
-            acidentes com pessoas no meio de trilhas ou viagens por não ter um
+            ter o máximo de cuidado possível, rotineiramente acontecem diversos
+            acidentes com pessoas no meio de trilhas ou viagens por não terem um
             bom senso, descuido ou uma má gerência de "guias", portanto tenha
-            cautela, temos um recurso de avaliação e então leve em conta a nota
-            do host e suas avaliaçãoes antes de ir para o roteiro.
+            cautela, temos um recurso de avaliação e então considere a nota do
+            host e suas avaliações antes de ir para o roteiro.
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
@@ -273,12 +268,12 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Um outro motivo no qual a criamos a Rotery foi auxiliar na
-            preservação e manutençao das trilhas e ambientes em meio a natureza,
-            gostariamos de contar com você para isso, se encontrar lixo nas
-            trilhas, viagens ou passeios colete por favor e nos mande uma foto
-            com o lixo coletado para promover esta concientização em nossas
-            redes sociais e o mais importante, não deixe seu lixo.
+            Outro motivo em que criamos a Rotery foi auxiliar na preservação e
+            manutenção das trilhas e ambientes em meio a natureza, gostaríamos
+            de contar com você para isso, se encontrar lixo nas trilhas, viagens
+            ou passeios, colete por favor e nos mande uma foto com o que foi
+            coletado para promover esta conscientização em nossas redes sociais
+            e o mais importante, não deixe seu lixo.
           </Text.Paragraph>
 
           <Text.Paragraph
@@ -290,13 +285,13 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Até o momento somos uma startup com poucas pessoas e com custo
+            Até o momento somos uma “startup” com poucas pessoas e com custo
             reduzido, mas com crescimento do app, os custos sobem e se torna
-            inviavél se manter por conta própria e então a exibição de
-            propagandas e anúncio relacionados aos roteiros podem aparecer pra
-            você. {'\n'}Como não temos nenhum anuncio no app até o momento, não
-            utilizamos seus dados pessoais para te mostrar anuncios mais
-            relevantes, mas se isso vier a acontecer vamos te notificar e não se
+            inviável se manter por conta própria e então a exibição de
+            propagandas e anúncio relacionados aos roteiros podem aparecer para
+            você. {'\n'} Como não temos nenhum anuncio no app até o momento, não
+            utilizamos seus dados pessoais para te mostrar anúncios mais
+            relevantes, mas se isso acontecer vamos te notificar e não se
             preocupe prezamos pela segurança e transparência com você.
           </Text.Paragraph>
 
@@ -309,8 +304,8 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Os termos da Rotery podem ser alterados a qualquer momento sem aviso
-            prévio, mas todos os usuário serão notificados por e-mail da
+            Os termos da Rotery podem ser alterados a qualquer momento sem
+            aviso, mas todos os usuários serão notificados por e-mail da
             atualização de qualquer palavra em qualquer uma de nossas políticas.
           </Text.Paragraph>
 

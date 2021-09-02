@@ -28,6 +28,7 @@ export function* getConnections() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getConnectionsFailure());
       return;
     }
 
@@ -53,6 +54,7 @@ export function* makeConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(makeConnectionFailure());
       return;
     }
 
@@ -83,6 +85,7 @@ export function* acceptConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(acceptConnectionFailure());
       return;
     }
 
@@ -112,6 +115,7 @@ export function* rejectConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(rejectConnectionFailure());
       return;
     }
 
@@ -136,6 +140,7 @@ export function* blockConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(blockConnectionFailure());
       return;
     }
 
@@ -160,6 +165,7 @@ export function* unblockConnection({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(unblockConnectionFailure());
       return;
     }
 

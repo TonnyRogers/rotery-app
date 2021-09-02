@@ -12,6 +12,7 @@ export enum NextItinerariesActions {
   RATE_ITINERARY_FAILURE = '@nextItineraries/RATE_ITINERARY_FAILURE',
   LEAVE_ITINERARY_REQUEST = '@nextItineraries/LEAVE_ITINERARY_REQUEST',
   LEAVE_ITINERARY_SUCCESS = '@nextItineraries/LEAVE_ITINERARY_SUCCESS',
+  LEAVE_ITINERARY_FAILURE = '@nextItineraries/LEAVE_ITINERARY_FAILURE',
 }
 
 export function getNextItinerariesRequest() {
@@ -96,5 +97,11 @@ export function leaveItineraryRequest(itineraryId: number) {
 export function leaveItinerarySuccess() {
   return {
     type: NextItinerariesActions.LEAVE_ITINERARY_SUCCESS,
+  };
+}
+
+export function leaveItineraryFailure() {
+  return {
+    type: NextItinerariesActions.LEAVE_ITINERARY_FAILURE,
   };
 }

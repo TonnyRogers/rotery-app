@@ -22,6 +22,7 @@ export function* getMessages() {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getMessagesFailure());
       return;
     }
 
@@ -45,6 +46,7 @@ export function* getConversation({
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(getConversationFailure());
       return;
     }
 
@@ -68,6 +70,7 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
     const info = yield call(NetInfo);
 
     if (!info.status) {
+      yield put(sendMessageFailure());
       return;
     }
 
