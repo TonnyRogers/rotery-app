@@ -1,5 +1,6 @@
 import {all, takeLatest, put, call} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
+import {startOfDay} from 'date-fns';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
@@ -47,7 +48,7 @@ export function* updateProfile({
       return;
     }
 
-    let updatePayload = {};
+    let updatePayload: any = {};
 
     Object.entries(payload).forEach((item) => {
       if (item[1] !== undefined) {
@@ -57,6 +58,8 @@ export function* updateProfile({
         };
       }
     });
+
+    updatePayload.birth = startOfDay(new Date(updatePayload.birth));
 
     const response = yield call(
       api.put,
