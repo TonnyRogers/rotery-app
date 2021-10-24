@@ -31,7 +31,7 @@ const Ads: React.FC<AdsProps> = ({visible, onRequestClose, children}) => {
     }).start();
     setTimeout(() => {
       onRequestClose();
-    }, 400);
+    }, 500);
   }, [height, onRequestClose, panY.y]);
 
   useEffect(() => {

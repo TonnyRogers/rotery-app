@@ -2,21 +2,17 @@
 import React, {useRef, useEffect, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
 import {ScrollView, Keyboard} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {
-  getConversationRequest,
-  sendMessageRequest,
-} from '../../store/modules/messages/actions';
+import {getConversationRequest} from '../../store/modules/messages/actions';
 import {
   wsChatSubscribe,
   wsCloseChatChannel,
+  wsSendChatMessageRequest,
 } from '../../store/modules/websocket/actions';
 import {MessageProps} from '../../utils/types';
 import * as RootNavigation from '../../RootNavigation';
@@ -52,8 +48,8 @@ import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import Page from '../../components/Page';
-import {toDateTimeZone} from '../../utils/helpers';
 import ShadowBox from '../../components/ShadowBox';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 const validationSchema = yup.object().shape({
   message: yup.string().required('campo obrigatório'),
@@ -100,32 +96,27 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    dispatch(wsChatSubscribe(user.id, userId));
+    dispatch(wsChatSubscribe(Number(user?.id), userId));
     return function cleanup() {
-      dispatch(wsCloseChatChannel(user.id, userId));
+      dispatch(wsCloseChatChannel(Number(user?.id), userId));
     };
-  }, [dispatch, userId, user.id]);
+  }, [dispatch, userId, user]);
 
   useEffect(
     () => scrollViewRef.current?.scrollToEnd({animated: true}),
     [conversation],
   );
 
-  const sender = conversation?.find((item) => item.sender_id === userId);
+  const sender = conversation?.find((item) => item.sender.id === userId);
 
   const formatDate = useCallback(
     (date?: string, withParser: boolean = true) => {
       if (date) {
-        const zonedDate = toDateTimeZone(date);
         if (withParser) {
-          return format(zonedDate, 'dd MMM yyyy H:mm', {
-            locale: pt,
-          });
+          return formatLocale(date, 'DD MMM YYYY H:mm');
         }
 
-        return format(zonedDate, 'dd MMM yyyy H:mm', {
-          locale: pt,
-        });
+        return formatLocale(date, 'DD MMM YYYY H:mm');
       }
     },
     [],
@@ -133,7 +124,9 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
 
   const handleSendMessage = (data: any) => {
     Keyboard.dismiss();
-    dispatch(sendMessageRequest(userId, data.message));
+    dispatch(
+      wsSendChatMessageRequest({receiver: {id: userId}, message: data.message}),
+    );
     setValue('message', '');
   };
 
@@ -159,51 +152,46 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
     [itineraries, nextItineraries],
   );
 
-  const renderMessage = useCallback(() => {
-    const reverseConversation: MessageProps[] = JSON.parse(
-      JSON.stringify(conversation),
-    );
-    return reverseConversation.reverse().map((messageItem) => {
-      switch (messageItem.type) {
-        case 'message':
-          if (messageItem.sender_id === user.id) {
-            return (
-              <ReplyContent key={messageItem.id}>
-                <Message>{messageItem.message}</Message>
-                <MessageDate>{formatDate(messageItem.created_at)}</MessageDate>
-              </ReplyContent>
-            );
-          } else {
-            return (
-              <MessageContent key={messageItem.id}>
-                <Message>{messageItem.message}</Message>
-                <MessageDate>{formatDate(messageItem.created_at)}</MessageDate>
-              </MessageContent>
-            );
-          }
-        case 'itinerary_invite':
+  const renderMessage: Function = (item: MessageProps) => {
+    switch (item.type) {
+      case 'message':
+        if (item.sender.id === user?.id) {
           return (
-            <ShadowBox key={messageItem.id}>
-              <ShareTitle>{messageItem.json_data?.name}</ShareTitle>
-              <RowGroupSpaced>
-                <ShareSubTitle>{messageItem.json_data?.location}</ShareSubTitle>
-                <ShareSubTitle>
-                  {formatDate(messageItem.json_data?.begin, false)}
-                </ShareSubTitle>
-              </RowGroupSpaced>
-              <ShareButton
-                onPress={() =>
-                  handleMessageNavigation(Number(messageItem.json_data?.id))
-                }>
-                <ShareButtonText>Ver Mais</ShareButtonText>
-              </ShareButton>
-            </ShadowBox>
+            <ReplyContent key={item.id}>
+              <Message>{item.message}</Message>
+              <MessageDate>{formatDate(item.createdAt)}</MessageDate>
+            </ReplyContent>
           );
-        default:
-          break;
-      }
-    });
-  }, [conversation, formatDate, handleMessageNavigation, user.id]);
+        } else {
+          return (
+            <MessageContent key={item.id}>
+              <Message>{item.message}</Message>
+              <MessageDate>{formatDate(item.createdAt)}</MessageDate>
+            </MessageContent>
+          );
+        }
+      case 'itinerary_invite':
+        return (
+          <ShadowBox key={item.id}>
+            <ShareTitle>{item.jsonData?.name}</ShareTitle>
+            <RowGroupSpaced>
+              <ShareSubTitle>{item.jsonData?.location}</ShareSubTitle>
+              <ShareSubTitle>
+                {formatDate(item.jsonData?.begin, false)}
+              </ShareSubTitle>
+            </RowGroupSpaced>
+            <ShareButton
+              onPress={() =>
+                handleMessageNavigation(Number(item.jsonData?.id))
+              }>
+              <ShareButtonText>Ver Mais</ShareButtonText>
+            </ShareButton>
+          </ShadowBox>
+        );
+      default:
+        break;
+    }
+  };
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -222,10 +210,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
             <UserButton>
               <UserImage
                 source={{
-                  uri:
-                    sender && sender.sender.person.file
-                      ? sender.sender.person.file.url
-                      : undefined,
+                  uri: sender && sender.sender.profile.file?.url,
                 }}
                 resizeMode="cover"
               />
@@ -239,12 +224,16 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
         <Card>
           <CardHeader />
           <CardContent>
-            {/* mudar para Flatlist ou VirtualizedList */}
             <ConversationList
-              ref={scrollViewRef}
-              contentContainerStyle={{padding: 6}}>
-              {renderMessage()}
-            </ConversationList>
+              data={conversation}
+              initialNumToRender={4}
+              removeClippedSubviews
+              keyExtractor={(item: any) => String(item.id)}
+              renderItem={({item}: any) => renderMessage(item)}
+              snapToEnd
+              contentContainerStyle={{padding: 6}}
+              inverted
+            />
 
             <MessageForm>
               <TextArea

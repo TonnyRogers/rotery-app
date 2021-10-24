@@ -2,8 +2,6 @@
 import React, {useEffect, useState, useMemo, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import Toast from 'react-native-toast-message';
 
 import api from '../../services/api';
@@ -31,12 +29,13 @@ import Card from '../../components/Card';
 import Text from '../../components/Text';
 import Page from '../../components/Page';
 import {ProfileProps} from '../../utils/types';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface RateProps {
   id: number;
   description: string;
   rate: number;
-  created_at: string;
+  createdAt: string;
 }
 
 interface UserDetailsProps {
@@ -94,16 +93,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   let createDateFormated = useRef('');
 
   useMemo(() => {
-    createDateFormated.current = format(
-      parse(
-        profile?.created_at || '2020-08-10 10:00:00',
-        'yyyy-MM-dd HH:mm:ss',
-        new Date(),
-      ),
-      'dd MMM yyyy',
-      {
-        locale: pt,
-      },
+    createDateFormated.current = formatLocale(
+      String(profile?.createdAt),
+      'DD MMM YYYY',
     );
   }, [profile]);
 
@@ -122,10 +114,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     });
 
   const isConnection = connections?.find((connection) => {
-    if (connection.owner_id === user.id) {
-      return connection.user_id === userId ? true : false;
-    } else if (connection.user_id === user.id) {
-      return connection.owner_id === userId ? true : false;
+    if (connection.owner === user?.id) {
+      return connection.target.id === userId ? true : false;
+    } else if (connection.target.id === user?.id) {
+      return connection.owner === userId ? true : false;
     }
   });
 
@@ -134,13 +126,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   }
 
   function formatDate(date: string) {
-    return format(
-      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      'dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
+    return formatLocale(date, 'DD MMM YYYY');
   }
 
   function getAge(birthDate: string) {
@@ -176,7 +162,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <UserDetail>
               <Avatar
                 source={{
-                  uri: profile?.file && profile.file.url,
+                  uri: profile?.file?.url,
                 }}
                 style={{borderColor: '#e1e1e1'}}
               />
@@ -199,7 +185,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             </UserDetail>
           </CardCotent>
         </Card>
-        {!isConnection && userId !== user.id && (
+        {!isConnection && userId !== user?.id && (
           <ConnectButton onPress={askConnection}>
             <ConnectButtonText>Conectar</ConnectButtonText>
             <Icon name="account-voice" size={24} color="#FFF" />
@@ -221,7 +207,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                           Host de Roteiro
                         </Text.Paragraph>
                         <Text textWeight="light">
-                          {formatDate(item.created_at)}
+                          {formatDate(item.createdAt)}
                         </Text>
                       </ColumnGroup>
                       <IconContent>

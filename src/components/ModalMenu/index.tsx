@@ -31,6 +31,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const dispatch = useDispatch();
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
+  const {user} = useSelector((state: RootStateProps) => state.auth);
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -48,7 +49,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
     }).start();
     setTimeout(() => {
       onRequestClose();
-    }, 400);
+    }, 500);
   }, [height, onRequestClose, panY.y]);
 
   const panRespoders = useRef(
@@ -89,8 +90,10 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   }
 
   function toItineraries() {
-    onRequestClose();
-    RootNavigation.replace('MyItineraries');
+    if (user?.isHost) {
+      onRequestClose();
+      RootNavigation.replace('MyItineraries');
+    }
   }
 
   function toNextItineraries() {
@@ -153,9 +156,16 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
               <Counter>{unreadCounter}</Counter>
             </CounterContent>
           </MenuButton>
-          <MenuButton onPress={toItineraries}>
-            <Icon name="map-outline" size={24} color="#FFF" />
-            <MenuButtonText>Meus Roteiros</MenuButtonText>
+          <MenuButton
+            active={user?.isHost}
+            onPress={toItineraries}
+            disabled={!user?.isHost}>
+            <Icon
+              name="map-outline"
+              size={24}
+              color={user?.isHost ? '#FFF' : '#999'}
+            />
+            <MenuButtonText active={user?.isHost}>Meus Roteiros</MenuButtonText>
           </MenuButton>
           <MenuButton onPress={toNextItineraries}>
             <Icon name="map-check" size={24} color="#FFF" />

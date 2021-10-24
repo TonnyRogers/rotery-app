@@ -3,19 +3,23 @@ export interface ProfileProps {
   name: string | null;
   gender: string | null;
   birth: string | null;
-  cpf: number | null;
+  document: string | null;
   profission: string | null;
-  phone: number | null;
+  phone: string | null;
   user_id: number;
-  created_at: string;
-  updated_at: string;
-  file_id?: number | null;
-  file?: {
-    url?: string;
-  };
+  createdAt: string;
+  updatedAt: string;
+  file: FileProps | null;
   location?: string;
-  location_json?: ProfileLocationJson;
+  locationJson?: ProfileLocationJson;
   user: UserProps;
+}
+
+export interface ProfileServerResponse
+  extends Omit<ProfileProps, 'phone' | 'location_json' | 'document'> {
+  g_phone: string;
+  g_document: string;
+  g_locationJson: ProfileLocationJson;
 }
 
 export interface LocationJson {
@@ -35,143 +39,147 @@ export type ProfileLocationJson = Pick<
   'city' | 'state' | 'country' | 'countryCode' | 'position'
 >;
 
-export interface RateProps {
+export type ItineraryLocationJson = Pick<
+  LocationJson,
+  'city' | 'state' | 'country' | 'countryCode' | 'position'
+>;
+
+export interface UserRateProps {
   id: number;
   rate: number;
   description: string;
-  user_id: number;
-  updated_at: string;
-  created_at: string;
+  user: UserProps;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface ItineraryRateProps {
+  id: number;
+  rate: number;
+  description: string;
+  itinerary: ItineraryProps;
+  updatedAt: string;
+  createdAt: string;
 }
 
 export interface UserProps {
   id: number;
   email: string;
   username: string;
-  person: ProfileProps;
-  created_at: string;
-  rate?: RateProps[];
+  role: string;
+  profile: ProfileProps;
+  createdAt: string;
+  isActive: boolean;
+  isHost: boolean;
+  rate?: UserRateProps[];
+  g_email: string;
 }
 
 export interface OwnerProps extends UserProps {}
 
 export interface QuestionProps {
-  id: number;
+  id: string;
   question: string;
-  anwser: string | null;
-  itinerary_id: number;
-  created_at: string;
-  updated_at: string;
-  owner: {
-    username: string;
-    person: {
-      file?: {
-        url?: string;
-      };
-    };
-  };
+  answer: string | null;
+  itinerary: number;
+  owner: UserProps;
+  isVisible: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MemberProps {
   id: number;
-  username: string;
-  email: string;
-  person: {
-    file?: {
-      url?: string;
-    };
-  };
-  pivot: {
-    user_id: number;
-    itinerary_id: number;
-    is_admin: boolean;
-    accepted: boolean;
-    created_at: string;
-  };
+  isAdmin: boolean;
+  isAccepted: boolean;
+  itinerary: number;
+  user: UserProps;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
+export interface ItineraryMemberResponse
+  extends Omit<MemberProps, 'itinerary'> {
+  itinerary: ItineraryProps;
+}
+
+export interface ItineraryItemDependecyProps {
+  id: string;
+  name?: string;
+  alias: string;
+}
 export interface ItemProps {
-  id: number;
+  id: string;
   name: string;
-  pivot: {
-    capacity: number;
-    price: number;
-    description: string;
-  };
+  itinerary: number;
+  capacity: number;
+  price: string;
+  description: string;
+  isFree: boolean;
 }
 
-export interface StatusProps {
+export interface FileProps {
   id: number;
-  slug: string;
+  url: string;
   name: string;
+  type: string;
+  subtype: string;
+}
+
+export interface ItineraryPhotoProps {
+  id: string;
+  itinerary: number;
+  file: FileProps;
+}
+
+export interface ItineraryActivityItemProps extends ItemProps {
+  activity: ItineraryItemDependecyProps;
+}
+export interface ItineraryTransportItemProps extends ItemProps {
+  transport: ItineraryItemDependecyProps;
+}
+export interface ItineraryLodgingItemProps extends ItemProps {
+  lodging: ItineraryItemDependecyProps;
+}
+
+export type ItineraryStatus = 'active' | 'on_going' | 'finished' | 'cancelled';
+
+export enum ItineraryStatusTranlated {
+  active = 'ativo',
+  on_going = 'em andamento',
+  finished = 'finalizado',
+  cancelled = 'cancelado',
 }
 
 export interface ItineraryProps {
   id: number;
-  owner_id: number;
+  owner: UserProps;
   name: string;
   description: string;
   begin: string;
   end: string;
-  deadline_for_join: string;
+  deadlineForJoin: string;
   capacity: number;
   location: string;
-  is_private: boolean;
-  created_at: string;
-  updated_at: string;
-  activities: ItemProps[];
-  lodgings: ItemProps[];
-  transports: ItemProps[];
-  photos: [];
+  locationJson: ItineraryLocationJson | null;
+  isPrivate: boolean;
+  createdAt: string;
+  updatedAt: string;
+  activities: ItineraryActivityItemProps[];
+  lodgings: ItineraryLodgingItemProps[];
+  transports: ItineraryTransportItemProps[];
+  photos: ItineraryPhotoProps[];
   questions: QuestionProps[];
   members: MemberProps[];
-  status: StatusProps;
-  owner: OwnerProps;
+  status: ItineraryStatus;
 }
+
+export interface FeedItineraryProps extends ItineraryProps {}
 
 export interface FavoriteProps {
   id: number;
   itinerary_id: number;
   itinerary: ItineraryProps;
-}
-
-export interface TransportProps {
-  id: number;
-  name?: string;
-  price?: number;
-  capacity?: number;
-  description?: string;
-  pivot?: {
-    description: string | null;
-    price: number | null;
-    capacity: number;
-  };
-}
-
-export interface LodgingProps {
-  id: number;
-  name?: string;
-  price?: number;
-  capacity?: number;
-  description?: string;
-  pivot?: {
-    description: string | null;
-    price: number | null;
-    capacity: number;
-  };
-}
-
-export interface ActivityProps {
-  id: number;
-  name?: string;
-  price?: number;
-  capacity?: number;
-  description?: string;
-  pivot?: {
-    description: string | null;
-    price: number | null;
-    capacity: number;
-  };
 }
 
 export interface BottomSheetData {
@@ -182,51 +190,39 @@ export interface BottomSheetData {
 
 export interface ConnectionsProps {
   id: number;
-  owner_id: number;
-  user_id: number;
-  blocked: boolean;
-  owner: UserProps;
+  isBlocked: boolean;
+  owner: number;
   target: UserProps;
 }
 
 export interface InvitesProps {
   id: number;
-  owner_id: number;
-  user_id: number;
-  blocked: boolean;
+  isBlocked: boolean;
   owner: UserProps;
-  target: UserProps;
+  target: number;
 }
 
 export interface MessageProps {
   id: number;
-  sender_id: number;
-  receiver_id: number;
   message: string;
   readed: boolean;
-  created_at: string;
   unreaded: number;
   type: string;
-  json_data?: ItineraryProps;
-  sender: {
-    username: string;
-    person: {
-      file: {
-        url: string;
-      };
-    };
-  };
+  jsonData?: ItineraryProps | null;
+  sender: UserProps;
+  receiver: UserProps;
+  createdAt: string;
 }
 
-export interface NotificationsProps {
+export interface NotificationsProps<T> {
   id: number;
-  user_id: number;
-  readed: boolean;
+  user: UserProps;
+  isReaded: boolean;
   subject: string;
   content: string;
-  created_at: string;
   alias: string;
-  json_data: any;
+  jsonData: T;
+  createdAt: string;
 }
 
 export enum NotificationAlias {
@@ -247,11 +243,30 @@ export interface ImageListProps {
   id: number;
 }
 
-export interface CreateItemListProps {
-  id: number;
+export interface CreateItineraryItemListProps {
   capacity: number;
   description?: string;
-  price: number;
+  price: string;
+  isFree: boolean;
+}
+
+export interface CreateItineraryActivityItemProps
+  extends CreateItineraryItemListProps {
+  activity: number;
+  name?: string;
+}
+export interface CreateItineraryTransportItemProps
+  extends CreateItineraryItemListProps {
+  transport: number;
+  name?: string;
+}
+export interface CreateItineraryLodgingItemProps
+  extends CreateItineraryItemListProps {
+  lodging: number;
+  name?: string;
+}
+export interface CreateItineraryPhotoItemProps {
+  file: number;
 }
 
 export interface UpdateItemListProps {
@@ -263,14 +278,6 @@ export interface UpdateItemListProps {
     capacity: number;
   };
 }
-
-export enum ItineraryStatusEnum {
-  'OPENED' = 1,
-  'ON_GOING' = 2,
-  'FINISHED' = 3,
-  'CANCELLED' = 4,
-}
-
 export interface PlacesSearchGeo {
   type: string;
   address: {
@@ -320,3 +327,16 @@ export interface TomTomApiResponse {
     lon: string;
   };
 }
+
+export interface SendChatMessagePayload {
+  receiver: {id: number};
+  message: string;
+  jsonData?: Record<string, unknown>;
+}
+
+export enum MessageTypeEnum {
+  MESSAGE = 'message',
+  ITINERARY_INVITE = 'itinerary_invite',
+}
+
+export type MessageTypes = 'message' | 'itinerary_invite';

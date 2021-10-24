@@ -1,21 +1,19 @@
 import produce from 'immer';
 
-import {ItineraryProps, FavoriteProps} from '../../../utils/types';
+import {ItineraryProps} from '../../../utils/types';
 import {FavoritesActions} from './actions';
 
 interface InitialStateProps {
-  items: FavoriteProps[];
+  items: ItineraryProps[];
   loading: boolean;
 }
 
 interface ActionProps {
   type: string;
   payload: {
-    itineraries: ItineraryProps[];
-    itinerary: ItineraryProps;
     itineraryId: number;
-    favorite: FavoriteProps;
-    favorites: FavoriteProps[];
+    favorite: ItineraryProps;
+    favorites: ItineraryProps[];
   };
 }
 
@@ -70,7 +68,7 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         const {itineraryId} = action.payload;
 
         const itineraryIndex = favoriteList?.findIndex(
-          (item) => item.itinerary.id === itineraryId,
+          (item) => item.id === itineraryId,
         );
 
         if (itineraryIndex !== -1) {

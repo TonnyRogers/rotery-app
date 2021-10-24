@@ -30,7 +30,7 @@ export function* getItineraries() {
       return;
     }
 
-    const response = yield call(api.get, '/members/itineraries');
+    const response = yield call(api.get, '/itineraries/member');
 
     yield put(getNextItinerariesSuccess(response.data));
   } catch (error) {

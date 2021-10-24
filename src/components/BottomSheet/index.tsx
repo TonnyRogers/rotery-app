@@ -42,7 +42,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     }).start();
     setTimeout(() => {
       onRequestClose();
-    }, 200);
+    }, 500);
   }, [height, onRequestClose, panY.y]);
 
   const panRespoders = useRef(

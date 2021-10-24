@@ -1,13 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {Shadow} from 'react-native-shadow-2';
 
-import {NotificationsProps} from '../../utils/types';
+import {
+  NotificationsProps,
+  ItineraryRateProps,
+  QuestionProps,
+  MemberProps,
+  ItineraryProps,
+} from '../../utils/types';
 import {setNoticationReadedRequest} from '../../store/modules/notifications/actions';
 import * as RootNavigation from '../../RootNavigation';
 
@@ -20,9 +24,10 @@ import {
   DateText,
   NotificationButton,
 } from './styles';
+import formatLocale from '../../providers/dayjs-format-locale';
 interface NotificationItemProps {
-  notification: NotificationsProps;
-  close: any;
+  notification: NotificationsProps<any>;
+  close: () => void;
 }
 
 const NotificationItem: React.FC<NotificationItemProps> = ({
@@ -33,17 +38,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const dispatch = useDispatch();
 
   function formatDate(date: string) {
-    return format(parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()), 'dd MMM', {
-      locale: pt,
-    });
+    return formatLocale(date, 'DD MMM');
   }
 
-  function notificationActionHandle(item: NotificationsProps) {
+  function notificationActionHandle(item: NotificationsProps<any>) {
     dispatch(setNoticationReadedRequest(item.id));
-    const notificationItem =
-      typeof item.json_data === 'string'
-        ? JSON.parse(item.json_data)
-        : item.json_data;
     switch (item.alias) {
       case 'new_message': {
         RootNavigation.replace('DirectMessagesTabs');
@@ -51,7 +50,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         break;
       }
       case 'rate_itinerary': {
-        navigation.navigate('ItineraryRate', {id: notificationItem.id});
+        const notificationItem: ItineraryRateProps = item.jsonData;
+        navigation.navigate('ItineraryRate', {
+          id: notificationItem.itinerary.id,
+        });
         close();
         break;
       }
@@ -66,34 +68,39 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         break;
       }
       case 'itinerary_question': {
+        const notificationItem: QuestionProps = item.jsonData;
         navigation.navigate('MyItineraryDetails', {
-          id: notificationItem.itinerary_id,
+          id: notificationItem.itinerary,
         });
         close();
         break;
       }
       case 'itinerary_member_request': {
+        const notificationItem: MemberProps = item.jsonData;
         navigation.navigate('MyItineraryDetails', {
-          id: notificationItem.pivot.itinerary_id,
+          id: notificationItem.itinerary,
         });
         close();
         break;
       }
       case 'itinerary_answer': {
+        const notificationItem: QuestionProps = item.jsonData;
         navigation.navigate('FeedItineraryDetails', {
-          id: notificationItem.itinerary_id,
+          id: notificationItem.itinerary,
         });
         close();
         break;
       }
       case 'itinerary_member_accepted': {
+        const notificationItem: MemberProps = item.jsonData;
         navigation.navigate('NextItineraryDetails', {
-          id: notificationItem.id,
+          id: notificationItem.itinerary,
         });
         close();
         break;
       }
       case 'itinerary_updated': {
+        const notificationItem: ItineraryProps = item.jsonData;
         navigation.navigate('NextItineraryDetails', {
           id: notificationItem.id,
         });
@@ -127,7 +134,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <Type>{notification.content}</Type>
         </ColumGroup>
         <RowGroup>
-          <DateText>{formatDate(notification.created_at)}</DateText>
+          <DateText>{formatDate(notification.createdAt)}</DateText>
           <NotificationButton>
             <Icon name="bell-ring-outline" size={24} color="#FFF" />
           </NotificationButton>

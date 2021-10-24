@@ -4,6 +4,7 @@ import {
   ItineraryProps,
   NotificationsProps,
   QuestionProps,
+  ItineraryMemberResponse,
 } from '../../../utils/types';
 import {WsActions} from '../websocket/actions';
 import {NextItinerariesActions} from './actions';
@@ -26,7 +27,7 @@ interface ActionProps {
   payload: {
     itineraries: ItineraryProps[];
     itinerary: ItineraryProps;
-    notification: NotificationsProps;
+    notification: NotificationsProps<any>;
     itineraryQuestion: QuestionProps;
     itineraryMember: CustomMemberPayload;
     customItineraryPayload: CustomItineraryPayload;
@@ -53,7 +54,9 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) =>
+              typeof itineraryQuestion.itinerary !== 'number' &&
+              item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -64,39 +67,46 @@ export default function itineraries(
         break;
       }
       case WsActions.MEMBER_ACCEPTED: {
-        const itineraryPayload: ItineraryProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const memberPayload: ItineraryMemberResponse =
+          action.payload.notification.jsonData;
         let itineraryList = draft.itineraries;
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryPayload.id,
+            (item) => item.id === memberPayload.itinerary.id,
           );
 
-          if (itineraryIndex !== -1 && itineraryIndex !== undefined) {
-            itineraryList[itineraryIndex] = {...itineraryPayload};
-          } else {
-            itineraryList.push(itineraryPayload);
+          if (itineraryIndex === -1) {
+            const nextItinerary = memberPayload.itinerary;
+            nextItinerary.members = [
+              ...nextItinerary.members,
+              {...memberPayload, itinerary: memberPayload.itinerary.id},
+            ];
+            itineraryList.push(nextItinerary);
           }
         } else {
-          itineraryList = [itineraryPayload];
+          const nextItinerary = memberPayload.itinerary;
+          nextItinerary.members = [
+            {...memberPayload, itinerary: memberPayload.itinerary.id},
+          ];
+          itineraryList = [nextItinerary];
         }
         draft.itineraries = itineraryList;
         break;
       }
       case WsActions.MEMBER_REJECTED: {
-        const jsonData = JSON.parse(action.payload.notification.json_data);
+        const jsonData: ItineraryMemberResponse =
+          action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === jsonData.itinerary_id,
+            (item) => item.id === jsonData.itinerary.id,
           );
 
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.pivot.user_id === jsonData.user_id,
+              (item) => item.user.id === jsonData.user.id,
             );
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members.splice(memberIndex, 1);
@@ -107,9 +117,8 @@ export default function itineraries(
         break;
       }
       case WsActions.ITINERARY_UPDATE: {
-        const itineraryPayload: ItineraryProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const itineraryPayload: ItineraryProps =
+          action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
@@ -125,7 +134,7 @@ export default function itineraries(
         break;
       }
       case WsActions.ITINERARY_DELETE: {
-        const jsonData = JSON.parse(action.payload.notification.json_data);
+        const jsonData: {id: number} = action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
@@ -142,13 +151,14 @@ export default function itineraries(
       }
       case WsActions.ITINERARY_ANSWER: {
         const itineraryList = draft.itineraries;
-        const itineraryQuestion: QuestionProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const itineraryQuestion: QuestionProps =
+          action.payload.notification.jsonData;
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) =>
+              typeof itineraryQuestion.itinerary !== 'number' &&
+              item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -198,7 +208,7 @@ export default function itineraries(
 
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.pivot.user_id === jsonData.user_id,
+              (item) => item.user.id === jsonData.user_id,
             );
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members.splice(memberIndex, 1);
@@ -246,7 +256,9 @@ export default function itineraries(
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) =>
+              typeof itineraryQuestion.itinerary !== 'number' &&
+              item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -80,7 +81,7 @@ const Routes = () => {
       });
 
     //   'Notification when app is in background or terminated'
-    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    messaging().setBackgroundMessageHandler(async (remoteMessage: any) => {
       // console.tron.log('Terminated (Minimized): ', remoteMessage);
       // this.notificationActions(remoteMessage);
     });

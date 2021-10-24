@@ -21,6 +21,15 @@ import {
   paginateFeedSuccess,
   paginateFeedFailure,
 } from './actions';
+import {AxiosResponse} from 'axios';
+import {MemberProps} from '../../../utils/types';
+
+interface ExceptionRequest {
+  response: string;
+  status: number;
+  message: string;
+  name: string;
+}
 
 export function* getItineraries() {
   try {
@@ -31,9 +40,9 @@ export function* getItineraries() {
       return;
     }
 
-    const response = yield call(api.get, '/feed');
+    const response = yield call(api.get, '/feed?page=1&limit=10');
 
-    yield put(getFeedSuccess(response.data.data));
+    yield put(getFeedSuccess(response.data.items));
   } catch (error) {
     yield put(getFeedFailure());
     Toast.show({
@@ -123,11 +132,16 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     const {itineraryId} = payload;
     const currentDate = new Date();
 
-    const response = yield call(api.post, `/itineraries/${itineraryId}/join`, {
-      current_date: currentDate,
-    });
+    const response: AxiosResponse<MemberProps> = yield call(
+      api.post,
+      `/itineraries/${itineraryId}/join`,
+      {
+        currentDate: currentDate,
+      },
+    );
 
     yield put(joinSuccess(response.data));
+
     Toast.show({
       text1: 'Solicitação enviada!',
       position: 'bottom',
@@ -136,7 +150,7 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
   } catch (error) {
     yield put(joinFailure());
     Toast.show({
-      text1: `${translateError(error.response.data[0].message)}`,
+      text1: `${translateError(error.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -155,20 +169,22 @@ export function* getPaginatedItineraries({
     }
 
     const {
-      filter: {page, begin, end, location},
+      filter: {page, begin, end, location, limit},
     } = payload;
 
-    const url = `/feed?page=${page || 1}${begin ? `&begin=${begin}` : ''}${
-      end ? `&end=${end}` : ''
-    }${location ? `&city=${location.city}&state=${location.state}` : ''}`;
+    const url = `/feed?page=${page || 1}&limit=${limit || 10}${
+      begin ? `&begin=${begin}` : ''
+    }${end ? `&end=${end}` : ''}${
+      location ? `&city=${location.city}&state=${location.state}` : ''
+    }`;
 
     // TRIM and sanization
     // url.replace(/\s+/g, '').trim()
 
     const response = yield call(api.get, url);
 
-    if (response.data.data.length > 0) {
-      yield put(paginateFeedSuccess(response.data.data));
+    if (response.data.items.length > 0) {
+      yield put(paginateFeedSuccess(response.data.items));
     } else {
       yield put(paginateFeedFailure());
     }

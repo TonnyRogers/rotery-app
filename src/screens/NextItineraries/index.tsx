@@ -39,6 +39,8 @@ const NextItineraries: React.FC = () => {
             <Text.Title>Próximos Roteiros</Text.Title>
           </ContentHeader>
           <ItineraryList
+            removeClippedSubviews
+            initialNumToRender={3}
             data={itineraries}
             keyExtractor={(item) => String(item.id)}
             renderItem={({item}) => (

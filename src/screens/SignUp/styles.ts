@@ -1,13 +1,15 @@
 import styled from 'styled-native-components';
 import {theme} from '../../utils/theme';
 
-export const Container = styled.View`
+export const Container = styled.ScrollView`
   flex: 1;
   padding: 1rem;
   background: ${theme.colors.appBackground};
 `;
 
-export const Fields = styled.View``;
+export const Fields = styled.View`
+  flex: 1;
+`;
 
 export const CenteredView = styled.View`
   flex: 1;
@@ -18,6 +20,7 @@ export const Actions = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex: 1;
 `;
 
 export const BackButton = styled.TouchableOpacity`
@@ -53,6 +56,7 @@ export const Header = styled.View`
   align-items: center;
   justify-content: center;
   padding: 0.5rem 0;
+  flex: 1;
 `;
 
 export const Logo = styled.Image`

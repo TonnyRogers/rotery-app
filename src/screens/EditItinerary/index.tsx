@@ -15,12 +15,15 @@ import {
 import {updateItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
-  TransportProps,
-  LodgingProps,
-  ActivityProps,
   LocationPickerInputSetItem,
   TomTomApiResponse,
   LocationJson,
+  ItineraryTransportItemProps,
+  ItineraryLodgingItemProps,
+  ItineraryActivityItemProps,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryTransportItemProps,
+  CreateItineraryActivityItemProps,
 } from '../../utils/types';
 
 import {
@@ -149,7 +152,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       setValue('name', itinerary?.name);
       setValue('dateOut', itinerary.begin);
       setValue('dateReturn', itinerary.end);
-      setValue('dateLimit', itinerary.deadline_for_join);
+      setValue('dateLimit', itinerary.deadlineForJoin);
       setValue('description', itinerary.description);
       setValue('location', itinerary.location);
       setValue('vacancies', String(itinerary.capacity));
@@ -157,7 +160,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       setActivities([...itinerary.activities]);
       setTransports([...itinerary.transports]);
       setImages([...itinerary.photos]);
-      setPrivateItinerary(itinerary.is_private);
+      setPrivateItinerary(itinerary.isPrivate);
     }
   }, [dispatch, itinerary, setValue]);
 
@@ -216,14 +219,13 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       (option) => option.id === Number(data.type),
     );
 
-    const newItem = {
-      id: data.type,
+    const newItem: CreateItineraryLodgingItemProps = {
+      lodging: Number(data.type),
+      price: String(clearValue(data.price)),
+      capacity: data.capacity,
+      description: data.description,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
       name: optionItem?.name,
-      pivot: {
-        price: clearValue(data.price),
-        capacity: data.capacity,
-        description: data.description,
-      },
     };
 
     setLodgings([...lodgings, newItem]);
@@ -249,14 +251,13 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       (option) => option.id === Number(data.type),
     );
 
-    const newItem = {
-      id: data.type,
+    const newItem: CreateItineraryTransportItemProps = {
+      transport: Number(data.type),
+      price: String(clearValue(data.price)),
+      capacity: Number(data.capacity),
+      description: data.description,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
       name: optionItem?.name,
-      pivot: {
-        price: clearValue(data.price),
-        capacity: data.capacity,
-        description: data.description,
-      },
     };
 
     setTransports([...transports, newItem]);
@@ -281,14 +282,13 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       (option) => option.id === Number(data.type),
     );
 
-    const newItem = {
-      id: data.type,
+    const newItem: CreateItineraryActivityItemProps = {
+      activity: Number(data.type),
+      price: String(clearValue(data.price)),
+      capacity: data.capacity,
+      description: data.description,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
       name: optionItem?.name,
-      pivot: {
-        price: clearValue(data.price),
-        capacity: data.capacity,
-        description: data.description,
-      },
     };
 
     setActivities([...activities, newItem]);
@@ -362,23 +362,23 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
 
   const renderTransports = useCallback(
     () =>
-      transports?.map((item: TransportProps, index: number) => (
+      transports?.map((item: ItineraryTransportItemProps, index: number) => (
         <ShadowBox key={'transports-' + index}>
           <HeaderActions>
             <RemoveButton onPress={() => removeTransportItem(index)}>
               <Icon name="delete-forever-outline" color="#F57373" size={24} />
             </RemoveButton>
           </HeaderActions>
-          <FieldTitle>{item.name}</FieldTitle>
-          <FieldValue>{item.pivot?.description}</FieldValue>
+          <FieldTitle>{item.name || item.transport.name}</FieldTitle>
+          <FieldValue>{item.description}</FieldValue>
           <RowGroupSpaced>
             <ColumnGroup>
               <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.pivot?.capacity}</FieldValue>
+              <FieldValue>{item.capacity}</FieldValue>
             </ColumnGroup>
             <ColumnGroup>
               <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
+              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>
@@ -388,23 +388,23 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
 
   const renderLodgings = useCallback(
     () =>
-      lodgings.map((item: LodgingProps, index: number) => (
+      lodgings.map((item: ItineraryLodgingItemProps, index: number) => (
         <ShadowBox key={'lodgings-' + index}>
           <HeaderActions>
             <RemoveButton onPress={() => removeLodgingItem(index)}>
               <Icon name="delete-forever-outline" color="#F57373" size={24} />
             </RemoveButton>
           </HeaderActions>
-          <FieldTitle>{item.name}</FieldTitle>
-          <FieldValue>{item.pivot?.description}</FieldValue>
+          <FieldTitle>{item.name || item.lodging.name}</FieldTitle>
+          <FieldValue>{item.description}</FieldValue>
           <RowGroupSpaced>
             <ColumnGroup>
               <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.pivot?.capacity}</FieldValue>
+              <FieldValue>{item.capacity}</FieldValue>
             </ColumnGroup>
             <ColumnGroup>
               <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
+              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>
@@ -414,23 +414,23 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
 
   const renderActivities = useCallback(
     () =>
-      activities.map((item: ActivityProps, index: number) => (
+      activities.map((item: ItineraryActivityItemProps, index: number) => (
         <ShadowBox key={'activities-' + index}>
           <HeaderActions>
             <RemoveButton onPress={() => removeActivityItem(index)}>
               <Icon name="delete-forever-outline" color="#F57373" size={24} />
             </RemoveButton>
           </HeaderActions>
-          <FieldTitle>{item.name}</FieldTitle>
-          <FieldValue>{item.pivot?.description}</FieldValue>
+          <FieldTitle>{item.name || item.activity.name}</FieldTitle>
+          <FieldValue>{item.description}</FieldValue>
           <RowGroupSpaced>
             <ColumnGroup>
               <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.pivot?.capacity}</FieldValue>
+              <FieldValue>{item.capacity}</FieldValue>
             </ColumnGroup>
             <ColumnGroup>
               <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
+              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>

@@ -1,13 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useMemo, useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {Platform} from 'react-native';
-import {format} from 'date-fns';
-import pt from 'date-fns/locale/pt';
-import DateTimePicker from '@react-native-community/datetimepicker';
+
+import DateTimePicker, {Event} from '@react-native-community/datetimepicker';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label} from './styles';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface DateInputProps {
   label?: string;
@@ -19,11 +19,11 @@ const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
   const [show, setShow] = useState(false);
 
   const dateFormatted = useMemo(
-    () => format(date, "dd 'de' MMMM 'de' yyyy", {locale: pt}),
+    () => formatLocale(date, 'DD [de] MMM [de] YYYY'),
     [date],
   );
 
-  const onChangeDate = (event: any, selectDate: any): void => {
+  const onChangeDate = (event: Event, selectDate?: Date): void => {
     try {
       const currentDate = selectDate || date;
       setShow(Platform.OS === 'ios');

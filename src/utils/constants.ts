@@ -170,3 +170,10 @@ export const myGuideImages = [
     isAnimation: false,
   },
 ];
+
+export const ItineraryStatusConst = {
+  ACTIVE: 'active',
+  ON_GOING: 'on_going',
+  FINISHED: 'finished',
+  CANCELLED: 'cancelled',
+};

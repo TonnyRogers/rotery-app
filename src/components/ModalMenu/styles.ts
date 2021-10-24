@@ -50,8 +50,13 @@ export const Actions = styled.View`
   margin-top: 1rem;
 `;
 
-export const MenuButton = styled.TouchableOpacity`
-  background: #3dc77b;
+export const MenuButton = styled.TouchableOpacity<{active?: boolean}>`
+  background: ${(props) =>
+    props.active !== undefined
+      ? props.active
+        ? '#3dc77b'
+        : '#d5d5d5'
+      : '#3dc77b'};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -62,11 +67,12 @@ export const MenuButton = styled.TouchableOpacity`
   position: relative;
 `;
 
-export const MenuButtonText = styled.Text`
+export const MenuButtonText = styled.Text<{active?: boolean}>`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: bold;
-  color: #fff;
+  color: ${(props) =>
+    props.active !== undefined ? (props.active ? '#fff' : '#999') : '#fff'};
   text-align: center;
 `;
 

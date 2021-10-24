@@ -36,6 +36,7 @@ import GuideCarousel from '../../components/GuideCarousel';
 import Text from '../../components/Text';
 import Empty from '../../components/Empty';
 import {feedGuideImages} from '../../utils/constants';
+import {ItineraryProps, ItineraryActivityItemProps} from '../../utils/types';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
@@ -48,24 +49,27 @@ const Feed: React.FC = () => {
   const {itineraries, loading} = useSelector(
     (state: RootStateProps) => state.feed,
   );
+  const {user} = useSelector((state: RootStateProps) => state.auth);
   const {feedGuide} = useSelector((state: RootStateProps) => state.guides);
 
-  const itineraryActivities: {id: number; name: string}[] = [];
+  const itineraryActivities: ItineraryActivityItemProps[] = [];
 
   useEffect(() => {
     dispatch(getFeedRequest());
     dispatch(showFeedGuide());
-  }, [dispatch]);
+  }, [dispatch, feedGuide]);
 
   if (itineraries) {
-    itineraries?.forEach((itinerary: any) =>
+    itineraries?.forEach((itinerary: ItineraryProps) =>
       itineraryActivities.push(...itinerary.activities),
     );
   }
 
   const removeDuplicatedActivities = itineraryActivities.filter(
     (item, index, arr) =>
-      arr.findIndex((comparable) => comparable.id === item.id) === index,
+      arr.findIndex(
+        (comparable) => comparable.activity.id === item.activity.id,
+      ) === index,
   );
 
   function itineraryDetail(itineraryId: number) {
@@ -84,7 +88,7 @@ const Feed: React.FC = () => {
   }, [dispatch]);
 
   const loadFeed = useCallback(() => {
-    if (itineraries.length > 3) {
+    if (itineraries && itineraries.length > 3) {
       setPage(page + 1);
       dispatch(
         paginateFeedRequest({
@@ -92,10 +96,11 @@ const Feed: React.FC = () => {
           begin: filter.begin,
           end: filter.end,
           location: filter.location,
+          limit: 10,
         }),
       );
     }
-  }, [dispatch, filter, itineraries.length, page]);
+  }, [dispatch, filter.begin, filter.end, filter.location, itineraries, page]);
 
   const handleCloseFeedGuide = () => {
     dispatch(hideFeedGuide());
@@ -151,7 +156,7 @@ const Feed: React.FC = () => {
                 {removeDuplicatedActivities.map((item, index) => (
                   <Activity key={index}>
                     <Icon name="menu" size={24} color="#FFF" />
-                    <ActivityName>{item.name}</ActivityName>
+                    <ActivityName>{item.activity.name}</ActivityName>
                   </Activity>
                 ))}
               </ActivityList>
@@ -167,12 +172,15 @@ const Feed: React.FC = () => {
           />
         </Content>
       </Container>
-      <FloatButton
-        alignment="center"
-        shape="rounded"
-        icon={() => <Icon name="plus-box-outline" size={24} color="#FFF" />}
-        onPressAction={() => navigation.navigate('NewItinerary')}
-      />
+      {user?.isHost && (
+        <FloatButton
+          alignment="center"
+          shape="rounded"
+          icon={() => <Icon name="plus-box-outline" size={24} color="#FFF" />}
+          onPressAction={() => navigation.navigate('NewItinerary')}
+        />
+      )}
+
       <BottomSheet
         visible={sheetVisible}
         onRequestClose={() => setSheetVisible(false)}

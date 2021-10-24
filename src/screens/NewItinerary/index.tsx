@@ -16,12 +16,15 @@ import {
 } from '../../store/modules/options/actions';
 import {InitialStateProps} from '../../store/modules/options/reducer';
 import {
-  LodgingProps,
-  TransportProps,
-  ActivityProps,
   LocationJson,
   LocationPickerInputSetItem,
   TomTomApiResponse,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryTransportItemProps,
+  CreateItineraryActivityItemProps,
+  ItineraryTransportItemProps,
+  ItineraryLodgingItemProps,
+  ItineraryActivityItemProps,
 } from '../../utils/types';
 import {
   showNewItineraryGuide,
@@ -189,16 +192,12 @@ const NewItinerary: React.FC = () => {
   }
 
   const addLodgingItem = (data: any) => {
-    const optionItem = options.lodgings?.find(
-      (option) => option.id === Number(data.type),
-    );
-
-    const newItem: LodgingProps = {
-      id: Number(data.type),
-      price: Number(clearValue(data.price)),
+    const newItem: CreateItineraryLodgingItemProps = {
+      lodging: Number(data.type),
+      price: String(clearValue(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
-      name: optionItem?.name,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
     };
 
     lodgings.push(newItem);
@@ -212,16 +211,12 @@ const NewItinerary: React.FC = () => {
   };
 
   const addTransportItem = (data: any) => {
-    const optionItem = options.transports?.find(
-      (option) => option.id === Number(data.type),
-    );
-
-    const newItem: TransportProps = {
-      id: Number(data.type),
-      price: Number(clearValue(data.price)),
+    const newItem: CreateItineraryTransportItemProps = {
+      transport: Number(data.type),
+      price: String(clearValue(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
-      name: optionItem?.name,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
     };
 
     transports.push(newItem);
@@ -235,16 +230,12 @@ const NewItinerary: React.FC = () => {
   };
 
   const addActivityItem = (data: any) => {
-    const optionItem = options.activities?.find(
-      (option) => option.id === Number(data.type),
-    );
-
-    const newItem: ActivityProps = {
-      id: Number(data.type),
-      price: Number(clearValue(data.price)),
+    const newItem: CreateItineraryActivityItemProps = {
+      activity: Number(data.type),
+      price: String(clearValue(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
-      name: optionItem?.name,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
     };
 
     activities.push(newItem);
@@ -322,27 +313,29 @@ const NewItinerary: React.FC = () => {
 
       setTransports([...transports]);
     }
-    return transports.map((item: TransportProps, index: number) => (
-      <ShadowBox key={index}>
-        <HeaderActions>
-          <RemoveButton onPress={() => removeTransportItem(index)}>
-            <Icon name="delete-forever-outline" color="#F57373" size={24} />
-          </RemoveButton>
-        </HeaderActions>
-        <FieldTitle>{item.name}</FieldTitle>
-        <FieldValue>{item.description}</FieldValue>
-        <RowGroupSpaced>
-          <ColumnGroup>
-            <FieldTitle>Capacidade</FieldTitle>
-            <FieldValue>{item.capacity}</FieldValue>
-          </ColumnGroup>
-          <ColumnGroup>
-            <FieldTitle>Preço</FieldTitle>
-            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-          </ColumnGroup>
-        </RowGroupSpaced>
-      </ShadowBox>
-    ));
+    return transports.map(
+      (item: ItineraryTransportItemProps, index: number) => (
+        <ShadowBox key={index}>
+          <HeaderActions>
+            <RemoveButton onPress={() => removeTransportItem(index)}>
+              <Icon name="delete-forever-outline" color="#F57373" size={24} />
+            </RemoveButton>
+          </HeaderActions>
+          <FieldTitle>{item.transport.name}</FieldTitle>
+          <FieldValue>{item.description}</FieldValue>
+          <RowGroupSpaced>
+            <ColumnGroup>
+              <FieldTitle>Capacidade</FieldTitle>
+              <FieldValue>{item.capacity}</FieldValue>
+            </ColumnGroup>
+            <ColumnGroup>
+              <FieldTitle>Preço</FieldTitle>
+              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+            </ColumnGroup>
+          </RowGroupSpaced>
+        </ShadowBox>
+      ),
+    );
   }, [transports]);
 
   const renderLodgings = useCallback(() => {
@@ -351,14 +344,14 @@ const NewItinerary: React.FC = () => {
 
       setLodgings([...lodgings]);
     }
-    return lodgings.map((item: LodgingProps, index: number) => (
+    return lodgings.map((item: ItineraryLodgingItemProps, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeLodgingItem(index)}>
             <Icon name="delete-forever-outline" color="#F57373" size={24} />
           </RemoveButton>
         </HeaderActions>
-        <FieldTitle>{item.name}</FieldTitle>
+        <FieldTitle>{item.lodging.name}</FieldTitle>
         <FieldValue>{item.description}</FieldValue>
         <RowGroupSpaced>
           <ColumnGroup>
@@ -381,14 +374,14 @@ const NewItinerary: React.FC = () => {
       setActivities([...activities]);
     }
 
-    return activities.map((item: ActivityProps, index: number) => (
+    return activities.map((item: ItineraryActivityItemProps, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeActivityItem(index)}>
             <Icon name="delete-forever-outline" color="#F57373" size={24} />
           </RemoveButton>
         </HeaderActions>
-        <FieldTitle>{item.name}</FieldTitle>
+        <FieldTitle>{item.activity.name}</FieldTitle>
         <FieldValue>{item.description}</FieldValue>
         <RowGroupSpaced>
           <ColumnGroup>

@@ -7,6 +7,7 @@ import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
 import NetInfo from '../../../services/netinfo';
 import {translateError} from '../../../lib/utils';
+import * as RootNavigation from '../../../RootNavigation';
 
 import {
   loginRequest,
@@ -15,7 +16,6 @@ import {
   registerRequest,
   registerSuccess,
   registerFailure,
-  refreshTokenRequest,
   refreshTokenSuccess,
   refreshTokenFailure,
   setDeviceTokenRequest,
@@ -38,12 +38,11 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const {email, password} = payload;
 
-    const response = yield call(api.post, '/sessions', {email, password});
+    const response = yield call(api.post, '/auth/login', {email, password});
 
-    const {token, refreshToken} = response.data.token;
-    const {user} = response.data;
+    const {user, access_token} = response.data;
 
-    if (!token) {
+    if (!access_token) {
       Toast.show({
         text1: 'Email ou senha incorreto.',
         position: 'bottom',
@@ -54,21 +53,20 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
       return;
     }
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', token);
-    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    yield call([AsyncStorage, 'setItem'], '@auth:token', access_token);
+    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', '');
+    api.defaults.headers.Authorization = `Bearer ${access_token}`;
 
-    yield put(loginSuccess(token, refreshToken, user));
+    yield put(loginSuccess(access_token, user));
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getConnectionsRequest());
     yield put(getItinerariesRequest());
     yield put(getNextItinerariesRequest());
     yield put(getMessagesRequest());
-    // yield put(getNotificationsRequest());
   } catch (error) {
     Toast.show({
-      text1: `${translateError(error?.response.data[0].message)}`,
+      text1: `${translateError(error?.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -85,7 +83,7 @@ export function* setToken({payload}: any) {
 
   if (token) {
     api.defaults.headers.Authorization = `Bearer ${token}`;
-    yield put(refreshTokenRequest());
+    // yield put(refreshTokenRequest());
   }
 }
 
@@ -104,12 +102,13 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   }
 
   try {
-    const {username, email, password} = payload;
+    const {username, email, password, isHost} = payload;
 
     const response = yield call(api.post, '/users', {
       username,
       email,
       password,
+      isHost,
     });
 
     const {id} = response.data;
@@ -125,13 +124,21 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
       return;
     }
 
+    Toast.show({
+      text1: 'Bem-vindo(a)! 🤙🥳',
+      text2: 'Acesse o link enviado por e-mail para ativar seu cadastro.',
+      position: 'bottom',
+      type: 'success',
+      visibilityTime: 5000,
+    });
+
     yield put(registerSuccess(id));
-    yield put(loginRequest(email, password));
+    RootNavigation.goBack();
   } catch (error) {
     yield put(registerFailure());
 
     Toast.show({
-      text1: `${translateError(error.response.data[0].message)}`,
+      text1: `${translateError(error.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -188,7 +195,7 @@ export function* setDeviceToken() {
       deviceToken = yield call([messaging(), 'getToken']);
     }
 
-    yield call(api.post, '/users/device', {
+    yield call(api.put, '/users/device', {
       token: deviceToken,
     });
     yield put(setDeviceTokenSuccess());

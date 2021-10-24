@@ -61,7 +61,10 @@ const ConnectionShareList: React.FC<ConnectionShareListProps> = ({data}) => {
       return false;
     }
 
-    if (target?.target.id === data.ownerId) {
+    if (
+      typeof target?.target !== 'number' &&
+      target?.target.id === data.ownerId
+    ) {
       Toast.show({
         text1: 'Convite para Host.',
         text2: 'Você não pode convidar o Host do roteiro.',
@@ -76,7 +79,7 @@ const ConnectionShareList: React.FC<ConnectionShareListProps> = ({data}) => {
       switch (type) {
         case 'itinerary': {
           response = await api.post(`/itineraries/${id}/invite`, {
-            user_id: target?.target.id,
+            userId: target?.target.id,
           });
           break;
         }
@@ -116,37 +119,40 @@ const ConnectionShareList: React.FC<ConnectionShareListProps> = ({data}) => {
   return (
     <>
       <ConnectionList>
-        {connections.map((connection) => (
-          <User key={connection.id}>
-            <UserInfo>
-              <UserImage
-                source={{
-                  uri: connection.target.person.file?.url || undefined,
-                }}
-                resizeMode="cover"
-              />
-              <ColumnGroup>
-                <Name>{connection.target.username}</Name>
-              </ColumnGroup>
-            </UserInfo>
-            <Actions>
-              <ShareButton
-                onPress={() =>
-                  handleSendInvite(data.type, connection, data.id)
-                }>
-                {connection.shared ? (
-                  <Icon name="check-outline" size={24} color="#FFF" />
-                ) : (
-                  <Icon
-                    name="arrow-right-bold-outline"
-                    size={24}
-                    color="#FFF"
+        {connections.map(
+          (connection) =>
+            typeof connection.target !== 'number' && (
+              <User key={connection.id}>
+                <UserInfo>
+                  <UserImage
+                    source={{
+                      uri: connection.target.profile.file?.url || undefined,
+                    }}
+                    resizeMode="cover"
                   />
-                )}
-              </ShareButton>
-            </Actions>
-          </User>
-        ))}
+                  <ColumnGroup>
+                    <Name>{connection.target.username}</Name>
+                  </ColumnGroup>
+                </UserInfo>
+                <Actions>
+                  <ShareButton
+                    onPress={() =>
+                      handleSendInvite(data.type, connection, data.id)
+                    }>
+                    {connection.shared ? (
+                      <Icon name="check-outline" size={24} color="#FFF" />
+                    ) : (
+                      <Icon
+                        name="arrow-right-bold-outline"
+                        size={24}
+                        color="#FFF"
+                      />
+                    )}
+                  </ShareButton>
+                </Actions>
+              </User>
+            ),
+        )}
       </ConnectionList>
     </>
   );

@@ -1,4 +1,8 @@
-import {NotificationsProps, MessageProps} from '../../../utils/types';
+import {
+  NotificationsProps,
+  MessageProps,
+  SendChatMessagePayload,
+} from '../../../utils/types';
 
 export enum WsActions {
   NOTIFICATIONS = '@ws/NOTIFICATIONS',
@@ -19,6 +23,9 @@ export enum WsActions {
   ITINERARY_UPDATE = '@ws/ITINERARY_UPDATE',
   ITINERARY_DELETE = '@ws/ITINERARY_DELETE',
   ITINERARY_RATE = '@ws/ITINERARY_RATE',
+  SEND_CHAT_MESSAGE_REQUEST = '@ws/SEND_CHAT_MESSAGE_REQUEST',
+  SEND_CHAT_MESSAGE_SUCCESS = '@ws/SEND_CHAT_MESSAGE_SUCCESS',
+  SEND_CHAT_MESSAGE_FAILURE = '@ws/SEND_CHAT_MESSAGE_FAILURE',
 }
 
 export function wsSetConnected() {
@@ -66,7 +73,9 @@ export function wsSubscribeUserToNotifications() {
   };
 }
 
-export function wsNewConnectionNotification(notification: NotificationsProps) {
+export function wsNewConnectionNotification(
+  notification: NotificationsProps<any>,
+) {
   return {
     type: WsActions.NEW_CONNECTION,
     payload: {notification},
@@ -74,7 +83,7 @@ export function wsNewConnectionNotification(notification: NotificationsProps) {
 }
 
 export function wsConnectionAcceptedNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.CONNECTION_ACCEPTED,
@@ -82,7 +91,9 @@ export function wsConnectionAcceptedNotification(
   };
 }
 
-export function wsNewMessageNotification(notification: NotificationsProps) {
+export function wsNewMessageNotification(
+  notification: NotificationsProps<any>,
+) {
   return {
     type: WsActions.NEW_MESSAGE,
     payload: {notification},
@@ -90,7 +101,7 @@ export function wsNewMessageNotification(notification: NotificationsProps) {
 }
 
 export function wsNewItineraryMemeberNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.NEW_ITINERARY_MEMBER,
@@ -99,7 +110,7 @@ export function wsNewItineraryMemeberNotification(
 }
 
 export function wsAcceptedItineraryMemeberNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.MEMBER_ACCEPTED,
@@ -108,7 +119,7 @@ export function wsAcceptedItineraryMemeberNotification(
 }
 
 export function wsRejectedItineraryMemeberNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.MEMBER_REJECTED,
@@ -117,7 +128,7 @@ export function wsRejectedItineraryMemeberNotification(
 }
 
 export function wsItineraryQuestionNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_QUESTION,
@@ -126,7 +137,7 @@ export function wsItineraryQuestionNotification(
 }
 
 export function wsItineraryAnswerNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_ANSWER,
@@ -135,7 +146,7 @@ export function wsItineraryAnswerNotification(
 }
 
 export function wsItineraryUpdateNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_UPDATE,
@@ -144,7 +155,7 @@ export function wsItineraryUpdateNotification(
 }
 
 export function wsItineraryDeleteNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_DELETE,
@@ -152,10 +163,36 @@ export function wsItineraryDeleteNotification(
   };
 }
 
-export function wsItineraryRateNotification(notification: NotificationsProps) {
+export function wsItineraryRateNotification(
+  notification: NotificationsProps<any>,
+) {
   return {
     type: WsActions.ITINERARY_RATE,
     payload: {notification},
+  };
+}
+
+export function wsSendChatMessageRequest(
+  messagePayload: SendChatMessagePayload,
+) {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_REQUEST,
+    payload: {
+      messagePayload,
+    },
+  };
+}
+export function wsSendChatMessageSuccess(newMessage: MessageProps) {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_SUCCESS,
+    payload: {
+      newMessage,
+    },
+  };
+}
+export function wsSendChatMessageFailure() {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_FAILURE,
   };
 }
 

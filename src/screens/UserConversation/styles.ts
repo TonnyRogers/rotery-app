@@ -78,7 +78,7 @@ export const JoinDate = styled.Text`
   color: #9d9d9d;
 `;
 
-export const ConversationList = styled.ScrollView.attrs({
+export const ConversationList = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
 })`
   margin-top: 0.5rem;

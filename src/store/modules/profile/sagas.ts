@@ -1,6 +1,5 @@
 import {all, takeLatest, put, call} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
-import {startOfDay} from 'date-fns';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
@@ -17,6 +16,8 @@ import {
   removeUserFailure,
 } from './actions';
 import {logout} from '../auth/actions';
+import {ProfileProps} from '../../../utils/types';
+import {AxiosResponse} from 'axios';
 
 export function* getProfile() {
   try {
@@ -27,11 +28,12 @@ export function* getProfile() {
       return;
     }
 
-    const response = yield call(api.get, '/profile');
+    const response: AxiosResponse<ProfileProps> = yield call(
+      api.get,
+      '/profile',
+    );
 
-    const profile = response.data;
-
-    yield put(getProfileSuccess(profile));
+    yield put(getProfileSuccess(response.data));
   } catch (error) {
     yield put(getProfileFail());
   }
@@ -59,13 +61,14 @@ export function* updateProfile({
       }
     });
 
-    updatePayload.birth = startOfDay(new Date(updatePayload.birth));
+    updatePayload.birth = new Date(updatePayload.birth).toISOString();
 
-    const response = yield call(
+    const response: AxiosResponse<ProfileProps> = yield call(
       api.put,
       '/profile',
       Object.assign({}, updatePayload),
     );
+
     yield put(updateProfileSuccess(response.data));
     Toast.show({
       text1: 'Perfil atualizado',
@@ -94,8 +97,8 @@ export function* updateProfileImage({
     }
 
     const {file_id} = payload;
-    const response = yield call(api.put, '/profile/image', {
-      file_id,
+    const response = yield call(api.put, '/profile/avatar', {
+      file: file_id,
     });
 
     yield put(updateProfileImageSuccess(response.data));

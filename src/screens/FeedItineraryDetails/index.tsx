@@ -1,9 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useRef, useMemo, useEffect, useCallback} from 'react';
 import {View, ScrollView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -11,11 +10,11 @@ import * as yup from 'yup';
 import {formatBRL} from '../../lib/mask';
 import {
   ItineraryProps,
-  ActivityProps,
   QuestionProps,
   MemberProps,
-  LodgingProps,
-  TransportProps,
+  ItineraryTransportItemProps,
+  ItineraryLodgingItemProps,
+  ItineraryActivityItemProps,
 } from '../../utils/types';
 import {
   makeQuestionRequest,
@@ -51,6 +50,7 @@ import {
   StatusContent,
   Status,
   StatusName,
+  ItemsContent,
 } from './styles';
 import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
@@ -62,6 +62,7 @@ import Share from '../../components/Share';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required('campo obrigatório'),
@@ -107,8 +108,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const isMember = useMemo(
     () =>
       itinerary?.members &&
-      itinerary.members.find((member: MemberProps) => member.id === user.id),
-    [itinerary, user.id],
+      itinerary.members.find(
+        (member: MemberProps) => member.user.id === user?.id,
+      ),
+    [itinerary, user],
   );
 
   useEffect(() => {
@@ -116,30 +119,23 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   }, [register]);
 
   useEffect(() => {
-    if (isMember && isMember.pivot.accepted === true) {
+    if (isMember && isMember.isAccepted === true) {
       RootNavigation.replace('NextItineraryDetails', {id});
     }
   }, [id, isMember]);
 
   useMemo(() => {
-    beginDateFormated.current = format(
-      new Date(itinerary?.begin || ''),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
+    beginDateFormated.current = formatLocale(
+      String(itinerary?.begin),
+      ' DD MMM YYYY H:mm',
     );
-    endDateFormated.current = format(
-      new Date(itinerary?.end || ''),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
+    endDateFormated.current = formatLocale(
+      String(itinerary?.end),
+      ' DD MMM YYYY H:mm',
     );
-    limitDateFormated.current = format(
-      new Date(itinerary?.deadline_for_join || ''),
-      ' dd MMM yyyy H:mm',
-      {locale: pt},
+    limitDateFormated.current = formatLocale(
+      String(itinerary?.deadlineForJoin),
+      ' DD MMM YYYY H:mm',
     );
   }, [itinerary]);
 
@@ -151,21 +147,21 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
 
   const renderTransports = useCallback(
     () =>
-      itinerary?.transports.map((transport: TransportProps) => (
+      itinerary?.transports.map((transport: ItineraryTransportItemProps) => (
         <ShadowBox key={transport.id}>
           <Text.Paragraph textColor="primary" textWeight="bold">
-            {transport.name}
+            {transport.transport.name}
           </Text.Paragraph>
-          <Text textWeight="light">{transport.pivot?.description}</Text>
+          <Text textWeight="light">{transport.description}</Text>
           <RowGroupSpaced>
             <ColumnGroup>
               <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{transport.pivot?.capacity}</Text>
+              <Text textWeight="bold">{transport.capacity}</Text>
             </ColumnGroup>
             <ColumnGroup>
               <Text textWeight="light">Preço</Text>
               <Text textWeight="bold">
-                {formatBRL(String(transport.pivot?.price))}
+                {formatBRL(String(transport.price))}
               </Text>
             </ColumnGroup>
           </RowGroupSpaced>
@@ -176,22 +172,20 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
 
   const renderLodgings = useCallback(
     () =>
-      itinerary?.lodgings.map((lodging: LodgingProps) => (
+      itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps) => (
         <ShadowBox key={lodging.id}>
           <Text.Paragraph textColor="primary" textWeight="bold">
-            {lodging.name}
+            {lodging.lodging.name}
           </Text.Paragraph>
-          <Text textWeight="light">{lodging.pivot?.description}</Text>
+          <Text textWeight="light">{lodging.description}</Text>
           <RowGroupSpaced>
             <ColumnGroup>
               <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{lodging.pivot?.capacity}</Text>
+              <Text textWeight="bold">{lodging.capacity}</Text>
             </ColumnGroup>
             <ColumnGroup>
               <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(lodging.pivot?.price))}
-              </Text>
+              <Text textWeight="bold">{formatBRL(String(lodging.price))}</Text>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>
@@ -201,22 +195,20 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
 
   const renderActivities = useCallback(
     () =>
-      itinerary?.activities.map((activity: ActivityProps) => (
+      itinerary?.activities.map((activity: ItineraryActivityItemProps) => (
         <ShadowBox key={activity.id}>
           <Text.Paragraph textColor="primary" textWeight="bold">
-            {activity.name}
+            {activity.activity.name}
           </Text.Paragraph>
-          <Text textWeight="light">{activity.pivot?.description}</Text>
+          <Text textWeight="light">{activity.description}</Text>
           <RowGroupSpaced>
             <ColumnGroup>
               <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{activity.pivot?.capacity}</Text>
+              <Text textWeight="bold">{activity.capacity}</Text>
             </ColumnGroup>
             <ColumnGroup>
               <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(activity.pivot?.price))}
-              </Text>
+              <Text textWeight="bold">{formatBRL(String(activity.price))}</Text>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>
@@ -228,7 +220,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     () =>
       itinerary?.members.map(
         (member: MemberProps) =>
-          member.pivot.accepted && (
+          member.isAccepted && (
             <ItineraryMember
               member={member}
               key={member.id}
@@ -257,15 +249,15 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
         dispatch(joinRequest(id));
       }
 
-      return isOpen(itinerary?.status.id, () =>
+      return isOpen(itinerary.status, () =>
         !isMember ? (
           <JoinButton onPress={handleJoinItinerary}>
             <Icon name="location-enter" size={24} color="#FFF" />
             <JoinButtonText>Participar</JoinButtonText>
           </JoinButton>
         ) : (
-          isMember.pivot.accepted === false && (
-            <JoinButton>
+          isMember.isAccepted === false && (
+            <JoinButton onPress={() => {}}>
               <Icon name="location-enter" size={24} color="#FFF" />
               <JoinButtonText>Aguardando</JoinButtonText>
             </JoinButton>
@@ -284,7 +276,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
         }
       };
 
-      return isOpen(itinerary?.status.id, () => (
+      return isOpen(itinerary.status, () => (
         <>
           <TextArea
             placeholder="faça uma pergunta..."
@@ -326,7 +318,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
           id: itinerary?.id,
           type: 'itinerary',
           componentType: 'connectionShareList',
-          ownerId: itinerary?.owner_id,
+          ownerId: itinerary.owner.id,
         }}
       />
       <Container>
@@ -358,13 +350,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 <Text limitter={19} textWeight="light" maxLines={1}>
                   {itinerary?.location}
                 </Text>
-                <Text textWeight="light" maxLines={1}>
-                  {beginDateFormated.current}
-                </Text>
               </RowGroupSpaced>
               <StatusContent>
                 <Status>
-                  <StatusName>{itinerary?.status.name}</StatusName>
+                  <StatusName>{itinerary.status}</StatusName>
                 </Status>
               </StatusContent>
               <ImageCarousel data={itinerary?.photos} />
@@ -380,10 +369,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                   <Label>Host</Label>
                 </HostLabel>
                 <Divider />
-                <HostButton onPress={() => viewProfile(itinerary?.owner.id)}>
+                <HostButton onPress={() => viewProfile(itinerary.owner.id)}>
                   <UserImage
                     source={{
-                      uri: itinerary?.owner.person.file?.url || undefined,
+                      uri: itinerary.owner.profile.file?.url || undefined,
                     }}
                     resizeMode="cover"
                   />
@@ -426,41 +415,41 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                 </RowGroupSpaced>
                 <RowGroupSpaced>
                   <Text textColor="primary" textWeight="bold">
-                    Limite Incrição
+                    Limite Inscrição
                   </Text>
                   <Text textWeight="light">{limitDateFormated.current}</Text>
                 </RowGroupSpaced>
               </ShadowBox>
-              <RowGroup>
+              <ItemsContent>
                 <IconHolder>
                   <Icon name="car" color="#FFF" size={24} />
                 </IconHolder>
                 <Text.Title>Transporte</Text.Title>
-              </RowGroup>
+              </ItemsContent>
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderTransports()}
               </ScrollView>
-              <RowGroup>
+              <ItemsContent>
                 <IconHolder>
                   <Icon name="bed" color="#FFF" size={24} />
                 </IconHolder>
                 <Text.Title>Hospedagem</Text.Title>
-              </RowGroup>
+              </ItemsContent>
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
                 contentContainerStyle={{padding: 1}}>
                 {renderLodgings()}
               </ScrollView>
-              <RowGroup>
+              <ItemsContent>
                 <IconHolder>
                   <Icon name="lightning-bolt" color="#FFF" size={24} />
                 </IconHolder>
                 <Text.Title>Atividades</Text.Title>
-              </RowGroup>
+              </ItemsContent>
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}

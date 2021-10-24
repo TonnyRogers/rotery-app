@@ -1,7 +1,5 @@
 import React, {useState, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -11,7 +9,6 @@ import {
   Container,
   CardContent,
   UserButton,
-  UserList,
   User,
   UserImage,
   ColumnGroup,
@@ -24,17 +21,11 @@ import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import SplashScreen from '../../components/SplashScreen';
-
-interface UserProps {
-  id: number;
-  username: string;
-  created_at: string;
-  person: {
-    file: {
-      url: string;
-    };
-  };
-}
+import {FlatList} from 'react-native-gesture-handler';
+import Empty from '../../components/Empty';
+import {ListRenderItemInfo} from 'react-native';
+import {UserProps} from '../../utils/types';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 const SearchUsers: React.FC = () => {
   const navigation = useNavigation();
@@ -49,7 +40,7 @@ const SearchUsers: React.FC = () => {
       setIsOnLoading(true);
       const response = await api.get(`/users?username=${search}`);
       setIsOnLoading(false);
-      setUserList(response.data.data);
+      setUserList(response.data);
     } catch (error) {
       setIsOnLoading(false);
       Toast.show({
@@ -67,13 +58,7 @@ const SearchUsers: React.FC = () => {
   }
 
   function formatDate(date: string) {
-    return format(
-      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      'dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
+    return formatLocale(date, 'DD MMM YY');
   }
 
   function goBack() {
@@ -101,33 +86,40 @@ const SearchUsers: React.FC = () => {
               placeholder="pesquisar por usuário"
               value={search}
               onChange={setSearch}
-              ref={searchRef}
+              ref={searchRef.current}
               returnKeyType="send"
               onSubmitEditing={searchUser}
             />
-            <UserList>
-              {userList[0] &&
-                userList.map((user: UserProps) => (
-                  <User key={user.id}>
-                    <UserButton onPress={() => viewProfile(user.id)}>
-                      <UserImage
-                        source={{
-                          uri: user.person.file && user.person.file.url,
-                        }}
-                        resizeMode="cover"
-                      />
-                    </UserButton>
-                    <ColumnGroup>
-                      <Text.Paragraph textColor="secondary" textWeight="bold">
-                        {user.username}
-                      </Text.Paragraph>
-                      <Text textWeight="light">
-                        Ativo desde {formatDate(user.created_at)}
-                      </Text>
-                    </ColumnGroup>
-                  </User>
-                ))}
-            </UserList>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              removeClippedSubviews
+              initialNumToRender={3}
+              data={userList}
+              keyExtractor={(item: UserProps) => String(item.id)}
+              renderItem={({item}: ListRenderItemInfo<UserProps>) => (
+                <User key={item.id}>
+                  <UserButton onPress={() => viewProfile(item.id)}>
+                    <UserImage
+                      source={{
+                        uri: item && item.profile.file?.url,
+                      }}
+                      resizeMode="cover"
+                    />
+                  </UserButton>
+                  <ColumnGroup>
+                    <Text.Paragraph textColor="secondary" textWeight="bold">
+                      {item.username}
+                    </Text.Paragraph>
+                    <Text textWeight="light">
+                      Ativo desde {formatDate(item.createdAt)}
+                    </Text>
+                  </ColumnGroup>
+                </User>
+              )}
+              ListEmptyComponent={() => (
+                <Empty title="Ops!" subTitle="Nenhum usuário encontrado." />
+              )}
+            />
           </CardContent>
         </Card>
       </Container>

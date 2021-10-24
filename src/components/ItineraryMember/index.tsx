@@ -2,9 +2,6 @@ import React, {useRef, useMemo, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
-
 import {
   promoteMemberRequest,
   demoteMemberRequest,
@@ -30,6 +27,7 @@ import {
 import {MemberProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
 import isOpen from '../../guards/itineraryStatus';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface ItineraryMemberProps {
   member: MemberProps;
@@ -49,17 +47,14 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
 
   let createDateFormated = useRef('');
   useMemo(() => {
-    createDateFormated.current = format(
-      parse(member.pivot.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      ' dd MMM yyyy',
-      {
-        locale: pt,
-      },
+    createDateFormated.current = formatLocale(
+      new Date(member.createdAt),
+      'DD MMM YY',
     );
-  }, [member.pivot.created_at]);
+  }, [member.createdAt]);
 
   function viewProfile(userId: number) {
-    if (userId === user.id) {
+    if (userId === user?.id) {
       navigation.navigate('Profile');
     } else {
       navigation.navigate('UserDetails', {
@@ -70,24 +65,24 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
 
   const renderMemberOptions = useCallback(() => {
     function handlePromoteMember(memberId: number) {
-      dispatch(promoteMemberRequest(member.pivot.itinerary_id, memberId));
+      dispatch(promoteMemberRequest(member.itinerary, memberId));
     }
 
     function handleDemoteMember(memberId: number) {
-      dispatch(demoteMemberRequest(member.pivot.itinerary_id, memberId));
+      dispatch(demoteMemberRequest(member.itinerary, memberId));
     }
 
     function handleAcceptMember(memberId: number) {
-      dispatch(acceptMemberRequest(member.pivot.itinerary_id, memberId));
+      dispatch(acceptMemberRequest(member.itinerary, memberId));
     }
 
     function handleRemoveMember(memberId: number) {
-      dispatch(removeMemberRequest(member.pivot.itinerary_id, memberId));
+      dispatch(removeMemberRequest(member.itinerary, memberId));
     }
 
     return (
       <MemberActions>
-        {!member.pivot.accepted && (
+        {!member.isAccepted && (
           <>
             <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
@@ -97,7 +92,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
             </AcceptButtonButton>
           </>
         )}
-        {member.pivot.accepted && member.pivot.is_admin && (
+        {member.isAccepted && member.isAdmin && (
           <>
             <AdminButton onPress={() => handleDemoteMember(member.id)}>
               <Icon name="label-off-outline" color="#FFF" size={24} />
@@ -107,7 +102,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
             </RejectButtonButton>
           </>
         )}
-        {member.pivot.accepted && !member.pivot.is_admin && (
+        {member.isAccepted && !member.isAdmin && (
           <>
             <AdminButton onPress={() => handlePromoteMember(member.id)}>
               <Icon name="label-outline" color="#FFF" size={24} />
@@ -119,13 +114,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
         )}
       </MemberActions>
     );
-  }, [
-    dispatch,
-    member.id,
-    member.pivot.accepted,
-    member.pivot.is_admin,
-    member.pivot.itinerary_id,
-  ]);
+  }, [dispatch, member]);
 
   return (
     <ShadowBox>
@@ -134,17 +123,17 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
           <UserButton onPress={() => viewProfile(member.id)}>
             <UserImage
               source={{
-                uri: member.person.file?.url || undefined,
+                uri: member.user.profile.file?.url || undefined,
               }}
               resizeMode="cover"
             />
           </UserButton>
           <ColumnGroup>
-            <Name>{member.username}</Name>
+            <Name>{member.user.username}</Name>
             <JoinDate>{createDateFormated.current}</JoinDate>
           </ColumnGroup>
         </MemberDetails>
-        {owner && isOpen(itinerary.status.id, () => renderMemberOptions())}
+        {owner && isOpen(itinerary.status, () => renderMemberOptions())}
       </RowGroupSpaced>
     </ShadowBox>
   );

@@ -4,6 +4,7 @@ import {
   MemberProps,
   QuestionProps,
   ItineraryProps,
+  InvitesProps,
 } from '../../../utils/types';
 
 export enum PushNotificationsActions {
@@ -34,10 +35,10 @@ export function pushNotificationRateItinerary(message: MessageProps) {
   };
 }
 
-export function pushNotificationNewConnection(connection: ConnectionsProps) {
+export function pushNotificationNewConnection(invite: InvitesProps) {
   return {
     type: PushNotificationsActions.NEW_CONNECTION,
-    payload: {connection},
+    payload: {invite},
   };
 }
 
@@ -60,11 +61,11 @@ export function pushNotificationItineraryNewMember(
 }
 
 export function pushNotificationItineraryAcceptedMember(
-  itinerary: ItineraryProps,
+  itineraryMember: MemberProps,
 ) {
   return {
     type: PushNotificationsActions.ITINERARY_ACCEPT_MEMBER,
-    payload: {itinerary},
+    payload: {itineraryMember},
   };
 }
 

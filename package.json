@@ -1,6 +1,6 @@
 {
   "name": "roteryApp",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -25,8 +25,7 @@
     "@types/react-native-background-timer": "^2.0.0",
     "@types/react-native-push-notification": "^5.0.5",
     "axios": "^0.20.0",
-    "date-fns": "^2.0.0-beta.5",
-    "date-fns-tz": "^1.1.4",
+    "dayjs": "^1.10.7",
     "immer": "^7.0.9",
     "lottie-ios": "3.1.8",
     "lottie-react-native": "^3.5.0",

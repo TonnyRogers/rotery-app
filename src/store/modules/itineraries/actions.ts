@@ -1,11 +1,12 @@
 import {
   ItineraryProps,
-  ImageListProps,
-  CreateItemListProps,
-  UpdateItemListProps,
   QuestionProps,
-  MemberProps,
   LocationJson,
+  CreateItineraryActivityItemProps,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryTransportItemProps,
+  CreateItineraryPhotoItemProps,
+  ItineraryMemberResponse,
 } from '../../../utils/types';
 
 export enum ItineraryActions {
@@ -64,33 +65,33 @@ export function createItineraryRequest(
   name: string,
   capacity: number,
   description: string,
-  dateBegin: Date,
-  dateEnd: Date,
-  dateLimit: Date,
+  begin: Date,
+  end: Date,
+  deadlineForJoin: Date,
   location: string,
   isPrivate: boolean,
-  images?: ImageListProps[],
-  activities?: CreateItemListProps[],
-  lodgings?: CreateItemListProps[],
-  transports?: CreateItemListProps[],
-  location_json?: LocationJson,
+  photos?: CreateItineraryPhotoItemProps[],
+  activities?: CreateItineraryActivityItemProps[],
+  lodgings?: CreateItineraryLodgingItemProps[],
+  transports?: CreateItineraryTransportItemProps[],
+  locationJson?: LocationJson,
 ) {
   return {
     type: ItineraryActions.CREATE_ITINERARY_REQUEST,
     payload: {
       name,
-      images,
+      photos,
       capacity,
       description,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      begin,
+      end,
+      deadlineForJoin,
       location,
       isPrivate,
       activities,
       lodgings,
       transports,
-      location_json,
+      locationJson,
     },
   };
 }
@@ -133,34 +134,34 @@ export function updateItineraryRequest(
   name: string,
   capacity: number,
   description: string,
-  dateBegin: Date,
-  dateEnd: Date,
-  dateLimit: Date,
+  begin: Date,
+  end: Date,
+  deadlineForJoin: Date,
   location: string,
   isPrivate: boolean,
-  images?: ImageListProps[],
-  activities?: UpdateItemListProps[],
-  lodgings?: UpdateItemListProps[],
-  transports?: UpdateItemListProps[],
-  location_json?: LocationJson,
+  photos?: CreateItineraryPhotoItemProps[],
+  activities?: CreateItineraryActivityItemProps[],
+  lodgings?: CreateItineraryLodgingItemProps[],
+  transports?: CreateItineraryTransportItemProps[],
+  locationJson?: LocationJson,
 ) {
   return {
     type: ItineraryActions.UPDATE_ITINERARY_REQUEST,
     payload: {
       itineraryId,
       name,
-      images,
+      photos,
       capacity,
       description,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      begin,
+      end,
+      deadlineForJoin,
       location,
       isPrivate,
       activities,
       lodgings,
       transports,
-      location_json,
+      locationJson,
     },
   };
 }
@@ -180,7 +181,7 @@ export function updateItineraryFailure() {
 
 export function replyQuestionRequest(
   itineraryId: number,
-  questionId: number,
+  questionId: string,
   anwser: string,
 ) {
   return {
@@ -209,7 +210,7 @@ export function promoteMemberRequest(itineraryId: number, memberId: number) {
   };
 }
 
-export function promoteMemberSuccess(itineraryMember: MemberProps) {
+export function promoteMemberSuccess(itineraryMember: ItineraryMemberResponse) {
   return {
     type: ItineraryActions.PROMOTE_MEMBER_SUCCESS,
     payload: {itineraryMember},
@@ -229,7 +230,7 @@ export function demoteMemberRequest(itineraryId: number, memberId: number) {
   };
 }
 
-export function demoteMemberSuccess(itineraryMember: MemberProps) {
+export function demoteMemberSuccess(itineraryMember: ItineraryMemberResponse) {
   return {
     type: ItineraryActions.DEMOTE_MEMBER_SUCCESS,
     payload: {itineraryMember},
@@ -249,7 +250,7 @@ export function acceptMemberRequest(itineraryId: number, memberId: number) {
   };
 }
 
-export function acceptMemberSuccess(itineraryMember: MemberProps) {
+export function acceptMemberSuccess(itineraryMember: ItineraryMemberResponse) {
   return {
     type: ItineraryActions.ACCEPT_MEMBER_SUCCESS,
     payload: {itineraryMember},

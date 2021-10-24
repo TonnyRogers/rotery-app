@@ -1,8 +1,6 @@
 import React, {useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
@@ -26,9 +24,10 @@ import {
 } from './styles';
 import ImageCarousel from '../ImageCarousel';
 
-import {ItineraryProps} from '../../utils/types';
+import {ItineraryProps, ItineraryStatusTranlated} from '../../utils/types';
 import Card from '../Card';
 import Text from '../Text';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface ItineraryItemProps {
   owner?: boolean;
@@ -45,18 +44,15 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
   const {items} = useSelector((state: RootStateProps) => state.favorites);
 
   const isFavorited = useMemo(
-    () => items?.find((favorited) => favorited.itinerary.id === itinerary.id),
+    () => items?.find((favorited) => favorited.id === itinerary.id),
     [items, itinerary.id],
   );
 
   let beginDateFormated = useRef('');
   useMemo(() => {
-    beginDateFormated.current = format(
-      new Date(itinerary.begin),
-      'dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
+    beginDateFormated.current = formatLocale(
+      itinerary.begin,
+      'DD MMM YYYY H:mm',
     );
   }, [itinerary.begin]);
 
@@ -73,7 +69,9 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
       <ItineraryHeader>
         <StatusContent>
           <Status>
-            <StatusName>{itinerary.status.name}</StatusName>
+            <StatusName>
+              {ItineraryStatusTranlated[itinerary.status]}
+            </StatusName>
           </Status>
         </StatusContent>
         <ImageCarousel data={itinerary.photos} />

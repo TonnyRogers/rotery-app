@@ -54,11 +54,10 @@ export default function profile(state = INITIAL_STATE, action: ActionProps) {
       }
       case ProfileActions.UPDATE_PROFILE_IMAGE_SUCCESS: {
         draft.loading = false;
-        const {file, file_id} = action.payload.profile;
+        const {file} = action.payload.profile;
         const profilePayload = draft.data;
         if (profilePayload) {
           profilePayload.file = file;
-          profilePayload.file_id = file_id;
         }
         draft.data = profilePayload;
         break;

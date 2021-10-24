@@ -2,8 +2,6 @@ import React, {useState, useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TouchableOpacity} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {ItineraryProps} from '../../utils/types';
@@ -32,6 +30,7 @@ import {
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import Page from '../../components/Page';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface ItineraryRateProps {
   route: {
@@ -54,28 +53,19 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     (state: RootStateProps) => state.nextItineraries,
   );
 
-  const itinerary: ItineraryProps | any = itineraries?.find(
-    (item: ItineraryProps) => item.id === id,
-  );
+  const itinerary = itineraries?.find((item: ItineraryProps) => item.id === id);
 
   const beginDateFormated = useRef('');
   const userJoinDateFormated = useRef('');
 
   useMemo(() => {
-    beginDateFormated.current = format(
-      new Date(itinerary.begin),
-      ' dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
-    userJoinDateFormated.current = format(
-      parse(itinerary.owner.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      ' dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
+    if (itinerary) {
+      beginDateFormated.current = formatLocale(itinerary.begin, ' DD MMM YYYY');
+      userJoinDateFormated.current = formatLocale(
+        itinerary.owner.createdAt,
+        ' DD MMM YYYY',
+      );
+    }
   }, [itinerary]);
 
   function renderUserRateStars(rate: number) {
@@ -128,8 +118,8 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     }
     dispatch(
       rateItineraryRequest(
-        itinerary.id,
-        itinerary.owner.id,
+        Number(itinerary?.id),
+        Number(itinerary?.owner.id),
         itineraryStars,
         hostStars,
         itineraryDescription,
@@ -142,6 +132,10 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     }
+  }
+
+  if (!itinerary) {
+    return null;
   }
 
   return (
@@ -162,9 +156,7 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                 </RowGroup>
                 <Avatar
                   source={{
-                    uri:
-                      itinerary.owner.person.file &&
-                      itinerary.owner.person.file.url,
+                    uri: itinerary.owner.profile.file?.url,
                   }}
                   resizeMode="cover"
                 />

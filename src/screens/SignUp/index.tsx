@@ -20,14 +20,13 @@ import {
   CenteredView,
 } from './styles';
 import Input from '../../components/Input';
-import {TextInput} from 'react-native';
 import Page from '../../components/Page';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
-import DismissKeyboad from '../../components/DismissKeyboad';
 import SplashScreen from '../../components/SplashScreen';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import SwitchInput from '../../components/SwitchInput';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
 const validationSchema = yup.object().shape({
@@ -37,6 +36,10 @@ const validationSchema = yup.object().shape({
     .string()
     .required('campo obrigatório')
     .min(8, 'a senha deve ter mais de 8 digitos'),
+  isHost: yup
+    .boolean()
+    .required()
+    .default(() => false),
 });
 
 const SignUp: React.FC = () => {
@@ -56,11 +59,12 @@ const SignUp: React.FC = () => {
     register('username');
     register('password');
     register('email');
+    register('isHost');
   }, [register]);
 
-  const usernameRef = useRef<TextInput>();
-  const emailRef = useRef<TextInput>();
-  const passwordRef = useRef<TextInput>();
+  const usernameRef = useRef<any>();
+  const emailRef = useRef<any>();
+  const passwordRef = useRef<any>();
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -73,64 +77,78 @@ const SignUp: React.FC = () => {
   }
 
   const onSubmit = (data: any) => {
-    dispatch(registerRequest(data.username, data.email, data.password));
+    dispatch(
+      registerRequest(data.username, data.email, data.password, data.isHost),
+    );
+    setPolicyModalVisible(false);
+    setValue('username', '');
+    setValue('password', '');
+    setValue('email', '');
+    setValue('isHost', false);
   };
 
   return (
     <Page showHeader={false}>
-      <DismissKeyboad>
-        <Container>
-          <Header>
-            <Logo source={horizontalLogo} resizeMode="contain" />
-            <Text.Title alignment="center">Faça parte da Rotery.</Text.Title>
-          </Header>
-          <Fields>
-            <Input
-              icon="account-box-outline"
-              label="Usuário"
-              placeholder="nome de usuário"
-              ref={usernameRef}
-              onChange={(value: String) => setValue('username', value)}
-              returnKeyType="next"
-              onSubmitEditing={() => emailRef.current?.focus()}
-              error={errors.username?.message}
-            />
-            <Input
-              icon="email-outline"
-              label="Email"
-              keyboardType="email-address"
-              placeholder="seu e-mail"
-              autoCapitalize="none"
-              ref={emailRef}
-              onChange={(value: String) => setValue('email', value)}
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current?.focus()}
-              error={errors.email?.message}
-            />
-            <Input
-              label="Senha"
-              placeholder="sua senha"
-              ref={passwordRef}
-              onChange={(value: String) => setValue('password', value)}
-              secureTextEntry={passwordVisible}
-              buttonIcon
-              onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-              onSubmitEditing={() => setPolicyModalVisible(true)}
-              returnKeyType="done"
-              error={errors.password?.message}
-            />
-          </Fields>
+      {/* <DismissKeyboad> */}
+      <Container>
+        <Header>
+          <Logo source={horizontalLogo} resizeMode="contain" />
+          <Text.Title alignment="center">Faça parte da Rotery.</Text.Title>
+        </Header>
+        <Fields>
+          <Input
+            icon="account-box-outline"
+            label="Usuário"
+            placeholder="nome de usuário"
+            ref={usernameRef.current}
+            onChange={(value: String) => setValue('username', value)}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current?.focus()}
+            error={errors.username?.message}
+          />
+          <Input
+            icon="email-outline"
+            label="Email"
+            keyboardType="email-address"
+            placeholder="seu e-mail"
+            autoCapitalize="none"
+            ref={emailRef.current}
+            onChange={(value: String) => setValue('email', value)}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            error={errors.email?.message}
+          />
+          <Input
+            label="Senha"
+            placeholder="sua senha"
+            ref={passwordRef.current}
+            onChange={(value: String) => setValue('password', value)}
+            secureTextEntry={passwordVisible}
+            buttonIcon
+            onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+            onSubmitEditing={() => setPolicyModalVisible(true)}
+            returnKeyType="done"
+            error={errors.password?.message}
+          />
+          <SwitchInput
+            label="Voce deseja:"
+            trueOptionName="Criar Roteiros"
+            falseOption2Name="Encontrar Roteiros"
+            value={false}
+            onValueSet={(value) => setValue('isHost', value)}
+          />
+        </Fields>
 
-          <Actions>
-            <BackButton onPress={goBack}>
-              <BackButtonText>Ja sou cadastrado</BackButtonText>
-            </BackButton>
-            <SubmitButton onPress={openPolicyModal}>
-              <SubmitButtonText>Cadastrar-se</SubmitButtonText>
-            </SubmitButton>
-          </Actions>
-        </Container>
-      </DismissKeyboad>
+        <Actions>
+          <BackButton onPress={goBack}>
+            <BackButtonText>Ja sou cadastrado</BackButtonText>
+          </BackButton>
+          <SubmitButton onPress={openPolicyModal}>
+            <SubmitButtonText>Cadastrar-se</SubmitButtonText>
+          </SubmitButton>
+        </Actions>
+      </Container>
+      {/* </DismissKeyboad> */}
       <Modal
         visible={policyModalVisible}
         title="Termos de Uso"

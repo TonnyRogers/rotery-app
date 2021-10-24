@@ -1,8 +1,6 @@
 import React, {useRef, useMemo, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -26,8 +24,8 @@ import {
 import TextArea from '../TextArea';
 
 import {QuestionProps, ItineraryProps} from '../../utils/types';
-import {toDateTimeZone} from '../../utils/helpers';
 import ShadowBox from '../ShadowBox';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 const validationSchema = yup.object().shape({
   answer: yup.string().required('campo obrigatório'),
@@ -62,19 +60,13 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   }, [register]);
 
   useMemo(() => {
-    const createdZonedDate = toDateTimeZone(question.created_at);
-    const updatedZonedDate = toDateTimeZone(question.updated_at);
-    createDateFormated.current = format(createdZonedDate, ' dd MMM yyyy H:mm', {
-      locale: pt,
-    });
-    updateDateFormated.current = format(updatedZonedDate, ' dd MMM yyyy H:mm', {
-      locale: pt,
-    });
-  }, [question.created_at, question.updated_at]);
+    createDateFormated.current = formatLocale(question.updatedAt, 'DD MMM YY');
+    updateDateFormated.current = formatLocale(question.createdAt, 'DD MMM YY');
+  }, [question]);
 
   const handleSubmitAnwser = (data: any) => {
     dispatch(
-      replyQuestionRequest(question.itinerary_id, question.id, data.answer),
+      replyQuestionRequest(question.itinerary, question.id, data.answer),
     );
   };
 
@@ -83,7 +75,7 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
       <OwnerDetails>
         <UserImage
           source={{
-            uri: question.owner.person.file?.url || undefined,
+            uri: question.owner.profile.file?.url || undefined,
           }}
           resizeMode="cover"
         />
@@ -94,13 +86,13 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
       </OwnerDetails>
       <Question>{question.question}</Question>
       {owner ? (
-        question.anwser ? (
+        question.answer ? (
           <AnswerContent>
             <AnswerDate>{updateDateFormated.current}</AnswerDate>
-            <Answer>{question.anwser}</Answer>
+            <Answer>{question.answer}</Answer>
           </AnswerContent>
         ) : (
-          isOpen(itinerary.status.id, () => (
+          isOpen(itinerary.status, () => (
             <>
               <TextArea
                 placeholder="sua resposta..."
@@ -116,10 +108,10 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
           ))
         )
       ) : (
-        question.anwser && (
+        question.answer && (
           <AnswerContent>
             <AnswerDate>{updateDateFormated.current}</AnswerDate>
-            <Answer>{question.anwser}</Answer>
+            <Answer>{question.answer}</Answer>
           </AnswerContent>
         )
       )}

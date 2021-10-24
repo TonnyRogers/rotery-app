@@ -2,7 +2,6 @@ import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform, SafeAreaView, StatusBar} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {format} from 'date-fns';
 
 import {getFeedFilteredRequest} from '../../store/modules/feed/actions';
 
@@ -25,6 +24,7 @@ import {
   TomTomApiResponse,
   ProfileLocationJson,
 } from '../../utils/types';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface FilterInputProps {
   visible: boolean;
@@ -56,8 +56,8 @@ const FilterInput: React.FC<FilterInputProps> = ({
 
   function handleFilter() {
     let filter: FilterReturnProps = {
-      begin: format(beginDate, 'yyyy-MM-dd'),
-      end: format(endDate, 'yyyy-MM-dd'),
+      begin: formatLocale(beginDate, 'YYYY-MM-DD'),
+      end: formatLocale(endDate, 'YYYY-MM-DD'),
     };
 
     const jsonContent: ProfileLocationJson = {

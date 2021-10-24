@@ -16,7 +16,7 @@ interface ActionProps {
     connection: ConnectionsProps;
     invites: InvitesProps[];
     invite: InvitesProps;
-    notification: NotificationsProps;
+    notification: NotificationsProps<any>;
     userId: number;
   };
 }
@@ -91,10 +91,11 @@ export default function connections(
         const invitesList = draft.invites;
 
         const connectionIndex = connectionsList.findIndex(
-          (item) => item.user_id === userId,
+          (item) =>
+            typeof item.target !== 'number' && item.target.id === userId,
         );
         const inviteIndex = invitesList.findIndex(
-          (item) => item.owner_id === userId,
+          (item) => typeof item.owner !== 'number' && item.owner.id === userId,
         );
 
         if (connectionIndex !== -1) {
@@ -114,23 +115,25 @@ export default function connections(
         break;
       }
       case WsActions.NEW_CONNECTION: {
-        const invite = JSON.parse(action.payload.notification.json_data);
+        const invite: InvitesProps = action.payload.notification.jsonData;
         draft.invites = [...draft.invites, invite];
         break;
       }
       case WsActions.CONNECTION_ACCEPTED: {
-        const invite = JSON.parse(action.payload.notification.json_data);
-        draft.invites = [...draft.invites, invite];
+        const connection: ConnectionsProps =
+          action.payload.notification.jsonData;
+
+        draft.connections = [...draft.connections, connection];
         break;
       }
       case PushNotificationsActions.NEW_CONNECTION: {
-        const invite = action.payload.connection;
+        const invite = action.payload.invite;
         draft.invites = [...draft.invites, invite];
         break;
       }
       case PushNotificationsActions.CONNECTION_ACCEPTED: {
-        const invite = action.payload.connection;
-        draft.invites = [...draft.invites, invite];
+        const connection = action.payload.connection;
+        draft.connections = [...draft.connections, connection];
         break;
       }
       default:

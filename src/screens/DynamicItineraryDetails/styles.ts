@@ -42,6 +42,12 @@ export const RowGroup = styled.View`
   align-items: center;
 `;
 
+export const ItemsContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
 export const RowGroupSpaced = styled.View`
   flex-direction: row;
   justify-content: space-between;

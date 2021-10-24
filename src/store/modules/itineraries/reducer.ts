@@ -5,6 +5,7 @@ import {
   NotificationsProps,
   QuestionProps,
   MemberProps,
+  ItineraryMemberResponse,
 } from '../../../utils/types';
 import {ItineraryActions} from './actions';
 import {WsActions} from '../websocket/actions';
@@ -21,9 +22,9 @@ interface ActionProps {
   payload: {
     itineraries: ItineraryProps[];
     itinerary: ItineraryProps;
-    notification: NotificationsProps;
+    notification: NotificationsProps<any>;
     itineraryQuestion: QuestionProps;
-    itineraryMember: MemberProps;
+    itineraryMember: ItineraryMemberResponse;
     itineraryId: number;
     memberId: number;
   };
@@ -99,7 +100,7 @@ export default function itineraries(
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryMember.pivot.itinerary_id,
+            (item) => item.id === itineraryMember.itinerary.id,
           );
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
@@ -108,6 +109,7 @@ export default function itineraries(
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members[memberIndex] = {
                 ...itineraryMember,
+                itinerary: itineraryMember.itinerary.id,
               };
               draft.itineraries = itineraryList;
             }
@@ -178,7 +180,7 @@ export default function itineraries(
         const itineraryQuestion = action.payload.itineraryQuestion;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -206,7 +208,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
 
         const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === itineraryMember.pivot.itinerary_id,
+          (item) => item.id === itineraryMember.itinerary.id,
         );
 
         if (itineraryIndex !== -1) {
@@ -216,6 +218,7 @@ export default function itineraries(
           if (memberIndex !== -1) {
             itineraryList[itineraryIndex].members[memberIndex] = {
               ...itineraryMember,
+              itinerary: itineraryMember.itinerary.id,
             };
             draft.itineraries = itineraryList;
           }
@@ -236,7 +239,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
 
         const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === itineraryMember.pivot.itinerary_id,
+          (item) => item.id === itineraryMember.itinerary.id,
         );
 
         if (itineraryIndex !== -1) {
@@ -246,6 +249,7 @@ export default function itineraries(
           if (memberIndex !== -1) {
             itineraryList[itineraryIndex].members[memberIndex] = {
               ...itineraryMember,
+              itinerary: itineraryMember.itinerary.id,
             };
             draft.itineraries = itineraryList;
           }
@@ -271,12 +275,12 @@ export default function itineraries(
       }
       case WsActions.ITINERARY_QUESTION: {
         const itineraryList = draft.itineraries;
-        const itineraryQuestion: QuestionProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const itineraryQuestion: QuestionProps =
+          action.payload.notification.jsonData;
+
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -298,14 +302,12 @@ export default function itineraries(
         break;
       }
       case WsActions.NEW_ITINERARY_MEMBER: {
-        const memberPayload: MemberProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const memberPayload: MemberProps = action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === memberPayload.pivot.itinerary_id,
+            (item) => item.id === memberPayload.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -329,7 +331,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -345,7 +347,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === memberPayload.pivot.itinerary_id,
+            (item) => item.id === memberPayload.itinerary.id,
           );
 
           if (itineraryIndex !== -1) {
@@ -355,9 +357,13 @@ export default function itineraries(
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members[memberIndex] = {
                 ...memberPayload,
+                itinerary: memberPayload.itinerary.id,
               };
             } else {
-              itineraryList[itineraryIndex].members.push(memberPayload);
+              itineraryList[itineraryIndex].members.push({
+                ...memberPayload,
+                itinerary: memberPayload.itinerary.id,
+              });
             }
             draft.itineraries = itineraryList;
           }
@@ -370,7 +376,7 @@ export default function itineraries(
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {

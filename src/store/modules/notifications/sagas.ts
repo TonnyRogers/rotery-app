@@ -33,14 +33,13 @@ export function* getNotifications() {
     return;
   }
   try {
-    const response: AxiosResponse<NotificationsProps[]> = yield call(
+    const response: AxiosResponse<NotificationsProps<any>[]> = yield call(
       api.get,
       '/notifications',
     );
 
-    const nonReadedNotifications: NotificationsProps[] = response.data.filter(
-      (item) => item.readed === false,
-    );
+    const nonReadedNotifications: NotificationsProps<any>[] =
+      response.data.filter((item) => item.isReaded === false);
 
     for (const iterator of nonReadedNotifications) {
       switch (iterator.alias) {
@@ -91,9 +90,9 @@ export function* setNotificationReaded({
 }: ReturnType<typeof setNoticationReadedRequest>) {
   try {
     const {notificationId} = payload;
-    yield call(api.put, `/notifications/${notificationId}`);
+    yield call(api.delete, `/notifications/${notificationId}`);
 
-    yield put(setNoticationReadedSuccess(notificationId));
+    yield put(setNoticationReadedSuccess(Number(notificationId)));
   } catch (error) {}
 }
 

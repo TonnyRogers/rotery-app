@@ -25,19 +25,21 @@ interface useSocketProps {
 
 export const useSocket = () => {
   const dispatch = useDispatch();
-  const {user, signed} = useSelector((state: RootStateProps) => state.auth);
+  const {user, signed, token} = useSelector(
+    (state: RootStateProps) => state.auth,
+  );
   const socket = useRef<SocketClient>(websocket.client);
 
   useEffect(() => {
     if (signed && user) {
       if (!socket.current) {
-        socket.current = websocket.init(user.id);
+        socket.current = websocket.init(user.id, String(token));
 
         socket.current.emit('notifications', user.id);
 
         socket.current.on(
           `notify:${user.id}`,
-          (payload: NotificationsProps) => {
+          (payload: NotificationsProps<any>) => {
             Vibration.vibrate(200);
             switch (payload.alias) {
               case NotificationAlias.NEW_CONNECTION:
@@ -90,7 +92,7 @@ export const useSocket = () => {
         socket.current.close();
       }
     };
-  }, [signed, user, dispatch]);
+  }, [signed, user, dispatch, token]);
 
   return {socket: socket.current};
 };

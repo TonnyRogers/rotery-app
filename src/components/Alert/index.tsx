@@ -60,7 +60,7 @@ const Alert: React.FC<AlertProps> = ({
     }).start();
     setTimeout(() => {
       onRequestClose();
-    }, 400);
+    }, 300);
   }, [height, onRequestClose, panY.y]);
 
   const panRespoders = useRef(

@@ -177,7 +177,7 @@ const LocationPickerButton = ({
       <LocationButton hasError={!!error} {...rest}>
         <TextLimitter>
           <Text maxLines={1} textWeight="light">
-            {value || 'Pressione para buscar...'}
+            {value || 'Pressione para buscar um lugar...'}
           </Text>
         </TextLimitter>
         <Icon name="map-marker-outline" color="#808080" size={24} />

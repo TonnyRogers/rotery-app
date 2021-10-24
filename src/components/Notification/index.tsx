@@ -86,12 +86,12 @@ const Notification: React.FC<NotificationProps> = ({
   }, [handleOpen, onRequestClose, visible]);
 
   const renderNotifications = useCallback(() => {
-    function childClose() {
-      onRequestClose();
-    }
-
     return data?.map((item) => (
-      <NotificationItem key={item?.id} notification={item} close={childClose} />
+      <NotificationItem
+        key={item?.id}
+        notification={item}
+        close={onRequestClose}
+      />
     ));
   }, [data, onRequestClose]);
 

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 
 import {Container, ImageItem, ImageList, Bullets, Bullet} from './styles';
+import {ItineraryPhotoProps} from '../../utils/types';
 
 interface dataProps {
   id: number;
@@ -8,7 +9,7 @@ interface dataProps {
 }
 
 interface ImageCarouselProps {
-  data: dataProps[];
+  data: ItineraryPhotoProps[];
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
@@ -52,23 +53,26 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
         contentContainerStyle={{width: `${100 * intervals}%`}}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
-        onContentSizeChange={(w, h) => init(w)}
+        onContentSizeChange={(w, _) => init(w)}
         onScroll={(e) => {
           setWidth(e.nativeEvent.contentSize.width);
-          setInterval(getInterval(e.nativeEvent.contentOffset.x));
+          setInterval(Number(getInterval(e?.nativeEvent?.contentOffset?.x)));
         }}
         decelerationRate="fast"
         pagingEnabled>
         {data &&
-          data.map((item) => (
-            <ImageItem
-              key={item.id}
-              source={{
-                uri: item.url || undefined,
-              }}
-              resizeMode="cover"
-            />
-          ))}
+          data.map(
+            (item) =>
+              typeof item.file !== 'number' && (
+                <ImageItem
+                  key={item.file.id}
+                  source={{
+                    uri: item.file.url || undefined,
+                  }}
+                  resizeMode="cover"
+                />
+              ),
+          )}
       </ImageList>
       <Bullets>{bullets}</Bullets>
     </Container>

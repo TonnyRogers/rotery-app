@@ -3,14 +3,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useMemo, useState} from 'react';
 import {Platform} from 'react-native';
-import {format} from 'date-fns';
-import pt from 'date-fns/locale/pt';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label, RowGroup} from './styles';
 import Text from '../Text';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface DateTimeInputProps {
   error?: string;
@@ -29,7 +28,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const [showTime, setShowTime] = useState(false);
 
   const dateFormatted = useMemo(
-    () => format(date, "dd 'de' MMMM 'de' yyyy 'as' HH:mm", {locale: pt}),
+    () => formatLocale(date, 'DD [de] MMMM [de] YYYY [as] HH:mm'),
     [date],
   );
 
