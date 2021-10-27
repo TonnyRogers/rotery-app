@@ -44,7 +44,7 @@ export const Title = styled.Text`
 export const NotificationList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  max-height: 50rem;
+  max-height: 35rem;
 `;
 
 export const CloseButton = styled.TouchableOpacity`

@@ -65,7 +65,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
             (item) =>
               typeof item.file !== 'number' && (
                 <ImageItem
-                  key={item.file.id}
+                  key={item.id}
                   source={{
                     uri: item.file.url || undefined,
                   }}

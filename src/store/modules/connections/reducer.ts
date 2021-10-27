@@ -91,11 +91,10 @@ export default function connections(
         const invitesList = draft.invites;
 
         const connectionIndex = connectionsList.findIndex(
-          (item) =>
-            typeof item.target !== 'number' && item.target.id === userId,
+          (item) => item.target.id === userId,
         );
         const inviteIndex = invitesList.findIndex(
-          (item) => typeof item.owner !== 'number' && item.owner.id === userId,
+          (item) => item.owner.id === userId,
         );
 
         if (connectionIndex !== -1) {
@@ -116,24 +115,46 @@ export default function connections(
       }
       case WsActions.NEW_CONNECTION: {
         const invite: InvitesProps = action.payload.notification.jsonData;
-        draft.invites = [...draft.invites, invite];
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.owner.id === invite.owner.id,
+        );
+
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
         break;
       }
       case WsActions.CONNECTION_ACCEPTED: {
-        const connection: ConnectionsProps =
-          action.payload.notification.jsonData;
+        const invite: InvitesProps = action.payload.notification.jsonData;
 
-        draft.connections = [...draft.connections, connection];
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.target.id === invite.target.id,
+        );
+
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
         break;
       }
       case PushNotificationsActions.NEW_CONNECTION: {
         const invite = action.payload.invite;
-        draft.invites = [...draft.invites, invite];
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.owner.id === invite.owner.id,
+        );
+
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
         break;
       }
       case PushNotificationsActions.CONNECTION_ACCEPTED: {
-        const connection = action.payload.connection;
-        draft.connections = [...draft.connections, connection];
+        const invite = action.payload.invite;
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.target.id === invite.target.id,
+        );
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
         break;
       }
       default:

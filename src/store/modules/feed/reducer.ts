@@ -5,6 +5,7 @@ import {
   NotificationsProps,
   MemberProps,
   FeedItineraryProps,
+  ItineraryMemberResponse,
 } from '../../../utils/types';
 import {FeedActions} from './actions';
 import {WsActions} from '../websocket/actions';
@@ -131,15 +132,16 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
       }
       case WsActions.ITINERARY_ANSWER: {
         const itineraryList = draft.itineraries;
-        const itineraryQuestion: QuestionProps = JSON.parse(
-          action.payload.notification.jsonData,
-        );
+        const itineraryQuestion: QuestionProps =
+          action.payload.notification.jsonData;
         const itineraryIndex = itineraryList.findIndex(
           (item) => item.id === itineraryQuestion.itinerary,
         );
 
         if (itineraryIndex !== -1) {
-          let questionIndex = itineraryList[itineraryIndex].questions.findIndex(
+          const questionIndex = itineraryList[
+            itineraryIndex
+          ].questions.findIndex(
             (question) => question.id === itineraryQuestion.id,
           );
           if (questionIndex !== -1) {
@@ -152,17 +154,29 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case WsActions.MEMBER_ACCEPTED: {
-        const memberPayload: MemberProps = action.payload.notification.jsonData;
-
-        memberPayload.itinerary = memberPayload.itinerary;
-
+        const memberPayload: ItineraryMemberResponse =
+          action.payload.notification.jsonData;
         const itineraryList = draft.itineraries;
         const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === memberPayload.itinerary,
+          (item) => item.id === memberPayload.itinerary.id,
         );
 
         if (itineraryIndex !== -1) {
-          itineraryList[itineraryIndex].members.push(memberPayload);
+          const memberIndex = itineraryList[itineraryIndex].members.findIndex(
+            (item) => item.id === memberPayload.id,
+          );
+
+          if (memberIndex !== -1) {
+            itineraryList[itineraryIndex].members[memberIndex] = {
+              ...memberPayload,
+              itinerary: memberPayload.itinerary.id,
+            };
+          } else {
+            itineraryList[itineraryIndex].members.push({
+              ...memberPayload,
+              itinerary: memberPayload.itinerary.id,
+            });
+          }
           draft.itineraries = itineraryList;
         }
         break;
@@ -178,7 +192,7 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
 
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.user.id === jsonData.user.id,
+              (item) => item.id === jsonData.id,
             );
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members.splice(memberIndex, 1);

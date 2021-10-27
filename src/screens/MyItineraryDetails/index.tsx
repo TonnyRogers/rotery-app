@@ -18,6 +18,7 @@ import {
 } from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import isOpen from '../../guards/itineraryStatus';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Content,
@@ -65,6 +66,7 @@ import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import {myGuideImages} from '../../utils/constants';
 import formatLocale from '../../providers/dayjs-format-locale';
+import Empty from '../../components/Empty';
 
 interface MyItineraryDetailsProps {
   route: {
@@ -132,6 +134,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
 
   function handleDeleteItinerary() {
     if (itinerary) {
+      setAlertVisible(false);
       dispatch(deleteItineraryRequest(itinerary?.id));
     }
   }
@@ -141,6 +144,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   }
 
   function handleFinishItinerary() {
+    setFinishAlertVisible(false);
     dispatch(notifyItineraryFinishRequest(id));
   }
 
@@ -246,7 +250,14 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   );
 
   if (!itinerary) {
-    return null;
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
   }
 
   function goBack() {

@@ -1,6 +1,5 @@
 import {
   MessageProps,
-  ConnectionsProps,
   MemberProps,
   QuestionProps,
   ItineraryProps,
@@ -42,12 +41,10 @@ export function pushNotificationNewConnection(invite: InvitesProps) {
   };
 }
 
-export function pushNotificationConnectionAccepted(
-  connection: ConnectionsProps,
-) {
+export function pushNotificationConnectionAccepted(invite: InvitesProps) {
   return {
     type: PushNotificationsActions.CONNECTION_ACCEPTED,
-    payload: {connection},
+    payload: {invite},
   };
 }
 

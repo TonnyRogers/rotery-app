@@ -26,7 +26,7 @@ interface ActionProps {
     itineraryQuestion: QuestionProps;
     itineraryMember: ItineraryMemberResponse;
     itineraryId: number;
-    memberId: number;
+    userId: number;
   };
 }
 
@@ -127,7 +127,7 @@ export default function itineraries(
         break;
       }
       case ItineraryActions.REMOVE_MEMBER_SUCCESS: {
-        const {itineraryId, memberId} = action.payload;
+        const {itineraryId, userId} = action.payload;
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
@@ -135,7 +135,7 @@ export default function itineraries(
           );
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.id === memberId,
+              (item) => item.user.id === userId,
             );
 
             if (memberIndex !== -1) {
@@ -303,7 +303,6 @@ export default function itineraries(
       }
       case WsActions.NEW_ITINERARY_MEMBER: {
         const memberPayload: MemberProps = action.payload.notification.jsonData;
-
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(

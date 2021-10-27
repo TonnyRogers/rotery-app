@@ -60,8 +60,8 @@ const ItineraryQuestion: React.FC<ItineraryQuestionProps> = ({
   }, [register]);
 
   useMemo(() => {
-    createDateFormated.current = formatLocale(question.updatedAt, 'DD MMM YY');
-    updateDateFormated.current = formatLocale(question.createdAt, 'DD MMM YY');
+    createDateFormated.current = formatLocale(question.createdAt, 'DD MMM YY');
+    updateDateFormated.current = formatLocale(question.updatedAt, 'DD MMM YY');
   }, [question]);
 
   const handleSubmitAnwser = (data: any) => {

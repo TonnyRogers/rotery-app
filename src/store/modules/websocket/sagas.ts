@@ -25,14 +25,12 @@ function* watchChat(socket: typeof websocket.client, roomName: string) {
 
   return eventChannel((emitter) => {
     socket.on(roomName, async (response: MessageProps) => {
-      console.tron.log('room', response);
       return emitter(wsChatMessage(response, user.id));
     });
 
     socket.on(
       `${roomName}:${user.id}sended`,
       async (response: WsSendMessageResponse) => {
-        console.tron.log('sended', response);
         if (response.statusCode === 201) {
           return emitter(sendMessageSuccess(response.payload));
         }
@@ -49,9 +47,7 @@ function* watchChat(socket: typeof websocket.client, roomName: string) {
 export function* subscribeChat({payload}: ReturnType<typeof wsChatSubscribe>) {
   const {ownerId, targetId} = payload;
   const client = websocket.client;
-  client.emit('joinChat', {ownerId, userId: targetId}, (response: any) => {
-    console.tron.log('join', response);
-  });
+  client.emit('joinChat', {ownerId, userId: targetId});
   const chatChannel = yield call(
     watchChat,
     client,

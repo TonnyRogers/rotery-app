@@ -182,11 +182,11 @@ export function updateItineraryFailure() {
 export function replyQuestionRequest(
   itineraryId: number,
   questionId: string,
-  anwser: string,
+  answer: string,
 ) {
   return {
     type: ItineraryActions.REPLY_QUESTION_REQUEST,
-    payload: {anwser, questionId, itineraryId},
+    payload: {answer, questionId, itineraryId},
   };
 }
 
@@ -203,10 +203,10 @@ export function replyQuestionFailure() {
   };
 }
 
-export function promoteMemberRequest(itineraryId: number, memberId: number) {
+export function promoteMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.PROMOTE_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
@@ -223,10 +223,10 @@ export function promoteMemberFailure() {
   };
 }
 
-export function demoteMemberRequest(itineraryId: number, memberId: number) {
+export function demoteMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.DEMOTE_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
@@ -243,10 +243,10 @@ export function demoteMemberFailure() {
   };
 }
 
-export function acceptMemberRequest(itineraryId: number, memberId: number) {
+export function acceptMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.ACCEPT_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
@@ -263,17 +263,17 @@ export function acceptMemberFailure() {
   };
 }
 
-export function removeMemberRequest(itineraryId: number, memberId: number) {
+export function removeMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.REMOVE_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
-export function removeMemberSuccess(itineraryId: number, memberId: number) {
+export function removeMemberSuccess(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.REMOVE_MEMBER_SUCCESS,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 

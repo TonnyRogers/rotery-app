@@ -7,7 +7,6 @@ import {Shadow} from 'react-native-shadow-2';
 
 import {
   NotificationsProps,
-  ItineraryRateProps,
   QuestionProps,
   MemberProps,
   ItineraryProps,
@@ -50,9 +49,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         break;
       }
       case 'rate_itinerary': {
-        const notificationItem: ItineraryRateProps = item.jsonData;
+        const notificationItem: {id: number} = item.jsonData;
         navigation.navigate('ItineraryRate', {
-          id: notificationItem.itinerary.id,
+          id: notificationItem.id,
         });
         close();
         break;

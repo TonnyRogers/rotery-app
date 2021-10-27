@@ -107,6 +107,13 @@ export function* rateItinerary({
       description: itineraryDescription,
     });
 
+    Toast.show({
+      text1: 'Avaliação enviada!',
+      text2: 'Obrigado 🥳🤙',
+      position: 'bottom',
+      type: 'success',
+    });
+
     yield put(rateItinerarySuccess());
     RootNavigation.replace('NextItineraries');
   } catch (error) {

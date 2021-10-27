@@ -296,12 +296,12 @@ export function* replyQuestion({
       return;
     }
 
-    const {anwser, questionId, itineraryId} = payload;
+    const {answer, questionId, itineraryId} = payload;
 
     const response = yield call(
       api.put,
       `/itineraries/${itineraryId}/questions`,
-      {anwser, questionId: questionId},
+      {answer, questionId: questionId},
     );
 
     if (response.status !== 200) {
@@ -331,12 +331,12 @@ export function* promoteMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
     const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/promote`,
-      {memberId: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -366,12 +366,12 @@ export function* demoteMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
     const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/demote`,
-      {memberId: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -401,12 +401,12 @@ export function* acceptMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
     const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/approve`,
-      {memberId: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -436,12 +436,12 @@ export function* removeMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
     const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/remove`,
-      {memberId: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -449,7 +449,7 @@ export function* removeMember({
       return;
     }
 
-    yield put(removeMemberSuccess(itineraryId, memberId));
+    yield put(removeMemberSuccess(itineraryId, userId));
   } catch (error) {
     yield put(removeMemberFailure());
     Toast.show({
@@ -473,7 +473,7 @@ export function* finishItinerary({
 
     const {itineraryId} = payload;
 
-    yield call(api.post, `/itineraries/${itineraryId}/notify`);
+    yield call(api.post, `/itineraries/${itineraryId}/finish`);
     yield put(notifyItineraryFinishSuccess());
 
     RootNavigation.goBack();

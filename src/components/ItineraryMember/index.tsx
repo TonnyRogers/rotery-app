@@ -64,50 +64,54 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
   }
 
   const renderMemberOptions = useCallback(() => {
-    function handlePromoteMember(memberId: number) {
-      dispatch(promoteMemberRequest(member.itinerary, memberId));
+    function handlePromoteMember(userId: number) {
+      dispatch(promoteMemberRequest(member.itinerary, userId));
     }
 
-    function handleDemoteMember(memberId: number) {
-      dispatch(demoteMemberRequest(member.itinerary, memberId));
+    function handleDemoteMember(userId: number) {
+      dispatch(demoteMemberRequest(member.itinerary, userId));
     }
 
-    function handleAcceptMember(memberId: number) {
-      dispatch(acceptMemberRequest(member.itinerary, memberId));
+    function handleAcceptMember(userId: number) {
+      dispatch(acceptMemberRequest(member.itinerary, userId));
     }
 
-    function handleRemoveMember(memberId: number) {
-      dispatch(removeMemberRequest(member.itinerary, memberId));
+    function handleRemoveMember(userId: number) {
+      dispatch(removeMemberRequest(member.itinerary, userId));
     }
 
     return (
       <MemberActions>
         {!member.isAccepted && (
           <>
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+            <RejectButtonButton
+              onPress={() => handleRemoveMember(member.user.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
             </RejectButtonButton>
-            <AcceptButtonButton onPress={() => handleAcceptMember(member.id)}>
+            <AcceptButtonButton
+              onPress={() => handleAcceptMember(member.user.id)}>
               <Icon name="check" color="#FFF" size={24} />
             </AcceptButtonButton>
           </>
         )}
         {member.isAccepted && member.isAdmin && (
           <>
-            <AdminButton onPress={() => handleDemoteMember(member.id)}>
+            <AdminButton onPress={() => handleDemoteMember(member.user.id)}>
               <Icon name="label-off-outline" color="#FFF" size={24} />
             </AdminButton>
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+            <RejectButtonButton
+              onPress={() => handleRemoveMember(member.user.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
             </RejectButtonButton>
           </>
         )}
         {member.isAccepted && !member.isAdmin && (
           <>
-            <AdminButton onPress={() => handlePromoteMember(member.id)}>
+            <AdminButton onPress={() => handlePromoteMember(member.user.id)}>
               <Icon name="label-outline" color="#FFF" size={24} />
             </AdminButton>
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+            <RejectButtonButton
+              onPress={() => handleRemoveMember(member.user.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
             </RejectButtonButton>
           </>
@@ -120,7 +124,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
     <ShadowBox>
       <RowGroupSpaced>
         <MemberDetails>
-          <UserButton onPress={() => viewProfile(member.id)}>
+          <UserButton onPress={() => viewProfile(member.user.id)}>
             <UserImage
               source={{
                 uri: member.user.profile.file?.url || undefined,

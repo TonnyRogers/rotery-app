@@ -62,6 +62,7 @@ import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 import isOpen from '../../guards/itineraryStatus';
 import formatLocale from '../../providers/dayjs-format-locale';
+import Empty from '../../components/Empty';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required('campo obrigatório'),
@@ -273,7 +274,14 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
   }
 
   if (!itinerary) {
-    return null;
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
   }
 
   return (

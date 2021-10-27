@@ -60,7 +60,10 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
 
   useMemo(() => {
     if (itinerary) {
-      beginDateFormated.current = formatLocale(itinerary.begin, ' DD MMM YYYY');
+      beginDateFormated.current = formatLocale(
+        itinerary.begin,
+        ' DD MMM YYYY HH:mm',
+      );
       userJoinDateFormated.current = formatLocale(
         itinerary.owner.createdAt,
         ' DD MMM YYYY',
@@ -152,7 +155,7 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
               <User>
                 <RowGroup>
                   <Icon name="compass-outline" size={30} color="#3dc77b" />
-                  <Title>Hóspede</Title>
+                  <Title>Host</Title>
                 </RowGroup>
                 <Avatar
                   source={{
@@ -169,6 +172,7 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                 ref={hostDescriptionRef}
                 value={hostDescription}
                 onChange={setHostDescription}
+                placeholder="fale o que achou do serviço deste Host..."
               />
             </CardContent>
           </Card>
@@ -193,6 +197,7 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                 ref={itineraryDescriptionRef}
                 value={itineraryDescription}
                 onChange={setItineraryDescription}
+                placeholder="fale o que achou do destino..."
               />
             </CardContent>
           </Card>

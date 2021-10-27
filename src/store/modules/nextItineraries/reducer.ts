@@ -46,7 +46,7 @@ export default function itineraries(
   return produce(state, (draft) => {
     switch (action.type) {
       case NextItinerariesActions.GET_NEXTITINERARIES_SUCCESS: {
-        draft.itineraries = action.payload.itineraries;
+        draft.itineraries = action.payload.itineraries || null;
         break;
       }
       case NextItinerariesActions.MAKE_QUESTION_SUCCESS: {
@@ -77,12 +77,17 @@ export default function itineraries(
           );
 
           if (itineraryIndex === -1) {
-            const nextItinerary = memberPayload.itinerary;
+            const nextItinerary: ItineraryProps = memberPayload.itinerary;
+            nextItinerary.questions = [];
+            nextItinerary.photos = [];
+            nextItinerary.transports = [];
+            nextItinerary.activities = [];
+            nextItinerary.lodgings = [];
             nextItinerary.members = [
-              ...nextItinerary.members,
               {...memberPayload, itinerary: memberPayload.itinerary.id},
             ];
             itineraryList.push(nextItinerary);
+            draft.itineraries = itineraryList;
           }
         } else {
           const nextItinerary = memberPayload.itinerary;
@@ -90,8 +95,8 @@ export default function itineraries(
             {...memberPayload, itinerary: memberPayload.itinerary.id},
           ];
           itineraryList = [nextItinerary];
+          draft.itineraries = itineraryList;
         }
-        draft.itineraries = itineraryList;
         break;
       }
       case WsActions.MEMBER_REJECTED: {
@@ -105,13 +110,8 @@ export default function itineraries(
           );
 
           if (itineraryIndex !== -1) {
-            const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.user.id === jsonData.user.id,
-            );
-            if (memberIndex !== -1) {
-              itineraryList[itineraryIndex].members.splice(memberIndex, 1);
-              draft.itineraries = itineraryList;
-            }
+            itineraryList.splice(itineraryIndex, 1);
+            draft.itineraries = itineraryList;
           }
         }
         break;
@@ -156,9 +156,7 @@ export default function itineraries(
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) =>
-              typeof itineraryQuestion.itinerary !== 'number' &&
-              item.id === itineraryQuestion.itinerary,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {

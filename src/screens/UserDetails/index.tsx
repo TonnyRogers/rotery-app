@@ -107,17 +107,15 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   let finalRate = 0;
   let countRate = 0;
   profile?.user &&
-    profile.user.rate &&
-    profile.user.rate.map((rate: RateProps) => {
+    profile.user.ratings &&
+    profile.user.ratings.map((rate: RateProps) => {
       finalRate += rate.rate;
       countRate++;
     });
 
   const isConnection = connections?.find((connection) => {
-    if (connection.owner === user?.id) {
-      return connection.target.id === userId ? true : false;
-    } else if (connection.target.id === user?.id) {
-      return connection.owner === userId ? true : false;
+    if (connection.owner.id === user?.id && connection.target.id === userId) {
+      return true;
     }
   });
 
@@ -197,8 +195,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
           </TitleContent>
           <RateList>
             {profile?.user &&
-              profile.user.rate &&
-              profile.user.rate.map((item: RateProps) => (
+              profile.user.ratings &&
+              profile.user.ratings.map((item: RateProps) => (
                 <Card key={item.id}>
                   <CardHeader>
                     <RowGroupSpaced>

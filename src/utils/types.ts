@@ -70,7 +70,7 @@ export interface UserProps {
   createdAt: string;
   isActive: boolean;
   isHost: boolean;
-  rate?: UserRateProps[];
+  ratings?: UserRateProps[];
   g_email: string;
 }
 
@@ -191,7 +191,7 @@ export interface BottomSheetData {
 export interface ConnectionsProps {
   id: number;
   isBlocked: boolean;
-  owner: number;
+  owner: UserProps;
   target: UserProps;
 }
 
@@ -199,7 +199,7 @@ export interface InvitesProps {
   id: number;
   isBlocked: boolean;
   owner: UserProps;
-  target: number;
+  target: UserProps;
 }
 
 export interface MessageProps {

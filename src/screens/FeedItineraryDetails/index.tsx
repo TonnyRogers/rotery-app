@@ -63,6 +63,7 @@ import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import formatLocale from '../../providers/dayjs-format-locale';
+import Empty from '../../components/Empty';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required('campo obrigatório'),
@@ -81,6 +82,9 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const {id} = route.params;
   const {itineraries, loading} = useSelector(
     (state: RootStateProps) => state.feed,
+  );
+  const {itineraries: nextItineraries} = useSelector(
+    (state: RootStateProps) => state.nextItineraries,
   );
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {
@@ -119,10 +123,14 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   }, [register]);
 
   useEffect(() => {
-    if (isMember && isMember.isAccepted === true) {
+    if (
+      isMember &&
+      isMember.isAccepted === true &&
+      nextItineraries?.find((item) => item.id === isMember.itinerary)
+    ) {
       RootNavigation.replace('NextItineraryDetails', {id});
     }
-  }, [id, isMember]);
+  }, [id, isMember, nextItineraries]);
 
   useMemo(() => {
     beginDateFormated.current = formatLocale(
@@ -308,7 +316,14 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   }
 
   if (!itinerary) {
-    return null;
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
   }
 
   return (
