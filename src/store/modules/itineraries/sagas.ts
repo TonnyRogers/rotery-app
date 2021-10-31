@@ -474,7 +474,7 @@ export function* finishItinerary({
     const {itineraryId} = payload;
 
     yield call(api.post, `/itineraries/${itineraryId}/finish`);
-    yield put(notifyItineraryFinishSuccess());
+    yield put(notifyItineraryFinishSuccess(itineraryId));
 
     RootNavigation.goBack();
     Toast.show({

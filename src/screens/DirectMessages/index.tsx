@@ -24,6 +24,7 @@ import Card from '../../components/Card';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {ConnectionsProps} from '../../utils/types';
 
 const DirectMessages: React.FC = () => {
   const navigation = useNavigation();
@@ -33,7 +34,7 @@ const DirectMessages: React.FC = () => {
   }, []);
 
   const {messages} = useSelector((state: RootStateProps) => state.messages);
-  const {connections} = useSelector(
+  const {connections, invites} = useSelector(
     (state: RootStateProps) => state.connections,
   );
 
@@ -45,12 +46,21 @@ const DirectMessages: React.FC = () => {
   );
 
   const validateConnetions = useCallback(() => {
+    function isBlockedConnection(connection: ConnectionsProps) {
+      return invites.find(
+        (item) =>
+          item.owner.id === connection.target.id &&
+          item.isBlocked === false &&
+          connection.isBlocked === false,
+      );
+    }
+
     return messages.map(
       (message) =>
         connections?.find(
           (connect) =>
             connect.target.id === message.sender.id &&
-            connect.isBlocked !== true,
+            isBlockedConnection(connect),
         ) && (
           <UserMessage
             key={message.id}
@@ -79,7 +89,7 @@ const DirectMessages: React.FC = () => {
           </UserMessage>
         ),
     );
-  }, [connections, formatDate, getUserConversation, messages]);
+  }, [connections, formatDate, getUserConversation, invites, messages]);
 
   return (
     <Page>

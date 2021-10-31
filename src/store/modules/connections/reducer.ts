@@ -113,6 +113,30 @@ export default function connections(
         draft.loading = false;
         break;
       }
+      case ConnectionActions.BLOCK_CONNECTION_SUCCESS: {
+        const connectionList = draft.connections;
+        const connectionIndex = connectionList.findIndex(
+          (item) => item.target.id === action.payload.userId,
+        );
+
+        if (connectionIndex !== -1) {
+          connectionList[connectionIndex].isBlocked = true;
+          draft.connections = connectionList;
+        }
+        break;
+      }
+      case ConnectionActions.UNBLOCK_CONNECTION_SUCCESS: {
+        const connectionList = draft.connections;
+        const connectionIndex = connectionList.findIndex(
+          (item) => item.target.id === action.payload.userId,
+        );
+
+        if (connectionIndex !== -1) {
+          connectionList[connectionIndex].isBlocked = false;
+          draft.connections = connectionList;
+        }
+        break;
+      }
       case WsActions.NEW_CONNECTION: {
         const invite: InvitesProps = action.payload.notification.jsonData;
         const inviteIndex = draft.invites.findIndex(
@@ -128,11 +152,39 @@ export default function connections(
         const invite: InvitesProps = action.payload.notification.jsonData;
 
         const inviteIndex = draft.invites.findIndex(
-          (item) => item.target.id === invite.target.id,
+          (item) => item.owner.id === invite.owner.id,
         );
 
         if (inviteIndex === -1) {
           draft.invites = [...draft.invites, invite];
+        }
+        break;
+      }
+      case WsActions.CONNECTION_BLOCK: {
+        const invite: InvitesProps = action.payload.notification.jsonData;
+
+        const inviteList = draft.invites;
+        const inviteIndex = inviteList.findIndex(
+          (item) => item.id === invite.id,
+        );
+
+        if (inviteIndex !== -1) {
+          inviteList[inviteIndex].isBlocked = true;
+          draft.invites = inviteList;
+        }
+        break;
+      }
+      case WsActions.CONNECTION_UNBLOCK: {
+        const invite: InvitesProps = action.payload.notification.jsonData;
+
+        const inviteList = draft.invites;
+        const inviteIndex = inviteList.findIndex(
+          (item) => item.id === invite.id,
+        );
+
+        if (inviteIndex !== -1) {
+          inviteList[inviteIndex].isBlocked = false;
+          draft.invites = inviteList;
         }
         break;
       }
@@ -150,7 +202,7 @@ export default function connections(
       case PushNotificationsActions.CONNECTION_ACCEPTED: {
         const invite = action.payload.invite;
         const inviteIndex = draft.invites.findIndex(
-          (item) => item.target.id === invite.target.id,
+          (item) => item.owner.id === invite.owner.id,
         );
         if (inviteIndex === -1) {
           draft.invites = [...draft.invites, invite];

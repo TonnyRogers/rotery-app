@@ -128,6 +128,10 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     setAlertVisible(true);
   }
 
+  function hideFinish() {
+    setFinishAlertVisible(false);
+  }
+
   function hideDeleteAlert() {
     setAlertVisible(false);
   }
@@ -476,7 +480,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         message="Vode deseja realmente encerrar este roteiro?"
         icon="progress-check"
         visible={finishAlertVisible}
-        onCancel={hideDeleteAlert}
+        onCancel={hideFinish}
         onRequestClose={() => setFinishAlertVisible(false)}
         onConfirm={handleFinishItinerary}
       />

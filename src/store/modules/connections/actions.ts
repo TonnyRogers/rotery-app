@@ -110,9 +110,10 @@ export function blockConnectionRequest(userId: number) {
   };
 }
 
-export function blockConnectionSuccess() {
+export function blockConnectionSuccess(userId: number) {
   return {
     type: ConnectionActions.BLOCK_CONNECTION_SUCCESS,
+    payload: {userId},
   };
 }
 
@@ -129,9 +130,10 @@ export function unblockConnectionRequest(userId: number) {
   };
 }
 
-export function unblockConnectionSuccess() {
+export function unblockConnectionSuccess(userId: number) {
   return {
     type: ConnectionActions.UNBLOCK_CONNECTION_SUCCESS,
+    payload: {userId},
   };
 }
 

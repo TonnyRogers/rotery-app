@@ -20,15 +20,47 @@ import {
   paginateFeedRequest,
   paginateFeedSuccess,
   paginateFeedFailure,
+  getFeedDetailRequest,
+  getFeedDetailSuccess,
+  getFeedDetailFailure,
+  FeedActions,
 } from './actions';
 import {AxiosResponse} from 'axios';
-import {MemberProps} from '../../../utils/types';
+import {MemberProps, FeedItineraryProps} from '../../../utils/types';
 
 interface ExceptionRequest {
   response: string;
   status: number;
   message: string;
   name: string;
+}
+
+export function* getFeedDetail({
+  payload,
+}: ReturnType<typeof getFeedDetailRequest>) {
+  try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(getFeedFailure());
+      return;
+    }
+
+    const {itineraryId} = payload;
+    const response: AxiosResponse<FeedItineraryProps> = yield call(
+      api.get,
+      `/itineraries/${itineraryId}/details`,
+    );
+
+    yield put(getFeedDetailSuccess(response.data));
+  } catch (error) {
+    yield put(getFeedDetailFailure());
+    Toast.show({
+      text1: 'Erro ao buscar seus roteiros.',
+      position: 'bottom',
+      type: 'error',
+    });
+  }
 }
 
 export function* getItineraries() {
@@ -40,7 +72,8 @@ export function* getItineraries() {
       return;
     }
 
-    const response = yield call(api.get, '/feed?page=1&limit=10');
+    const response: AxiosResponse<{items: FeedItineraryProps[]; meta: any}> =
+      yield call(api.get, '/feed?page=1&limit=10');
 
     yield put(getFeedSuccess(response.data.items));
   } catch (error) {
@@ -199,6 +232,7 @@ export function* getPaginatedItineraries({
 }
 
 export default all([
+  takeLatest(FeedActions.GET_FEED_DETAIL_REQUEST, getFeedDetail),
   takeLatest('@feed/PAGINATE_FEED_REQUEST', getPaginatedItineraries),
   takeLatest('@feed/JOIN_REQUEST', joinItinerary),
   takeLatest('@feed/GET_FEED_REQUEST', getItineraries),

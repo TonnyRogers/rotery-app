@@ -5,6 +5,9 @@ import {
 } from '../../../utils/types';
 
 export enum FeedActions {
+  GET_FEED_DETAIL_REQUEST = '@feed/GET_FEED_DETAIL_REQUEST',
+  GET_FEED_DETAIL_SUCCESS = '@feed/GET_FEED_DETAIL_SUCCESS',
+  GET_FEED_DETAIL_FAILURE = '@feed/GET_FEED_DETAIL_FAILURE',
   GET_FEED_REQUEST = '@feed/GET_FEED_REQUEST',
   GET_FEED_SUCCESS = '@feed/GET_FEED_SUCCESS',
   GET_FEED_FAILURE = '@feed/GET_FEED_FAILURE',
@@ -33,13 +36,33 @@ interface FilterProps {
   limit?: number;
 }
 
+export function getFeedDetailRequest(itineraryId: number) {
+  return {
+    type: FeedActions.GET_FEED_DETAIL_REQUEST,
+    payload: {itineraryId},
+  };
+}
+
+export function getFeedDetailSuccess(itinerary: FeedItineraryProps) {
+  return {
+    type: FeedActions.GET_FEED_DETAIL_SUCCESS,
+    payload: {itinerary},
+  };
+}
+
+export function getFeedDetailFailure() {
+  return {
+    type: FeedActions.GET_FEED_DETAIL_FAILURE,
+  };
+}
+
 export function getFeedRequest() {
   return {
     type: FeedActions.GET_FEED_REQUEST,
   };
 }
 
-export function getFeedSuccess(itineraries: FeedItineraryProps) {
+export function getFeedSuccess(itineraries: FeedItineraryProps[]) {
   return {
     type: FeedActions.GET_FEED_SUCCESS,
     payload: {itineraries},

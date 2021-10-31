@@ -13,9 +13,13 @@ export enum WsActions {
   NEW_CONNECTION = '@ws/NEW_CONNECTION',
   NEW_MESSAGE = '@ws/NEW_MESSAGE',
   CONNECTION_ACCEPTED = '@ws/CONNECTION_ACCEPTED',
+  CONNECTION_BLOCK = '@ws/CONNECTION_BLOCK',
+  CONNECTION_UNBLOCK = '@ws/CONNECTION_UNBLOCK',
   NEW_ITINERARY_MEMBER = '@ws/NEW_ITINERARY_MEMBER',
   MEMBER_ACCEPTED = '@ws/MEMBER_ACCEPTED',
   MEMBER_REJECTED = '@ws/MEMBER_REJECTED',
+  MEMBER_PROMOTED = '@ws/MEMBER_PROMOTED',
+  MEMBER_DEMOTED = '@ws/MEMBER_DEMOTED',
   ITINERARY_QUESTION = '@ws/ITINERARY_QUESTION',
   ITINERARY_ANSWER = '@ws/ITINERARY_ANSWER',
   SET_CONNECTED = '@ws/SET_CONNECTED',
@@ -163,6 +167,24 @@ export function wsItineraryDeleteNotification(
   };
 }
 
+export function wsConnectionBlockedNotification(
+  notification: NotificationsProps<any>,
+) {
+  return {
+    type: WsActions.CONNECTION_BLOCK,
+    payload: {notification},
+  };
+}
+
+export function wsConnectionUnblockedNotification(
+  notification: NotificationsProps<any>,
+) {
+  return {
+    type: WsActions.CONNECTION_UNBLOCK,
+    payload: {notification},
+  };
+}
+
 export function wsItineraryRateNotification(
   notification: NotificationsProps<any>,
 ) {
@@ -182,6 +204,7 @@ export function wsSendChatMessageRequest(
     },
   };
 }
+
 export function wsSendChatMessageSuccess(newMessage: MessageProps) {
   return {
     type: WsActions.SEND_CHAT_MESSAGE_SUCCESS,
@@ -190,6 +213,7 @@ export function wsSendChatMessageSuccess(newMessage: MessageProps) {
     },
   };
 }
+
 export function wsSendChatMessageFailure() {
   return {
     type: WsActions.SEND_CHAT_MESSAGE_FAILURE,

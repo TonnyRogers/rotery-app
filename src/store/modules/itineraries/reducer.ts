@@ -266,6 +266,15 @@ export default function itineraries(
         break;
       }
       case ItineraryActions.NOTIFY_ITINERARY_FINISH_SUCCESS: {
+        const itineraryList = draft.itineraries;
+        const itineraryIndex = itineraryList.findIndex(
+          (item) => item.id === action.payload.itineraryId,
+        );
+
+        if (itineraryIndex !== -1) {
+          itineraryList[itineraryIndex].status = 'finished';
+          draft.itineraries = itineraryList;
+        }
         draft.loading = false;
         break;
       }
@@ -341,12 +350,14 @@ export default function itineraries(
         break;
       }
       case PushNotificationsActions.ITINERARY_MEMBER: {
-        const memberPayload = action.payload.itineraryMember;
+        const memberPayload: MemberProps = JSON.parse(
+          JSON.stringify(action.payload.itineraryMember),
+        );
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === memberPayload.itinerary.id,
+            (item) => item.id === memberPayload.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -356,12 +367,12 @@ export default function itineraries(
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members[memberIndex] = {
                 ...memberPayload,
-                itinerary: memberPayload.itinerary.id,
+                itinerary: memberPayload.itinerary,
               };
             } else {
               itineraryList[itineraryIndex].members.push({
                 ...memberPayload,
-                itinerary: memberPayload.itinerary.id,
+                itinerary: memberPayload.itinerary,
               });
             }
             draft.itineraries = itineraryList;

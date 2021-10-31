@@ -103,6 +103,12 @@ export interface ItineraryMemberResponse
   itinerary: ItineraryProps;
 }
 
+export interface ItineraryMemberAcceptWsResponse {
+  memberId: string;
+  userId: number;
+  itineraryId: number;
+}
+
 export interface ItineraryItemDependecyProps {
   id: string;
   name?: string;
@@ -237,6 +243,10 @@ export enum NotificationAlias {
   NEW_ANSWER = 'itinerary_answer',
   CONNECTION_ACCEPTED = 'new_connection_accepted',
   NEW_CONNECTION = 'new_connection',
+  CONNECTION_BLOCK = 'connection_block',
+  CONNECTION_UNBLOCK = 'connection_unblock',
+  MEMBER_PROMOTED = 'itinerary_member_promoted',
+  MEMBER_DEMOTED = 'itinerary_member_demoted',
 }
 
 export interface ImageListProps {
@@ -340,3 +350,21 @@ export enum MessageTypeEnum {
 }
 
 export type MessageTypes = 'message' | 'itinerary_invite';
+
+export interface CustomMemberPayload {
+  itinerary: number;
+  user: number;
+}
+
+type MetaType = {
+  currentPage: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalItems: number;
+  totalPages: number;
+};
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  meta: MetaType;
+}

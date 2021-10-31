@@ -69,7 +69,12 @@ const MyConnections: React.FC = () => {
   const myConnections: ConnectionsProps[] = [];
 
   connections?.forEach((connect) => {
-    if (invites?.find((invite) => invite.owner.id === connect.target.id)) {
+    if (
+      invites?.find(
+        (invite) =>
+          invite.owner.id === connect.target.id && invite.isBlocked === false,
+      )
+    ) {
       myConnections.push(connect);
     }
   });

@@ -5,7 +5,7 @@ import {
   NotificationsProps,
   MemberProps,
   FeedItineraryProps,
-  ItineraryMemberResponse,
+  ItineraryMemberAcceptWsResponse,
 } from '../../../utils/types';
 import {FeedActions} from './actions';
 import {WsActions} from '../websocket/actions';
@@ -21,6 +21,7 @@ interface ActionProps {
     itinerary: FeedItineraryProps;
     itineraryQuestion: QuestionProps;
     itineraryMember: MemberProps;
+    itineraryMemberWs: ItineraryMemberAcceptWsResponse;
     notification: NotificationsProps<any>;
   };
 }
@@ -33,6 +34,29 @@ const INITIAL_STATE: InitialStateProps = {
 export default function feed(state = INITIAL_STATE, action: ActionProps) {
   return produce(state, (draft) => {
     switch (action.type) {
+      case FeedActions.GET_FEED_DETAIL_REQUEST: {
+        draft.loading = true;
+        break;
+      }
+      case FeedActions.GET_FEED_DETAIL_SUCCESS: {
+        const {itinerary} = action.payload;
+        const itineraryList = draft.itineraries;
+        if (itineraryList) {
+          const itineraryIndex = itineraryList.findIndex(
+            (item) => item.id === itinerary.id,
+          );
+
+          if (itineraryIndex !== -1) {
+            itineraryList[itineraryIndex] = itinerary;
+            draft.itineraries = itineraryList;
+          }
+        }
+        break;
+      }
+      case FeedActions.GET_FEED_DETAIL_FAILURE: {
+        draft.loading = false;
+        break;
+      }
       case FeedActions.GET_FEED_REQUEST: {
         draft.loading = true;
         break;
@@ -153,46 +177,19 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         }
         break;
       }
-      case WsActions.MEMBER_ACCEPTED: {
-        const memberPayload: ItineraryMemberResponse =
-          action.payload.notification.jsonData;
-        const itineraryList = draft.itineraries;
-        const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === memberPayload.itinerary.id,
-        );
-
-        if (itineraryIndex !== -1) {
-          const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-            (item) => item.id === memberPayload.id,
-          );
-
-          if (memberIndex !== -1) {
-            itineraryList[itineraryIndex].members[memberIndex] = {
-              ...memberPayload,
-              itinerary: memberPayload.itinerary.id,
-            };
-          } else {
-            itineraryList[itineraryIndex].members.push({
-              ...memberPayload,
-              itinerary: memberPayload.itinerary.id,
-            });
-          }
-          draft.itineraries = itineraryList;
-        }
-        break;
-      }
       case WsActions.MEMBER_REJECTED: {
-        const jsonData: MemberProps = action.payload.notification.jsonData;
+        const jsonData: ItineraryMemberAcceptWsResponse =
+          action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === jsonData.itinerary,
+            (item) => item.id === jsonData.itineraryId,
           );
 
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.id === jsonData.id,
+              (item) => item.id === Number(jsonData.memberId),
             );
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members.splice(memberIndex, 1);
@@ -223,40 +220,22 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         }
         break;
       }
-      case PushNotificationsActions.ITINERARY_ACCEPT_MEMBER: {
-        const itineraryPayload = action.payload.itinerary;
+      case PushNotificationsActions.ITINERARY_REJECT_MEMBER: {
+        const jsonData = action.payload.itineraryMemberWs;
 
         const itineraryList = draft.itineraries;
-        const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === itineraryPayload.id,
-        );
+        if (itineraryList !== null) {
+          const itineraryIndex = itineraryList.findIndex(
+            (item) => item.id === jsonData.itineraryId,
+          );
 
-        if (itineraryIndex !== -1 && itineraryIndex !== undefined) {
-          itineraryList[itineraryIndex] = {...itineraryPayload};
-        } else {
-          itineraryList.push(itineraryPayload);
-        }
-        draft.itineraries = itineraryList;
-        break;
-      }
-      case PushNotificationsActions.ITINERARY_REJECT_MEMBER: {
-        const jsonData: MemberProps = action.payload.itineraryMember;
-
-        if ('itinerary' in jsonData) {
-          const itineraryList = draft.itineraries;
-          if (itineraryList !== null) {
-            const itineraryIndex = itineraryList.findIndex(
-              (item) => item.id === jsonData.itinerary,
+          if (itineraryIndex !== -1) {
+            const memberIndex = itineraryList[itineraryIndex].members.findIndex(
+              (item) => item.id === Number(jsonData.memberId),
             );
-
-            if (itineraryIndex !== -1) {
-              const memberIndex = itineraryList[
-                itineraryIndex
-              ].members.findIndex((item) => item.user.id === jsonData.user.id);
-              if (memberIndex !== -1) {
-                itineraryList[itineraryIndex].members.splice(memberIndex, 1);
-                draft.itineraries = itineraryList;
-              }
+            if (memberIndex !== -1) {
+              itineraryList[itineraryIndex].members.splice(memberIndex, 1);
+              draft.itineraries = itineraryList;
             }
           }
         }

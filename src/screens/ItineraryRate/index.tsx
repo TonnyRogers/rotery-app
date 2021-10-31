@@ -15,22 +15,17 @@ import {
   CardContent,
   User,
   Avatar,
-  UserName,
   Reputation,
-  Joined,
   ColumnGroup,
   RowGroup,
   SubmitButton,
   SubmitButtonText,
-  Title,
-  ItineraryName,
-  ItineraryLocation,
-  ItineraryDate,
 } from './styles';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import Page from '../../components/Page';
 import formatLocale from '../../providers/dayjs-format-locale';
+import Text from '../../components/Text';
 
 interface ItineraryRateProps {
   route: {
@@ -155,7 +150,7 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
               <User>
                 <RowGroup>
                   <Icon name="compass-outline" size={30} color="#3dc77b" />
-                  <Title>Host</Title>
+                  <Text.Title textColor="blue">Host</Text.Title>
                 </RowGroup>
                 <Avatar
                   source={{
@@ -163,8 +158,12 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                   }}
                   resizeMode="cover"
                 />
-                <UserName>{itinerary?.owner.username}</UserName>
-                <Joined>Ativo desde{userJoinDateFormated.current}</Joined>
+                <Text.Title textColor="secondary">
+                  {itinerary?.owner.username}
+                </Text.Title>
+                <Text textWeight="light" textColor="secondary">
+                  Ativo desde{userJoinDateFormated.current}
+                </Text>
                 <Reputation>{renderUserRateStars(hostStars)}</Reputation>
               </User>
               <TextArea
@@ -182,16 +181,19 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
               <ColumnGroup>
                 <RowGroup>
                   <Icon name="map-outline" size={30} color="#3dc77b" />
-                  <Title>Roteiro</Title>
+                  <Text.Title textColor="blue">Roteiro</Text.Title>
                 </RowGroup>
-                <ItineraryName>{itinerary?.name}</ItineraryName>
-                <ItineraryLocation>{itinerary?.location}</ItineraryLocation>
-                <ItineraryDate>{beginDateFormated.current}</ItineraryDate>
+                <Text.Title textColor="secondary">{itinerary?.name}</Text.Title>
+                <Text textWeight="light" textColor="secondary">
+                  {itinerary?.location}
+                </Text>
+                <Text textWeight="light" textColor="secondary">
+                  {beginDateFormated.current}
+                </Text>
                 <Reputation>
                   {renderItineraryRateStars(itineraryStars)}
                 </Reputation>
               </ColumnGroup>
-
               <TextArea
                 label="Descrição"
                 ref={itineraryDescriptionRef}

@@ -290,9 +290,10 @@ export function notifyItineraryFinishRequest(itineraryId: number) {
   };
 }
 
-export function notifyItineraryFinishSuccess() {
+export function notifyItineraryFinishSuccess(itineraryId: number) {
   return {
     type: ItineraryActions.NOTIFY_ITINERARY_FINISH_SUCCESS,
+    payload: {itineraryId},
   };
 }
 

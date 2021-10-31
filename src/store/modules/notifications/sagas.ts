@@ -1,7 +1,11 @@
 import {takeLatest, put, all, call, select} from 'redux-saga/effects';
 import {AxiosResponse} from 'axios';
 
-import {NotificationAlias, NotificationsProps} from '../../../utils/types';
+import {
+  NotificationAlias,
+  NotificationsProps,
+  ItineraryMemberAcceptWsResponse,
+} from '../../../utils/types';
 import api from '../../../services/api';
 import {
   getNotificationsSuccess,
@@ -16,7 +20,6 @@ import {
   wsNewMessageNotification,
   wsNewItineraryMemeberNotification,
   wsItineraryQuestionNotification,
-  wsAcceptedItineraryMemeberNotification,
   wsRejectedItineraryMemeberNotification,
   wsItineraryRateNotification,
   wsItineraryUpdateNotification,
@@ -25,6 +28,8 @@ import {
 } from '../websocket/actions';
 import {NotificationsActions} from './actions';
 import {RootStateProps} from '../rootReducer';
+import {getFeedDetailRequest} from '../feed/actions';
+import {getNextItineraryDetailsRequest} from '../nextItineraries/actions';
 
 export function* getNotifications() {
   const {signed} = yield select((state: RootStateProps) => state.auth);
@@ -56,7 +61,12 @@ export function* getNotifications() {
           yield put(wsItineraryQuestionNotification(iterator));
           break;
         case NotificationAlias.MEMBER_ACCEPTED:
-          yield put(wsAcceptedItineraryMemeberNotification(iterator));
+          const payloadResponse: ItineraryMemberAcceptWsResponse =
+            iterator.jsonData;
+          yield put(getFeedDetailRequest(payloadResponse.itineraryId));
+          yield put(
+            getNextItineraryDetailsRequest(payloadResponse.itineraryId),
+          );
           break;
         case NotificationAlias.MEMBER_REJECTED:
           yield put(wsRejectedItineraryMemeberNotification(iterator));

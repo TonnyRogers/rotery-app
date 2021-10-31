@@ -165,7 +165,7 @@ export function* blockConnection({
       isBlocked: true,
     });
 
-    yield put(blockConnectionSuccess());
+    yield put(blockConnectionSuccess(userId));
   } catch (error) {
     yield put(blockConnectionFailure());
     Toast.show({
@@ -192,7 +192,7 @@ export function* unblockConnection({
       isBlocked: false,
     });
 
-    yield put(unblockConnectionSuccess());
+    yield put(unblockConnectionSuccess(userId));
   } catch (error) {
     yield put(unblockConnectionFailure());
     Toast.show({

@@ -48,6 +48,14 @@ import {
   pushNotificationItineraryDeleted,
   pushNotificationItineraryRejectMember,
 } from '../store/modules/pushNotifications/actions';
+import {
+  MessageProps,
+  InvitesProps,
+  QuestionProps,
+  MemberProps,
+  ItineraryMemberAcceptWsResponse,
+} from '../utils/types';
+import {getNextItineraryDetailsRequest} from '../store/modules/nextItineraries/actions';
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
@@ -120,69 +128,99 @@ const Routes = () => {
     const token = await AsyncStorage.getItem('@auth:token');
 
     if (token && notification) {
-      const jsonData = JSON.parse(notification.data.json_data);
       switch (notification.data.alias) {
         case 'new_message': {
+          const jsonData: MessageProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationNewMessage(jsonData));
           RootNavigation.replace('DirectMessagesTabs');
           break;
         }
         case 'rate_itinerary': {
+          const jsonData: {id: number} = JSON.parse(
+            notification.data.json_data,
+          );
           RootNavigation.navigate('ItineraryRate', {
             id: jsonData.id,
           });
           break;
         }
         case 'new_connection': {
+          const jsonData: InvitesProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationNewConnection(jsonData));
           RootNavigation.replace('Connections');
           break;
         }
         case 'new_connection_accepted': {
+          const jsonData: InvitesProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationConnectionAccepted(jsonData));
           RootNavigation.replace('Connections');
           break;
         }
         case 'itinerary_question': {
+          const jsonData: QuestionProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryQuestion(jsonData));
           RootNavigation.navigate('MyItineraryDetails', {
-            id: jsonData.itinerary_id,
+            id: jsonData.itinerary,
           });
           break;
         }
         case 'itinerary_member_request': {
+          const jsonData: MemberProps = JSON.parse(notification.data.json_data);
           dispatch(pushNotificationItineraryNewMember(jsonData));
           RootNavigation.navigate('MyItineraryDetails', {
-            id: jsonData.pivot.itinerary_id,
+            id: jsonData.itinerary,
           });
           break;
         }
         case 'itinerary_answer': {
+          const jsonData: QuestionProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryAnswer(jsonData));
           RootNavigation.navigate('FeedItineraryDetails', {
-            id: jsonData.itinerary_id,
+            id: jsonData.itinerary,
           });
           break;
         }
         case 'itinerary_member_accepted': {
-          dispatch(pushNotificationItineraryAcceptedMember(jsonData));
+          const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
+            notification.data.json_data,
+          );
+          dispatch(getNextItineraryDetailsRequest(jsonData.itineraryId));
           RootNavigation.navigate('NextItineraryDetails', {
-            id: jsonData.id,
+            id: jsonData.itineraryId,
           });
           break;
         }
         case 'itinerary_member_rejected': {
+          const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryRejectMember(jsonData));
           break;
         }
         case 'itinerary_updated': {
-          dispatch(pushNotificationItineraryUpdated(jsonData));
+          const jsonData: {id: number} = JSON.parse(
+            notification.data.json_data,
+          );
+          dispatch(getNextItineraryDetailsRequest(jsonData.id));
           RootNavigation.navigate('NextItineraryDetails', {
             id: jsonData.id,
           });
           break;
         }
         case 'itinerary_deleted': {
+          const jsonData: {id: number} = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryDeleted(jsonData));
           break;
         }
