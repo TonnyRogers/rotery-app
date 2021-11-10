@@ -72,6 +72,7 @@ export interface UserProps {
   isHost: boolean;
   ratings?: UserRateProps[];
   g_email: string;
+  customerId?: string;
 }
 
 export interface OwnerProps extends UserProps {}
@@ -87,6 +88,14 @@ export interface QuestionProps {
   updatedAt: string;
 }
 
+export enum PaymentStatus {
+  PAID = 'paid',
+  PENDING = 'pending',
+  REFUNDED = 'refunded',
+  REFUSED = 'refused',
+  FREE = 'free',
+}
+
 export interface MemberProps {
   id: number;
   isAdmin: boolean;
@@ -96,6 +105,8 @@ export interface MemberProps {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  paymentId: string;
+  paymentStatus: PaymentStatus;
 }
 
 export interface ItineraryMemberResponse
@@ -178,6 +189,7 @@ export interface ItineraryProps {
   questions: QuestionProps[];
   members: MemberProps[];
   status: ItineraryStatus;
+  requestPayment: boolean;
 }
 
 export interface FeedItineraryProps extends ItineraryProps {}
@@ -367,4 +379,111 @@ type MetaType = {
 export interface PaginatedResponse<T> {
   items: T[];
   meta: MetaType;
+}
+
+export interface CardTokenResponse {
+  cardholder: {
+    identification: {
+      number: string;
+      type: string;
+    };
+    name: string;
+  };
+  date_created: string;
+  date_due: string;
+  date_last_updated: string;
+  expiration_month: number;
+  expiration_year: number;
+  first_six_digits: string;
+  id: string;
+  last_four_digits: string;
+  live_mode: boolean;
+  luhn_validation: boolean;
+  public_key: string;
+  require_esc: boolean;
+  security_code_length: number;
+  status: string;
+}
+
+export interface CheckoutCustomerCardResponse {
+  cardholder: {
+    name: string;
+    identification: {
+      number: string;
+      type: string;
+    };
+  };
+  customer_id: string;
+  date_created: string;
+  date_last_updated: string;
+  expiration_month: number;
+  expiration_year: number;
+  first_six_digits: string;
+  id: string;
+  issuer: {
+    id: number;
+    name: string;
+  };
+  last_four_digits: string;
+  payment_method: {
+    id: string;
+    name: string;
+    payment_type_id: string;
+    thumbnail: string;
+    secure_thumbnail: string;
+  };
+  security_code: {
+    length: number;
+    card_location: string;
+  };
+  user_id: string;
+}
+export interface CheckoutCustomerResponse {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: {
+    area_code: string;
+    number: string;
+  };
+  identification: {
+    type: string;
+    number: string;
+  };
+  address: {
+    id: string | null;
+    zip_code: string | null;
+    street_name: string | null;
+    street_number: number | null;
+  };
+  date_registered: string;
+  description: string;
+  date_created: string;
+  date_last_updated: string;
+  metadata: {
+    source_sync: string;
+  };
+  default_card: string;
+  default_address: null;
+  cards: CheckoutCustomerCardResponse[];
+  addresses: [];
+  live_mode: false;
+}
+
+export interface ProcessPaymentPayload {
+  description: string;
+  external_reference: string;
+  installments: number;
+  payer: {
+    id: string;
+    entity_type: 'individual';
+    type: 'customer';
+    email: string;
+  };
+  issuer_id: number;
+  token: string;
+  payment_method_id: string;
+  transaction_amount: number;
+  statement_descriptor: string;
 }

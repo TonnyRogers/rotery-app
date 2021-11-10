@@ -15,12 +15,10 @@ import {
   Container,
   Logo,
   Header,
-  Title,
   LoginHover,
   LoginHeader,
   SwitchLoginButton,
   TipContent,
-  TipText,
   RowGroup,
   LoginContent,
   Actions,
@@ -41,6 +39,7 @@ import DismissKeyboad from '../../components/DismissKeyboad';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import SplashScreen from '../../components/SplashScreen';
 import {homeImagesCarousel} from '../../utils/constants';
+import Text from '../../components/Text';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('e-mail inválido').required('campo obrigatório'),
@@ -114,11 +113,11 @@ const Home: React.FC = () => {
         <Header>
           <Logo source={horizontalLogo} resizeMode="contain" />
         </Header>
-        <Title>Destaques {'&'} Informações</Title>
+        <Text.Title alignment="center">Destaques {'&'} Informações</Text.Title>
         <HighlightCarousel data={homeImagesCarousel} />
         <TipContent>
-          <Icon name="chevron-double-left" size={20} color="#4885fd" />
-          <TipText> Arraste para ver mais</TipText>
+          <Icon name="chevron-double-left" size={26} color="#4885fd" />
+          <Text.Title textColor="blue"> Arraste para ver mais</Text.Title>
         </TipContent>
         <DismissKeyboad>
           <LoginHover

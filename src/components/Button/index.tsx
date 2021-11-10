@@ -9,18 +9,26 @@ import {TouchableOpacityProps} from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
   bgColor: 'green' | 'blue';
+  isEnabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({bgColor, children, ...props}) => {
+const Button: React.FC<ButtonProps> = ({
+  bgColor,
+  children,
+  isEnabled = true,
+  ...props
+}) => {
   return (
-    <Container {...props}>
+    <Container {...props} disabled={!isEnabled}>
       <Shadow
         containerViewStyle={{
           flex: 1,
         }}
         contentViewStyle={{
           flex: 1,
-          backgroundColor: theme.colors[bgColor],
+          backgroundColor: isEnabled
+            ? theme.colors[bgColor]
+            : theme.colors.disabled,
           padding: 12,
           borderRadius: 12,
           alignItems: 'center',
@@ -31,7 +39,9 @@ const Button: React.FC<ButtonProps> = ({bgColor, children, ...props}) => {
         finalColor="transparent"
         offset={[0, 0, 0, 0]}
         distance={5}>
-        <Text.Title alignment="center" textColor="white">
+        <Text.Title
+          alignment="center"
+          textColor={isEnabled ? 'white' : 'disabled'}>
           {children}
         </Text.Title>
       </Shadow>

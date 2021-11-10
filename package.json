@@ -45,6 +45,7 @@
     "react-native-svg": "^12.1.1",
     "react-native-toast-message": "^1.4.3",
     "react-native-vector-icons": "^7.1.0",
+    "react-native-webview": "^11.14.2",
     "react-redux": "^7.2.1",
     "reactotron-react-native": "^5.0.0",
     "reactotron-redux": "^3.1.3",

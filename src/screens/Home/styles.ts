@@ -83,7 +83,6 @@ export const ItineraryName = styled.Text`
 export const RowGroup = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 `;
 
 export const ItineraryLocation = styled.Text`

@@ -15,6 +15,7 @@ interface BottomSheetProps {
   title: string;
   visible: boolean;
   onRequestClose(): void;
+  topMargin?: number;
 }
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
@@ -22,6 +23,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   title,
   onRequestClose,
   children,
+  topMargin,
 }) => {
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: height})).current;
@@ -82,6 +84,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
       <Overlay>
         <Content
+          topMargin={topMargin}
           style={{
             transform: [
               {

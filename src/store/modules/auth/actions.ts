@@ -1,4 +1,4 @@
-import {UserProps} from './reducer';
+import {UserProps} from '../../../utils/types';
 
 export enum AuthActions {
   LOGIN_REQUEST = '@auth/LOGIN_REQUEST',

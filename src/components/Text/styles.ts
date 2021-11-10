@@ -8,6 +8,7 @@ const colors = {
   red: `color: ${theme.colors.red};`,
   green: `color: ${theme.colors.green};`,
   white: `color: ${theme.colors.white};`,
+  disabled: `color: ${theme.colors.disabledText};`,
 };
 
 const alignment = {
@@ -18,7 +19,14 @@ const alignment = {
 };
 
 export interface CustomStyledProps {
-  textColor?: 'primary' | 'secondary' | 'blue' | 'red' | 'green' | 'white';
+  textColor?:
+    | 'primary'
+    | 'secondary'
+    | 'blue'
+    | 'red'
+    | 'green'
+    | 'white'
+    | 'disabled';
   textWeight?: 'bold' | 'regular' | 'light';
   maxLines?: number;
   alignment?: 'center' | 'start' | 'end' | 'stretch';
