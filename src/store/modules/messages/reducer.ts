@@ -3,6 +3,7 @@ import {MessageProps, NotificationsProps} from '../../../utils/types';
 import {MessageActions} from './actions';
 import {WsActions} from '../websocket/actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
   messages: MessageProps[];
@@ -190,6 +191,14 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
         draft.unreadCounter = counter;
         draft.loading = false;
 
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.conversation = INITIAL_STATE.conversation;
+        draft.messages = INITIAL_STATE.messages;
+        draft.unreadCounter = INITIAL_STATE.unreadCounter;
+        draft.chatKey = INITIAL_STATE.chatKey;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

@@ -2,6 +2,7 @@ import produce from 'immer';
 // import {localNotification} from '../../../services/notifications';
 import {NotificationsActions} from './actions';
 import {NotificationsProps} from '../../../utils/types';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
   data: NotificationsProps<any>[] | null;
@@ -92,6 +93,10 @@ export default function notifications(
           }
         }
         break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.counter = INITAL_STATE.counter;
+        draft.data = INITAL_STATE.data;
       }
       default:
     }

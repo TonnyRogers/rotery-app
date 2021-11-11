@@ -2,6 +2,7 @@ import produce from 'immer';
 
 import {ItineraryProps} from '../../../utils/types';
 import {FavoritesActions} from './actions';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
   items: ItineraryProps[];
@@ -80,6 +81,11 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
       }
       case FavoritesActions.REMOVE_FAVORITE_FAILURE: {
         draft.loading = false;
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.items = INITIAL_STATE.items;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

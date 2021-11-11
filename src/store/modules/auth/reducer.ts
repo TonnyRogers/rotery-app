@@ -49,10 +49,11 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case AuthActions.LOGOUT: {
-        draft.user = null;
-        draft.token = null;
-        draft.refreshToken = null;
-        draft.signed = false;
+        draft.user = INITIAL_STATE.user;
+        draft.token = INITIAL_STATE.token;
+        draft.refreshToken = INITIAL_STATE.refreshToken;
+        draft.signed = INITIAL_STATE.signed;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       case AuthActions.REGISTER_REQUEST: {

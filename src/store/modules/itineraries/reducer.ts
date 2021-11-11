@@ -11,6 +11,7 @@ import {ItineraryActions} from './actions';
 import {WsActions} from '../websocket/actions';
 import {NextItinerariesActions} from '../nextItineraries/actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
   itineraries: ItineraryProps[];
@@ -405,6 +406,11 @@ export default function itineraries(
             draft.itineraries = itineraryList;
           }
         }
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.itineraries = INITIAL_STATE.itineraries;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

@@ -8,6 +8,7 @@ import {
 import {WsActions} from '../websocket/actions';
 import {ConnectionActions} from './actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 
 interface ActionProps {
   type: string;
@@ -207,6 +208,12 @@ export default function connections(
         if (inviteIndex === -1) {
           draft.invites = [...draft.invites, invite];
         }
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.connections = INITIAL_STATE.connections;
+        draft.invites = INITIAL_STATE.invites;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

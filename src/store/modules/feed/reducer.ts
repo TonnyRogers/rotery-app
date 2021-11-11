@@ -10,6 +10,7 @@ import {
 import {FeedActions} from './actions';
 import {WsActions} from '../websocket/actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 interface InitialStateProps {
   itineraries: FeedItineraryProps[];
   loading: boolean;
@@ -239,6 +240,11 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
             }
           }
         }
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.itineraries = INITIAL_STATE.itineraries;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:
