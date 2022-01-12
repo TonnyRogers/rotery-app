@@ -1,6 +1,7 @@
 import {all} from 'redux-saga/effects';
 
 import auth from './auth/sagas';
+import bankAccount from './bankAccount/sagas';
 import bottomSheet from './bottomsheet/sagas';
 import connections from './connections/sagas';
 import dynamicItinerary from './dynamicItinerary/sagas';
@@ -14,22 +15,27 @@ import messages from './messages/sagas';
 import notifications from './notifications/sagas';
 import options from './options/sagas';
 import websocket from './websocket/sagas';
+import checkout from './checkout/sagas';
+import subscription from './subscription/sagas';
 
 export default function* rootSaga() {
   return yield all([
     auth,
+    bankAccount,
     bottomSheet,
     connections,
+    checkout,
     dynamicItinerary,
     favorites,
     feed,
     guides,
     profile,
     itineraries,
-    options,
+    messages,
     nextItineraries,
     notifications,
-    messages,
+    options,
+    subscription,
     websocket,
   ]);
 }

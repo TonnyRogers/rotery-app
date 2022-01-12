@@ -3,7 +3,7 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {Animated} from 'react-native';
+import {Animated, View} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -143,10 +143,10 @@ const Home: React.FC = () => {
                 borderRadius: 12,
               }}
               radius={12}
-              startColor="#00000009"
+              startColor="#00000007"
               finalColor="transparent"
               offset={[0, 0, 0, 0]}
-              distance={5}>
+              distance={7}>
               <LoginHeader>
                 <SwitchLoginButton
                   onPress={() => setLoginVisible(!loginVisible)}>
@@ -158,29 +158,33 @@ const Home: React.FC = () => {
                 </SwitchLoginButton>
               </LoginHeader>
               <LoginContent visible={loginVisible}>
-                <Input
-                  label="Email"
-                  placeholder="digite seu e-mail"
-                  icon="email-outline"
-                  onChange={(value: string) => setValue('email', value)}
-                  ref={emailRef}
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  onSubmitEditing={() => passwordRef.current?.focus()}
-                  error={errors.email?.message}
-                />
-                <Input
-                  label="Senha"
-                  placeholder="digite sua senha"
-                  secureTextEntry={passwordVisible}
-                  ref={passwordRef}
-                  onChange={(value: string) => setValue('password', value)}
-                  returnKeyType="done"
-                  buttonIcon
-                  onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-                  onSubmitEditing={handleSubmit(handleLogin)}
-                  error={errors.password?.message}
-                />
+                <View style={{height: 200}}>
+                  <Input
+                    label="Email"
+                    placeholder="digite seu e-mail"
+                    icon="email-outline"
+                    onChange={(value: string) => setValue('email', value)}
+                    ref={emailRef}
+                    autoCapitalize="none"
+                    returnKeyType="next"
+                    onSubmitEditing={() => passwordRef.current?.focus()}
+                    error={errors.email?.message}
+                  />
+                  <Input
+                    label="Senha"
+                    placeholder="digite sua senha"
+                    secureTextEntry={passwordVisible}
+                    ref={passwordRef}
+                    onChange={(value: string) => setValue('password', value)}
+                    returnKeyType="done"
+                    buttonIcon
+                    onClickButtonIcon={() =>
+                      setPasswordVisible(!passwordVisible)
+                    }
+                    onSubmitEditing={handleSubmit(handleLogin)}
+                    error={errors.password?.message}
+                  />
+                </View>
                 <Actions>
                   <RowGroup>
                     <LoginButton onPress={handleSubmit(handleLogin)}>

@@ -201,7 +201,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                   <CardHeader>
                     <RowGroupSpaced>
                       <ColumnGroup>
-                        <Text.Paragraph textColor="secondary" textWeight="bold">
+                        <Text.Paragraph textColor="secondaryText" textWeight="bold">
                           Host de Roteiro
                         </Text.Paragraph>
                         <Text textWeight="light">

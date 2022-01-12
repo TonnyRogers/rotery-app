@@ -98,6 +98,7 @@ export const ItineraryDate = styled.Text`
 `;
 
 export const LoginContent = styled.View<{visible: boolean}>`
+  flex: 1;
   margin: 2rem;
   opacity: ${(props) => (props.visible ? 1 : 0)};
 `;

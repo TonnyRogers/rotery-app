@@ -3,7 +3,7 @@ import React from 'react';
 
 import {Container} from './styles';
 import Header from '../Header';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import {KeyboardAvoidingView, Platform, StatusBar} from 'react-native';
 
 interface PageProps {
   showHeader?: boolean;
@@ -11,14 +11,17 @@ interface PageProps {
 
 const Page: React.FC<PageProps> = ({children, showHeader = true}) => {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1, flexDirection: 'column'}}>
-      <Container>
-        {showHeader && <Header />}
-        {children}
-      </Container>
-    </KeyboardAvoidingView>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1, flexDirection: 'column'}}>
+        <Container>
+          {showHeader && <Header />}
+          {children}
+        </Container>
+      </KeyboardAvoidingView>
+    </>
   );
 };
 

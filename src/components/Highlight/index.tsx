@@ -21,10 +21,10 @@ const Highlight: React.FC<HighlightProps> = ({background, children}) => {
         borderRadius: 12,
       }}
       radius={12}
-      startColor="#00000009"
+      startColor="#00000007"
       finalColor="transparent"
       offset={[0, 0, 0, 0]}
-      distance={5}>
+      distance={7}>
       <Background
         source={{
           uri: background || undefined,

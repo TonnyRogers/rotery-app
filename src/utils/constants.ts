@@ -177,3 +177,49 @@ export const ItineraryStatusConst = {
   FINISHED: 'finished',
   CANCELLED: 'cancelled',
 };
+
+export const AccountOptions = [
+  {value: 'conta_corrente', name: 'Conta Corrente'},
+  {value: 'conta_poupanca', name: 'Conta Poupança'},
+  {value: 'conta_mei', name: 'Conta MEI'},
+];
+
+export const bankList = [
+  {
+    name: 'ITAÚ UNIBANCO S.A.',
+    value: '341',
+  },
+  {
+    name: 'BANCO BRADESCO S.A.',
+    value: '237',
+  },
+  {
+    name: 'BANCO INTER',
+    value: '077',
+  },
+  {
+    name: 'BANCO DO BRASIL S.A.',
+    value: '001',
+  },
+  {
+    name: 'NU PAGAMENTOS - IP',
+    value: '260',
+  },
+  {
+    name: 'CAIXA ECONOMICA FEDERAL',
+    value: '104',
+  },
+  {name: 'MERCADO PAGO', value: '323'},
+  {
+    name: 'BANCO SANTANDER (BRASIL) S.A.',
+    value: '033',
+  },
+  {
+    name: 'BANCO NEON',
+    value: '735',
+  },
+  {
+    name: 'BANCO C6',
+    value: '336',
+  },
+];

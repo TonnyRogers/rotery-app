@@ -33,6 +33,14 @@ import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
+import Checkout from '../screens/Checkout';
+import Wallet from '../screens/Wallet';
+import TransactionDetail from '../screens/TransactionDetail';
+import Revenues from '../screens/Revenues';
+import RevenuesConfig from '../screens/RevenuesConfig';
+import RevenueDetail from '../screens/RevenueDetail';
+import HelpRequest from '../screens/HelpRequest';
+import HostSubscription from '../screens/HostSubscription';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 import {useSocket} from '../hooks/useSocket';
@@ -43,8 +51,6 @@ import {
   pushNotificationItineraryQuestion,
   pushNotificationItineraryAnswer,
   pushNotificationItineraryNewMember,
-  pushNotificationItineraryAcceptedMember,
-  pushNotificationItineraryUpdated,
   pushNotificationItineraryDeleted,
   pushNotificationItineraryRejectMember,
 } from '../store/modules/pushNotifications/actions';
@@ -277,6 +283,20 @@ const Routes = () => {
               <Stack.Screen
                 name="DynamicItineraryDetails"
                 component={DynamicItineraryDetais}
+              />
+              <Stack.Screen name="Checkout" component={Checkout} />
+              <Stack.Screen name="Wallet" component={Wallet} />
+              <Stack.Screen
+                name="TransactionDetail"
+                component={TransactionDetail}
+              />
+              <Stack.Screen name="Revenues" component={Revenues} />
+              <Stack.Screen name="RevenuesConfig" component={RevenuesConfig} />
+              <Stack.Screen name="RevenueDetail" component={RevenueDetail} />
+              <Stack.Screen name="HelpRequest" component={HelpRequest} />
+              <Stack.Screen
+                name="HostSubscription"
+                component={HostSubscription}
               />
             </>
           ) : (

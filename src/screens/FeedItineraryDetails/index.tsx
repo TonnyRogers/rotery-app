@@ -64,6 +64,8 @@ import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import formatLocale from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
+import Toast from 'react-native-toast-message';
+import {CheckoutRouteParamsProps} from '../Checkout';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required('campo obrigatório'),
@@ -157,7 +159,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     () =>
       itinerary?.transports.map((transport: ItineraryTransportItemProps) => (
         <ShadowBox key={transport.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {transport.transport.name}
           </Text.Paragraph>
           <Text textWeight="light">{transport.description}</Text>
@@ -182,7 +184,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     () =>
       itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps) => (
         <ShadowBox key={lodging.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {lodging.lodging.name}
           </Text.Paragraph>
           <Text textWeight="light">{lodging.description}</Text>
@@ -205,7 +207,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     () =>
       itinerary?.activities.map((activity: ItineraryActivityItemProps) => (
         <ShadowBox key={activity.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {activity.activity.name}
           </Text.Paragraph>
           <Text textWeight="light">{activity.description}</Text>
@@ -254,7 +256,23 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const renderJoinButton = useCallback(() => {
     if (itinerary) {
       function handleJoinItinerary() {
-        dispatch(joinRequest(id));
+        if (itinerary?.requestPayment) {
+          if (Date.parse(itinerary.deadlineForJoin) > Date.now()) {
+            RootNavigation.navigate<CheckoutRouteParamsProps>('Checkout', {
+              data: itinerary,
+              paymentType: 'itinerary',
+              hasInstallments: true,
+            });
+          } else {
+            Toast.show({
+              text1: 'Prazo para participar encerrado.',
+              position: 'bottom',
+              type: 'error',
+            });
+          }
+        } else {
+          dispatch(joinRequest(id));
+        }
       }
 
       return isOpen(itinerary.status, () =>
@@ -352,12 +370,12 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
             <CardContent>
               <RowGroupSpaced>
                 <Text.Paragraph
-                  textColor="primary"
+                  textColor="primaryText"
                   textWeight="bold"
                   maxLines={1}>
                   {itinerary?.name}
                 </Text.Paragraph>
-                <Text.Paragraph textColor="primary" textWeight="bold">
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
                   Vagas: {itinerary?.capacity}
                 </Text.Paragraph>
               </RowGroupSpaced>
@@ -373,7 +391,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               </StatusContent>
               <ImageCarousel data={itinerary?.photos} />
               <View>
-                <Text.Paragraph textColor="primary" textWeight="bold">
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
                   Descrição:
                 </Text.Paragraph>
                 <Text textWeight="light">{itinerary?.description}</Text>
@@ -392,7 +410,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                     resizeMode="cover"
                   />
                   <HostDetails>
-                    <Text textColor="primary" textWeight="bold" maxLines={1}>
+                    <Text
+                      textColor="primaryText"
+                      textWeight="bold"
+                      maxLines={1}>
                       {itinerary?.owner.username}
                     </Text>
                     <RateStars>
@@ -412,24 +433,24 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
                     color="#4885FD"
                     size={24}
                   />
-                  <Text.Paragraph textColor="primary" textWeight="bold">
+                  <Text.Paragraph textColor="primaryText" textWeight="bold">
                     Datas
                   </Text.Paragraph>
                 </DataContentHeader>
                 <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
+                  <Text textColor="primaryText" textWeight="bold">
                     Saida
                   </Text>
                   <Text textWeight="light">{beginDateFormated.current}</Text>
                 </RowGroupSpaced>
                 <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
+                  <Text textColor="primaryText" textWeight="bold">
                     Retorno
                   </Text>
                   <Text textWeight="light">{endDateFormated.current}</Text>
                 </RowGroupSpaced>
                 <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
+                  <Text textColor="primaryText" textWeight="bold">
                     Limite Inscrição
                   </Text>
                   <Text textWeight="light">{limitDateFormated.current}</Text>
@@ -444,7 +465,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
+                contentContainerStyle={{padding: 5}}>
                 {renderTransports()}
               </ScrollView>
               <ItemsContent>
@@ -456,7 +477,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
+                contentContainerStyle={{padding: 5}}>
                 {renderLodgings()}
               </ScrollView>
               <ItemsContent>
@@ -468,7 +489,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
+                contentContainerStyle={{padding: 5}}>
                 {renderActivities()}
               </ScrollView>
               {renderJoinButton()}
@@ -491,7 +512,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
             <ScrollView
               renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
-              contentContainerStyle={{padding: 1}}>
+              contentContainerStyle={{padding: 5}}>
               {renderQuestions()}
               {renderQuestionForm()}
             </ScrollView>
@@ -509,7 +530,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
             <ScrollView
               renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
-              contentContainerStyle={{padding: 1}}>
+              contentContainerStyle={{padding: 5}}>
               {renderMembers()}
             </ScrollView>
           </Card>

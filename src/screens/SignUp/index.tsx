@@ -173,7 +173,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             1. O Nosso Serviço
@@ -210,7 +210,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             2. Seus compromissos com a Rotery
@@ -250,7 +250,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             3. Sua segurança nos Roteiros
@@ -279,7 +279,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             4. Sua parte na Preservação da Natureza e Meio Ambiente
@@ -296,7 +296,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             5. Como a Rotery se mantém
@@ -315,7 +315,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             6. Atualização dos Termos

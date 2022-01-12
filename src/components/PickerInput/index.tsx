@@ -3,6 +3,7 @@ import React, {SetStateAction, Dispatch, useMemo} from 'react';
 import DropDownPicker, {
   DropDownPickerProps,
 } from 'react-native-dropdown-picker';
+import {View} from 'react-native';
 
 import {Label} from './styles';
 import {theme} from '../../utils/theme';
@@ -60,10 +61,12 @@ const PickerInput: React.FC<PickerInputProps> = ({
           borderBottomColor: error
             ? theme.colors.red
             : theme.colors.borderBottom,
+          zIndex: 3,
         }}
         dropDownContainerStyle={{
           backgroundColor: '#fafafa',
           borderColor: theme.colors.borderBottom,
+          zIndex: 10,
         }}
         searchContainerStyle={{
           borderBottomColor: '#dfdfdf',
@@ -91,6 +94,16 @@ const PickerInput: React.FC<PickerInputProps> = ({
         }}
         textStyle={{color: '#808080', fontSize: 16}}
         placeholder="Selecione"
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              height: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text>Vazio</Text>
+          </View>
+        )}
         searchPlaceholder="Escreva algo..."
         {...props}
         items={optionList}

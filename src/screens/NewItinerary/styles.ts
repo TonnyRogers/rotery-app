@@ -19,8 +19,7 @@ export const Content = styled.ScrollView.attrs({
   flex: 1;
 `;
 
-export const ModalContent = styled.ScrollView`
-  flex: 1;
+export const ModalContent = styled.View`
   flex-direction: column;
 `;
 

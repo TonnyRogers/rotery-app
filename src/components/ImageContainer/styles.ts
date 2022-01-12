@@ -11,3 +11,9 @@ export const CustomImage = styled.Image<{size?: number}>`
   margin-right: 0.5rem;
   background: #eee;
 `;
+
+export const HeroImage = styled.Image<{size?: number}>`
+  height: 30vh;
+  width: 100vw;
+  background: #eee;
+`;

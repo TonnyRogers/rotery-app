@@ -23,6 +23,7 @@ export const Field = styled.TextInput<{hasError: boolean}>`
     props.hasError ? theme.colors.red : theme.colors.borderBottom};
   min-height: 4rem;
   padding: 1rem;
+  margin-top: 0.8rem;
 `;
 
 export const Content = styled.View``;

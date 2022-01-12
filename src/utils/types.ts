@@ -403,7 +403,38 @@ export interface CardTokenResponse {
   require_esc: boolean;
   security_code_length: number;
   status: string;
+  installments: CardTokenInstallmentsResponse[];
 }
+
+export interface CardTokenInstallmentsResponse {
+  payment_method_id: string;
+  payment_type_id: string;
+  processing_mode: string;
+  merchant_account_id: any;
+  agreements: any;
+  issuer: {
+    id: number;
+    name: string;
+    secure_thumbnail: string;
+    thumbnail: string;
+  };
+  payer_costs: PayerCosts[];
+}
+
+export type PayerCosts = {
+  installments: number;
+  installment_rate: number;
+  discount_rate: number;
+  reimbursement_rate: any;
+  labels: [];
+  installment_rate_collector: string[];
+  min_allowed_amount: number;
+  max_allowed_amount: number;
+  recommended_message: string;
+  installment_amount: number;
+  total_amount: number;
+  payment_method_option_id: number;
+};
 
 export interface CheckoutCustomerCardResponse {
   cardholder: {
@@ -486,4 +517,298 @@ export interface ProcessPaymentPayload {
   payment_method_id: string;
   transaction_amount: number;
   statement_descriptor: string;
+}
+
+export interface ProcessPaymentReponse {
+  acquirer_reconciliation: [];
+  additional_info: {
+    authentication_code?: any;
+    available_balance?: any;
+    nsu_processadora?: any;
+  };
+  authorization_code: number;
+  binary_mode: boolean;
+  brand_id: number;
+  call_for_authorize_id: number;
+  captured: boolean;
+  card: {
+    cardholder: {
+      identification: {
+        number: string;
+        type: string;
+      };
+      name: string;
+    };
+    date_created: string;
+    date_last_updated: string;
+    expiration_month: number;
+    expiration_year: number;
+    first_six_digits: string;
+    id: number;
+    last_four_digits: string;
+  };
+  charges_details: [];
+  collector_id: number;
+  corporation_id: number;
+  counter_currency: number;
+  coupon_amount: number;
+  currency_id: string;
+  date_approved: string;
+  date_created: string;
+  date_last_updated: string;
+  date_of_expiration: any;
+  deduction_schema: any;
+  description: string;
+  differential_pricing_id: any;
+  external_reference: string;
+  fee_details: [
+    {
+      amount: number;
+      fee_payer: string;
+      type: string;
+    },
+  ];
+  id: number;
+  installments: number;
+  integrator_id: number;
+  issuer_id: string;
+  live_mode: boolean;
+  marketplace_owner: any;
+  merchant_account_id: any;
+  merchant_number: any;
+  metadata: Record<string, unknown>;
+  money_release_date: string;
+  money_release_schema: any;
+  notification_url: string;
+  operation_type: string;
+  order: Record<string, unknown>;
+  payer: {
+    first_name: any;
+    last_name: any;
+    email: string;
+    identification: {
+      number: string;
+      type: string;
+    };
+    phone: {
+      area_code: any;
+      number: any;
+      extension: any;
+    };
+    type: any;
+    entity_type: any;
+    id: string;
+  };
+  payment_method_id: string;
+  payment_type_id: string;
+  platform_id: any;
+  point_of_interaction: {
+    business_info: {
+      sub_unit: string;
+      unit: string;
+    };
+    type: string;
+  };
+  pos_id: any;
+  processing_mode: string;
+  refunds: RefundPaymentPayload[];
+  shipping_amount: number;
+  sponsor_id: any;
+  statement_descriptor: string;
+  status: PaymentSatatusDetailType;
+  status_detail:
+    | ApprovedPaymentStatusDetail
+    | InProcessPaymentStatusDetail
+    | RejectedPaymentStatusDetail;
+  store_id: any;
+  taxes_amount: number;
+  transaction_amount: number;
+  transaction_amount_refunded: number;
+  transaction_details: {
+    acquirer_reference: any;
+    external_resource_url: any;
+    financial_institution: any;
+    installment_amount: number;
+    net_received_amount: number;
+    overpaid_amount: number;
+    payable_deferral_period: any;
+    payment_method_reference_id: any;
+    total_paid_amount: number;
+  };
+}
+
+export interface PaymentRefundResponse {
+  id: number;
+  payment_id: number;
+  amount: number;
+  metadata: Record<string, unknown>;
+  source: {
+    id: number;
+    name: string;
+    type: string;
+  };
+  date_created: string;
+  unique_sequence_number: string;
+  refund_mode: string;
+  adjustment_amount: number;
+  status: string;
+  reason: string;
+  labels: string[];
+  partition_details: string[];
+}
+
+export interface JoinItineraryWithPaymentResponse extends MemberProps {
+  payment: ProcessPaymentReponse;
+}
+
+export type PaymentSatatusDetailType =
+  | 'approved'
+  | 'in_process'
+  | 'rejected'
+  | 'cancelled'
+  | 'refunded';
+
+export type ApprovedPaymentStatusDetail =
+  | 'accredited'
+  | 'refunded'
+  | 'partially_refunded';
+
+export type InProcessPaymentStatusDetail =
+  | 'pending_contingency'
+  | 'pending_review_manual';
+
+export type RejectedPaymentStatusDetail =
+  | 'cc_rejected_bad_filled_card_number'
+  | 'cc_rejected_bad_filled_other'
+  | 'cc_rejected_bad_filled_security_code'
+  | 'cc_rejected_blacklist'
+  | 'cc_rejected_call_for_authorize'
+  | 'cc_rejected_card_disabled'
+  | 'cc_rejected_card_error'
+  | 'cc_rejected_duplicated_payment'
+  | 'cc_rejected_high_risk'
+  | 'cc_rejected_insufficient_amount'
+  | 'cc_rejected_invalid_installments'
+  | 'cc_rejected_max_attempts'
+  | 'cc_rejected_other_reason'
+  | 'cc_rejected_bad_filled_date';
+
+export enum ProcessPaymentType {
+  ITINERARY = 'itinerary',
+  SUBSCRIPTION = 'subscription',
+}
+
+export interface RefundPaymentPayload {
+  adjustment_amount: number;
+  amount: number;
+  date_created: string;
+  external_refund_id: null;
+  funder: null;
+  id: number;
+  labels: [];
+  metadata: Record<string, unknown>;
+  partition_details: [];
+  payment_id: number;
+  reason: null;
+  refund_mode: string;
+  source: {
+    id: string;
+    name: string;
+    type: string;
+  };
+  status: string;
+  unique_sequence_number: null;
+}
+
+export interface MemberWithPaymentResponse extends MemberProps {
+  payment: ProcessPaymentReponse;
+}
+
+export interface BrasilApiBankResponse {
+  ispb: string;
+  name: string;
+  code: number;
+  fullName: string;
+}
+
+export interface Revenue {
+  id: string;
+  member: {
+    username: string;
+    avatar: string;
+  };
+  itinerary: {
+    id: number;
+    name: string;
+    begin: string;
+  };
+  paymentStatus: PaymentStatus;
+  amount: number;
+  createdAt: string;
+}
+export interface FindAllMemberRevenuesResponse {
+  revenues: Revenue[];
+  total: number;
+}
+
+export type EmailHelpRequestTypeTypes =
+  | 'payment'
+  | 'itinerary'
+  | 'revenue'
+  | 'other';
+
+export interface BankAccount {
+  id: number;
+  bankCode: string;
+  bankName: string;
+  account: string;
+  accountType: string;
+  agency: string;
+  user: number;
+  payDay: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBankAccountPayload {
+  bankCode: string;
+  bankName: string;
+  account: string;
+  accountType: string;
+  agency: string;
+  payDay: number;
+}
+
+export enum PlanFrequency {
+  MONTHLY = 'months',
+  DAILY = 'days',
+}
+
+export enum PlanStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  CANCELLED = 'cancelled',
+}
+export interface Plan {
+  id: number;
+  referenceId: string;
+  name: string;
+  frequencyType: PlanFrequency;
+  status: PlanStatus;
+  amount: string;
+  repetitions: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+}
+
+export interface Subscription {
+  id: number;
+  referenceId: string;
+  plan: Plan;
+  user: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
 }

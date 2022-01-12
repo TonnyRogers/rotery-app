@@ -158,10 +158,10 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                   }}
                   resizeMode="cover"
                 />
-                <Text.Title textColor="secondary">
+                <Text.Title textColor="secondaryText">
                   {itinerary?.owner.username}
                 </Text.Title>
-                <Text textWeight="light" textColor="secondary">
+                <Text textWeight="light" textColor="secondaryText">
                   Ativo desde{userJoinDateFormated.current}
                 </Text>
                 <Reputation>{renderUserRateStars(hostStars)}</Reputation>
@@ -183,11 +183,11 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                   <Icon name="map-outline" size={30} color="#3dc77b" />
                   <Text.Title textColor="blue">Roteiro</Text.Title>
                 </RowGroup>
-                <Text.Title textColor="secondary">{itinerary?.name}</Text.Title>
-                <Text textWeight="light" textColor="secondary">
+                <Text.Title textColor="secondaryText">{itinerary?.name}</Text.Title>
+                <Text textWeight="light" textColor="secondaryText">
                   {itinerary?.location}
                 </Text>
-                <Text textWeight="light" textColor="secondary">
+                <Text textWeight="light" textColor="secondaryText">
                   {beginDateFormated.current}
                 </Text>
                 <Reputation>

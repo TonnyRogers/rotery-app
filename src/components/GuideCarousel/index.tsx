@@ -71,7 +71,7 @@ const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
           {item.withInfo && (
             <HighlightContent>
               <Text.Paragraph
-                textColor="primary"
+                textColor="primaryText"
                 textWeight="bold"
                 alignment="center"
                 maxLines={1}>

@@ -169,7 +169,7 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
       api.post,
       `/itineraries/${itineraryId}/join`,
       {
-        currentDate: currentDate,
+        currentDate,
       },
     );
 

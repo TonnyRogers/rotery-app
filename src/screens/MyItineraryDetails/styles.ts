@@ -13,7 +13,9 @@ export const Container = styled.SafeAreaView`
 
 export const Content = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
-})``;
+})`
+  margin-top: -1.2rem;
+`;
 
 export const CardHeader = styled.View`
   flex-direction: row;

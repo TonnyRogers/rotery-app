@@ -10,4 +10,5 @@ export const Container = styled.View`
 
 export const CardContent = styled.View`
   flex: 1;
+  flex-direction: column;
 `;

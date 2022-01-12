@@ -167,7 +167,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     () =>
       itinerary?.transports.map((transport: ItineraryTransportItemProps) => (
         <ShadowBox key={transport.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {transport.transport.name}
           </Text.Paragraph>
           <Text textWeight="light">{transport.description}</Text>
@@ -192,7 +192,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     () =>
       itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps) => (
         <ShadowBox key={lodging.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {lodging.lodging.name}
           </Text.Paragraph>
           <Text textWeight="light">{lodging.description}</Text>
@@ -215,7 +215,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
     () =>
       itinerary?.activities.map((activity: ItineraryActivityItemProps) => (
         <ShadowBox key={activity.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {activity.activity.name}
           </Text.Paragraph>
           <Text textWeight="light">{activity.description}</Text>
@@ -310,12 +310,12 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             <CardContent>
               <RowGroupSpaced>
                 <Text.Paragraph
-                  textColor="primary"
+                  textColor="primaryText"
                   textWeight="bold"
                   maxLines={1}>
                   {itinerary?.name}
                 </Text.Paragraph>
-                <Text.Paragraph textColor="primary" textWeight="bold">
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
                   Vagas: {itinerary?.capacity}
                 </Text.Paragraph>
               </RowGroupSpaced>
@@ -331,7 +331,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               </StatusContent>
               <ImageCarousel data={itinerary?.photos} />
               <View>
-                <Text.Paragraph textColor="primary" textWeight="bold">
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
                   Descrição:
                 </Text.Paragraph>
                 <Text textWeight="light">{itinerary?.description}</Text>
@@ -350,7 +350,10 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                     resizeMode="cover"
                   />
                   <HostDetails>
-                    <Text textColor="primary" textWeight="bold" maxLines={1}>
+                    <Text
+                      textColor="primaryText"
+                      textWeight="bold"
+                      maxLines={1}>
                       {itinerary?.owner.username}
                     </Text>
                     <RateStars>
@@ -370,24 +373,24 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
                     color="#4885FD"
                     size={24}
                   />
-                  <Text.Paragraph textColor="primary" textWeight="bold">
+                  <Text.Paragraph textColor="primaryText" textWeight="bold">
                     Datas
                   </Text.Paragraph>
                 </DataContentHeader>
                 <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
+                  <Text textColor="primaryText" textWeight="bold">
                     Saida
                   </Text>
                   <Text textWeight="light">{beginDateFormated.current}</Text>
                 </RowGroupSpaced>
                 <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
+                  <Text textColor="primaryText" textWeight="bold">
                     Retorno
                   </Text>
                   <Text textWeight="light">{endDateFormated.current}</Text>
                 </RowGroupSpaced>
                 <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
+                  <Text textColor="primaryText" textWeight="bold">
                     Limite Inscrição
                   </Text>
                   <Text textWeight="light">{limitDateFormated.current}</Text>
@@ -402,7 +405,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
+                contentContainerStyle={{padding: 5}}>
                 {renderTransports()}
               </ScrollView>
               <RowGroup>
@@ -414,7 +417,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
+                contentContainerStyle={{padding: 5}}>
                 {renderLodgings()}
               </ScrollView>
               <RowGroup>
@@ -426,7 +429,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
               <ScrollView
                 renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
                 scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
+                contentContainerStyle={{padding: 5}}>
                 {renderActivities()}
               </ScrollView>
             </CardContent>
@@ -448,7 +451,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             <ScrollView
               renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
-              contentContainerStyle={{padding: 1}}>
+              contentContainerStyle={{padding: 5}}>
               {renderQuestions()}
               {isOpen(itinerary.status, () => (
                 <>
@@ -480,7 +483,7 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             <ScrollView
               renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
               scrollEventThrottle={16}
-              contentContainerStyle={{padding: 1}}>
+              contentContainerStyle={{padding: 5}}>
               {renderMembers()}
             </ScrollView>
           </Card>

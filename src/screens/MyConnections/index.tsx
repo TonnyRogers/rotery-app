@@ -104,7 +104,7 @@ const MyConnections: React.FC = () => {
             />
           </UserButton>
           <ColumnGroup>
-            <Text.Paragraph textColor="primary" textWeight="bold">
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
               {item.owner.username}
             </Text.Paragraph>
             <Text>{formatDate(item.owner.createdAt)}</Text>
@@ -149,7 +149,7 @@ const MyConnections: React.FC = () => {
             />
           </UserButton>
           <ColumnGroup>
-            <Text.Paragraph textColor="primary" textWeight="bold">
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
               {item.target.username}
             </Text.Paragraph>
             <Text>{formatDate(item.target.createdAt)}</Text>

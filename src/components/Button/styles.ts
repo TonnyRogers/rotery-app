@@ -1,7 +1,10 @@
 import styled from 'styled-native-components';
 
-export const Container = styled.TouchableOpacity`
+export const Container = styled.TouchableOpacity<{
+  margin?: string;
+  isFlex?: boolean;
+}>`
+  ${(props) => (props.isFlex ? 'flex: 1;' : '')}
   height: 5rem;
-  margin: 0.5rem 1rem;
-  flex: 1;
+  margin: ${(props) => props.margin || ''};
 `;

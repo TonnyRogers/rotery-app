@@ -6,8 +6,11 @@ export const theme = {
     green: '#3dc77b',
     greenTransparent: 'rgba(61, 199, 123, 0.2)',
     blue: '#4885fd',
+    blueTransparent: 'rgba(72, 133, 253, 0.2)',
     blueDark: '#3e44c7',
     red: '#f57373',
+    orange: '#f5ca73',
+    yellow: '#f5df73',
     disabled: '#ECECEC',
     primaryText: '#262626',
     secondaryText: '#7a7a7a',
@@ -22,3 +25,22 @@ export const theme = {
     light: '',
   },
 };
+
+export type ColorsType =
+  | 'white'
+  | 'appBackground'
+  | 'appBackgroundDarker'
+  | 'green'
+  | 'greenTransparent'
+  | 'blue'
+  | 'blueTransparent'
+  | 'blueDark'
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'disabled'
+  | 'primaryText'
+  | 'secondaryText'
+  | 'disabledText'
+  | 'darketText'
+  | 'borderBottom';

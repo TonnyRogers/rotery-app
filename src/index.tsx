@@ -41,7 +41,11 @@ const App = () => {
         <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
         <ThemeProvider theme={theme}>
           <Routes />
-          <Toast ref={(ref) => Toast.setRef(ref)} visibilityTime={5000} />
+          <Toast
+            ref={(ref) => Toast.setRef(ref)}
+            visibilityTime={3000}
+            autoHide
+          />
         </ThemeProvider>
       </PersistGate>
     </Provider>

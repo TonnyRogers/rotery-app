@@ -9,14 +9,23 @@ interface CardProps {
   containerStyle?: ViewStyle;
   contentStyle?: ViewStyle;
   children: ReactNode;
+  marginHorizontal?: number;
+  marginVertical?: number;
 }
 
-const Card = ({children, contentStyle, containerStyle}: CardProps) => {
+const Card = ({
+  children,
+  contentStyle,
+  containerStyle,
+  marginVertical = 12,
+  marginHorizontal = 12,
+}: CardProps) => {
   return (
     <Shadow
       containerViewStyle={{
         flex: 1,
-        margin: 12,
+        marginHorizontal,
+        marginVertical,
         ...containerStyle,
       }}
       contentViewStyle={{
@@ -27,10 +36,10 @@ const Card = ({children, contentStyle, containerStyle}: CardProps) => {
         ...contentStyle,
       }}
       radius={12}
-      startColor="#00000009"
+      startColor="#00000007"
       finalColor="transparent"
       offset={[0, 0, 0, 0]}
-      distance={5}>
+      distance={7}>
       <CardContent>{children}</CardContent>
     </Shadow>
   );

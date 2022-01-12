@@ -151,7 +151,7 @@ const LocationPickerInput = ({
                 <Text.Paragraph
                   maxLines={2}
                   textWeight="light"
-                  textColor="primary"
+                  textColor="primaryText"
                   alignment="start">
                   {item.name}
                 </Text.Paragraph>

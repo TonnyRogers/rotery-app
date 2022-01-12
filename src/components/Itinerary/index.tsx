@@ -76,7 +76,7 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
         </StatusContent>
         <ImageCarousel data={itinerary.photos} />
         <RowGroup>
-          <Text.Paragraph textColor="primary" textWeight="bold">
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
             {itinerary.name}
           </Text.Paragraph>
           {owner ? (

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {CustomImage} from './styles';
+import {CustomImage, HeroImage} from './styles';
 
 interface ImageContainerProps {
   url: string;
@@ -38,5 +38,18 @@ const ImageContainer = ({url, size}: ImageContainerProps) => {
     />
   );
 };
+
+const Hero = ({url}: ImageContainerProps) => {
+  return (
+    <HeroImage
+      source={{
+        uri: url || undefined,
+      }}
+      resizeMode="cover"
+    />
+  );
+};
+
+ImageContainer.Hero = Hero;
 
 export default ImageContainer;

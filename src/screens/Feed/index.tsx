@@ -125,10 +125,10 @@ const Feed: React.FC = () => {
                     justifyContent: 'center',
                   }}
                   radius={26}
-                  startColor="#00000009"
+                  startColor="#00000007"
                   finalColor="transparent"
                   offset={[0, 0, 0, 0]}
-                  distance={5}>
+                  distance={7}>
                   <Icon name="filter" size={24} color="#3dc77b" />
                 </Shadow>
               </FilterButton>
@@ -180,7 +180,6 @@ const Feed: React.FC = () => {
           onPressAction={() => navigation.navigate('NewItinerary')}
         />
       )}
-
       <BottomSheet
         visible={sheetVisible}
         onRequestClose={() => setSheetVisible(false)}

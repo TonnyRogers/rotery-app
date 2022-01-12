@@ -18,12 +18,13 @@ export const KeyboardAvoidingView = styled(RNKAvoindingView)`
 `;
 
 export const ModalContent = styled.View.attrs({})`
+  flex: 1;
+  min-height: ${'60' + metricHeight};
   background: #fff;
   padding: 1rem;
   margin: 2rem;
   border-radius: 0.8rem;
-  margin-top: 6.5rem;
-  flex: 1;
+  margin-top: 8rem;
 `;
 
 export const Logo = styled.Image`
@@ -51,6 +52,7 @@ export const ModalHeader = styled.View`
   justify-content: space-between;
 `;
 
-export const Wrapper = styled.View`
+export const ModalContentWrapper = styled.View`
+  flex: 1;
   background: #445;
 `;

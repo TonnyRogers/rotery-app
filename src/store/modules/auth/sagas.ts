@@ -26,6 +26,9 @@ import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {getMessagesRequest} from '../messages/actions';
 import {getNextItinerariesRequest} from '../nextItineraries/actions';
+import {getBankAccountRequest} from '../bankAccount/actions';
+import {AxiosResponse} from 'axios';
+import {UserProps} from '../../../utils/types';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -38,7 +41,8 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const {email, password} = payload;
 
-    const response = yield call(api.post, '/auth/login', {email, password});
+    const response: AxiosResponse<{access_token: string; user: UserProps}> =
+      yield call(api.post, '/auth/login', {email, password});
 
     const {user, access_token} = response.data;
 
@@ -61,9 +65,13 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getConnectionsRequest());
-    yield put(getItinerariesRequest());
     yield put(getNextItinerariesRequest());
     yield put(getMessagesRequest());
+
+    if (user.isHost) {
+      yield put(getItinerariesRequest());
+      yield put(getBankAccountRequest());
+    }
   } catch (error) {
     Toast.show({
       text1: `${translateError(error?.response.data.message)}`,

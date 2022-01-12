@@ -107,7 +107,7 @@ const SearchUsers: React.FC = () => {
                     />
                   </UserButton>
                   <ColumnGroup>
-                    <Text.Paragraph textColor="secondary" textWeight="bold">
+                    <Text.Paragraph textColor="secondaryText" textWeight="bold">
                       {item.username}
                     </Text.Paragraph>
                     <Text textWeight="light">

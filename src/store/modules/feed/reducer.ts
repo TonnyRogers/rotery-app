@@ -6,11 +6,13 @@ import {
   MemberProps,
   FeedItineraryProps,
   ItineraryMemberAcceptWsResponse,
+  JoinItineraryWithPaymentResponse,
 } from '../../../utils/types';
 import {FeedActions} from './actions';
 import {WsActions} from '../websocket/actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
 import {AuthActions} from '../auth/actions';
+import {CheckoutActions} from '../checkout/actions';
 interface InitialStateProps {
   itineraries: FeedItineraryProps[];
   loading: boolean;
@@ -24,6 +26,7 @@ interface ActionProps {
     itineraryMember: MemberProps;
     itineraryMemberWs: ItineraryMemberAcceptWsResponse;
     notification: NotificationsProps<any>;
+    paymentJoinResponse: JoinItineraryWithPaymentResponse;
   };
 }
 
@@ -152,6 +155,31 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case FeedActions.JOIN_FAILURE: {
+        draft.loading = false;
+        break;
+      }
+      case CheckoutActions.PROCESS_JOIN_ITINERARY_SUCCESS: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {payment, ...itineraryMember} =
+          action.payload.paymentJoinResponse;
+        const itineraryList = draft.itineraries;
+        const itineraryIndex = itineraryList.findIndex(
+          (item) => item.id === itineraryMember.itinerary,
+        );
+
+        if (itineraryIndex !== -1) {
+          const memberIndex = itineraryList[itineraryIndex].members.findIndex(
+            (item) => item.id === itineraryMember.id,
+          );
+          if (memberIndex !== -1) {
+            itineraryList[itineraryIndex].members[memberIndex] = {
+              ...itineraryMember,
+            };
+          } else {
+            itineraryList[itineraryIndex].members.push(itineraryMember);
+          }
+          draft.itineraries = itineraryList;
+        }
         draft.loading = false;
         break;
       }

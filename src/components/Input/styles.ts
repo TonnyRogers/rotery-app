@@ -2,7 +2,9 @@ import styled from 'styled-native-components';
 import {theme} from '../../utils/theme';
 
 export const Container = styled.View`
-  margin-bottom: 2rem;
+  margin: 1rem 0.2rem;
+  align-self: stretch;
+  flex: 1;
 `;
 
 export const Label = styled.Text`

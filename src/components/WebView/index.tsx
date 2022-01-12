@@ -3,7 +3,6 @@ import React from 'react';
 import {WebView as RNWebView, WebViewMessageEvent} from 'react-native-webview';
 import BottomSheet from '../BottomSheet';
 import {Platform} from 'react-native';
-import SplashScreen from '../SplashScreen';
 
 interface WebViewProps {
   url?: string;
@@ -29,13 +28,23 @@ const WebView = ({
   onRequestClose,
   onMessageCallback,
 }: WebViewProps) => {
+  const source: any = {};
+
+  if (url) {
+    source.uri = url;
+  }
+
+  if (injectHtml) {
+    source.html = injectHtml;
+  }
+
   return (
     <BottomSheet
       title={title || ''}
       visible={visible}
       onRequestClose={onRequestClose}>
       <RNWebView
-        source={{uri: url || '', html: injectHtml || ''}}
+        source={source}
         renderToHardwareTextureAndroid={Platform.OS === 'android'}
         style={{display: 'flex', flex: 1}}
         mixedContentMode="compatibility"
@@ -49,10 +58,8 @@ const WebView = ({
         showsVerticalScrollIndicator={false}
         accessible
         cacheEnabled
-        injectedJavaScript={injectScript || ''}
+        injectedJavaScript={injectScript}
         onMessage={(event) => onMessageCallback && onMessageCallback(event)}
-        onLoad={() => <SplashScreen visible={true} />}
-        onLoadStart={() => <SplashScreen visible={true} />}
       />
     </BottomSheet>
   );
