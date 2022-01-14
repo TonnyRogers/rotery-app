@@ -1,12 +1,18 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 target 'roteryApp' do
   config = use_native_modules!
 
-  use_react_native!(:path => config["reactNativePath"])
+  # use_react_native!(:path => config["reactNativePath"])
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :hermes_enabled => false
+  )
+
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
@@ -25,6 +31,9 @@ target 'roteryApp' do
   # you should disable these next few lines.
   use_flipper!
   post_install do |installer|
+    react_native_post_install(installer)
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+
     installer.pods_project.targets.each do |target|
 
       # The following is needed to ensure the "archive" step works in XCode.
@@ -40,7 +49,7 @@ target 'roteryApp' do
       end
       	
       target.build_configurations.each do |config|
-       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
       end
 
     end
