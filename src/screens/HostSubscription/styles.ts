@@ -11,9 +11,7 @@ export const Container = styled.View`
   margin: 1rem;
 `;
 
-export const TransactionContainer = styled.ScrollView.attrs({
-  showsVerticalScrollIndicator: false,
-})`
+export const TransactionContainer = styled.View`
   flex-direction: column;
   background: ${theme.colors.appBackground};
   height: ${'20' + metric};

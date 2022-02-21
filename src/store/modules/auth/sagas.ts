@@ -73,17 +73,17 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
       yield put(getBankAccountRequest());
     }
   } catch (error) {
+    yield put(loginFailure());
     Toast.show({
       text1: `${translateError(error?.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
-    yield put(loginFailure());
   }
 }
 
 export function* setToken({payload}: any) {
-  if (!payload) {
+  if (!payload || !!payload.auth) {
     return;
   }
 

@@ -44,7 +44,7 @@ export default function bankAccount(
         break;
       }
       case BankAccountActions.GET_SUCCESS: {
-        draft.data = action.payload.account;
+        draft.data = action.payload.account || null;
         draft.loading = false;
         break;
       }

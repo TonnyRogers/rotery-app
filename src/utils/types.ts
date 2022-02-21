@@ -807,8 +807,53 @@ export interface Subscription {
   referenceId: string;
   plan: Plan;
   user: number;
-  status: string;
+  status: 'authorized' | 'paused' | 'pending' | 'cancelled' | 'no_payment';
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
+}
+
+export interface SearchSubscriptionResult {
+  id: string;
+  status: 'authorized' | 'paused' | 'pending' | 'cancelled';
+  reason: string;
+  summarized: {
+    quotas: number;
+    semaphore: string;
+    charged_quantity: number;
+    pending_charge_quantity: number;
+    charged_amount: number;
+    pending_charge_amount: number;
+    last_charged_date: string;
+    last_charged_amount: number;
+  };
+  payer_id: number;
+  back_url: string;
+  collector_id: number;
+  application_id: number;
+  date_created: string;
+  last_modified: string;
+  init_point: string;
+  sandbox_init_point: string;
+  preapproval_plan_id: string;
+  auto_recurring: {
+    frequency: number;
+    frequency_type: 'months' | 'days';
+    transaction_amount: number;
+    currency_id: 'BRL';
+    start_date: string;
+    end_date: string;
+  };
+  next_payment_date: string;
+  payment_method_id: 'master' | 'visa' | 'amex';
+  payer_first_name: string;
+  payer_last_name: string;
+}
+export interface MLPaginatedResponse<T> {
+  paging: {
+    offset: number;
+    limit: number;
+    total: number;
+  };
+  results: T[];
 }

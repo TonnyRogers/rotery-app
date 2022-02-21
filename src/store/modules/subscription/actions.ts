@@ -10,6 +10,9 @@ export enum SubscriptionActions {
   CANCEL_SUBSCRIPTION_REQUEST = '@subscription/CANCEL_SUBSCRIPTION_REQUEST',
   CANCEL_SUBSCRIPTION_SUCCESS = '@subscription/CANCEL_SUBSCRIPTION_SUCCESS',
   CANCEL_SUBSCRIPTION_FAILURE = '@subscription/CANCEL_SUBSCRIPTION_FAILURE',
+  CHANGE_SUBSCRIPTION_CARD_REQUEST = '@subscription/CHANGE_SUBSCRIPTION_CARD_REQUEST',
+  CHANGE_SUBSCRIPTION_CARD_SUCCESS = '@subscription/CHANGE_SUBSCRIPTION_CARD_SUCCESS',
+  CHANGE_SUBSCRIPTION_CARD_FAILURE = '@subscription/CHANGE_SUBSCRIPTION_CARD_FAILURE',
 }
 
 export function getSubscriptionRequest() {
@@ -79,5 +82,29 @@ export function cancelSubscriptionSuccess() {
 export function cancelSubscriptionFailure() {
   return {
     type: SubscriptionActions.CANCEL_SUBSCRIPTION_FAILURE,
+  };
+}
+export function changeSubscriptionCardRequest(
+  subscriptionId: number,
+  card_token_id: string,
+) {
+  return {
+    type: SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_REQUEST,
+    payload: {
+      subscriptionId,
+      card_token_id,
+    },
+  };
+}
+
+export function changeSubscriptionCardSuccess() {
+  return {
+    type: SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_SUCCESS,
+  };
+}
+
+export function changeSubscriptionCardFailure() {
+  return {
+    type: SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_FAILURE,
   };
 }

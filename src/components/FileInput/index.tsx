@@ -38,6 +38,8 @@ const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
     cropperTintColor: theme.colors.green,
     cropperToolbarWidgetColor: theme.colors.primaryText,
     cropperToolbarColor: theme.colors.appBackground,
+    cropperCancelText: 'Cancelar',
+    cropperChooseText: 'Pronto',
     hideBottomControls: true,
   };
 

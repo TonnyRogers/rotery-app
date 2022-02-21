@@ -19,7 +19,7 @@ export const KeyboardAvoidingView = styled(RNKAvoindingView)`
 
 export const ModalContent = styled.View.attrs({})`
   flex: 1;
-  min-height: ${'60' + metricHeight};
+  min-height: ${'70' + metricHeight};
   background: #fff;
   padding: 1rem;
   margin: 2rem;

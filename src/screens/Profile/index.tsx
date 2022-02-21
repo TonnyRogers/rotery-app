@@ -168,7 +168,7 @@ const Profile: React.FC = () => {
     }
   }
 
-  const updateProfileHandle = (data: any) => {
+  const updateProfileHandle = (profileData: any) => {
     const jsonContent: ProfileLocationJson = {
       city: locationJson.current?.value.address.municipality,
       country: locationJson.current?.value.address.country,
@@ -179,13 +179,13 @@ const Profile: React.FC = () => {
 
     dispatch(
       updateProfileRequest(
-        data.name,
-        data.gender,
-        data.birthDate.toDateString(),
-        String(clearValue(data.document)),
-        data.profission,
-        String(clearValue(data.phone)),
-        data.city,
+        profileData.name,
+        profileData.gender,
+        profileData.birthDate.toDateString(),
+        String(clearValue(profileData.document)),
+        profileData.profission,
+        String(clearValue(profileData.phone)),
+        profileData.city,
         locationJson.current ? jsonContent : undefined,
       ),
     );
@@ -226,8 +226,8 @@ const Profile: React.FC = () => {
               <Button
                 onPress={() => financialNavigation()}
                 customContent
-                sizeHeight={60}
-                sizeWidth={60}
+                sizeHeight={70}
+                sizeWidth={70}
                 sizeMargin="0 2rem 0 0"
                 bgColor="blueTransparent"
                 textColor="white">
@@ -242,15 +242,15 @@ const Profile: React.FC = () => {
                 <Button
                   onPress={() => navigation.navigate('HostSubscription')}
                   customContent
-                  sizeHeight={60}
-                  sizeWidth={60}
+                  sizeHeight={70}
+                  sizeWidth={70}
                   bgColor="blueTransparent"
                   sizeMargin="0 2rem 0 0"
                   textColor="white">
                   <ColumnGroup>
                     <Icon name="book-open-outline" size={24} color="#4885fd" />
                     <Text.Small textColor="blue" textWeight="bold">
-                      Plano
+                      Assinatura
                     </Text.Small>
                   </ColumnGroup>
                 </Button>

@@ -66,7 +66,7 @@ const Button: React.FC<ButtonProps> = ({
         ) : (
           <Text.Title
             alignment="center"
-            textColor={isEnabled ? textColor : 'disabled'}>
+            textColor={isEnabled ? textColor : 'disabledText'}>
             {children}
           </Text.Title>
         )}

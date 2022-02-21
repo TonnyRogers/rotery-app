@@ -32,7 +32,7 @@ export default function subscription(
         break;
       }
       case SubscriptionActions.GET_SUBSCRIPTION_SUCCESS: {
-        draft.data = action.payload.subscription;
+        draft.data = action.payload.subscription || null;
         draft.loading = false;
         break;
       }
@@ -63,6 +63,18 @@ export default function subscription(
         break;
       }
       case SubscriptionActions.CANCEL_SUBSCRIPTION_FAILURE: {
+        draft.loading = false;
+        break;
+      }
+      case SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_REQUEST: {
+        draft.loading = true;
+        break;
+      }
+      case SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_SUCCESS: {
+        draft.loading = false;
+        break;
+      }
+      case SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_FAILURE: {
         draft.loading = false;
         break;
       }

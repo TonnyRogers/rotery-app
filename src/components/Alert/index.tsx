@@ -129,7 +129,7 @@ const Alert: React.FC<AlertProps> = ({
               )}
               <CancelButton onPress={handleDismiss}>
                 <Icon name="close" size={24} color="#FFF" />
-                <ButtonText>{onConfirm ? 'Cancelar' : 'Fechar'}</ButtonText>
+                <ButtonText>{onConfirm ? 'Voltar' : 'Fechar'}</ButtonText>
               </CancelButton>
             </AlertActions>
             <BaseBlock />

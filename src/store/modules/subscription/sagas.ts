@@ -11,6 +11,9 @@ import {
   cancelSubscriptionRequest,
   cancelSubscriptionSuccess,
   cancelSubscriptionFailure,
+  changeSubscriptionCardRequest,
+  changeSubscriptionCardSuccess,
+  changeSubscriptionCardFailure,
 } from './actions';
 import {AxiosResponse} from 'axios';
 import {Subscription} from '../../../utils/types';
@@ -75,6 +78,31 @@ export function* cancelSubscription({
   }
 }
 
+export function* changeSubscriptionCard({
+  payload,
+}: ReturnType<typeof changeSubscriptionCardRequest>) {
+  try {
+    const {subscriptionId, card_token_id} = payload;
+    yield call(api.put, `/subscriptions/${subscriptionId}/change-card`, {
+      card_token_id,
+    });
+
+    yield put(changeSubscriptionCardSuccess());
+    Toast.show({
+      text1: 'Cartão alterado!',
+      position: 'bottom',
+      type: 'success',
+    });
+  } catch (error) {
+    yield put(changeSubscriptionCardFailure());
+    Toast.show({
+      text1: 'Erro ao alterar cartão.',
+      position: 'bottom',
+      type: 'error',
+    });
+  }
+}
+
 export default all([
   takeLatest(SubscriptionActions.GET_SUBSCRIPTION_REQUEST, getSubscription),
   takeLatest(
@@ -84,5 +112,9 @@ export default all([
   takeLatest(
     SubscriptionActions.CANCEL_SUBSCRIPTION_REQUEST,
     cancelSubscription,
+  ),
+  takeLatest(
+    SubscriptionActions.CHANGE_SUBSCRIPTION_CARD_REQUEST,
+    changeSubscriptionCard,
   ),
 ]);
