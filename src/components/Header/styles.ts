@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 // import {Platform} from 'react-native';
 
 // const metric = Platform.OS === 'ios' ? '%' : 'vh';
@@ -15,7 +16,7 @@ export const Menu = styled.View`
 `;
 
 export const ProfileButton = styled.TouchableOpacity`
-  background: #3e44c7;
+  background: ${theme.colors.blueDark};
   border-top-right-radius: 0.8rem;
   border-bottom-right-radius: 0.8rem;
   width: 4rem;
@@ -25,8 +26,8 @@ export const ProfileButton = styled.TouchableOpacity`
 `;
 
 export const NotificationsButton = styled.TouchableOpacity`
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 2rem;
   justify-content: center;
   align-items: center;
@@ -34,15 +35,15 @@ export const NotificationsButton = styled.TouchableOpacity`
 `;
 
 export const Notifications = styled.View`
-  background: #f57373;
+  background: ${theme.colors.red};
   width: 1.4rem;
   height: 1.4rem;
   border-radius: 0.7rem;
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 0.3rem;
+  right: 0rem;
 `;
 
 export const Counter = styled.Text`
@@ -52,7 +53,7 @@ export const Counter = styled.Text`
 `;
 
 export const MenuButton = styled.TouchableOpacity`
-  background: #3e44c7;
+  background: ${theme.colors.blueDark};
   border-top-left-radius: 0.8rem;
   border-bottom-left-radius: 0.8rem;
   width: 4rem;

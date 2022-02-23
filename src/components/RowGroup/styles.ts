@@ -6,8 +6,9 @@ export type AlignTypes = 'flex-end' | 'flex-start' | 'center';
 export const Container = styled.View<{
   justify?: JustifyTypes;
   align?: AlignTypes;
+  isFlex?: boolean;
 }>`
-  flex: 1;
+  ${(props) => (props.isFlex ? 'flex: 1' : '')};
   flex-direction: row;
   justify-content: ${(props) => props.justify || 'space-between'};
   align-items: ${(props) => props.align || 'flex-start'};

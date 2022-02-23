@@ -2,7 +2,6 @@ import React, {useState, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-// import {AppState} from 'react-native';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 // import {hideBottomSheet} from '../../store/modules/bottomsheet/actions';
@@ -25,6 +24,7 @@ import Notification from '../Notification';
 import ModalMenu from '../ModalMenu';
 import BottomSheet from '../BottomSheet';
 import ConnectionShareList from '../ConnectionShareList';
+import {theme} from '../../utils/theme';
 
 const Header: React.FC<HeaderProps> = () => {
   const navigation = useNavigation();
@@ -79,14 +79,22 @@ const Header: React.FC<HeaderProps> = () => {
       <Container>
         <Menu>
           <ProfileButton onPress={() => toProfileScreen()}>
-            <Icon name="account-box-outline" size={24} color="#FFF" />
+            <Icon
+              name="account-box-outline"
+              size={24}
+              color={theme.colors.white}
+            />
           </ProfileButton>
           <NotificationsButton onPress={toggleNotifications}>
             {renderNotificationCounter()}
-            <Icon name="bell-ring-outline" size={24} color="#3dc77b" />
+            <Icon
+              name="bell-ring-outline"
+              size={24}
+              color={theme.colors.green}
+            />
           </NotificationsButton>
           <MenuButton onPress={toggleMenu}>
-            <Icon name="menu" size={24} color="#FFF" />
+            <Icon name="menu" size={24} color={theme.colors.white} />
           </MenuButton>
         </Menu>
       </Container>
@@ -95,7 +103,7 @@ const Header: React.FC<HeaderProps> = () => {
         visible={notificationVisible}
         onRequestClose={() => setNotificationVisible(false)}
         icon="bell-ring-outline"
-        iconColor="#3dc77b"
+        iconColor={theme.colors.green}
       />
       <ModalMenu
         visible={menuVisible}

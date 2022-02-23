@@ -5,7 +5,7 @@ export const Container = styled.View`
 `;
 
 export const ImageList = styled.ScrollView`
-  background: #f4f4f4;
+  background: transparent;
 `;
 
 export const Bullets = styled.View`

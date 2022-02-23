@@ -37,7 +37,7 @@ export const sexOptions = [
 export const homeImagesCarousel = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-defender.jpg',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-banner.jpg',
     withInfo: true,
     title: 'App Lançado:',
     message:
@@ -53,7 +53,7 @@ export const homeImagesCarousel = [
   },
   {
     id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-banner.jpg',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-defender.jpg',
     withInfo: true,
     title: 'Nos Apoie:',
     message:

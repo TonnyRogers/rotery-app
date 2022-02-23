@@ -83,19 +83,12 @@ const Revenues = () => {
                   alignSelf: 'flex-start',
                 }}>
                 <ShadowBox>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flex: 1,
-                    }}>
-                    <Text.Biggest
-                      textWeight="bold"
-                      textColor="primaryText"
-                      alignment="center">
-                      {data?.payDay}
-                    </Text.Biggest>
-                  </View>
+                  <Text.Biggest
+                    textWeight="bold"
+                    textColor="primaryText"
+                    alignment="start">
+                    {data?.payDay}
+                  </Text.Biggest>
                 </ShadowBox>
               </View>
             </View>

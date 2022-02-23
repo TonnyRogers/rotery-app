@@ -93,7 +93,7 @@ const SignUp: React.FC = () => {
       <Container>
         <Header>
           <Logo source={horizontalLogo} resizeMode="contain" />
-          <Text.Title alignment="center">Faça parte da Rotery.</Text.Title>
+          <Text.Title alignment="center">Faça parte da Rotery</Text.Title>
         </Header>
         <Fields>
           <Input
@@ -140,13 +140,13 @@ const SignUp: React.FC = () => {
         </Fields>
 
         <Actions>
-          <BackButton onPress={goBack}>
-            <BackButtonText>Ja sou cadastrado</BackButtonText>
-          </BackButton>
           <SubmitButton onPress={openPolicyModal}>
             <SubmitButtonText>Cadastrar-se</SubmitButtonText>
           </SubmitButton>
         </Actions>
+        <BackButton onPress={goBack}>
+          <BackButtonText>Ja sou cadastrado</BackButtonText>
+        </BackButton>
       </Container>
       {/* </DismissKeyboad> */}
       <Modal

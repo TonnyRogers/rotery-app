@@ -18,9 +18,6 @@ import {
   Container,
   Content,
   FilterContent,
-  ActivityList,
-  Activity,
-  ActivityName,
   ItineraryList,
   RowGroupSpaced,
   FilterButton,
@@ -112,7 +109,7 @@ const Feed: React.FC = () => {
         <Content>
           <FilterContent>
             <RowGroupSpaced>
-              <Text.Title>Afim de se aventurar?</Text.Title>
+              <Text.Title>Roteiros</Text.Title>
               <FilterButton onPress={toggleFilter} onLongPress={clearFilter}>
                 <Shadow
                   contentViewStyle={{
@@ -151,16 +148,6 @@ const Feed: React.FC = () => {
                 subTitle="Crie seu prório roteiro agora mesmo!"
               />
             )}
-            ListHeaderComponent={() => (
-              <ActivityList>
-                {removeDuplicatedActivities.map((item, index) => (
-                  <Activity key={index}>
-                    <Icon name="menu" size={24} color="#FFF" />
-                    <ActivityName>{item.activity.name}</ActivityName>
-                  </Activity>
-                ))}
-              </ActivityList>
-            )}
             onRefresh={() => {
               setPage(2);
               dispatch(getFeedRequest());
@@ -191,6 +178,7 @@ const Feed: React.FC = () => {
         onFiltered={({begin, end, location}) => {
           setFilter({begin: begin, end: end, location: location || undefined});
         }}
+        activities={removeDuplicatedActivities}
       />
       <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel

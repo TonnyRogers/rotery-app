@@ -16,6 +16,7 @@ interface ButtonProps extends TouchableOpacityProps {
   sizeBorderRadius?: number;
   sizePadding?: number;
   sizeMargin?: string;
+  hasShadow?: boolean;
   isFlex?: boolean;
   customContent?: boolean;
 }
@@ -32,6 +33,7 @@ const Button: React.FC<ButtonProps> = ({
   sizePadding = 12,
   sizeMargin,
   isFlex,
+  hasShadow = true,
   ...props
 }) => {
   return (
@@ -57,10 +59,10 @@ const Button: React.FC<ButtonProps> = ({
           width: sizeWidth,
         }}
         radius={12}
-        startColor="#00000007"
-        finalColor="transparent"
+        startColor={hasShadow ? '#00000007' : 'transparent'}
+        finalColor={'transparent'}
         offset={[0, 0, 0, 0]}
-        distance={7}>
+        distance={hasShadow ? 7 : 0}>
         {customContent ? (
           children
         ) : (

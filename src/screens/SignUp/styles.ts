@@ -21,10 +21,12 @@ export const Actions = styled.View`
   justify-content: space-between;
   align-items: center;
   flex: 1;
+  margin-top: 1.6rem;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin: 1rem;
+  margin: 1.6rem 2.8rem 1rem 1rem;
+  align-self: flex-end;
 `;
 
 export const BackButtonText = styled.Text`
@@ -40,6 +42,7 @@ export const SubmitButton = styled.TouchableOpacity`
   height: 4.4rem;
   background: #4885fd;
   border-radius: 0.8rem;
+  margin: 0 2.4rem;
 
   align-items: center;
   justify-content: center;

@@ -17,6 +17,7 @@ export const theme = {
     disabledText: '#BEBEBE',
     darketText: '#0D0D0D',
     borderBottom: '#cfcfcf',
+    transparent: 'transparent',
   },
   textSize: {},
   textWeight: {
@@ -43,4 +44,5 @@ export type ColorsType =
   | 'secondaryText'
   | 'disabledText'
   | 'darketText'
+  | 'transparent'
   | 'borderBottom';

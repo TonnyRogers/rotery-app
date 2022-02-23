@@ -67,7 +67,7 @@ interface RoutesProps {
 }
 
 const Routes = () => {
-  const {signed} = useSelector((state: RootStateProps) => state.auth);
+  const {signed, user} = useSelector((state: RootStateProps) => state.auth);
   const dispatch = useDispatch();
   useSocket();
 
@@ -243,7 +243,9 @@ const Routes = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={signed ? 'Feed' : 'Home'}>
+          initialRouteName={
+            signed ? (user?.isHost ? 'MyItineraries' : 'Feed') : 'Home'
+          }>
           {signed ? (
             <>
               <Stack.Screen name="Feed" component={Feed} />

@@ -239,7 +239,7 @@ export const PublicButton = styled.TouchableOpacity<{selected: boolean}>`
   border-color: #3dc77b;
   border-width: 0.3rem;
   border-radius: 1rem;
-  height: 4rem;
+  height: 4.5rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
@@ -259,7 +259,7 @@ export const PrivateButton = styled.TouchableOpacity<{selected: boolean}>`
   border-color: #3dc77b;
   border-width: 0.3rem;
   border-radius: 1rem;
-  height: 4rem;
+  height: 4.5rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
