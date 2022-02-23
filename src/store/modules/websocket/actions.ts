@@ -30,6 +30,7 @@ export enum WsActions {
   SEND_CHAT_MESSAGE_REQUEST = '@ws/SEND_CHAT_MESSAGE_REQUEST',
   SEND_CHAT_MESSAGE_SUCCESS = '@ws/SEND_CHAT_MESSAGE_SUCCESS',
   SEND_CHAT_MESSAGE_FAILURE = '@ws/SEND_CHAT_MESSAGE_FAILURE',
+  LISTEN_SUBSCRIPTIONS = '@ws/LISTEN_SUBSCRIPTIONS',
 }
 
 export function wsSetConnected() {
@@ -211,6 +212,12 @@ export function wsSendChatMessageSuccess(newMessage: MessageProps) {
     payload: {
       newMessage,
     },
+  };
+}
+
+export function wsListenSubscriptions() {
+  return {
+    type: WsActions.LISTEN_SUBSCRIPTIONS,
   };
 }
 

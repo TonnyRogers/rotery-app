@@ -15,6 +15,7 @@ import {
   wsItineraryRateNotification,
   wsConnectionBlockedNotification,
   wsConnectionUnblockedNotification,
+  wsListenSubscriptions,
 } from '../store/modules/websocket/actions';
 import {Vibration} from 'react-native';
 import {
@@ -41,8 +42,6 @@ export const useSocket = () => {
     if (signed && user) {
       if (!socket.current) {
         socket.current = websocket.init(user.id, String(token));
-
-        socket.current.emit('notifications', user.id);
 
         socket.current.on(
           `notify:${user.id}`,
@@ -99,6 +98,11 @@ export const useSocket = () => {
             }
           },
         );
+
+        if (user.isHost) {
+          socket.current.emit('subscription', user.id);
+          dispatch(wsListenSubscriptions());
+        }
       }
       if (socket.current.disconnect()) {
         socket.current.open();

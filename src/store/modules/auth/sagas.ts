@@ -83,7 +83,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 }
 
 export function* setToken({payload}: any) {
-  if (!payload || !!payload.auth) {
+  if (!payload || !payload.auth) {
     return;
   }
 
@@ -178,15 +178,15 @@ export function* handleRefreshToken() {
       refresh_token: refreshTokenSTR,
     });
 
-    const {token, refreshToken} = renewToken.data;
+    const {token: responseToken, refreshToken} = renewToken.data;
 
     yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
     yield call([AsyncStorage, 'removeItem'], '@auth:token');
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', token);
+    yield call([AsyncStorage, 'setItem'], '@auth:token', responseToken);
     yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
 
-    yield put(refreshTokenSuccess(token, refreshToken));
+    yield put(refreshTokenSuccess(responseToken, refreshToken));
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
   }
@@ -217,9 +217,9 @@ export function* setDeviceToken() {
 }
 
 export default all([
-  takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
   takeLatest('persist/REHYDRATE', setToken),
-  takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
+  takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
+  // takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),
