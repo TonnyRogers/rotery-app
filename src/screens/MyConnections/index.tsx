@@ -63,7 +63,7 @@ const MyConnections: React.FC = () => {
   }
 
   function formatDate(date: string) {
-    return formatLocale(new Date(date), 'DD MMM YY');
+    return formatLocale(date, 'DD MMM YY');
   }
 
   const myConnections: ConnectionsProps[] = [];
@@ -107,7 +107,7 @@ const MyConnections: React.FC = () => {
             <Text.Paragraph textColor="primaryText" textWeight="bold">
               {item.owner.username}
             </Text.Paragraph>
-            <Text>{formatDate(item.owner.createdAt)}</Text>
+            <Text>desde {formatDate(item.owner.createdAt)}</Text>
           </ColumnGroup>
         </UserInfo>
         <Actions>
@@ -152,7 +152,9 @@ const MyConnections: React.FC = () => {
             <Text.Paragraph textColor="primaryText" textWeight="bold">
               {item.target.username}
             </Text.Paragraph>
-            <Text>{formatDate(item.target.createdAt)}</Text>
+            <Text textWeight="light">
+              desde {formatDate(item.target.createdAt)}
+            </Text>
           </ColumnGroup>
         </UserInfo>
         <Actions>

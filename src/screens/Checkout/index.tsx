@@ -485,7 +485,9 @@ const Checkout = ({route}: CheckoutProps) => {
                 style={{flex: 1}}
               />
             </View>
-            <Text alignment="center">{checkoutResponseText.subTitle}</Text>
+            <Text alignment="center" textWeight="light">
+              {checkoutResponseText.subTitle}
+            </Text>
           </Card>
         ) : (
           <>

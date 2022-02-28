@@ -122,6 +122,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
     RootNavigation.replace('Feed');
   }
 
+  function toNewItinerary() {
+    onRequestClose();
+    RootNavigation.navigate('NewItinerary');
+  }
+
   if (!visible) {
     return null;
   }
@@ -178,6 +183,19 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
           <MenuButton onPress={toFeed}>
             <Icon name="format-list-text" size={24} color="#FFF" />
             <MenuButtonText>Feed</MenuButtonText>
+          </MenuButton>
+          <MenuButton
+            active={user?.isHost}
+            disabled={!user?.isHost}
+            onPress={toNewItinerary}>
+            <Icon
+              name="plus-box-outline"
+              size={24}
+              color={user?.isHost ? '#FFF' : '#999'}
+            />
+            <MenuButtonText active={user?.isHost}>
+              Novo{'\n'}Roteiro
+            </MenuButtonText>
           </MenuButton>
         </Actions>
         <SignOutButton onPress={() => handleLogout()}>

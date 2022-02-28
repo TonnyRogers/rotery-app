@@ -4,11 +4,12 @@ export function formatBRL(value: string) {
   }
 
   value = value.replace(/\D/g, '');
+  value = (Number(value) / 100).toFixed(2) + '';
+  value = value.replace('.', ',');
+  value = value.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
+  value = value.replace(/(\d)(\d{3}),/g, '$1.$2,');
 
-  return (value = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(Number(value) / 100));
+  return `R$${value}`;
 }
 
 export function cpfCnpj(value: string) {
@@ -73,4 +74,12 @@ export function clearValue(value: string) {
   }
 
   return value.replace(/\D/g, '');
+}
+
+export function realToUSCash(value: string) {
+  if (!value) {
+    return;
+  }
+
+  return value.replace('R$', '').replace('.', '').replace(',', '.');
 }

@@ -104,7 +104,7 @@ export function* createItinerary({
     const imageArray: CreateItineraryPhotoItemProps[] = [];
 
     photos?.forEach((image) => {
-      imageArray.push({file: image.file});
+      imageArray.push({file: image.id});
     });
 
     const payloadRequest: any = {
@@ -155,11 +155,13 @@ export function* deleteItinerary({
       return;
     }
 
+    RootNavigation.replace('MyItineraries');
+
     const {itineraryId} = payload;
     yield call(api.delete, `/itineraries/${itineraryId}`);
 
     yield put(deleteItinerarySuccess(itineraryId));
-    RootNavigation.replace('MyItineraries');
+
     Toast.show({
       text1: 'Roteiro deletado.',
       position: 'bottom',
@@ -209,7 +211,7 @@ export function* updateItinerary({
     const activityArray: CreateItineraryActivityItemProps[] = [];
 
     photos?.forEach((image) => {
-      imageArray.push({file: image.file});
+      imageArray.push({file: image.id});
     });
 
     transports?.forEach((transport) => {

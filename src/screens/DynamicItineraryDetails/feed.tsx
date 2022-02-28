@@ -138,33 +138,35 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
 
     const renderTransports = useCallback(
       () =>
-        itinerary?.transports.map((transport: ItineraryTransportItemProps) => (
-          <ShadowBox key={transport.id}>
-            <Text.Paragraph textColor="primaryText" textWeight="bold">
-              {transport.transport.name}
-            </Text.Paragraph>
-            <Text textWeight="light">{transport.description}</Text>
-            <RowGroupSpaced>
-              <ColumnGroup>
-                <Text textWeight="light">Capacidade</Text>
-                <Text textWeight="bold">{transport.capacity}</Text>
-              </ColumnGroup>
-              <ColumnGroup>
-                <Text textWeight="light">Preço</Text>
-                <Text textWeight="bold">
-                  {formatBRL(String(transport.price))}
-                </Text>
-              </ColumnGroup>
-            </RowGroupSpaced>
-          </ShadowBox>
-        )),
+        itinerary?.transports.map(
+          (transport: ItineraryTransportItemProps, index) => (
+            <ShadowBox key={'transport' + index}>
+              <Text.Paragraph textColor="primaryText" textWeight="bold">
+                {transport.transport.name}
+              </Text.Paragraph>
+              <Text textWeight="light">{transport.description}</Text>
+              <RowGroupSpaced>
+                <ColumnGroup>
+                  <Text textWeight="light">Capacidade</Text>
+                  <Text textWeight="bold">{transport.capacity}</Text>
+                </ColumnGroup>
+                <ColumnGroup>
+                  <Text textWeight="light">Preço</Text>
+                  <Text textWeight="bold">
+                    {formatBRL(String(transport.price))}
+                  </Text>
+                </ColumnGroup>
+              </RowGroupSpaced>
+            </ShadowBox>
+          ),
+        ),
       [itinerary],
     );
 
     const renderLodgings = useCallback(
       () =>
-        itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps) => (
-          <ShadowBox key={lodging.id}>
+        itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps, index) => (
+          <ShadowBox key={'lodging' + index}>
             <Text.Paragraph textColor="primaryText" textWeight="bold">
               {lodging.lodging.name}
             </Text.Paragraph>
@@ -188,26 +190,28 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
 
     const renderActivities = useCallback(
       () =>
-        itinerary?.activities.map((activity: ItineraryActivityItemProps) => (
-          <ShadowBox key={activity.id}>
-            <Text.Paragraph textColor="primaryText" textWeight="bold">
-              {activity.activity.name}
-            </Text.Paragraph>
-            <Text textWeight="light">{activity.description}</Text>
-            <RowGroupSpaced>
-              <ColumnGroup>
-                <Text textWeight="light">Capacidade</Text>
-                <Text textWeight="bold">{activity.capacity}</Text>
-              </ColumnGroup>
-              <ColumnGroup>
-                <Text textWeight="light">Preço</Text>
-                <Text textWeight="bold">
-                  {formatBRL(String(activity.price))}
-                </Text>
-              </ColumnGroup>
-            </RowGroupSpaced>
-          </ShadowBox>
-        )),
+        itinerary?.activities.map(
+          (activity: ItineraryActivityItemProps, index) => (
+            <ShadowBox key={'activity' + index}>
+              <Text.Paragraph textColor="primaryText" textWeight="bold">
+                {activity.activity.name}
+              </Text.Paragraph>
+              <Text textWeight="light">{activity.description}</Text>
+              <RowGroupSpaced>
+                <ColumnGroup>
+                  <Text textWeight="light">Capacidade</Text>
+                  <Text textWeight="bold">{activity.capacity}</Text>
+                </ColumnGroup>
+                <ColumnGroup>
+                  <Text textWeight="light">Preço</Text>
+                  <Text textWeight="bold">
+                    {formatBRL(String(activity.price))}
+                  </Text>
+                </ColumnGroup>
+              </RowGroupSpaced>
+            </ShadowBox>
+          ),
+        ),
       [itinerary],
     );
 

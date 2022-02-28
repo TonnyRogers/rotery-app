@@ -80,7 +80,6 @@ const Routes = () => {
 
     //   'Notification caused app to open from background state:'
     messaging().onNotificationOpenedApp((remoteMessage) => {
-      // console.tron.log('Open App: ', remoteMessage);
       notificationActions(remoteMessage);
     });
 
@@ -90,13 +89,11 @@ const Routes = () => {
       .then((remoteMessage) => {
         if (remoteMessage) {
           notificationActions(remoteMessage);
-          // console.tron.log('Quit State: ', remoteMessage);
         }
       });
 
     //   'Notification when app is in background or terminated'
     messaging().setBackgroundMessageHandler(async (remoteMessage: any) => {
-      // console.tron.log('Terminated (Minimized): ', remoteMessage);
       // this.notificationActions(remoteMessage);
     });
 
@@ -243,9 +240,7 @@ const Routes = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={
-            signed ? (user?.isHost ? 'MyItineraries' : 'Feed') : 'Home'
-          }>
+          initialRouteName={signed ? 'Feed' : 'Home'}>
           {signed ? (
             <>
               <Stack.Screen name="Feed" component={Feed} />

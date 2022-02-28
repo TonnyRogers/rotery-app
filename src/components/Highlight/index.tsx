@@ -2,7 +2,7 @@
 import React from 'react';
 import {Shadow} from 'react-native-shadow-2';
 
-import {Container, Background, Info} from './styles';
+import {Background, Info} from './styles';
 
 interface HighlightProps {
   background: string;

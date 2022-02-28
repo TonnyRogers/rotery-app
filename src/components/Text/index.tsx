@@ -30,7 +30,7 @@ interface BiggestProps extends TextProps {}
 const Text = ({
   children,
   textColor,
-  textWeight,
+  textWeight = 'light',
   maxLines,
   alignment,
   withLineBreak,

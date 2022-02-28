@@ -28,6 +28,7 @@ import {ItineraryProps, ItineraryStatusTranlated} from '../../utils/types';
 import Card from '../Card';
 import Text from '../Text';
 import formatLocale from '../../providers/dayjs-format-locale';
+import Divider from '../Divider';
 
 interface ItineraryItemProps {
   owner?: boolean;
@@ -98,9 +99,11 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
         </Text>
         <Text textWeight="light">{beginDateFormated.current}</Text>
       </ItineraryHeader>
+      <Divider />
       <Text textWeight="light" maxLines={2}>
         {itinerary.description}
       </Text>
+      <Divider />
       <Actions>
         <Badges>
           <Badge>

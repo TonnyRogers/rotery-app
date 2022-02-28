@@ -183,9 +183,11 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                   <Icon name="map-outline" size={30} color="#3dc77b" />
                   <Text.Title textColor="blue">Roteiro</Text.Title>
                 </RowGroup>
-                <Text.Title textColor="secondaryText">{itinerary?.name}</Text.Title>
+                <Text.Title textColor="secondaryText">
+                  {itinerary.name}
+                </Text.Title>
                 <Text textWeight="light" textColor="secondaryText">
-                  {itinerary?.location}
+                  {itinerary.location}
                 </Text>
                 <Text textWeight="light" textColor="secondaryText">
                   {beginDateFormated.current}

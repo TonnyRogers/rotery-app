@@ -53,7 +53,9 @@ const CheckoutSubscription = ({amount, name}: CheckoutSubscriptionProps) => {
       <Divider />
       <View style={{alignItems: 'flex-end'}}>
         <RowGroup justify="flex-start">
-          <Text textColor="primaryText">Total(mês) </Text>
+          <Text textColor="primaryText" textWeight="light">
+            Total(mês){' '}
+          </Text>
           <Text.Title>{formatPrice(amount)}</Text.Title>
         </RowGroup>
       </View>

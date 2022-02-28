@@ -10,12 +10,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Container, DateButton, DateText, Label, RowGroup} from './styles';
 import Text from '../Text';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {useIsAndroid} from '../../hooks/useIsAndroid';
 
 interface DateTimeInputProps {
   error?: string;
   label: string;
   date: Date;
   onChange(date: Date): any;
+  isEdition?: boolean;
 }
 
 const DateTimeInput: React.FC<DateTimeInputProps> = ({
@@ -23,9 +25,11 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   date,
   error,
   onChange,
+  isEdition,
 }) => {
-  const [show, setShow] = useState(false);
+  const [showDate, setShowDate] = useState(false);
   const [showTime, setShowTime] = useState(false);
+  const {isAndroid, isIOs} = useIsAndroid();
 
   const dateFormatted = useMemo(
     () => formatLocale(date, 'DD [de] MMMM [de] YYYY [as] HH:mm'),
@@ -35,7 +39,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const onChangeDate = (event: any, selectDate: any): void => {
     try {
       const currentDate = selectDate || date;
-      setShow(Platform.OS === 'ios');
+      setShowDate(Platform.OS === 'ios');
       onChange(currentDate);
       setShowTime(true);
     } catch (error) {}
@@ -50,7 +54,10 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   };
 
   const showDatePicker = () => {
-    setShow(true);
+    setShowDate(true);
+    if (isEdition && isIOs) {
+      setShowTime(true);
+    }
   };
 
   return (
@@ -58,16 +65,16 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       <Label>{label}</Label>
       <DateButton hasError={!!error} onPress={showDatePicker}>
         <RowGroup>
-          {!show && !showTime && (
+          {!showDate && !showTime && (
             <DateText>
               {date ? dateFormatted : 'Clique para selecionar a data'}
             </DateText>
           )}
-          {show && (
+          {showDate && (
             <DateTimePicker
               value={date}
               mode="date"
-              display="default"
+              display={isAndroid ? 'default' : 'compact'}
               onChange={onChangeDate}
               textColor="#808080"
               style={{
@@ -81,17 +88,20 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
             <DateTimePicker
               value={date}
               mode="time"
-              display="default"
+              display={isAndroid ? 'default' : 'compact'}
               onChange={onChangeTime}
               textColor="#808080"
-              is24Hour
               style={{width: 100}}
             />
           )}
         </RowGroup>
         <Icon name="calendar-today" color="#808080" size={24} />
       </DateButton>
-      {error && <Text textColor="red">{error}</Text>}
+      {error && (
+        <Text textColor="red" textWeight="light">
+          {error}
+        </Text>
+      )}
     </Container>
   );
 };

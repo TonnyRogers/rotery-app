@@ -226,7 +226,9 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
               marginTop: 10,
             }}>
             <RowGroup justify="flex-start">
-              <Text textColor="primaryText">Total</Text>
+              <Text textColor="primaryText" textWeight="light">
+                Total
+              </Text>
               <Text.Title>{formatPrice(itineraryAmount * 100)}</Text.Title>
             </RowGroup>
             {paymentStatusTag()}

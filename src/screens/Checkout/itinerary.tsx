@@ -145,14 +145,16 @@ const CheckoutItinerary = ({
           marginRight: 16,
           marginTop: 10,
         }}>
-        <Text alignment="end">
+        <Text alignment="end" textWeight="light">
           taxa {formatPrice(itineraryAmount.tax * 100)}
         </Text>
-        <Text alignment="end">
+        <Text alignment="end" textWeight="light">
           subtotal {formatPrice(itineraryAmount.amount * 100)}
         </Text>
         <RowGroup justify="flex-start">
-          <Text textColor="primaryText">Total(a vista) </Text>
+          <Text textColor="primaryText" textWeight="light">
+            Total(a vista){' '}
+          </Text>
           <Text.Title>{formatPrice(itineraryAmount.total * 100)}</Text.Title>
         </RowGroup>
       </View>

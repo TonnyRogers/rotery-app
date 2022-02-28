@@ -28,7 +28,6 @@ export const ProfileButton = styled.TouchableOpacity`
 export const NotificationsButton = styled.TouchableOpacity`
   width: 5rem;
   height: 5rem;
-  border-radius: 2rem;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -40,10 +39,10 @@ export const Notifications = styled.View`
   height: 1.4rem;
   border-radius: 0.7rem;
   align-items: center;
-  justify-content: center;
   position: absolute;
-  bottom: 0.3rem;
-  right: 0rem;
+  z-index: 10;
+  bottom: 0.8rem;
+  right: 0.5rem;
 `;
 
 export const Counter = styled.Text`

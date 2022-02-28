@@ -123,7 +123,11 @@ const Revenues = () => {
               </ItemIconHover>
               <RowGroup>
                 <View>
-                  <Text textColor="primaryText" limitter={15} maxLines={1}>
+                  <Text
+                    textColor="primaryText"
+                    textWeight="light"
+                    limitter={15}
+                    maxLines={1}>
                     {String(item.itinerary.name)}
                   </Text>
                   <Text>

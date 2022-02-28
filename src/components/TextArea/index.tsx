@@ -29,7 +29,11 @@ const TextArea = (
         hasError={!!error}
         {...props}
       />
-      {error && <Text textColor="red">{error}</Text>}
+      {error && (
+        <Text textColor="red" textWeight="light">
+          {error}
+        </Text>
+      )}
     </Container>
   );
 };

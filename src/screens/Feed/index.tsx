@@ -10,7 +10,6 @@ import {
   getFeedRequest,
   paginateFeedRequest,
 } from '../../store/modules/feed/actions';
-import {showFeedGuide} from '../../store/modules/guides/actions';
 import {hideFeedGuide} from '../../store/modules/guides/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
@@ -53,8 +52,7 @@ const Feed: React.FC = () => {
 
   useEffect(() => {
     dispatch(getFeedRequest());
-    dispatch(showFeedGuide());
-  }, [dispatch, feedGuide]);
+  }, [dispatch]);
 
   if (itineraries) {
     itineraries?.forEach((itinerary: ItineraryProps) =>

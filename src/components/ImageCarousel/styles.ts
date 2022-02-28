@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
 export const Container = styled.View``;
 
@@ -10,6 +11,7 @@ export const ImageItem = styled.Image`
   height: 20rem;
   border-radius: 0.8rem;
   margin: 0.5rem;
+  background: ${theme.colors.appBackground};
 `;
 
 export const Bullets = styled.View`

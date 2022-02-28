@@ -53,7 +53,11 @@ const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
           </ButtonIcon>
         )}
       </Content>
-      {error && <Text textColor="red">{error}</Text>}
+      {error && (
+        <Text textColor="red" textWeight="light">
+          {error}
+        </Text>
+      )}
     </Container>
   );
 };

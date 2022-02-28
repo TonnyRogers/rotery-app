@@ -6,11 +6,9 @@ import {
   Bullets,
   Bullet,
   HighlightContent,
-  Title,
-  Subtitle,
 } from './styles';
 import Highlight from '../Highlight';
-
+import Text from '../Text';
 interface dataProps {
   id: number;
   url: string;
@@ -64,10 +62,10 @@ const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
         contentContainerStyle={{width: `${100 * intervals}%`}}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
-        onContentSizeChange={(w, h) => init(w)}
+        onContentSizeChange={(w, _) => init(w)}
         onScroll={(e) => {
           setWidth(e.nativeEvent.contentSize.width);
-          setInterval(getInterval(e.nativeEvent.contentOffset.x));
+          setInterval(Number(getInterval(e.nativeEvent.contentOffset.x)));
         }}
         decelerationRate="fast"
         pagingEnabled>
@@ -76,8 +74,12 @@ const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
             <Highlight key={item.id} background={item.url}>
               {item.withInfo && (
                 <HighlightContent>
-                  <Title>{item.title}</Title>
-                  <Subtitle>{item.message}</Subtitle>
+                  <Text.Paragraph textWeight="bold" alignment="center">
+                    {item.title}
+                  </Text.Paragraph>
+                  <Text textWeight="light" alignment="center">
+                    {item.message}
+                  </Text>
                 </HighlightContent>
               )}
             </Highlight>

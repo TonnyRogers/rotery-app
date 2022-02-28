@@ -13,10 +13,10 @@ interface ActionProps {
 }
 
 const INITIAL_PROPS: InitalStateProps = {
-  feedGuide: false,
-  newItineraryGuide: false,
-  myItineraryGuide: false,
-  profileGuide: false,
+  feedGuide: true,
+  newItineraryGuide: true,
+  myItineraryGuide: true,
+  profileGuide: true,
 };
 
 export default function guides(state = INITIAL_PROPS, action: ActionProps) {

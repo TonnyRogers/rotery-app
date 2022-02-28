@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useRef, useMemo, useCallback, useEffect} from 'react';
+import React, {useState, useRef, useMemo, useCallback} from 'react';
 import {View, ScrollView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -56,10 +56,7 @@ import Alert from '../../components/Alert';
 import Page from '../../components/Page';
 import Share from '../../components/Share';
 import Text from '../../components/Text';
-import {
-  showMyItineraryGuide,
-  hideMyItineraryGuide,
-} from '../../store/modules/guides/actions';
+import {hideMyItineraryGuide} from '../../store/modules/guides/actions';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
@@ -67,6 +64,7 @@ import SplashScreen from '../../components/SplashScreen';
 import {myGuideImages} from '../../utils/constants';
 import formatLocale from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
+import DividerComponent from '../../components/Divider';
 
 interface MyItineraryDetailsProps {
   route: {
@@ -102,10 +100,6 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   let beginDateFormated = useRef('');
   let endDateFormated = useRef('');
   let limitDateFormated = useRef('');
-
-  useEffect(() => {
-    dispatch(showMyItineraryGuide());
-  }, [dispatch]);
 
   useMemo(() => {
     if (itinerary) {
@@ -158,33 +152,35 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
 
   const renderTransports = useCallback(
     () =>
-      itinerary?.transports.map((transport: ItineraryTransportItemProps) => (
-        <ShadowBox key={transport.id}>
-          <Text.Paragraph textColor="primaryText" textWeight="bold">
-            {transport.transport.name}
-          </Text.Paragraph>
-          <Text textWeight="light">{transport.description}</Text>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{transport.capacity}</Text>
-            </ColumnGroup>
-            <ColumnGroup>
-              <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(transport.price))}
-              </Text>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
+      itinerary?.transports.map(
+        (transport: ItineraryTransportItemProps, index) => (
+          <ShadowBox key={'transport' + index}>
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
+              {transport.transport.name}
+            </Text.Paragraph>
+            <Text textWeight="light">{transport.description}</Text>
+            <RowGroupSpaced>
+              <ColumnGroup>
+                <Text textWeight="light">Capacidade</Text>
+                <Text textWeight="bold">{transport.capacity}</Text>
+              </ColumnGroup>
+              <ColumnGroup>
+                <Text textWeight="light">Preço</Text>
+                <Text textWeight="bold">
+                  {formatBRL(String(transport.price))}
+                </Text>
+              </ColumnGroup>
+            </RowGroupSpaced>
+          </ShadowBox>
+        ),
+      ),
     [itinerary],
   );
 
   const renderLodgings = useCallback(
     () =>
-      itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps) => (
-        <ShadowBox key={lodging.id}>
+      itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps, index) => (
+        <ShadowBox key={'lodging' + index}>
           <Text.Paragraph textColor="primaryText" textWeight="bold">
             {lodging.lodging.name}
           </Text.Paragraph>
@@ -206,24 +202,28 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
 
   const renderActivities = useCallback(
     () =>
-      itinerary?.activities.map((activity: ItineraryActivityItemProps) => (
-        <ShadowBox key={activity.id}>
-          <Text.Paragraph textColor="primaryText" textWeight="bold">
-            {activity.activity.name}
-          </Text.Paragraph>
-          <Text textWeight="light">{activity.description}</Text>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{activity.capacity}</Text>
-            </ColumnGroup>
-            <ColumnGroup>
-              <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">{formatBRL(String(activity.price))}</Text>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
+      itinerary?.activities.map(
+        (activity: ItineraryActivityItemProps, index) => (
+          <ShadowBox key={'activity' + index}>
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
+              {activity.activity.name}
+            </Text.Paragraph>
+            <Text textWeight="light">{activity.description}</Text>
+            <RowGroupSpaced>
+              <ColumnGroup>
+                <Text textWeight="light">Capacidade</Text>
+                <Text textWeight="bold">{activity.capacity}</Text>
+              </ColumnGroup>
+              <ColumnGroup>
+                <Text textWeight="light">Preço</Text>
+                <Text textWeight="bold">
+                  {formatBRL(String(activity.price))}
+                </Text>
+              </ColumnGroup>
+            </RowGroupSpaced>
+          </ShadowBox>
+        ),
+      ),
     [itinerary],
   );
 
@@ -323,6 +323,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </Status>
             </StatusContent>
             <ImageCarousel data={itinerary?.photos || []} />
+            <DividerComponent />
             <View>
               <Text.Paragraph textColor="primaryText" textWeight="bold">
                 Descrição:

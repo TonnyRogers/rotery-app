@@ -23,6 +23,7 @@ export const Bullet = styled.View`
 
 export const HighlightContent = styled.View`
   flex: 1;
+  padding: 1rem;
 `;
 
 export const RowGroup = styled.View`

@@ -98,7 +98,11 @@ const Wallet = () => {
               </ItemIconHover>
               <RowGroup>
                 <View>
-                  <Text textColor="primaryText" limitter={15} maxLines={1}>
+                  <Text
+                    textColor="primaryText"
+                    limitter={15}
+                    textWeight="light"
+                    maxLines={1}>
                     {String(item.payment.metadata.itinerary_name)}
                   </Text>
                   <Text>

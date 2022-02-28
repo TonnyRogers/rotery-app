@@ -37,7 +37,7 @@ const SubscriptionCardChange = ({
         </View>
       </RowGroup>
       <View style={{flex: 1}}>
-        <Text alignment="start">
+        <Text alignment="start" textWeight="light">
           por falha, limite insuficiente ou outro motivo seu pagamento não esta
           em dia, solicitamos que utilize outro cartão.
         </Text>
@@ -45,7 +45,9 @@ const SubscriptionCardChange = ({
       <Divider />
       <View style={{alignItems: 'flex-end', flex: 1}}>
         <RowGroup justify="flex-start">
-          <Text textColor="primaryText">Total(mês) </Text>
+          <Text textColor="primaryText" textWeight="light">
+            Total(mês){' '}
+          </Text>
           <Text.Title>{formatPrice(amount)}</Text.Title>
         </RowGroup>
       </View>

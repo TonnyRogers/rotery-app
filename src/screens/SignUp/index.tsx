@@ -46,12 +46,14 @@ const SignUp: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [policyModalVisible, setPolicyModalVisible] = useState(false);
+  const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
   const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {
     register,
     setValue,
     handleSubmit,
+    watch,
     formState: {errors},
   } = useForm({resolver: yupResolver(validationSchema)});
 
@@ -60,11 +62,17 @@ const SignUp: React.FC = () => {
     register('password');
     register('email');
     register('isHost');
-  }, [register]);
+
+    setValue('isHost', false);
+  }, [register, setValue]);
 
   const usernameRef = useRef<any>();
   const emailRef = useRef<any>();
   const passwordRef = useRef<any>();
+  const watchUsername = watch('username');
+  const watchPassword = watch('password');
+  const watchEmail = watch('email');
+  const watchIsHost = watch('isHost');
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -101,6 +109,7 @@ const SignUp: React.FC = () => {
             label="Usuário"
             placeholder="nome de usuário"
             ref={usernameRef.current}
+            value={watchUsername}
             onChange={(value: String) => setValue('username', value)}
             returnKeyType="next"
             onSubmitEditing={() => emailRef.current?.focus()}
@@ -117,6 +126,7 @@ const SignUp: React.FC = () => {
             returnKeyType="next"
             onSubmitEditing={() => passwordRef.current?.focus()}
             error={errors.email?.message}
+            value={watchEmail}
           />
           <Input
             label="Senha"
@@ -129,18 +139,22 @@ const SignUp: React.FC = () => {
             onSubmitEditing={() => setPolicyModalVisible(true)}
             returnKeyType="done"
             error={errors.password?.message}
+            value={watchPassword}
           />
           <SwitchInput
             label="Voce deseja:"
             trueOptionName="Criar Roteiros"
             falseOption2Name="Encontrar Roteiros"
-            value={false}
+            value={watchIsHost}
             onValueSet={(value) => setValue('isHost', value)}
           />
         </Fields>
 
         <Actions>
-          <SubmitButton onPress={openPolicyModal}>
+          <SubmitButton
+            onPress={
+              isPolicyAccepted ? handleSubmit(onSubmit) : openPolicyModal
+            }>
             <SubmitButtonText>Cadastrar-se</SubmitButtonText>
           </SubmitButton>
         </Actions>
@@ -339,9 +353,10 @@ const SignUp: React.FC = () => {
             Ultima atualização 15/07/2021
           </Text>
           <SubmitButton
-            onPress={handleSubmit(onSubmit, () =>
-              setPolicyModalVisible(false),
-            )}>
+            onPress={handleSubmit(onSubmit, () => {
+              setPolicyModalVisible(false);
+              setIsPolicyAccepted(true);
+            })}>
             <SubmitButtonText>Aceito os Termos</SubmitButtonText>
           </SubmitButton>
         </ScrollView>

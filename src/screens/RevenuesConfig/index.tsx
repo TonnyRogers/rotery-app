@@ -98,24 +98,10 @@ const RevenuesConfig = () => {
     };
     if (!data) {
       dispatch(createBankAccountRequest(bankPayload));
-      console.tron.log(dataForm);
     } else {
       dispatch(updateBankAccountRequest(bankPayload));
     }
   };
-
-  useEffect(() => {
-    const getTransacionHistory = async () => {
-      try {
-        // const response = await brasilapi.get<BrasilApiBankResponse[]>(
-        //   '/banks/v1',
-        // );
-        // setBanks(response.data);
-      } catch (error) {}
-    };
-
-    getTransacionHistory();
-  }, []);
 
   return (
     <Page showHeader={false}>

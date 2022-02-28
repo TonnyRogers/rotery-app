@@ -196,7 +196,7 @@ export const SubmitButton = styled.TouchableOpacity`
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
   border-top-left-radius: 1rem;
-  height: 4rem;
+  height: 4.5rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;

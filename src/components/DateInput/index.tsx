@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label} from './styles';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {useIsAndroid} from '../../hooks/useIsAndroid';
 
 interface DateInputProps {
   label?: string;
@@ -17,6 +18,7 @@ interface DateInputProps {
 
 const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
   const [show, setShow] = useState(false);
+  const {isAndroid} = useIsAndroid();
 
   const dateFormatted = useMemo(
     () => formatLocale(date, 'DD [de] MMM [de] YYYY'),
@@ -48,7 +50,7 @@ const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
           <DateTimePicker
             value={date}
             mode="date"
-            display="default"
+            display={isAndroid ? 'default' : 'compact'}
             onChange={onChangeDate}
             textColor="#808080"
             style={{

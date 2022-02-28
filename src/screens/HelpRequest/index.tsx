@@ -164,7 +164,7 @@ const HelpRequest = ({route}: HelpRequestProps) => {
               <Tag align="flex-start" color="orange">
                 Aviso:
               </Tag>
-              <Text alignment="start">
+              <Text alignment="start" textWeight="light">
                 Você será respondido por uma pessoa da equipe que entrara em
                 contato por e-mail ou telefone para dar continuidade ao
                 atendimento.
@@ -212,7 +212,9 @@ const HelpRequest = ({route}: HelpRequestProps) => {
                   </Text>
                   <Divider />
                   <RowGroup justify="flex-start">
-                    <Text textColor="primaryText">Total</Text>
+                    <Text textColor="primaryText" textWeight="light">
+                      Total
+                    </Text>
                     <Text.Title>{formatPrice(item.amount * 100)}</Text.Title>
                   </RowGroup>
                 </View>

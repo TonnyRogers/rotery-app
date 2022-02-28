@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 
 const metric = Platform.OS === 'ios' ? 'vh' : '%';
+const topPadding = Platform.OS === 'ios' ? '4.5rem' : '1.6rem';
 
 export const Container = styled.View`
 flex: 1;
@@ -26,12 +27,13 @@ export const Content = styled(Animated.View)`
   min-height: 30rem;
   border-bottom-left-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  padding: 4rem 1rem;
+  padding: ${topPadding} 1rem 0.8rem 1rem;
 `;
 
 export const Header = styled.View`
   flex-direction: row;
   align-items: center;
+  margin-left: 0.6rem;
 `;
 
 export const Title = styled.Text`

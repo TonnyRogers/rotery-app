@@ -122,12 +122,10 @@ export interface ItineraryMemberAcceptWsResponse {
 
 export interface ItineraryItemDependecyProps {
   id: string;
-  name?: string;
+  name: string;
   alias: string;
 }
 export interface ItemProps {
-  id: string;
-  name: string;
   itinerary: number;
   capacity: number;
   price: string;
@@ -144,7 +142,6 @@ export interface FileProps {
 }
 
 export interface ItineraryPhotoProps {
-  id: string;
   itinerary: number;
   file: FileProps;
 }

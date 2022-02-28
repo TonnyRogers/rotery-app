@@ -42,10 +42,7 @@ import Text from '../../components/Text';
 import FileInput from '../../components/FileInput';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {
-  showProfileGuide,
-  hideProfileGuide,
-} from '../../store/modules/guides/actions';
+import {hideProfileGuide} from '../../store/modules/guides/actions';
 import SplashScreen from '../../components/SplashScreen';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import {sexOptions, profileGuideImages} from '../../utils/constants';
@@ -92,11 +89,10 @@ const Profile: React.FC = () => {
   const {user} = useSelector((state: RootStateProps) => state.auth);
 
   useEffect(() => {
-    dispatch(showProfileGuide());
     if (data?.file && data.file?.url) {
       setProfileImage({uri: data.file.url});
     }
-  }, [data, dispatch]);
+  }, [data]);
 
   useEffect(() => {
     register('name');

@@ -68,7 +68,6 @@ const HostSubscription = () => {
       const response: AxiosResponse<SearchSubscriptionResult[]> = await api.get(
         `/subscriptions/details?ref=${data?.referenceId}`,
       );
-      console.tron.log('response', response);
       setSubscriptionHistoric(response.data[0]);
     };
 
@@ -181,7 +180,11 @@ const HostSubscription = () => {
                   </ItemIconHover>
                   <RowGroup>
                     <View>
-                      <Text textColor="primaryText" limitter={15} maxLines={1}>
+                      <Text
+                        textColor="primaryText"
+                        limitter={15}
+                        maxLines={1}
+                        textWeight="light">
                         Mensalidade{' '}
                         {subscriptionHistoric.summarized.charged_quantity} de{' '}
                         {subscriptionHistoric.summarized.quotas}

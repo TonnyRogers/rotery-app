@@ -21,7 +21,16 @@ interface PickerInputProps extends Partial<DropDownPickerProps> {
   options: OptionProps[];
   label: string;
   value: string | number;
-  onChange(returnValue: any): any;
+  /**
+   * returns the 'value' of selection
+   * @param returnValue
+   */
+  onChange?(returnValue: any): any;
+  /**
+   * returns the option object
+   * @param json
+   */
+  setValueJson?(json: OptionProps): void;
   byValue?: boolean;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +41,7 @@ const PickerInput: React.FC<PickerInputProps> = ({
   label,
   value,
   onChange,
+  setValueJson,
   error,
   byValue,
   ...props
@@ -108,10 +118,22 @@ const PickerInput: React.FC<PickerInputProps> = ({
         {...props}
         items={optionList}
         setValue={(item) => {
-          return onChange(item());
+          const selectedValue: OptionProps | undefined = optionList.find(
+            (listItem) => listItem.value === item(),
+          );
+          if (onChange) {
+            onChange(item());
+          }
+          if (selectedValue && setValueJson) {
+            setValueJson(selectedValue);
+          }
         }}
       />
-      {error && <Text textColor="red">{error}</Text>}
+      {error && (
+        <Text textColor="red" textWeight="light">
+          {error}
+        </Text>
+      )}
     </>
   );
 };

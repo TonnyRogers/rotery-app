@@ -5,8 +5,8 @@ import {
   CreateItineraryActivityItemProps,
   CreateItineraryLodgingItemProps,
   CreateItineraryTransportItemProps,
-  CreateItineraryPhotoItemProps,
   ItineraryMemberResponse,
+  FileProps,
 } from '../../../utils/types';
 
 export enum ItineraryActions {
@@ -70,7 +70,7 @@ export function createItineraryRequest(
   deadlineForJoin: Date,
   location: string,
   isPrivate: boolean,
-  photos?: CreateItineraryPhotoItemProps[],
+  photos?: FileProps[],
   activities?: CreateItineraryActivityItemProps[],
   lodgings?: CreateItineraryLodgingItemProps[],
   transports?: CreateItineraryTransportItemProps[],
@@ -139,7 +139,7 @@ export function updateItineraryRequest(
   deadlineForJoin: Date,
   location: string,
   isPrivate: boolean,
-  photos?: CreateItineraryPhotoItemProps[],
+  photos?: FileProps[],
   activities?: CreateItineraryActivityItemProps[],
   lodgings?: CreateItineraryLodgingItemProps[],
   transports?: CreateItineraryTransportItemProps[],

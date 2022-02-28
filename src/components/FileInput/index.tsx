@@ -15,17 +15,19 @@ import {
 import Button from '../Button';
 import Text from '../Text';
 import {theme} from '../../utils/theme';
+import {AxiosResponse} from 'axios';
+import {FileProps} from '../../utils/types';
 
 interface FileInputProps {
-  onSelect(data: []): any;
+  onSelect(data: FileProps): any;
 }
 
 const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
   const [fileSourceModalVisible, setFileSourceModalVisible] = useState(false);
 
   const options: Options = {
-    width: 300,
-    height: 400,
+    width: 600,
+    height: 600,
     cropping: true,
     mediaType: 'photo',
     compressImageQuality: 0.8,
@@ -53,26 +55,22 @@ const FileInput: React.FC<FileInputProps> = ({onSelect, children}) => {
 
     const formData = new FormData();
 
-    let fileResponse;
-
     if (image.uri) {
       formData.append('file', image);
 
-      fileResponse = await api.post('/files', formData);
+      let fileResponse: AxiosResponse<FileProps> = await api.post(
+        '/files',
+        formData,
+      );
 
       const {id} = fileResponse.data;
 
-      fileResponse.data = [fileResponse.data];
-
-      if (!id) {
-        return;
+      if (id) {
+        onSelect(fileResponse.data);
       }
     }
 
-    const images = fileResponse?.data;
-
     setFileSourceModalVisible(false);
-    onSelect(images);
   };
 
   async function pickImage(type: 'camera' | 'library') {

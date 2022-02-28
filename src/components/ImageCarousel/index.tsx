@@ -62,10 +62,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
         pagingEnabled>
         {data &&
           data.map(
-            (item) =>
+            (item, index) =>
               typeof item.file !== 'number' && (
                 <ImageItem
-                  key={item.id}
+                  key={index}
                   source={{
                     uri: item.file.url || undefined,
                   }}

@@ -87,7 +87,8 @@ const SearchUsers: React.FC = () => {
               value={search}
               onChange={setSearch}
               ref={searchRef.current}
-              returnKeyType="send"
+              returnKeyType="search"
+              returnKeyLabel="buscar"
               onSubmitEditing={searchUser}
             />
             <FlatList

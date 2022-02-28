@@ -6,7 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {formatBRL, clearValue} from '../../lib/mask';
+import {formatBRL, clearValue, realToUSCash} from '../../lib/mask';
 import {
   getActivitiesRequest,
   getLodgingsRequest,
@@ -18,12 +18,10 @@ import {
   LocationPickerInputSetItem,
   TomTomApiResponse,
   LocationJson,
-  ItineraryTransportItemProps,
-  ItineraryLodgingItemProps,
-  ItineraryActivityItemProps,
   CreateItineraryLodgingItemProps,
   CreateItineraryTransportItemProps,
   CreateItineraryActivityItemProps,
+  FileProps,
 } from '../../utils/types';
 
 import {
@@ -156,10 +154,84 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       setValue('description', itinerary.description);
       setValue('location', itinerary.location);
       setValue('vacancies', String(itinerary.capacity));
-      setLodgings([...itinerary.lodgings]);
-      setActivities([...itinerary.activities]);
-      setTransports([...itinerary.transports]);
-      setImages([...itinerary.photos]);
+
+      if (itinerary.lodgings) {
+        const formatedLodigngs: CreateItineraryLodgingItemProps[] =
+          itinerary.lodgings.map(
+            ({
+              capacity,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              lodging: {id: lodgingId, name},
+            }) => ({
+              lodging: Number(lodgingId),
+              name,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              capacity,
+            }),
+          );
+
+        setLodgings([...formatedLodigngs]);
+      }
+
+      if (itinerary.transports) {
+        const formatedTransports: CreateItineraryTransportItemProps[] =
+          itinerary.transports.map(
+            ({
+              capacity,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              transport: {id: tranportId, name},
+            }) => ({
+              transport: Number(tranportId),
+              name,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              capacity,
+            }),
+          );
+
+        setTransports([...formatedTransports]);
+      }
+
+      if (itinerary.activities) {
+        const formatedActivities: CreateItineraryActivityItemProps[] =
+          itinerary.activities.map(
+            ({
+              capacity,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              activity: {id: activityId, name},
+            }) => ({
+              activity: Number(activityId),
+              name,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              capacity,
+            }),
+          );
+
+        setActivities([...formatedActivities]);
+      }
+
+      const formatedPhotos: FileProps[] = itinerary.photos.map(({file}) => ({
+        ...file,
+      }));
+
+      setImages([...formatedPhotos]);
       setPrivateItinerary(itinerary.isPrivate);
     }
   }, [dispatch, itinerary, setValue]);
@@ -167,10 +239,17 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const options = useSelector((state: RootStateProps) => state.options);
 
   const navigation = useNavigation();
-  const [transports, setTransports] = useState([] as any);
-  const [lodgings, setLodgings] = useState([] as any);
-  const [activities, setActivities] = useState([] as any);
-  const [images, setImages] = useState([] as any);
+  const [transports, setTransports] = useState<
+    CreateItineraryTransportItemProps[]
+  >([]);
+  const [lodgings, setLodgings] = useState<CreateItineraryLodgingItemProps[]>(
+    [],
+  );
+  const [activities, setActivities] = useState<
+    CreateItineraryActivityItemProps[]
+  >([]);
+  const optionTypeJson = useRef('');
+  const [images, setImages] = useState<FileProps[]>([]);
   const [privateItinerary, setPrivateItinerary] = useState(false);
   const [addTransportVisible, setAddTransportVisible] = useState(false);
   const [transportsOptionIsOpen, setTransportsOptionIsOpen] = useState(false);
@@ -196,17 +275,9 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const transportDescriptionRef = useRef() as any;
   const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
 
-  function addImages(imageList: []) {
-    setImages([...images, ...imageList]);
+  function addImages(imageList: FileProps) {
+    setImages([...images, imageList]);
   }
-
-  const removeImages = useCallback(
-    (index: number) => {
-      images.splice(index, 1);
-      setImages([...images]);
-    },
-    [images],
-  );
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -215,17 +286,15 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   }
 
   const addLodgingItem = (data: any) => {
-    const optionItem = options.lodgings?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
     const newItem: CreateItineraryLodgingItemProps = {
-      lodging: Number(data.type),
-      price: String(clearValue(data.price)),
+      lodging: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: data.capacity,
       description: data.description,
       isFree: Number(clearValue(data.price)) > 0 ? false : true,
-      name: optionItem?.name,
+      name: typeData.name,
     };
 
     setLodgings([...lodgings, newItem]);
@@ -237,27 +306,16 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     setAddLodgingVisible(false);
   };
 
-  const removeLodgingItem = useCallback(
-    (index: number) => {
-      lodgings.splice(index, 1);
-
-      setLodgings([...lodgings]);
-    },
-    [lodgings],
-  );
-
   const addTransportItem = (data: any) => {
-    const optionItem = options.transports?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
     const newItem: CreateItineraryTransportItemProps = {
-      transport: Number(data.type),
-      price: String(clearValue(data.price)),
+      transport: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
       isFree: Number(clearValue(data.price)) > 0 ? false : true,
-      name: optionItem?.name,
+      name: typeData.name,
     };
 
     setTransports([...transports, newItem]);
@@ -268,27 +326,16 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     setAddTransportVisible(false);
   };
 
-  const removeTransportItem = useCallback(
-    (index: number) => {
-      transports.splice(index, 1);
-
-      setTransports([...transports]);
-    },
-    [transports],
-  );
-
   const addActivityItem = (data: any) => {
-    const optionItem = options.activities?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
     const newItem: CreateItineraryActivityItemProps = {
-      activity: Number(data.type),
-      price: String(clearValue(data.price)),
+      activity: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: data.capacity,
       description: data.description,
       isFree: Number(clearValue(data.price)) > 0 ? false : true,
-      name: optionItem?.name,
+      name: typeData.name,
     };
 
     setActivities([...activities, newItem]);
@@ -298,15 +345,6 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     optionSetValue('description', '');
     setAddActivityVisible(false);
   };
-
-  const removeActivityItem = useCallback(
-    (index: number) => {
-      activities.splice(index, 1);
-
-      setActivities([...activities]);
-    },
-    [activities],
-  );
 
   const onSubmit = (data: any) => {
     const jsonContent: LocationJson = {
@@ -342,101 +380,120 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     locationJson.current = value;
   };
 
-  const renderImages = useCallback(
-    () =>
-      images.map((item: {url: string}, index: number) => (
-        <ImageButton key={index} onPress={() => removeImages(index)}>
-          <Background
-            resizeMode="cover"
-            source={{
-              uri: item.url || undefined,
-            }}
-          />
-          <BackgroundCover>
-            <SIcon name="delete-forever-outline" color="#F57373" size={30} />
-          </BackgroundCover>
-        </ImageButton>
-      )),
-    [images, removeImages],
-  );
+  const renderImages = useCallback(() => {
+    function removeImages(index: number) {
+      images.splice(index, 1);
+      setImages([...images]);
+    }
 
-  const renderTransports = useCallback(
-    () =>
-      transports?.map((item: ItineraryTransportItemProps, index: number) => (
-        <ShadowBox key={'transports-' + index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeTransportItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.name || item.transport.name}</FieldTitle>
-          <FieldValue>{item.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
-    [removeTransportItem, transports],
-  );
+    return images.map((item, index: number) => (
+      <ImageButton key={index} onPress={() => removeImages(index)}>
+        <Background
+          resizeMode="cover"
+          source={{
+            uri: item.url || undefined,
+          }}
+        />
+        <BackgroundCover>
+          <SIcon name="delete-forever-outline" color="#F57373" size={30} />
+        </BackgroundCover>
+      </ImageButton>
+    ));
+  }, [images]);
 
-  const renderLodgings = useCallback(
-    () =>
-      lodgings.map((item: ItineraryLodgingItemProps, index: number) => (
-        <ShadowBox key={'lodgings-' + index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeLodgingItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.name || item.lodging.name}</FieldTitle>
-          <FieldValue>{item.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
-    [lodgings, removeLodgingItem],
-  );
+  const renderTransports = useCallback(() => {
+    function removeTransportItem(index: number) {
+      transports.splice(index, 1);
 
-  const renderActivities = useCallback(
-    () =>
-      activities.map((item: ItineraryActivityItemProps, index: number) => (
-        <ShadowBox key={'activities-' + index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeActivityItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.name || item.activity.name}</FieldTitle>
-          <FieldValue>{item.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
-    [activities, removeActivityItem],
-  );
+      setTransports([...transports]);
+    }
+
+    return transports?.map((item, index: number) => (
+      <ShadowBox key={'transports-' + index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeTransportItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
+  }, [transports]);
+
+  const renderLodgings = useCallback(() => {
+    function removeLodgingItem(index: number) {
+      lodgings.splice(index, 1);
+
+      setLodgings([...lodgings]);
+    }
+
+    return lodgings.map((item, index: number) => (
+      <ShadowBox key={'lodgings-' + index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeLodgingItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
+  }, [lodgings]);
+
+  const renderActivities = useCallback(() => {
+    function removeActivityItem(index: number) {
+      activities.splice(index, 1);
+
+      setActivities([...activities]);
+    }
+
+    return activities.map((item, index: number) => (
+      <ShadowBox key={'activities-' + index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeActivityItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
+  }, [activities]);
+
+  const handleChangeOptionTypeJson = (data: string) => {
+    optionTypeJson.current = data;
+  };
 
   return (
     <Page showHeader={false}>
@@ -512,18 +569,21 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
                   date={watchDateOut}
                   onChange={(value: Date) => setValue('dateOut', value)}
                   error={errors.dateOut?.message}
+                  isEdition={true}
                 />
                 <DateTimeInput
                   label="Retorno"
                   date={watchDateReturn}
                   onChange={(value: Date) => setValue('dateReturn', value)}
                   error={errors.dateReturn?.message}
+                  isEdition={true}
                 />
                 <DateTimeInput
                   label="Limite para inscrição"
                   date={watchDateLimit}
                   onChange={(value: Date) => setValue('dateLimit', value)}
                   error={errors.dateLimit?.message}
+                  isEdition={true}
                 />
               </ShadowBox>
               <ShadowBox>
@@ -588,7 +648,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
             setOpen={setTransportsOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.transports}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -637,7 +700,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
             setOpen={setLodgingOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.lodgings}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -686,7 +752,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
             setOpen={setActivityOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.activities}
             listMode="SCROLLVIEW"
             onOpen={() => {}}

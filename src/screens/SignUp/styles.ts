@@ -25,8 +25,8 @@ export const Actions = styled.View`
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin: 1.6rem 2.8rem 1rem 1rem;
-  align-self: flex-end;
+  margin: 1.6rem 1rem 1rem 1rem;
+  align-self: center;
 `;
 
 export const BackButtonText = styled.Text`

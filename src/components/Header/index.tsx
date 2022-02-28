@@ -42,10 +42,6 @@ const Header: React.FC<HeaderProps> = () => {
     setMenuVisible(!menuVisible);
   }
 
-  // const handleCloseBottomSheet = () => {
-  //   dispatch(hideBottomSheet());
-  // };
-
   const renderNotificationCounter = useCallback(
     () =>
       counter > 0 && (

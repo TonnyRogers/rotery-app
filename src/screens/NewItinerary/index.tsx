@@ -6,7 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {formatBRL, clearValue} from '../../lib/mask';
+import {formatBRL, clearValue, realToUSCash} from '../../lib/mask';
 import {createItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
@@ -22,14 +22,9 @@ import {
   CreateItineraryLodgingItemProps,
   CreateItineraryTransportItemProps,
   CreateItineraryActivityItemProps,
-  ItineraryTransportItemProps,
-  ItineraryLodgingItemProps,
-  ItineraryActivityItemProps,
+  FileProps,
 } from '../../utils/types';
-import {
-  showNewItineraryGuide,
-  hideNewItineraryGuide,
-} from '../../store/modules/guides/actions';
+import {hideNewItineraryGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
@@ -86,6 +81,7 @@ import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import {newGuideImages} from '../../utils/constants';
 import LocationPickerInput from '../../components/LocationPickerInput';
+import {theme} from '../../utils/theme';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -143,7 +139,6 @@ const NewItinerary: React.FC = () => {
     dispatch(getActivitiesRequest());
     dispatch(getLodgingsRequest());
     dispatch(getTransportsRequest());
-    dispatch(showNewItineraryGuide());
   }, [dispatch]);
 
   const options: InitialStateProps = useSelector(
@@ -162,9 +157,15 @@ const NewItinerary: React.FC = () => {
   const watchOptionType = optionWatch('type');
   const watchOptionPrice = optionWatch('price');
   const watchLocation = watch('location');
-  const [transports, setTransports] = useState([] as any);
-  const [lodgings, setLodgings] = useState([] as any);
-  const [activities, setActivities] = useState([] as any);
+  const [transports, setTransports] = useState<
+    CreateItineraryTransportItemProps[]
+  >([]);
+  const [lodgings, setLodgings] = useState<CreateItineraryLodgingItemProps[]>(
+    [],
+  );
+  const [activities, setActivities] = useState<
+    CreateItineraryActivityItemProps[]
+  >([]);
   const [images, setImages] = useState([] as any);
   const [privateItinerary, setPrivateItinerary] = useState(false);
   const [addTransportVisible, setAddTransportVisible] = useState(false);
@@ -175,6 +176,7 @@ const NewItinerary: React.FC = () => {
   const [activityOptionIsOpen, setActivityOptionIsOpen] = useState(false);
   const [locationIsOpen, setLocationIsOpen] = useState(false);
 
+  const optionTypeJson = useRef('');
   const descriptionRef = useRef() as any;
   const nameRef = useRef() as any;
   const vacanciesRef = useRef() as any;
@@ -187,14 +189,17 @@ const NewItinerary: React.FC = () => {
     dispatch(hideNewItineraryGuide());
   };
 
-  function addImages(imageList: []) {
-    setImages([...images, ...imageList]);
+  function addImages(imageList: FileProps) {
+    setImages([...images, imageList]);
   }
 
   const addLodgingItem = (data: any) => {
+    const typeData = JSON.parse(optionTypeJson.current);
+
     const newItem: CreateItineraryLodgingItemProps = {
-      lodging: Number(data.type),
-      price: String(clearValue(data.price)),
+      name: typeData.name,
+      lodging: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
       isFree: Number(clearValue(data.price)) > 0 ? false : true,
@@ -211,9 +216,12 @@ const NewItinerary: React.FC = () => {
   };
 
   const addTransportItem = (data: any) => {
+    const typeData = JSON.parse(optionTypeJson.current);
+
     const newItem: CreateItineraryTransportItemProps = {
-      transport: Number(data.type),
-      price: String(clearValue(data.price)),
+      name: typeData.name,
+      transport: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
       isFree: Number(clearValue(data.price)) > 0 ? false : true,
@@ -230,9 +238,12 @@ const NewItinerary: React.FC = () => {
   };
 
   const addActivityItem = (data: any) => {
+    const typeData = JSON.parse(optionTypeJson.current);
+
     const newItem: CreateItineraryActivityItemProps = {
-      activity: Number(data.type),
-      price: String(clearValue(data.price)),
+      name: typeData.name,
+      activity: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
       isFree: Number(clearValue(data.price)) > 0 ? false : true,
@@ -301,7 +312,11 @@ const NewItinerary: React.FC = () => {
           }}
         />
         <BackgroundCover>
-          <SIcon name="delete-forever-outline" color="#F57373" size={30} />
+          <SIcon
+            name="delete-forever-outline"
+            color={theme.colors.red}
+            size={30}
+          />
         </BackgroundCover>
       </ImageButton>
     ));
@@ -313,29 +328,32 @@ const NewItinerary: React.FC = () => {
 
       setTransports([...transports]);
     }
-    return transports.map(
-      (item: ItineraryTransportItemProps, index: number) => (
-        <ShadowBox key={index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeTransportItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.transport.name}</FieldTitle>
-          <FieldValue>{item.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      ),
-    );
+
+    return transports.map((item, index: number) => (
+      <ShadowBox key={index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeTransportItem(index)}>
+            <Icon
+              name="delete-forever-outline"
+              color={theme.colors.red}
+              size={24}
+            />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
   }, [transports]);
 
   const renderLodgings = useCallback(() => {
@@ -344,14 +362,18 @@ const NewItinerary: React.FC = () => {
 
       setLodgings([...lodgings]);
     }
-    return lodgings.map((item: ItineraryLodgingItemProps, index: number) => (
+    return lodgings.map((item, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeLodgingItem(index)}>
-            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+            <Icon
+              name="delete-forever-outline"
+              color={theme.colors.red}
+              size={24}
+            />
           </RemoveButton>
         </HeaderActions>
-        <FieldTitle>{item.lodging.name}</FieldTitle>
+        <FieldTitle>{item.name}</FieldTitle>
         <FieldValue>{item.description}</FieldValue>
         <RowGroupSpaced>
           <ColumnGroup>
@@ -374,14 +396,18 @@ const NewItinerary: React.FC = () => {
       setActivities([...activities]);
     }
 
-    return activities.map((item: ItineraryActivityItemProps, index: number) => (
+    return activities.map((item, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeActivityItem(index)}>
-            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+            <Icon
+              name="delete-forever-outline"
+              color={theme.colors.red}
+              size={24}
+            />
           </RemoveButton>
         </HeaderActions>
-        <FieldTitle>{item.activity.name}</FieldTitle>
+        <FieldTitle>{item.name}</FieldTitle>
         <FieldValue>{item.description}</FieldValue>
         <RowGroupSpaced>
           <ColumnGroup>
@@ -403,6 +429,10 @@ const NewItinerary: React.FC = () => {
     }
   }
 
+  const handleChangeOptionTypeJson = (data: string) => {
+    optionTypeJson.current = data;
+  };
+
   return (
     <Page showHeader={false}>
       <Container>
@@ -410,7 +440,11 @@ const NewItinerary: React.FC = () => {
           <Card>
             <CardHeader>
               <BackButton onPress={goBack}>
-                <Icon name="chevron-left" size={24} color="#3dc77b" />
+                <Icon
+                  name="chevron-left"
+                  size={24}
+                  color={theme.colors.green}
+                />
               </BackButton>
             </CardHeader>
             <CardContent>
@@ -466,7 +500,7 @@ const NewItinerary: React.FC = () => {
                 <DataContentHeader>
                   <Icon
                     name="calendar-blank-outline"
-                    color="#4885FD"
+                    color={theme.colors.blue}
                     size={24}
                   />
                   <ContentTitle>Datas</ContentTitle>
@@ -492,7 +526,11 @@ const NewItinerary: React.FC = () => {
               </ShadowBox>
               <ShadowBox>
                 <DataContentHeader>
-                  <Icon name="map-check-outline" color="#4885FD" size={24} />
+                  <Icon
+                    name="map-check-outline"
+                    color={theme.colors.blue}
+                    size={24}
+                  />
                   <ContentTitle>Destino</ContentTitle>
                 </DataContentHeader>
                 <LocationPickerInput.Button
@@ -510,7 +548,11 @@ const NewItinerary: React.FC = () => {
               </RowGroup>
               <TransportList>{renderTransports()}</TransportList>
               <NewTransportButton onPress={() => setAddTransportVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+                <Icon
+                  name="plus-box-outline"
+                  color={theme.colors.green}
+                  size={30}
+                />
               </NewTransportButton>
               <RowGroup>
                 <IconHolder>
@@ -520,7 +562,11 @@ const NewItinerary: React.FC = () => {
               </RowGroup>
               <LodgingList>{renderLodgings()}</LodgingList>
               <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+                <Icon
+                  name="plus-box-outline"
+                  color={theme.colors.green}
+                  size={30}
+                />
               </NewLodginButton>
               <RowGroup>
                 <IconHolder>
@@ -530,7 +576,11 @@ const NewItinerary: React.FC = () => {
               </RowGroup>
               <ActivityList>{renderActivities()}</ActivityList>
               <NewActivityButton onPress={() => setAddActivityVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+                <Icon
+                  name="plus-box-outline"
+                  color={theme.colors.green}
+                  size={30}
+                />
               </NewActivityButton>
             </CardContent>
             <CardActions>
@@ -552,7 +602,10 @@ const NewItinerary: React.FC = () => {
             setOpen={setTransportsOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.transports}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -601,7 +654,10 @@ const NewItinerary: React.FC = () => {
             setOpen={setLodgingOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.lodgings}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -650,7 +706,10 @@ const NewItinerary: React.FC = () => {
             setOpen={setActivityOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.activities}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
