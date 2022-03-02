@@ -1,9 +1,5 @@
 import styled from 'styled-native-components';
-import {
-  Animated,
-  KeyboardAvoidingView as RNKAvoidingView,
-  Platform,
-} from 'react-native';
+import {Animated, Platform} from 'react-native';
 
 const metric = Platform.OS === 'ios' ? 'vh' : '%';
 const topPadding = Platform.OS === 'ios' ? '4.5rem' : '1.6rem';
@@ -15,11 +11,6 @@ z-index: 100;
 position: absolute;
 height: 100${metric};
 width: 100%:
-`;
-
-export const KeyboardAvoidingView = styled(RNKAvoidingView)`
-  flex: 1;
-  justify-content: flex-start;
 `;
 
 export const Content = styled(Animated.View)`

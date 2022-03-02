@@ -9,13 +9,13 @@ const metricH = Platform.OS === 'ios' ? 'vh' : '%';
 const metricW = Platform.OS === 'ios' ? 'vw' : '%';
 const topPadding = Platform.OS === 'ios' ? '4.5rem' : '1.6rem';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   position: absolute;
   height: ${'100' + metricH};
-  width: ${'100' + metricW}:;
+  width: ${'100' + metricW};
 `;
 
 export const KeyboardAvoidingView = styled(RNKAvoidView)`

@@ -75,22 +75,14 @@ const Revenues = () => {
               <Text.Title alignment="start" limitter={12}>
                 Dia de transferência
               </Text.Title>
-              <View
-                style={{
-                  width: 100,
-                  height: 100,
-                  alignItems: 'center',
-                  alignSelf: 'flex-start',
-                }}>
-                <ShadowBox>
-                  <Text.Biggest
-                    textWeight="bold"
-                    textColor="primaryText"
-                    alignment="start">
-                    {data?.payDay}
-                  </Text.Biggest>
-                </ShadowBox>
-              </View>
+              <ShadowBox width={100} height={100} containerAlign="center">
+                <Text.Biggest
+                  textWeight="bold"
+                  textColor="primaryText"
+                  alignment="center">
+                  {data?.payDay}
+                </Text.Biggest>
+              </ShadowBox>
             </View>
             <View
               style={{
