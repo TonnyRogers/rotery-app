@@ -41,6 +41,7 @@ import RevenuesConfig from '../screens/RevenuesConfig';
 import RevenueDetail from '../screens/RevenueDetail';
 import HelpRequest from '../screens/HelpRequest';
 import HostSubscription from '../screens/HostSubscription';
+import {Disclaimer} from '../screens/Disclaimer';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 import {useSocket} from '../hooks/useSocket';
@@ -295,6 +296,7 @@ const Routes = () => {
                 name="HostSubscription"
                 component={HostSubscription}
               />
+              <Stack.Screen name="Disclaimer" component={Disclaimer} />
             </>
           ) : (
             <>

@@ -5,7 +5,7 @@ import {Container} from './styles';
 import Text from '../Text';
 import {Shadow} from 'react-native-shadow-2';
 import {theme, ColorsType} from '../../utils/theme';
-import {TouchableOpacityProps} from 'react-native';
+import {TouchableOpacityProps, FlexAlignType} from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
   bgColor: ColorsType;
@@ -19,6 +19,7 @@ interface ButtonProps extends TouchableOpacityProps {
   hasShadow?: boolean;
   isFlex?: boolean;
   customContent?: boolean;
+  containerAlignSelf?: FlexAlignType;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -32,6 +33,7 @@ const Button: React.FC<ButtonProps> = ({
   sizeBorderRadius = 12,
   sizePadding = 12,
   sizeMargin,
+  containerAlignSelf,
   isFlex,
   hasShadow = true,
   ...props
@@ -45,6 +47,7 @@ const Button: React.FC<ButtonProps> = ({
       <Shadow
         containerViewStyle={{
           flex: sizeHeight ? undefined : 1,
+          alignSelf: containerAlignSelf,
         }}
         contentViewStyle={{
           flex: sizeHeight ? undefined : 1,

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useRef, useMemo, useCallback} from 'react';
-import {View, ScrollView, Platform} from 'react-native';
+import {View, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -389,36 +389,21 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               </IconHolder>
               <Text.Title>Transporte</Text.Title>
             </ItemsContent>
-            <ScrollView
-              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-              scrollEventThrottle={16}
-              contentContainerStyle={{padding: 5}}>
-              {renderTransports()}
-            </ScrollView>
+            {renderTransports()}
             <ItemsContent>
               <IconHolder>
                 <Icon name="bed" color="#FFF" size={24} />
               </IconHolder>
               <Text.Title>Hospedagem</Text.Title>
             </ItemsContent>
-            <ScrollView
-              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-              scrollEventThrottle={16}
-              contentContainerStyle={{padding: 5}}>
-              {renderLodgings()}
-            </ScrollView>
+            {renderLodgings()}
             <ItemsContent>
               <IconHolder>
                 <Icon name="lightning-bolt" color="#FFF" size={24} />
               </IconHolder>
               <Text.Title>Atividades</Text.Title>
             </ItemsContent>
-            <ScrollView
-              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-              scrollEventThrottle={16}
-              contentContainerStyle={{padding: 5}}>
-              {renderActivities()}
-            </ScrollView>
+            {renderActivities()}
           </CardContent>
         </Card>
 
@@ -435,12 +420,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               <Text.Title>Dúvidas e Comentários</Text.Title>
             </RowGroup>
           </CardHeader>
-          <ScrollView
-            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-            scrollEventThrottle={16}
-            contentContainerStyle={{padding: 5}}>
-            {renderQuestions()}
-          </ScrollView>
+          {renderQuestions()}
         </Card>
 
         <Card>
@@ -452,12 +432,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               <Text.Title>Membros</Text.Title>
             </RowGroup>
           </CardHeader>
-          <ScrollView
-            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-            scrollEventThrottle={16}
-            contentContainerStyle={{padding: 5}}>
-            {renderMembers()}
-          </ScrollView>
+          {renderMembers()}
         </Card>
         <RowGroupSpaced>
           {isOpen(itinerary.status, () => (

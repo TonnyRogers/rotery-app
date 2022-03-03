@@ -55,6 +55,7 @@ import formatLocale from '../../providers/dayjs-format-locale';
 import {ScrollView} from 'react-native';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
+import {useUserIsHost} from '../../hooks/useUserIsHost';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -77,6 +78,7 @@ const validationSchema = yup.object().shape({
 const Profile: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const {isHost, conditionalRender} = useUserIsHost();
   const {
     register,
     handleSubmit,
@@ -86,7 +88,9 @@ const Profile: React.FC = () => {
   } = useForm({resolver: yupResolver(validationSchema)});
   const {data, loading} = useSelector((state: RootStateProps) => state.profile);
   const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {data: subscriptionData} = useSelector(
+    (state: RootStateProps) => state.subscription,
+  );
 
   useEffect(() => {
     if (data?.file && data.file?.url) {
@@ -149,8 +153,6 @@ const Profile: React.FC = () => {
       ),
     [data],
   );
-
-  const isHost = useMemo(() => user?.isHost, [user]);
 
   function alertToggle() {
     setAlertVisible(!alertVisible);
@@ -215,49 +217,11 @@ const Profile: React.FC = () => {
         data={[{id: '1', name: 'Profile'}]}
         renderItem={() => (
           <>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{height: 70, margin: 10}}>
-              <Button
-                onPress={() => financialNavigation()}
-                customContent
-                sizeHeight={70}
-                sizeWidth={70}
-                sizeMargin="0 2rem 0 0"
-                bgColor="blueTransparent"
-                textColor="white">
-                <ColumnGroup>
-                  <Icon name="wallet-outline" size={24} color="#4885fd" />
-                  <Text.Small textColor="blue" textWeight="bold">
-                    Carteira
-                  </Text.Small>
-                </ColumnGroup>
-              </Button>
-              {isHost && (
-                <Button
-                  onPress={() => navigation.navigate('HostSubscription')}
-                  customContent
-                  sizeHeight={70}
-                  sizeWidth={70}
-                  bgColor="blueTransparent"
-                  sizeMargin="0 2rem 0 0"
-                  textColor="white">
-                  <ColumnGroup>
-                    <Icon name="book-open-outline" size={24} color="#4885fd" />
-                    <Text.Small textColor="blue" textWeight="bold">
-                      Assinatura
-                    </Text.Small>
-                  </ColumnGroup>
-                </Button>
-              )}
-            </ScrollView>
             <Card>
-              <CardHeader>
-                <BackButton onPress={goBack}>
-                  <Icon name="chevron-left" size={24} color="#3dc77b" />
-                </BackButton>
-              </CardHeader>
+              <BackButton onPress={goBack}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+              <CardHeader />
               <User>
                 <Avatar
                   source={{uri: profileImage.uri}}
@@ -286,7 +250,62 @@ const Profile: React.FC = () => {
                 </Text>
               </User>
             </Card>
-
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{height: 70, margin: 10}}>
+              {conditionalRender(
+                subscriptionData && (
+                  <Button
+                    onPress={() => financialNavigation()}
+                    customContent
+                    sizeHeight={70}
+                    sizeWidth={70}
+                    sizeMargin="0 2rem 0 0"
+                    bgColor="blueTransparent"
+                    textColor="white">
+                    <ColumnGroup>
+                      <Icon name="wallet-outline" size={24} color="#4885fd" />
+                      <Text.Small textColor="blue" textWeight="bold">
+                        Carteira
+                      </Text.Small>
+                    </ColumnGroup>
+                  </Button>
+                ),
+                <Button
+                  onPress={() => financialNavigation()}
+                  customContent
+                  sizeHeight={70}
+                  sizeWidth={70}
+                  sizeMargin="0 2rem 0 0"
+                  bgColor="blueTransparent"
+                  textColor="white">
+                  <ColumnGroup>
+                    <Icon name="wallet-outline" size={24} color="#4885fd" />
+                    <Text.Small textColor="blue" textWeight="bold">
+                      Carteira
+                    </Text.Small>
+                  </ColumnGroup>
+                </Button>,
+              )}
+              {isHost && (
+                <Button
+                  onPress={() => navigation.navigate('HostSubscription')}
+                  customContent
+                  sizeHeight={70}
+                  sizeWidth={70}
+                  bgColor="blueTransparent"
+                  sizeMargin="0 2rem 0 0"
+                  textColor="white">
+                  <ColumnGroup>
+                    <Icon name="book-open-outline" size={24} color="#4885fd" />
+                    <Text.Small textColor="blue" textWeight="bold">
+                      Assinatura
+                    </Text.Small>
+                  </ColumnGroup>
+                </Button>
+              )}
+            </ScrollView>
             <Card>
               <InputContent>
                 <Input

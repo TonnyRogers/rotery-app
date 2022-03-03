@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useRef, useMemo, useEffect, useCallback} from 'react';
-import {View, ScrollView, Platform} from 'react-native';
+import {View, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm} from 'react-hook-form';
@@ -25,7 +25,6 @@ import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
-  Content,
   CardHeader,
   BackButton,
   CardContent,
@@ -260,211 +259,183 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
             ownerId: itinerary?.owner.id,
           }}
         />
-        <Container>
-          <Content
-            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-            shouldRasterizeIOS={!!(Platform.OS === 'ios')}
-            scrollEventThrottle={16}
-            nestedScrollEnabled
-            decelerationRate="normal">
-            <Card>
-              <CardHeader>
-                <BackButton onPress={goBack}>
-                  <Icon name="chevron-left" size={24} color="#3dc77b" />
-                </BackButton>
-              </CardHeader>
-              <CardContent>
-                <RowGroupSpaced>
-                  <Text.Paragraph
-                    textColor="primaryText"
-                    textWeight="bold"
-                    maxLines={1}>
-                    {itinerary.name}
-                  </Text.Paragraph>
-                  <Text.Paragraph textColor="primaryText" textWeight="bold">
-                    Vagas: {itinerary.capacity}
-                  </Text.Paragraph>
-                </RowGroupSpaced>
-                <RowGroupSpaced>
-                  <Text limitter={19} textWeight="light" maxLines={1}>
-                    {itinerary.location}
-                  </Text>
-                </RowGroupSpaced>
-                <StatusContent>
-                  <Status>
-                    <StatusName>{itinerary?.status}</StatusName>
-                  </Status>
-                </StatusContent>
-                <ImageCarousel data={itinerary?.photos} />
-                <View>
-                  <Text.Paragraph textColor="primaryText" textWeight="bold">
-                    Descrição:
-                  </Text.Paragraph>
-                  <Text textWeight="light">{itinerary?.description}</Text>
-                </View>
-                <HostContent>
-                  <HostLabel>
-                    <Icon name="compass-outline" size={24} color="#3dc77b" />
-                    <Label>Host</Label>
-                  </HostLabel>
-                  <Divider />
-                  <HostButton onPress={() => viewProfile(itinerary?.owner.id)}>
-                    <UserImage
-                      source={{
-                        uri: itinerary?.owner.profile.file?.url,
-                      }}
-                      resizeMode="cover"
-                    />
-                    <HostDetails>
-                      <Text
-                        textColor="primaryText"
-                        textWeight="bold"
-                        maxLines={1}>
-                        {itinerary?.owner.username}
-                      </Text>
-                      <RateStars>
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star" size={24} color="#3dc77b" />
-                        <Icon name="star-outline" size={24} color="#000" />
-                      </RateStars>
-                    </HostDetails>
-                  </HostButton>
-                </HostContent>
-                <ShadowBox>
-                  <DataContentHeader>
-                    <Icon
-                      name="calendar-blank-outline"
-                      color="#4885FD"
-                      size={24}
-                    />
-                    <Text.Paragraph textColor="primaryText" textWeight="bold">
-                      Datas
-                    </Text.Paragraph>
-                  </DataContentHeader>
-                  <RowGroupSpaced>
-                    <Text textColor="primaryText" textWeight="bold">
-                      Saida
-                    </Text>
-                    <Text textWeight="light">{beginDateFormated.current}</Text>
-                  </RowGroupSpaced>
-                  <RowGroupSpaced>
-                    <Text textColor="primaryText" textWeight="bold">
-                      Retorno
-                    </Text>
-                    <Text textWeight="light">{endDateFormated.current}</Text>
-                  </RowGroupSpaced>
-                  <RowGroupSpaced>
-                    <Text textColor="primaryText" textWeight="bold">
-                      Limite Inscrição
-                    </Text>
-                    <Text textWeight="light">{limitDateFormated.current}</Text>
-                  </RowGroupSpaced>
-                </ShadowBox>
-                <ItemsContent>
-                  <IconHolder>
-                    <Icon name="car" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Transporte</Text.Title>
-                </ItemsContent>
-                <ScrollView
-                  renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                  scrollEventThrottle={16}
-                  contentContainerStyle={{padding: 1}}>
-                  {renderTransports()}
-                </ScrollView>
-                <ItemsContent>
-                  <IconHolder>
-                    <Icon name="bed" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Hospedagem</Text.Title>
-                </ItemsContent>
-                <ScrollView
-                  renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                  scrollEventThrottle={16}
-                  contentContainerStyle={{padding: 1}}>
-                  {renderLodgings()}
-                </ScrollView>
-                <ItemsContent>
-                  <IconHolder>
-                    <Icon name="lightning-bolt" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Atividades</Text.Title>
-                </ItemsContent>
-                <ScrollView
-                  renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                  scrollEventThrottle={16}
-                  contentContainerStyle={{padding: 1}}>
-                  {renderActivities()}
-                </ScrollView>
-
-                {!isMember && (
-                  <JoinButton onPress={handleJoinItinerary}>
-                    <Icon name="location-enter" size={24} color="#FFF" />
-                    <JoinButtonText>Participar</JoinButtonText>
-                  </JoinButton>
-                )}
-                {isMember && isMember.isAccepted === false && (
-                  <JoinButton>
-                    <Icon name="location-enter" size={24} color="#FFF" />
-                    <JoinButtonText>Aguardando</JoinButtonText>
-                  </JoinButton>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <RowGroup>
-                  <IconHolder>
-                    <Icon
-                      name="frequently-asked-questions"
-                      color="#FFF"
-                      size={24}
-                    />
-                  </IconHolder>
-                  <Text.Title>Dúvidas e Comentários</Text.Title>
-                </RowGroup>
-              </CardHeader>
-              <ScrollView
-                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
-                {renderQuestions()}
-                <>
-                  <TextArea
-                    placeholder="faça uma pergunta..."
-                    value={watchQuestion}
-                    ref={questionRef}
-                    onChange={(value: string) => setValue('question', value)}
-                    error={errors.question?.message}
+        <Container
+          renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+          shouldRasterizeIOS={!!(Platform.OS === 'ios')}
+          scrollEventThrottle={16}
+          nestedScrollEnabled
+          decelerationRate="normal">
+          <Card>
+            <CardHeader>
+              <BackButton onPress={goBack}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+            </CardHeader>
+            <CardContent>
+              <RowGroupSpaced>
+                <Text.Paragraph
+                  textColor="primaryText"
+                  textWeight="bold"
+                  maxLines={1}>
+                  {itinerary.name}
+                </Text.Paragraph>
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
+                  Vagas: {itinerary.capacity}
+                </Text.Paragraph>
+              </RowGroupSpaced>
+              <RowGroupSpaced>
+                <Text limitter={19} textWeight="light" maxLines={1}>
+                  {itinerary.location}
+                </Text>
+              </RowGroupSpaced>
+              <StatusContent>
+                <Status>
+                  <StatusName>{itinerary?.status}</StatusName>
+                </Status>
+              </StatusContent>
+              <ImageCarousel data={itinerary?.photos} />
+              <View>
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
+                  Descrição:
+                </Text.Paragraph>
+                <Text textWeight="light">{itinerary?.description}</Text>
+              </View>
+              <HostContent>
+                <HostLabel>
+                  <Icon name="compass-outline" size={24} color="#3dc77b" />
+                  <Label>Host</Label>
+                </HostLabel>
+                <Divider />
+                <HostButton onPress={() => viewProfile(itinerary?.owner.id)}>
+                  <UserImage
+                    source={{
+                      uri: itinerary?.owner.profile.file?.url,
+                    }}
+                    resizeMode="cover"
                   />
-                  <SendButton onPress={handleSubmit(handleMakeQuestion)}>
-                    <Icon name="send-outline" size={24} color="#FFF" />
-                    <SendButtonText>Perguntar</SendButtonText>
-                  </SendButton>
-                </>
-              </ScrollView>
-            </Card>
+                  <HostDetails>
+                    <Text
+                      textColor="primaryText"
+                      textWeight="bold"
+                      maxLines={1}>
+                      {itinerary?.owner.username}
+                    </Text>
+                    <RateStars>
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star" size={24} color="#3dc77b" />
+                      <Icon name="star-outline" size={24} color="#000" />
+                    </RateStars>
+                  </HostDetails>
+                </HostButton>
+              </HostContent>
+              <ShadowBox>
+                <DataContentHeader>
+                  <Icon
+                    name="calendar-blank-outline"
+                    color="#4885FD"
+                    size={24}
+                  />
+                  <Text.Paragraph textColor="primaryText" textWeight="bold">
+                    Datas
+                  </Text.Paragraph>
+                </DataContentHeader>
+                <RowGroupSpaced>
+                  <Text textColor="primaryText" textWeight="bold">
+                    Saida
+                  </Text>
+                  <Text textWeight="light">{beginDateFormated.current}</Text>
+                </RowGroupSpaced>
+                <RowGroupSpaced>
+                  <Text textColor="primaryText" textWeight="bold">
+                    Retorno
+                  </Text>
+                  <Text textWeight="light">{endDateFormated.current}</Text>
+                </RowGroupSpaced>
+                <RowGroupSpaced>
+                  <Text textColor="primaryText" textWeight="bold">
+                    Limite Inscrição
+                  </Text>
+                  <Text textWeight="light">{limitDateFormated.current}</Text>
+                </RowGroupSpaced>
+              </ShadowBox>
+              <ItemsContent>
+                <IconHolder>
+                  <Icon name="car" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Transporte</Text.Title>
+              </ItemsContent>
+              {renderTransports()}
+              <ItemsContent>
+                <IconHolder>
+                  <Icon name="bed" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Hospedagem</Text.Title>
+              </ItemsContent>
+              {renderLodgings()}
+              <ItemsContent>
+                <IconHolder>
+                  <Icon name="lightning-bolt" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Atividades</Text.Title>
+              </ItemsContent>
+              {renderActivities()}
+              {!isMember && (
+                <JoinButton onPress={handleJoinItinerary}>
+                  <Icon name="location-enter" size={24} color="#FFF" />
+                  <JoinButtonText>Participar</JoinButtonText>
+                </JoinButton>
+              )}
+              {isMember && isMember.isAccepted === false && (
+                <JoinButton>
+                  <Icon name="location-enter" size={24} color="#FFF" />
+                  <JoinButtonText>Aguardando</JoinButtonText>
+                </JoinButton>
+              )}
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <RowGroup>
-                  <IconHolder>
-                    <Icon name="account-check-outline" color="#FFF" size={24} />
-                  </IconHolder>
-                  <Text.Title>Membros</Text.Title>
-                </RowGroup>
-              </CardHeader>
-              <ScrollView
-                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
-                {renderMembers()}
-              </ScrollView>
-            </Card>
-          </Content>
+          <Card>
+            <CardHeader>
+              <RowGroup>
+                <IconHolder>
+                  <Icon
+                    name="frequently-asked-questions"
+                    color="#FFF"
+                    size={24}
+                  />
+                </IconHolder>
+                <Text.Title>Dúvidas e Comentários</Text.Title>
+              </RowGroup>
+            </CardHeader>
+            {renderQuestions()}
+            <>
+              <TextArea
+                placeholder="faça uma pergunta..."
+                value={watchQuestion}
+                ref={questionRef}
+                onChange={(value: string) => setValue('question', value)}
+                error={errors.question?.message}
+              />
+              <SendButton onPress={handleSubmit(handleMakeQuestion)}>
+                <Icon name="send-outline" size={24} color="#FFF" />
+                <SendButtonText>Perguntar</SendButtonText>
+              </SendButton>
+            </>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <RowGroup>
+                <IconHolder>
+                  <Icon name="account-check-outline" color="#FFF" size={24} />
+                </IconHolder>
+                <Text.Title>Membros</Text.Title>
+              </RowGroup>
+            </CardHeader>
+            {renderMembers()}
+          </Card>
         </Container>
         <SplashScreen visible={false} />
       </>

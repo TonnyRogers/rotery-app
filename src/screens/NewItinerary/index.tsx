@@ -6,6 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
+import * as RootNavigation from '../../RootNavigation';
 import {formatBRL, clearValue, realToUSCash} from '../../lib/mask';
 import {createItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -28,7 +29,6 @@ import {hideNewItineraryGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
-  Content,
   CardContent,
   CardActions,
   SubmitButton,
@@ -46,14 +46,11 @@ import {
   IconHolder,
   AddButton,
   AddButtonText,
-  TransportList,
   ColumnGroup,
   FieldTitle,
   FieldValue,
   RemoveButton,
   HeaderActions,
-  LodgingList,
-  ActivityList,
   AddImageButton,
   CardHeader,
   BackButton,
@@ -82,6 +79,8 @@ import SplashScreen from '../../components/SplashScreen';
 import {newGuideImages} from '../../utils/constants';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import {theme} from '../../utils/theme';
+import api from '../../services/api';
+import {useIsAndroid} from '../../hooks/useIsAndroid';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -100,9 +99,16 @@ const validationOptionsSchema = yup.object().shape({
   description: yup.string(),
 });
 
+interface ValidateCreationReponse {
+  allowed: boolean;
+  count: number;
+  limit: number;
+}
+
 const NewItinerary: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {isAndroid, isIOs} = useIsAndroid();
   const {
     register,
     handleSubmit,
@@ -136,6 +142,18 @@ const NewItinerary: React.FC = () => {
   }, [getValues, optionRegister, register]);
 
   useEffect(() => {
+    async function verifyCreation() {
+      const {data} = await api.get<ValidateCreationReponse>(
+        '/itineraries/validate',
+      );
+
+      if (data && !data.allowed) {
+        RootNavigation.replace('Disclaimer');
+      }
+    }
+
+    verifyCreation();
+
     dispatch(getActivitiesRequest());
     dispatch(getLodgingsRequest());
     dispatch(getTransportsRequest());
@@ -435,161 +453,160 @@ const NewItinerary: React.FC = () => {
 
   return (
     <Page showHeader={false}>
-      <Container>
-        <Content>
-          <Card>
-            <CardHeader>
-              <BackButton onPress={goBack}>
+      <Container
+        showsVerticalScrollIndicator={true}
+        renderToHardwareTextureAndroid={isAndroid}
+        shouldRasterizeIOS={isIOs}
+        scrollEventThrottle={16}
+        decelerationRate="normal">
+        <Card>
+          <CardHeader>
+            <BackButton onPress={goBack}>
+              <Icon name="chevron-left" size={24} color={theme.colors.green} />
+            </BackButton>
+          </CardHeader>
+          <CardContent>
+            <Title>Visibilidade</Title>
+            <RowGroup>
+              <PublicButton
+                selected={privateItinerary}
+                onPress={() => setPrivateItinerary(false)}>
+                <PublicButtonText selected={privateItinerary}>
+                  Público
+                </PublicButtonText>
+              </PublicButton>
+              <PrivateButton
+                selected={privateItinerary}
+                onPress={() => setPrivateItinerary(true)}>
+                <PrivateButtonText selected={privateItinerary}>
+                  Privado
+                </PrivateButtonText>
+              </PrivateButton>
+            </RowGroup>
+            <Input
+              label="Nome do Roteiro"
+              placeholder="dê um nome para este roteiro."
+              ref={nameRef}
+              onChange={(value: string) => setValue('name', value)}
+              error={errors.name?.message}
+            />
+            <Title>Imagens</Title>
+            <ImageList>
+              {renderImages()}
+              <FileInput onSelect={addImages}>
+                <AddImageButton>
+                  <SIcon name="image-plus" color="#D9D8D8" size={30} />
+                </AddImageButton>
+              </FileInput>
+            </ImageList>
+            <Input
+              label="Limite de Vagas"
+              placeholder="numero máximo de vagas"
+              ref={vacanciesRef}
+              onChange={(value: string) => setValue('vacancies', value)}
+              error={errors.vacancies?.message}
+              keyboardType="number-pad"
+            />
+            <TextArea
+              label="Descrição"
+              placeholder="infomações adicionais sobre o roteiro"
+              onChange={(value: string) => setValue('description', value)}
+              error={errors.description?.message}
+              ref={descriptionRef}
+            />
+            <ShadowBox>
+              <DataContentHeader>
                 <Icon
-                  name="chevron-left"
+                  name="calendar-blank-outline"
+                  color={theme.colors.blue}
                   size={24}
-                  color={theme.colors.green}
                 />
-              </BackButton>
-            </CardHeader>
-            <CardContent>
-              <Title>Visibilidade</Title>
-              <RowGroup>
-                <PublicButton
-                  selected={privateItinerary}
-                  onPress={() => setPrivateItinerary(false)}>
-                  <PublicButtonText selected={privateItinerary}>
-                    Público
-                  </PublicButtonText>
-                </PublicButton>
-                <PrivateButton
-                  selected={privateItinerary}
-                  onPress={() => setPrivateItinerary(true)}>
-                  <PrivateButtonText selected={privateItinerary}>
-                    Privado
-                  </PrivateButtonText>
-                </PrivateButton>
-              </RowGroup>
-              <Input
-                label="Nome do Roteiro"
-                placeholder="dê um nome para este roteiro."
-                ref={nameRef}
-                onChange={(value: string) => setValue('name', value)}
-                error={errors.name?.message}
+                <ContentTitle>Datas</ContentTitle>
+              </DataContentHeader>
+              <DateTimeInput
+                label="Saida"
+                date={watchDateOut}
+                onChange={(value: Date) => setValue('dateOut', value)}
+                error={errors.dateOut?.message}
               />
-              <Title>Imagens</Title>
-              <ImageList>
-                {renderImages()}
-                <FileInput onSelect={addImages}>
-                  <AddImageButton>
-                    <SIcon name="image-plus" color="#D9D8D8" size={30} />
-                  </AddImageButton>
-                </FileInput>
-              </ImageList>
-              <Input
-                label="Limite de Vagas"
-                placeholder="numero máximo de vagas"
-                ref={vacanciesRef}
-                onChange={(value: string) => setValue('vacancies', value)}
-                error={errors.vacancies?.message}
-                keyboardType="number-pad"
+              <DateTimeInput
+                label="Retorno"
+                date={watchDateReturn}
+                onChange={(value: Date) => setValue('dateReturn', value)}
+                error={errors.dateReturn?.message}
               />
-              <TextArea
-                label="Descrição"
-                placeholder="infomações adicionais sobre o roteiro"
-                onChange={(value: string) => setValue('description', value)}
-                error={errors.description?.message}
-                ref={descriptionRef}
+              <DateTimeInput
+                label="Limite para inscrição"
+                date={watchDateLimit}
+                onChange={(value: Date) => setValue('dateLimit', value)}
+                error={errors.dateLimit?.message}
               />
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon
-                    name="calendar-blank-outline"
-                    color={theme.colors.blue}
-                    size={24}
-                  />
-                  <ContentTitle>Datas</ContentTitle>
-                </DataContentHeader>
-                <DateTimeInput
-                  label="Saida"
-                  date={watchDateOut}
-                  onChange={(value: Date) => setValue('dateOut', value)}
-                  error={errors.dateOut?.message}
-                />
-                <DateTimeInput
-                  label="Retorno"
-                  date={watchDateReturn}
-                  onChange={(value: Date) => setValue('dateReturn', value)}
-                  error={errors.dateReturn?.message}
-                />
-                <DateTimeInput
-                  label="Limite para inscrição"
-                  date={watchDateLimit}
-                  onChange={(value: Date) => setValue('dateLimit', value)}
-                  error={errors.dateLimit?.message}
-                />
-              </ShadowBox>
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon
-                    name="map-check-outline"
-                    color={theme.colors.blue}
-                    size={24}
-                  />
-                  <ContentTitle>Destino</ContentTitle>
-                </DataContentHeader>
-                <LocationPickerInput.Button
-                  title="Endereço"
-                  value={watchLocation}
-                  onPress={() => setLocationIsOpen(true)}
-                  error={errors.location?.message}
-                />
-              </ShadowBox>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="car" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Transporte</ContentTitle>
-              </RowGroup>
-              <TransportList>{renderTransports()}</TransportList>
-              <NewTransportButton onPress={() => setAddTransportVisible(true)}>
+            </ShadowBox>
+            <ShadowBox>
+              <DataContentHeader>
                 <Icon
-                  name="plus-box-outline"
-                  color={theme.colors.green}
-                  size={30}
+                  name="map-check-outline"
+                  color={theme.colors.blue}
+                  size={24}
                 />
-              </NewTransportButton>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="bed" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Hospedagem</ContentTitle>
-              </RowGroup>
-              <LodgingList>{renderLodgings()}</LodgingList>
-              <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
-                <Icon
-                  name="plus-box-outline"
-                  color={theme.colors.green}
-                  size={30}
-                />
-              </NewLodginButton>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="lightning-bolt" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Atividades</ContentTitle>
-              </RowGroup>
-              <ActivityList>{renderActivities()}</ActivityList>
-              <NewActivityButton onPress={() => setAddActivityVisible(true)}>
-                <Icon
-                  name="plus-box-outline"
-                  color={theme.colors.green}
-                  size={30}
-                />
-              </NewActivityButton>
-            </CardContent>
-            <CardActions>
-              <SubmitButton onPress={handleSubmit(onSubmit)}>
-                <SubmitButtonText>Salvar</SubmitButtonText>
-              </SubmitButton>
-            </CardActions>
-          </Card>
-        </Content>
+                <ContentTitle>Destino</ContentTitle>
+              </DataContentHeader>
+              <LocationPickerInput.Button
+                title="Endereço"
+                value={watchLocation}
+                onPress={() => setLocationIsOpen(true)}
+                error={errors.location?.message}
+              />
+            </ShadowBox>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="car" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Transporte</ContentTitle>
+            </RowGroup>
+            {renderTransports()}
+            <NewTransportButton onPress={() => setAddTransportVisible(true)}>
+              <Icon
+                name="plus-box-outline"
+                color={theme.colors.green}
+                size={30}
+              />
+            </NewTransportButton>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="bed" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Hospedagem</ContentTitle>
+            </RowGroup>
+            {renderLodgings()}
+            <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
+              <Icon
+                name="plus-box-outline"
+                color={theme.colors.green}
+                size={30}
+              />
+            </NewLodginButton>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="lightning-bolt" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Atividades</ContentTitle>
+            </RowGroup>
+            {renderActivities()}
+            <NewActivityButton onPress={() => setAddActivityVisible(true)}>
+              <Icon
+                name="plus-box-outline"
+                color={theme.colors.green}
+                size={30}
+              />
+            </NewActivityButton>
+          </CardContent>
+          <CardActions>
+            <SubmitButton onPress={handleSubmit(onSubmit)}>
+              <SubmitButtonText>Salvar</SubmitButtonText>
+            </SubmitButton>
+          </CardActions>
+        </Card>
       </Container>
       <Modal
         title="Adicionar Transporte"

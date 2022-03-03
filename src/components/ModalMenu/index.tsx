@@ -21,6 +21,7 @@ import {
   CloseButton,
 } from './styles';
 import Text from '../Text';
+import {useUserIsHost} from '../../hooks/useUserIsHost';
 
 interface ModalMenuProps {
   visible: boolean;
@@ -32,6 +33,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
   const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {conditionalRender} = useUserIsHost();
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -172,10 +174,16 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
             />
             <MenuButtonText active={user?.isHost}>Meus Roteiros</MenuButtonText>
           </MenuButton>
-          <MenuButton onPress={toNextItineraries}>
-            <Icon name="map-check" size={24} color="#FFF" />
-            <MenuButtonText>Próximos Roteiros</MenuButtonText>
-          </MenuButton>
+          {conditionalRender(
+            <MenuButton onPress={toNewItinerary}>
+              <Icon name="plus-box-outline" size={24} color="#FFF" />
+              <MenuButtonText>Novo{'\n'}Roteiro</MenuButtonText>
+            </MenuButton>,
+            <MenuButton onPress={toNextItineraries}>
+              <Icon name="map-check" size={24} color="#FFF" />
+              <MenuButtonText>Próximos Roteiros</MenuButtonText>
+            </MenuButton>,
+          )}
           <MenuButton onPress={toConnections}>
             <Icon name="link-variant" size={24} color="#FFF" />
             <MenuButtonText>Minhas Conexões</MenuButtonText>
@@ -183,19 +191,6 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
           <MenuButton onPress={toFeed}>
             <Icon name="format-list-text" size={24} color="#FFF" />
             <MenuButtonText>Feed</MenuButtonText>
-          </MenuButton>
-          <MenuButton
-            active={user?.isHost}
-            disabled={!user?.isHost}
-            onPress={toNewItinerary}>
-            <Icon
-              name="plus-box-outline"
-              size={24}
-              color={user?.isHost ? '#FFF' : '#999'}
-            />
-            <MenuButtonText active={user?.isHost}>
-              Novo{'\n'}Roteiro
-            </MenuButtonText>
           </MenuButton>
         </Actions>
         <SignOutButton onPress={() => handleLogout()}>

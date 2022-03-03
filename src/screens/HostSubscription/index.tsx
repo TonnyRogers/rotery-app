@@ -83,7 +83,7 @@ const HostSubscription = () => {
   useEffect(() => {
     const getPlan = async () => {
       const response: AxiosResponse<Plan> = await api.get(
-        '/subscriptions/plan/3',
+        '/subscriptions/plan/1',
       );
 
       setPlan(response.data);
@@ -262,13 +262,23 @@ const HostSubscription = () => {
                 <ImageContainer.Hero url="https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-banner.webp" />
                 <Text.Paragraph alignment="start">
                   Com a assinatura você pode oferecer pagamento online (com
-                  cartão de crédito) para os viajantes e rebecer tudo por dentro
-                  do app.
+                  cartão de crédito) para os viajantes e rebecer tudo pelo do
+                  app.
                 </Text.Paragraph>
                 <Divider />
                 <ImageContainer.Hero url="https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-sobre-conexoes.webp" />
                 <Text.Paragraph alignment="start">
                   Você também pode criar quantos roteiros desejar sem limites.
+                </Text.Paragraph>
+                <Divider />
+                <Text.Paragraph alignment="start">
+                  O plano é mensal com a duração de 12 meses, podendo ser
+                  cancelado a qualquer momento sem taxas ou qualquer surpresa.
+                </Text.Paragraph>
+                <Divider />
+                <Text.Paragraph alignment="start">
+                  É indicado para Guias com demanda moderada que buscam expansão
+                  do seu negócio, conte com a Rotery.
                 </Text.Paragraph>
                 <Divider />
                 <Text.Paragraph alignment="start">Assine ja!</Text.Paragraph>
