@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
+import Toast from 'react-native-toast-message';
 import * as yup from 'yup';
 
 import * as RootNavigation from '../../RootNavigation';
@@ -81,6 +82,7 @@ import LocationPickerInput from '../../components/LocationPickerInput';
 import {theme} from '../../utils/theme';
 import api from '../../services/api';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
+import {translateError} from '../../lib/utils';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -143,12 +145,21 @@ const NewItinerary: React.FC = () => {
 
   useEffect(() => {
     async function verifyCreation() {
-      const {data} = await api.get<ValidateCreationReponse>(
-        '/itineraries/validate',
-      );
+      try {
+        const {data} = await api.get<ValidateCreationReponse>(
+          '/itineraries/validate',
+        );
 
-      if (data && !data.allowed) {
-        RootNavigation.replace('Disclaimer');
+        if (data && !data.allowed) {
+          RootNavigation.replace('Disclaimer');
+        }
+      } catch (error) {
+        RootNavigation.goBack();
+        Toast.show({
+          text1: `${translateError(error?.response.data.message)}`,
+          position: 'bottom',
+          type: 'error',
+        });
       }
     }
 

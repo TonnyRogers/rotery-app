@@ -51,6 +51,9 @@ export function translateError(errorMessage: string): string {
     case "You can't join to this itinerary anymore.":
       translated = 'Data limite de inscrição encerrada.';
       break;
+    case 'Error on validade creation try again.':
+      translated = 'Não foi possivel validar esta ação tente mais tarde.';
+      break;
 
     default:
       translated = `${errorMessage}`;
