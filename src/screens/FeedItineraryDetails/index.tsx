@@ -1,9 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useRef, useMemo, useEffect, useCallback} from 'react';
-import {View, ScrollView, Platform} from 'react-native';
+import {View, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -11,11 +10,11 @@ import * as yup from 'yup';
 import {formatBRL} from '../../lib/mask';
 import {
   ItineraryProps,
-  ActivityProps,
   QuestionProps,
   MemberProps,
-  LodgingProps,
-  TransportProps,
+  ItineraryTransportItemProps,
+  ItineraryLodgingItemProps,
+  ItineraryActivityItemProps,
 } from '../../utils/types';
 import {
   makeQuestionRequest,
@@ -27,7 +26,6 @@ import isOpen from '../../guards/itineraryStatus';
 
 import {
   Container,
-  Content,
   CardHeader,
   BackButton,
   CardContent,
@@ -51,6 +49,7 @@ import {
   StatusContent,
   Status,
   StatusName,
+  ItemsContent,
 } from './styles';
 import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
@@ -62,6 +61,10 @@ import Share from '../../components/Share';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
+import formatLocale from '../../providers/dayjs-format-locale';
+import Empty from '../../components/Empty';
+import Toast from 'react-native-toast-message';
+import {CheckoutRouteParamsProps} from '../Checkout';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required('campo obrigatório'),
@@ -80,6 +83,9 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const {id} = route.params;
   const {itineraries, loading} = useSelector(
     (state: RootStateProps) => state.feed,
+  );
+  const {itineraries: nextItineraries} = useSelector(
+    (state: RootStateProps) => state.nextItineraries,
   );
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {
@@ -107,8 +113,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   const isMember = useMemo(
     () =>
       itinerary?.members &&
-      itinerary.members.find((member: MemberProps) => member.id === user.id),
-    [itinerary, user.id],
+      itinerary.members.find(
+        (member: MemberProps) => member.user.id === user?.id,
+      ),
+    [itinerary, user],
   );
 
   useEffect(() => {
@@ -116,30 +124,27 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   }, [register]);
 
   useEffect(() => {
-    if (isMember && isMember.pivot.accepted === true) {
+    if (
+      isMember &&
+      isMember.isAccepted === true &&
+      nextItineraries?.find((item) => item.id === isMember.itinerary)
+    ) {
       RootNavigation.replace('NextItineraryDetails', {id});
     }
-  }, [id, isMember]);
+  }, [id, isMember, nextItineraries]);
 
   useMemo(() => {
-    beginDateFormated.current = format(
-      new Date(itinerary?.begin || ''),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
+    beginDateFormated.current = formatLocale(
+      String(itinerary?.begin),
+      ' DD MMM YYYY H:mm',
     );
-    endDateFormated.current = format(
-      new Date(itinerary?.end || ''),
-      ' dd MMM yyyy H:mm',
-      {
-        locale: pt,
-      },
+    endDateFormated.current = formatLocale(
+      String(itinerary?.end),
+      ' DD MMM YYYY H:mm',
     );
-    limitDateFormated.current = format(
-      new Date(itinerary?.deadline_for_join || ''),
-      ' dd MMM yyyy H:mm',
-      {locale: pt},
+    limitDateFormated.current = formatLocale(
+      String(itinerary?.deadlineForJoin),
+      ' DD MMM YYYY H:mm',
     );
   }, [itinerary]);
 
@@ -151,47 +156,47 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
 
   const renderTransports = useCallback(
     () =>
-      itinerary?.transports.map((transport: TransportProps) => (
-        <ShadowBox key={transport.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
-            {transport.name}
-          </Text.Paragraph>
-          <Text textWeight="light">{transport.pivot?.description}</Text>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{transport.pivot?.capacity}</Text>
-            </ColumnGroup>
-            <ColumnGroup>
-              <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(transport.pivot?.price))}
-              </Text>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
+      itinerary?.transports.map(
+        (transport: ItineraryTransportItemProps, index) => (
+          <ShadowBox key={'transport' + index}>
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
+              {transport.transport.name}
+            </Text.Paragraph>
+            <Text textWeight="light">{transport.description}</Text>
+            <RowGroupSpaced>
+              <ColumnGroup>
+                <Text textWeight="light">Capacidade</Text>
+                <Text textWeight="bold">{transport.capacity}</Text>
+              </ColumnGroup>
+              <ColumnGroup>
+                <Text textWeight="light">Preço</Text>
+                <Text textWeight="bold">
+                  {formatBRL(String(transport.price))}
+                </Text>
+              </ColumnGroup>
+            </RowGroupSpaced>
+          </ShadowBox>
+        ),
+      ),
     [itinerary],
   );
 
   const renderLodgings = useCallback(
     () =>
-      itinerary?.lodgings.map((lodging: LodgingProps) => (
-        <ShadowBox key={lodging.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
-            {lodging.name}
+      itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps, index) => (
+        <ShadowBox key={'lodging' + index}>
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
+            {lodging.lodging.name}
           </Text.Paragraph>
-          <Text textWeight="light">{lodging.pivot?.description}</Text>
+          <Text textWeight="light">{lodging.description}</Text>
           <RowGroupSpaced>
             <ColumnGroup>
               <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{lodging.pivot?.capacity}</Text>
+              <Text textWeight="bold">{lodging.capacity}</Text>
             </ColumnGroup>
             <ColumnGroup>
               <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(lodging.pivot?.price))}
-              </Text>
+              <Text textWeight="bold">{formatBRL(String(lodging.price))}</Text>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>
@@ -201,26 +206,28 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
 
   const renderActivities = useCallback(
     () =>
-      itinerary?.activities.map((activity: ActivityProps) => (
-        <ShadowBox key={activity.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
-            {activity.name}
-          </Text.Paragraph>
-          <Text textWeight="light">{activity.pivot?.description}</Text>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{activity.pivot?.capacity}</Text>
-            </ColumnGroup>
-            <ColumnGroup>
-              <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(activity.pivot?.price))}
-              </Text>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
+      itinerary?.activities.map(
+        (activity: ItineraryActivityItemProps, index) => (
+          <ShadowBox key={'activity' + index}>
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
+              {activity.activity.name}
+            </Text.Paragraph>
+            <Text textWeight="light">{activity.description}</Text>
+            <RowGroupSpaced>
+              <ColumnGroup>
+                <Text textWeight="light">Capacidade</Text>
+                <Text textWeight="bold">{activity.capacity}</Text>
+              </ColumnGroup>
+              <ColumnGroup>
+                <Text textWeight="light">Preço</Text>
+                <Text textWeight="bold">
+                  {formatBRL(String(activity.price))}
+                </Text>
+              </ColumnGroup>
+            </RowGroupSpaced>
+          </ShadowBox>
+        ),
+      ),
     [itinerary],
   );
 
@@ -228,7 +235,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     () =>
       itinerary?.members.map(
         (member: MemberProps) =>
-          member.pivot.accepted && (
+          member.isAccepted && (
             <ItineraryMember
               member={member}
               key={member.id}
@@ -252,20 +259,36 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   );
 
   const renderJoinButton = useCallback(() => {
-    if (itinerary) {
+    if (itinerary && !user?.isHost) {
       function handleJoinItinerary() {
-        dispatch(joinRequest(id));
+        if (itinerary?.requestPayment) {
+          if (Date.parse(itinerary.deadlineForJoin) > Date.now()) {
+            RootNavigation.navigate<CheckoutRouteParamsProps>('Checkout', {
+              data: itinerary,
+              paymentType: 'itinerary',
+              hasInstallments: true,
+            });
+          } else {
+            Toast.show({
+              text1: 'Prazo para participar encerrado.',
+              position: 'bottom',
+              type: 'error',
+            });
+          }
+        } else {
+          dispatch(joinRequest(id));
+        }
       }
 
-      return isOpen(itinerary?.status.id, () =>
+      return isOpen(itinerary.status, () =>
         !isMember ? (
           <JoinButton onPress={handleJoinItinerary}>
             <Icon name="location-enter" size={24} color="#FFF" />
             <JoinButtonText>Participar</JoinButtonText>
           </JoinButton>
         ) : (
-          isMember.pivot.accepted === false && (
-            <JoinButton>
+          isMember.isAccepted === false && (
+            <JoinButton onPress={() => {}}>
               <Icon name="location-enter" size={24} color="#FFF" />
               <JoinButtonText>Aguardando</JoinButtonText>
             </JoinButton>
@@ -273,10 +296,10 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
         ),
       );
     }
-  }, [dispatch, id, isMember, itinerary]);
+  }, [dispatch, id, isMember, itinerary, user]);
 
   const renderQuestionForm = useCallback(() => {
-    if (itinerary) {
+    if (itinerary && !user?.isHost) {
       const handleMakeQuestion = (data: any) => {
         if (itinerary) {
           dispatch(makeQuestionRequest(itinerary?.id, data.question));
@@ -284,7 +307,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
         }
       };
 
-      return isOpen(itinerary?.status.id, () => (
+      return isOpen(itinerary.status, () => (
         <>
           <TextArea
             placeholder="faça uma pergunta..."
@@ -306,6 +329,7 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
     handleSubmit,
     itinerary,
     setValue,
+    user,
     watchQuestion,
   ]);
 
@@ -316,7 +340,14 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
   }
 
   if (!itinerary) {
-    return null;
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
   }
 
   return (
@@ -326,190 +357,156 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
           id: itinerary?.id,
           type: 'itinerary',
           componentType: 'connectionShareList',
-          ownerId: itinerary?.owner_id,
+          ownerId: itinerary.owner.id,
         }}
       />
-      <Container>
-        <Content
-          renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-          shouldRasterizeIOS={!!(Platform.OS === 'ios')}
-          scrollEventThrottle={16}
-          nestedScrollEnabled
-          decelerationRate="normal">
-          <Card>
-            <CardHeader>
-              <BackButton onPress={goBack}>
-                <Icon name="chevron-left" size={24} color="#3dc77b" />
-              </BackButton>
-            </CardHeader>
-            <CardContent>
+      <Container
+        renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+        shouldRasterizeIOS={!!(Platform.OS === 'ios')}
+        scrollEventThrottle={16}
+        nestedScrollEnabled
+        decelerationRate="normal">
+        <Card>
+          <CardHeader>
+            <BackButton onPress={goBack}>
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </BackButton>
+          </CardHeader>
+          <CardContent>
+            <RowGroupSpaced>
+              <Text.Paragraph
+                textColor="primaryText"
+                textWeight="bold"
+                maxLines={1}>
+                {itinerary?.name}
+              </Text.Paragraph>
+              <Text.Paragraph textColor="primaryText" textWeight="bold">
+                Vagas: {itinerary?.capacity}
+              </Text.Paragraph>
+            </RowGroupSpaced>
+            <RowGroupSpaced>
+              <Text limitter={19} textWeight="light" maxLines={1}>
+                {itinerary?.location}
+              </Text>
+            </RowGroupSpaced>
+            <StatusContent>
+              <Status>
+                <StatusName>{itinerary.status}</StatusName>
+              </Status>
+            </StatusContent>
+            <ImageCarousel data={itinerary?.photos} />
+            <View>
+              <Text.Paragraph textColor="primaryText" textWeight="bold">
+                Descrição:
+              </Text.Paragraph>
+              <Text textWeight="light">{itinerary?.description}</Text>
+            </View>
+            <HostContent>
+              <HostLabel>
+                <Icon name="compass-outline" size={24} color="#3dc77b" />
+                <Label>Host</Label>
+              </HostLabel>
+              <Divider />
+              <HostButton onPress={() => viewProfile(itinerary.owner.id)}>
+                <UserImage
+                  source={{
+                    uri: itinerary.owner.profile.file?.url || undefined,
+                  }}
+                  resizeMode="cover"
+                />
+                <HostDetails>
+                  <Text textColor="primaryText" textWeight="bold" maxLines={1}>
+                    {itinerary?.owner.username}
+                  </Text>
+                  <RateStars>
+                    <Icon name="star" size={24} color="#3dc77b" />
+                    <Icon name="star" size={24} color="#3dc77b" />
+                    <Icon name="star" size={24} color="#3dc77b" />
+                    <Icon name="star" size={24} color="#3dc77b" />
+                    <Icon name="star-outline" size={24} color="#000" />
+                  </RateStars>
+                </HostDetails>
+              </HostButton>
+            </HostContent>
+            <ShadowBox>
+              <DataContentHeader>
+                <Icon name="calendar-blank-outline" color="#4885FD" size={24} />
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
+                  Datas
+                </Text.Paragraph>
+              </DataContentHeader>
               <RowGroupSpaced>
-                <Text.Paragraph
-                  textColor="primary"
-                  textWeight="bold"
-                  maxLines={1}>
-                  {itinerary?.name}
-                </Text.Paragraph>
-                <Text.Paragraph textColor="primary" textWeight="bold">
-                  Vagas: {itinerary?.capacity}
-                </Text.Paragraph>
+                <Text textColor="primaryText" textWeight="bold">
+                  Saida
+                </Text>
+                <Text textWeight="light">{beginDateFormated.current}</Text>
               </RowGroupSpaced>
               <RowGroupSpaced>
-                <Text limitter={19} textWeight="light" maxLines={1}>
-                  {itinerary?.location}
+                <Text textColor="primaryText" textWeight="bold">
+                  Retorno
                 </Text>
-                <Text textWeight="light" maxLines={1}>
-                  {beginDateFormated.current}
-                </Text>
+                <Text textWeight="light">{endDateFormated.current}</Text>
               </RowGroupSpaced>
-              <StatusContent>
-                <Status>
-                  <StatusName>{itinerary?.status.name}</StatusName>
-                </Status>
-              </StatusContent>
-              <ImageCarousel data={itinerary?.photos} />
-              <View>
-                <Text.Paragraph textColor="primary" textWeight="bold">
-                  Descrição:
-                </Text.Paragraph>
-                <Text textWeight="light">{itinerary?.description}</Text>
-              </View>
-              <HostContent>
-                <HostLabel>
-                  <Icon name="compass-outline" size={24} color="#3dc77b" />
-                  <Label>Host</Label>
-                </HostLabel>
-                <Divider />
-                <HostButton onPress={() => viewProfile(itinerary?.owner.id)}>
-                  <UserImage
-                    source={{
-                      uri: itinerary?.owner.person.file?.url || undefined,
-                    }}
-                    resizeMode="cover"
-                  />
-                  <HostDetails>
-                    <Text textColor="primary" textWeight="bold" maxLines={1}>
-                      {itinerary?.owner.username}
-                    </Text>
-                    <RateStars>
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star-outline" size={24} color="#000" />
-                    </RateStars>
-                  </HostDetails>
-                </HostButton>
-              </HostContent>
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon
-                    name="calendar-blank-outline"
-                    color="#4885FD"
-                    size={24}
-                  />
-                  <Text.Paragraph textColor="primary" textWeight="bold">
-                    Datas
-                  </Text.Paragraph>
-                </DataContentHeader>
-                <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
-                    Saida
-                  </Text>
-                  <Text textWeight="light">{beginDateFormated.current}</Text>
-                </RowGroupSpaced>
-                <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
-                    Retorno
-                  </Text>
-                  <Text textWeight="light">{endDateFormated.current}</Text>
-                </RowGroupSpaced>
-                <RowGroupSpaced>
-                  <Text textColor="primary" textWeight="bold">
-                    Limite Incrição
-                  </Text>
-                  <Text textWeight="light">{limitDateFormated.current}</Text>
-                </RowGroupSpaced>
-              </ShadowBox>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="car" color="#FFF" size={24} />
-                </IconHolder>
-                <Text.Title>Transporte</Text.Title>
-              </RowGroup>
-              <ScrollView
-                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
-                {renderTransports()}
-              </ScrollView>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="bed" color="#FFF" size={24} />
-                </IconHolder>
-                <Text.Title>Hospedagem</Text.Title>
-              </RowGroup>
-              <ScrollView
-                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
-                {renderLodgings()}
-              </ScrollView>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="lightning-bolt" color="#FFF" size={24} />
-                </IconHolder>
-                <Text.Title>Atividades</Text.Title>
-              </RowGroup>
-              <ScrollView
-                renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-                scrollEventThrottle={16}
-                contentContainerStyle={{padding: 1}}>
-                {renderActivities()}
-              </ScrollView>
-              {renderJoinButton()}
-            </CardContent>
-          </Card>
+              <RowGroupSpaced>
+                <Text textColor="primaryText" textWeight="bold">
+                  Limite Inscrição
+                </Text>
+                <Text textWeight="light">{limitDateFormated.current}</Text>
+              </RowGroupSpaced>
+            </ShadowBox>
+            <ItemsContent>
+              <IconHolder>
+                <Icon name="car" color="#FFF" size={24} />
+              </IconHolder>
+              <Text.Title>Transporte</Text.Title>
+            </ItemsContent>
+            {renderTransports()}
+            <ItemsContent>
+              <IconHolder>
+                <Icon name="bed" color="#FFF" size={24} />
+              </IconHolder>
+              <Text.Title>Hospedagem</Text.Title>
+            </ItemsContent>
+            {renderLodgings()}
+            <ItemsContent>
+              <IconHolder>
+                <Icon name="lightning-bolt" color="#FFF" size={24} />
+              </IconHolder>
+              <Text.Title>Atividades</Text.Title>
+            </ItemsContent>
+            {renderActivities()}
+            {renderJoinButton()}
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <RowGroup>
-                <IconHolder>
-                  <Icon
-                    name="frequently-asked-questions"
-                    color="#FFF"
-                    size={24}
-                  />
-                </IconHolder>
-                <Text.Title>Dúvidas e Comentários</Text.Title>
-              </RowGroup>
-            </CardHeader>
-            <ScrollView
-              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-              scrollEventThrottle={16}
-              contentContainerStyle={{padding: 1}}>
-              {renderQuestions()}
-              {renderQuestionForm()}
-            </ScrollView>
-          </Card>
+        <Card>
+          <CardHeader>
+            <RowGroup>
+              <IconHolder>
+                <Icon
+                  name="frequently-asked-questions"
+                  color="#FFF"
+                  size={24}
+                />
+              </IconHolder>
+              <Text.Title>Dúvidas e Comentários</Text.Title>
+            </RowGroup>
+          </CardHeader>
+          {renderQuestions()}
+          {renderQuestionForm()}
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="account-check-outline" color="#FFF" size={24} />
-                </IconHolder>
-                <Text.Title>Membros</Text.Title>
-              </RowGroup>
-            </CardHeader>
-            <ScrollView
-              renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-              scrollEventThrottle={16}
-              contentContainerStyle={{padding: 1}}>
-              {renderMembers()}
-            </ScrollView>
-          </Card>
-        </Content>
+        <Card>
+          <CardHeader>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="account-check-outline" color="#FFF" size={24} />
+              </IconHolder>
+              <Text.Title>Membros</Text.Title>
+            </RowGroup>
+          </CardHeader>
+          {renderMembers()}
+        </Card>
       </Container>
       <SplashScreen visible={loading} />
     </Page>

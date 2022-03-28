@@ -1,4 +1,4 @@
-import {FavoriteProps} from '../../../utils/types';
+import {ItineraryProps} from '../../../utils/types';
 
 export enum FavoritesActions {
   GET_FAVORITES_REQUEST = '@favorites/GET_FAVORITES_REQUEST',
@@ -18,7 +18,7 @@ export function getFavoritesRequest() {
   };
 }
 
-export function getFavoritesSuccess(favorites: FavoriteProps[]) {
+export function getFavoritesSuccess(favorites: ItineraryProps[]) {
   return {
     type: FavoritesActions.GET_FAVORITES_SUCCESS,
     payload: {favorites},
@@ -38,7 +38,7 @@ export function setFavoriteRequest(itineraryId: number) {
   };
 }
 
-export function setFavoriteSuccess(favorite: FavoriteProps) {
+export function setFavoriteSuccess(favorite: ItineraryProps) {
   return {
     type: FavoritesActions.SET_FAVORITE_SUCCESS,
     payload: {favorite},

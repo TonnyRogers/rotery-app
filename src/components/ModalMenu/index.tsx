@@ -21,6 +21,7 @@ import {
   CloseButton,
 } from './styles';
 import Text from '../Text';
+import {useUserIsHost} from '../../hooks/useUserIsHost';
 
 interface ModalMenuProps {
   visible: boolean;
@@ -31,6 +32,8 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const dispatch = useDispatch();
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {conditionalRender} = useUserIsHost();
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -48,7 +51,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
     }).start();
     setTimeout(() => {
       onRequestClose();
-    }, 400);
+    }, 500);
   }, [height, onRequestClose, panY.y]);
 
   const panRespoders = useRef(
@@ -89,8 +92,10 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   }
 
   function toItineraries() {
-    onRequestClose();
-    RootNavigation.replace('MyItineraries');
+    if (user?.isHost) {
+      onRequestClose();
+      RootNavigation.replace('MyItineraries');
+    }
   }
 
   function toNextItineraries() {
@@ -117,6 +122,11 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   function toFeed() {
     onRequestClose();
     RootNavigation.replace('Feed');
+  }
+
+  function toNewItinerary() {
+    onRequestClose();
+    RootNavigation.navigate('NewItinerary');
   }
 
   if (!visible) {
@@ -153,14 +163,29 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
               <Counter>{unreadCounter}</Counter>
             </CounterContent>
           </MenuButton>
-          <MenuButton onPress={toItineraries}>
-            <Icon name="map-outline" size={24} color="#FFF" />
-            <MenuButtonText>Meus Roteiros</MenuButtonText>
+          <MenuButton
+            active={user?.isHost}
+            onPress={toItineraries}
+            disabled={!user?.isHost}>
+            <Icon
+              name="map-outline"
+              size={24}
+              color={user?.isHost ? '#FFF' : '#999'}
+            />
+            <MenuButtonText active={user?.isHost}>
+              Meus{'\n'}Roteiros
+            </MenuButtonText>
           </MenuButton>
-          <MenuButton onPress={toNextItineraries}>
-            <Icon name="map-check" size={24} color="#FFF" />
-            <MenuButtonText>Próximos Roteiros</MenuButtonText>
-          </MenuButton>
+          {conditionalRender(
+            <MenuButton onPress={toNewItinerary}>
+              <Icon name="plus-box-outline" size={24} color="#FFF" />
+              <MenuButtonText>Novo{'\n'}Roteiro</MenuButtonText>
+            </MenuButton>,
+            <MenuButton onPress={toNextItineraries}>
+              <Icon name="map-check" size={24} color="#FFF" />
+              <MenuButtonText>Próximos Roteiros</MenuButtonText>
+            </MenuButton>,
+          )}
           <MenuButton onPress={toConnections}>
             <Icon name="link-variant" size={24} color="#FFF" />
             <MenuButtonText>Minhas Conexões</MenuButtonText>

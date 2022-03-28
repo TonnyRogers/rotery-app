@@ -1,9 +1,10 @@
 import styled from 'styled-native-components';
 
-export const Container = styled.TouchableOpacity`
-  align-items: center;
-  justify-content: center;
+export const Container = styled.TouchableOpacity<{
+  margin?: string;
+  isFlex?: boolean;
+}>`
+  ${(props) => (props.isFlex ? 'flex: 1;' : '')}
   height: 5rem;
-  border-radius: 1.5rem;
-  margin: 0.5rem;
+  margin: ${(props) => props.margin || ''};
 `;

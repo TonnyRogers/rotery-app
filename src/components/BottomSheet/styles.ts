@@ -18,12 +18,12 @@ export const Overlay = styled.View`
   justify-content: flex-end;
 `;
 
-export const Content = styled(Animated.View)`
+export const Content = styled(Animated.View)<{topMargin?: number}>`
   background: #fff;
   padding: 1rem;
   border-top-right-radius: 1.2rem;
   border-top-left-radius: 1.2rem;
-  margin-top: 8rem;
+  margin-top: ${(props) => props.topMargin || '8'}rem;
   flex: 1;
 `;
 

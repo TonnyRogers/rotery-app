@@ -11,6 +11,13 @@ export enum GuidesActions {
   SHOW_PROFILE_GUIDE = '@guides/SHOW_PROFILE_GUIDE',
   SHOW_PROFILE_GUIDE_SUCCESS = '@guides/SHOW_PROFILE_GUIDE_SUCCESS',
   HIDE_PROFILE_GUIDE = '@guides/HIDE_PROFILE_GUIDE',
+  SHOW_REVENUE_GUIDE = '@guides/SHOW_REVENUE_GUIDE',
+  HIDE_REVENUE_GUIDE = '@guides/HIDE_REVENUE_GUIDE',
+  SHOW_SUBSCRIPTION_GUIDE = '@guides/SHOW_SUBSCRIPTION_GUIDE',
+  HIDE_SUBSCRIPTION_GUIDE = '@guides/HIDE_SUBSCRIPTION_GUIDE',
+  SHOW_ITINERARY_PAYMENT_GUIDE = '@guides/SHOW_ITINERARY_PAYMENT_GUIDE',
+  SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS = '@guides/SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS',
+  HIDE_ITINERARY_PAYMENT_GUIDE = '@guides/HIDE_ITINERARY_PAYMENT_GUIDE',
 }
 
 export function showFeedGuide() {
@@ -82,5 +89,47 @@ export function showProfileGuideSuccess() {
 export function hideProfileGuide() {
   return {
     type: GuidesActions.HIDE_PROFILE_GUIDE,
+  };
+}
+
+export function showRevenueGuideSuccess() {
+  return {
+    type: GuidesActions.SHOW_REVENUE_GUIDE,
+  };
+}
+
+export function hideRevenueGuide() {
+  return {
+    type: GuidesActions.HIDE_REVENUE_GUIDE,
+  };
+}
+
+export function showSubscriptionGuideSuccess() {
+  return {
+    type: GuidesActions.SHOW_SUBSCRIPTION_GUIDE,
+  };
+}
+
+export function hideSubscriptionGuide() {
+  return {
+    type: GuidesActions.HIDE_SUBSCRIPTION_GUIDE,
+  };
+}
+
+export function showItineraryPaymentGuide() {
+  return {
+    type: GuidesActions.SHOW_ITINERARY_PAYMENT_GUIDE,
+  };
+}
+
+export function showItineraryPaymentGuideSuccess() {
+  return {
+    type: GuidesActions.SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS,
+  };
+}
+
+export function hideItineraryPaymentGuide() {
+  return {
+    type: GuidesActions.HIDE_ITINERARY_PAYMENT_GUIDE,
   };
 }

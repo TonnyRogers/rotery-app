@@ -1,8 +1,6 @@
 import React, {useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 
@@ -25,20 +23,18 @@ import {
 import Card from '../../components/Card';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
-import {toDateTimeZone} from '../../utils/helpers';
+import formatLocale from '../../providers/dayjs-format-locale';
+import {ConnectionsProps} from '../../utils/types';
 
 const DirectMessages: React.FC = () => {
   const navigation = useNavigation();
 
   const formatDate = useCallback((date: string) => {
-    const zonedDate = toDateTimeZone(date);
-    return format(zonedDate, 'dd MMM yyyy H:mm', {
-      locale: pt,
-    });
+    return formatLocale(date, 'DD MMM YYYY H[h]');
   }, []);
 
   const {messages} = useSelector((state: RootStateProps) => state.messages);
-  const {connections} = useSelector(
+  const {connections, invites} = useSelector(
     (state: RootStateProps) => state.connections,
   );
 
@@ -50,29 +46,37 @@ const DirectMessages: React.FC = () => {
   );
 
   const validateConnetions = useCallback(() => {
+    function isBlockedConnection(connection: ConnectionsProps) {
+      return invites.find(
+        (item) =>
+          item.owner.id === connection.target.id &&
+          item.isBlocked === false &&
+          connection.isBlocked === false,
+      );
+    }
+
     return messages.map(
       (message) =>
         connections?.find(
           (connect) =>
-            connect.target.id === message.sender_id && connect.blocked !== true,
+            connect.target.id === message.sender.id &&
+            isBlockedConnection(connect),
         ) && (
           <UserMessage
             key={message.id}
-            onPress={() => getUserConversation(message.sender_id)}>
+            onPress={() => getUserConversation(message.sender.id)}>
             <UserInfo>
               <UserButton>
                 <UserImage
                   source={{
-                    uri:
-                      message.sender.person.file &&
-                      message.sender.person.file.url,
+                    uri: message.sender.profile.file?.url,
                   }}
                   resizeMode="cover"
                 />
               </UserButton>
               <ColumnGroup>
                 <Name>{message.sender.username}</Name>
-                <JoinDate>Atividade: {formatDate(message.created_at)}</JoinDate>
+                <JoinDate>Atividade: {formatDate(message.createdAt)}</JoinDate>
               </ColumnGroup>
             </UserInfo>
             <Actions>
@@ -85,7 +89,7 @@ const DirectMessages: React.FC = () => {
           </UserMessage>
         ),
     );
-  }, [connections, formatDate, getUserConversation, messages]);
+  }, [connections, formatDate, getUserConversation, invites, messages]);
 
   return (
     <Page>

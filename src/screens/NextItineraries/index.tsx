@@ -11,6 +11,8 @@ import Itinerary from '../../components/Itinerary';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import Empty from '../../components/Empty';
+import {ListRenderItemInfo} from 'react-native';
+import {ItineraryProps} from '../../utils/types';
 
 const NextItineraries: React.FC = () => {
   const {itineraries} = useSelector(
@@ -39,9 +41,11 @@ const NextItineraries: React.FC = () => {
             <Text.Title>Próximos Roteiros</Text.Title>
           </ContentHeader>
           <ItineraryList
+            removeClippedSubviews
+            initialNumToRender={3}
             data={itineraries}
             keyExtractor={(item) => String(item.id)}
-            renderItem={({item}) => (
+            renderItem={({item}: ListRenderItemInfo<ItineraryProps>) => (
               <Itinerary
                 itinerary={item}
                 detailButtonAction={() => itineraryDetail(item.id)}

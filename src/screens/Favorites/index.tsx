@@ -10,6 +10,8 @@ import Itinerary from '../../components/Itinerary';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import Empty from '../../components/Empty';
+import {ListRenderItemInfo} from 'react-native';
+import {ItineraryProps} from '../../utils/types';
 
 const Favorites: React.FC = () => {
   const {items} = useSelector((state: RootStateProps) => state.favorites);
@@ -33,13 +35,15 @@ const Favorites: React.FC = () => {
           </ContentHeader>
 
           <ItineraryList
+            removeClippedSubviews
+            initialNumToRender={3}
             data={items}
             keyExtractor={(item) => String(item.id)}
-            renderItem={({item}) => {
+            renderItem={({item}: ListRenderItemInfo<ItineraryProps>) => {
               return (
                 <Itinerary
-                  itinerary={item.itinerary}
-                  detailButtonAction={() => itineraryDetail(item.itinerary.id)}
+                  itinerary={item}
+                  detailButtonAction={() => itineraryDetail(item.id)}
                 />
               );
             }}

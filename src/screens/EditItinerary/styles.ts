@@ -7,15 +7,7 @@ const shadow =
     ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
     : 'elevation: 1;';
 
-export const Container = styled.View`
-  flex: 1;
-`;
-
-export const Content = styled.ScrollView.attrs({
-  scrollEventThrottle: 16,
-  nestedScrollEnabled: true,
-  shouldRasterizeIOS: !!(Platform.OS === 'ios'),
-})`
+export const Container = styled.ScrollView`
   flex-direction: column;
   flex: 1;
 `;
@@ -138,12 +130,6 @@ export const CardActions = styled.View`
   width: 100%;
 `;
 
-export const TransportList = styled.ScrollView.attrs({
-  renderToHardwareTextureAndroid: !!(Platform.OS === 'android'),
-  scrollEventThrottle: 16,
-  contentContainerStyle: {padding: 1},
-})``;
-
 export const ColumnGroup = styled.View``;
 
 export const HeaderActions = styled.View`
@@ -175,7 +161,7 @@ export const SubmitButton = styled.TouchableOpacity`
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
   border-top-left-radius: 1rem;
-  height: 4rem;
+  height: 4.5rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
@@ -189,22 +175,10 @@ export const SubmitButtonText = styled.Text`
   font-size: 2rem;
 `;
 
-export const LodgingList = styled.ScrollView.attrs({
-  renderToHardwareTextureAndroid: !!(Platform.OS === 'android'),
-  scrollEventThrottle: 16,
-  contentContainerStyle: {padding: 1},
-})``;
-
 export const AddLodginButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 `;
-
-export const ActivityList = styled.ScrollView.attrs({
-  renderToHardwareTextureAndroid: !!(Platform.OS === 'android'),
-  scrollEventThrottle: 16,
-  contentContainerStyle: {padding: 1},
-})``;
 
 export const AddActivityButton = styled.TouchableOpacity`
   align-items: center;
@@ -216,7 +190,7 @@ export const PublicButton = styled.TouchableOpacity<{selected: boolean}>`
   border-color: #3dc77b;
   border-width: 0.3rem;
   border-radius: 1rem;
-  height: 4rem;
+  height: 4.5rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;
@@ -236,7 +210,7 @@ export const PrivateButton = styled.TouchableOpacity<{selected: boolean}>`
   border-color: #3dc77b;
   border-width: 0.3rem;
   border-radius: 1rem;
-  height: 4rem;
+  height: 4.5rem;
   padding: 1rem 2rem;
   align-self: flex-start;
   align-items: center;

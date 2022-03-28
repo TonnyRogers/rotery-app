@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -6,7 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {formatBRL, clearValue} from '../../lib/mask';
+import {formatBRL, clearValue, realToUSCash} from '../../lib/mask';
 import {
   getActivitiesRequest,
   getLodgingsRequest,
@@ -15,17 +15,17 @@ import {
 import {updateItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
-  TransportProps,
-  LodgingProps,
-  ActivityProps,
   LocationPickerInputSetItem,
   TomTomApiResponse,
   LocationJson,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryTransportItemProps,
+  CreateItineraryActivityItemProps,
+  FileProps,
 } from '../../utils/types';
 
 import {
   Container,
-  Content,
   RowGroup,
   RowGroupSpaced,
   IconHolder,
@@ -41,16 +41,13 @@ import {
   AddImageButton,
   DataContentHeader,
   ContentTitle,
-  TransportList,
   HeaderActions,
   RemoveButton,
   FieldTitle,
   FieldValue,
   ColumnGroup,
   AddTransportButton,
-  LodgingList,
   AddLodginButton,
-  ActivityList,
   AddActivityButton,
   CardActions,
   SubmitButton,
@@ -74,6 +71,7 @@ import Page from '../../components/Page';
 import SplashScreen from '../../components/SplashScreen';
 import ShadowBox from '../../components/ShadowBox';
 import LocationPickerInput from '../../components/LocationPickerInput';
+import {useIsAndroid} from '../../hooks/useIsAndroid';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -102,6 +100,7 @@ interface EditItineraryProps {
 
 const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const dispatch = useDispatch();
+  const {isAndroid, isIOs} = useIsAndroid();
   const {id} = route.params;
   const {
     register,
@@ -149,25 +148,106 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       setValue('name', itinerary?.name);
       setValue('dateOut', itinerary.begin);
       setValue('dateReturn', itinerary.end);
-      setValue('dateLimit', itinerary.deadline_for_join);
+      setValue('dateLimit', itinerary.deadlineForJoin);
       setValue('description', itinerary.description);
       setValue('location', itinerary.location);
       setValue('vacancies', String(itinerary.capacity));
-      setLodgings([...itinerary.lodgings]);
-      setActivities([...itinerary.activities]);
-      setTransports([...itinerary.transports]);
-      setImages([...itinerary.photos]);
-      setPrivateItinerary(itinerary.is_private);
+
+      if (itinerary.lodgings) {
+        const formatedLodigngs: CreateItineraryLodgingItemProps[] =
+          itinerary.lodgings.map(
+            ({
+              capacity,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              lodging: {id: lodgingId, name},
+            }) => ({
+              lodging: Number(lodgingId),
+              name,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              capacity,
+            }),
+          );
+
+        setLodgings([...formatedLodigngs]);
+      }
+
+      if (itinerary.transports) {
+        const formatedTransports: CreateItineraryTransportItemProps[] =
+          itinerary.transports.map(
+            ({
+              capacity,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              transport: {id: tranportId, name},
+            }) => ({
+              transport: Number(tranportId),
+              name,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              capacity,
+            }),
+          );
+
+        setTransports([...formatedTransports]);
+      }
+
+      if (itinerary.activities) {
+        const formatedActivities: CreateItineraryActivityItemProps[] =
+          itinerary.activities.map(
+            ({
+              capacity,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              activity: {id: activityId, name},
+            }) => ({
+              activity: Number(activityId),
+              name,
+              itinerary: itineraryId,
+              price,
+              description,
+              isFree,
+              capacity,
+            }),
+          );
+
+        setActivities([...formatedActivities]);
+      }
+
+      const formatedPhotos: FileProps[] = itinerary.photos.map(({file}) => ({
+        ...file,
+      }));
+
+      setImages([...formatedPhotos]);
+      setPrivateItinerary(itinerary.isPrivate);
     }
   }, [dispatch, itinerary, setValue]);
 
   const options = useSelector((state: RootStateProps) => state.options);
 
   const navigation = useNavigation();
-  const [transports, setTransports] = useState([] as any);
-  const [lodgings, setLodgings] = useState([] as any);
-  const [activities, setActivities] = useState([] as any);
-  const [images, setImages] = useState([] as any);
+  const [transports, setTransports] = useState<
+    CreateItineraryTransportItemProps[]
+  >([]);
+  const [lodgings, setLodgings] = useState<CreateItineraryLodgingItemProps[]>(
+    [],
+  );
+  const [activities, setActivities] = useState<
+    CreateItineraryActivityItemProps[]
+  >([]);
+  const optionTypeJson = useRef('');
+  const [images, setImages] = useState<FileProps[]>([]);
   const [privateItinerary, setPrivateItinerary] = useState(false);
   const [addTransportVisible, setAddTransportVisible] = useState(false);
   const [transportsOptionIsOpen, setTransportsOptionIsOpen] = useState(false);
@@ -193,17 +273,9 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   const transportDescriptionRef = useRef() as any;
   const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
 
-  function addImages(imageList: []) {
-    setImages([...images, ...imageList]);
+  function addImages(imageList: FileProps) {
+    setImages([...images, imageList]);
   }
-
-  const removeImages = useCallback(
-    (index: number) => {
-      images.splice(index, 1);
-      setImages([...images]);
-    },
-    [images],
-  );
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -212,18 +284,15 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
   }
 
   const addLodgingItem = (data: any) => {
-    const optionItem = options.lodgings?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
-    const newItem = {
-      id: data.type,
-      name: optionItem?.name,
-      pivot: {
-        price: clearValue(data.price),
-        capacity: data.capacity,
-        description: data.description,
-      },
+    const newItem: CreateItineraryLodgingItemProps = {
+      lodging: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
+      capacity: data.capacity,
+      description: data.description,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
+      name: typeData.name,
     };
 
     setLodgings([...lodgings, newItem]);
@@ -235,28 +304,16 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     setAddLodgingVisible(false);
   };
 
-  const removeLodgingItem = useCallback(
-    (index: number) => {
-      lodgings.splice(index, 1);
-
-      setLodgings([...lodgings]);
-    },
-    [lodgings],
-  );
-
   const addTransportItem = (data: any) => {
-    const optionItem = options.transports?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
-    const newItem = {
-      id: data.type,
-      name: optionItem?.name,
-      pivot: {
-        price: clearValue(data.price),
-        capacity: data.capacity,
-        description: data.description,
-      },
+    const newItem: CreateItineraryTransportItemProps = {
+      transport: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
+      capacity: Number(data.capacity),
+      description: data.description,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
+      name: typeData.name,
     };
 
     setTransports([...transports, newItem]);
@@ -267,28 +324,16 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     setAddTransportVisible(false);
   };
 
-  const removeTransportItem = useCallback(
-    (index: number) => {
-      transports.splice(index, 1);
-
-      setTransports([...transports]);
-    },
-    [transports],
-  );
-
   const addActivityItem = (data: any) => {
-    const optionItem = options.activities?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
-    const newItem = {
-      id: data.type,
-      name: optionItem?.name,
-      pivot: {
-        price: clearValue(data.price),
-        capacity: data.capacity,
-        description: data.description,
-      },
+    const newItem: CreateItineraryActivityItemProps = {
+      activity: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
+      capacity: data.capacity,
+      description: data.description,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
+      name: typeData.name,
     };
 
     setActivities([...activities, newItem]);
@@ -298,15 +343,6 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     optionSetValue('description', '');
     setAddActivityVisible(false);
   };
-
-  const removeActivityItem = useCallback(
-    (index: number) => {
-      activities.splice(index, 1);
-
-      setActivities([...activities]);
-    },
-    [activities],
-  );
 
   const onSubmit = (data: any) => {
     const jsonContent: LocationJson = {
@@ -342,240 +378,261 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
     locationJson.current = value;
   };
 
-  const renderImages = useCallback(
-    () =>
-      images.map((item: {url: string}, index: number) => (
-        <ImageButton key={index} onPress={() => removeImages(index)}>
-          <Background
-            resizeMode="cover"
-            source={{
-              uri: item.url || undefined,
-            }}
-          />
-          <BackgroundCover>
-            <SIcon name="delete-forever-outline" color="#F57373" size={30} />
-          </BackgroundCover>
-        </ImageButton>
-      )),
-    [images, removeImages],
-  );
+  const renderImages = useMemo(() => {
+    function removeImages(index: number) {
+      images.splice(index, 1);
+      setImages([...images]);
+    }
 
-  const renderTransports = useCallback(
-    () =>
-      transports?.map((item: TransportProps, index: number) => (
-        <ShadowBox key={'transports-' + index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeTransportItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.name}</FieldTitle>
-          <FieldValue>{item.pivot?.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.pivot?.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
-    [removeTransportItem, transports],
-  );
+    return images.map((item, index: number) => (
+      <ImageButton key={index} onPress={() => removeImages(index)}>
+        <Background
+          resizeMode="cover"
+          source={{
+            uri: item.url || undefined,
+          }}
+        />
+        <BackgroundCover>
+          <SIcon name="delete-forever-outline" color="#F57373" size={30} />
+        </BackgroundCover>
+      </ImageButton>
+    ));
+  }, [images]);
 
-  const renderLodgings = useCallback(
-    () =>
-      lodgings.map((item: LodgingProps, index: number) => (
-        <ShadowBox key={'lodgings-' + index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeLodgingItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.name}</FieldTitle>
-          <FieldValue>{item.pivot?.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.pivot?.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
-    [lodgings, removeLodgingItem],
-  );
+  const renderTransports = useMemo(() => {
+    function removeTransportItem(index: number) {
+      transports.splice(index, 1);
 
-  const renderActivities = useCallback(
-    () =>
-      activities.map((item: ActivityProps, index: number) => (
-        <ShadowBox key={'activities-' + index}>
-          <HeaderActions>
-            <RemoveButton onPress={() => removeActivityItem(index)}>
-              <Icon name="delete-forever-outline" color="#F57373" size={24} />
-            </RemoveButton>
-          </HeaderActions>
-          <FieldTitle>{item.name}</FieldTitle>
-          <FieldValue>{item.pivot?.description}</FieldValue>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <FieldTitle>Capacidade</FieldTitle>
-              <FieldValue>{item.pivot?.capacity}</FieldValue>
-            </ColumnGroup>
-            <ColumnGroup>
-              <FieldTitle>Preço</FieldTitle>
-              <FieldValue>{formatBRL(String(item.pivot?.price))}</FieldValue>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
-    [activities, removeActivityItem],
-  );
+      setTransports([...transports]);
+    }
+
+    return transports?.map((item, index: number) => (
+      <ShadowBox key={'transports-' + index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeTransportItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
+  }, [transports]);
+
+  const renderLodgings = useMemo(() => {
+    function removeLodgingItem(index: number) {
+      lodgings.splice(index, 1);
+
+      setLodgings([...lodgings]);
+    }
+
+    return lodgings.map((item, index: number) => (
+      <ShadowBox key={'lodgings-' + index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeLodgingItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
+  }, [lodgings]);
+
+  const renderActivities = useMemo(() => {
+    function removeActivityItem(index: number) {
+      activities.splice(index, 1);
+
+      setActivities([...activities]);
+    }
+
+    return activities.map((item, index: number) => (
+      <ShadowBox key={'activities-' + index}>
+        <HeaderActions>
+          <RemoveButton onPress={() => removeActivityItem(index)}>
+            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+          </RemoveButton>
+        </HeaderActions>
+        <FieldTitle>{item.name}</FieldTitle>
+        <FieldValue>{item.description}</FieldValue>
+        <RowGroupSpaced>
+          <ColumnGroup>
+            <FieldTitle>Capacidade</FieldTitle>
+            <FieldValue>{item.capacity}</FieldValue>
+          </ColumnGroup>
+          <ColumnGroup>
+            <FieldTitle>Preço</FieldTitle>
+            <FieldValue>{formatBRL(String(item.price))}</FieldValue>
+          </ColumnGroup>
+        </RowGroupSpaced>
+      </ShadowBox>
+    ));
+  }, [activities]);
+
+  const handleChangeOptionTypeJson = (data: string) => {
+    optionTypeJson.current = data;
+  };
 
   return (
     <Page showHeader={false}>
-      <Container>
-        <Content>
-          <Card>
-            <CardHeader>
-              <BackButton onPress={goBack}>
-                <Icon name="chevron-left" size={24} color="#3dc77b" />
-              </BackButton>
-            </CardHeader>
-            <CardContent>
-              <Title>Visibilidade</Title>
-              <RowGroup>
-                <PublicButton
-                  selected={privateItinerary}
-                  onPress={() => setPrivateItinerary(false)}>
-                  <PublicButtonText selected={privateItinerary}>
-                    Público
-                  </PublicButtonText>
-                </PublicButton>
-                <PrivateButton
-                  selected={privateItinerary}
-                  onPress={() => setPrivateItinerary(true)}>
-                  <PrivateButtonText selected={privateItinerary}>
-                    Privado
-                  </PrivateButtonText>
-                </PrivateButton>
-              </RowGroup>
-              <Input
-                label="Nome do Roteiro"
-                placeholder="dê um nome para este roteiro."
-                value={watchName}
-                onChange={(value: string) => setValue('name', value)}
-                error={errors.name?.message}
+      <Container
+        showsVerticalScrollIndicator={true}
+        renderToHardwareTextureAndroid={isAndroid}
+        shouldRasterizeIOS={isIOs}
+        scrollEventThrottle={16}
+        decelerationRate="normal">
+        <Card>
+          <CardHeader>
+            <BackButton onPress={goBack}>
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </BackButton>
+          </CardHeader>
+          <CardContent>
+            <Title>Visibilidade</Title>
+            <RowGroup>
+              <PublicButton
+                selected={privateItinerary}
+                onPress={() => setPrivateItinerary(false)}>
+                <PublicButtonText selected={privateItinerary}>
+                  Público
+                </PublicButtonText>
+              </PublicButton>
+              <PrivateButton
+                selected={privateItinerary}
+                onPress={() => setPrivateItinerary(true)}>
+                <PrivateButtonText selected={privateItinerary}>
+                  Privado
+                </PrivateButtonText>
+              </PrivateButton>
+            </RowGroup>
+            <Input
+              label="Nome do Roteiro"
+              placeholder="dê um nome para este roteiro."
+              value={watchName}
+              onChange={(value: string) => setValue('name', value)}
+              error={errors.name?.message}
+            />
+            <Title>Imagens</Title>
+            <ImageList>
+              {renderImages}
+              <FileInput onSelect={addImages}>
+                <AddImageButton>
+                  <SIcon name="image-plus" color="#D9D8D8" size={30} />
+                </AddImageButton>
+              </FileInput>
+            </ImageList>
+            <Input
+              label="Limite de Vagas"
+              placeholder="numero máximo de vagas"
+              value={watchVacancies}
+              onChange={(value: string) => setValue('vacancies', value)}
+              error={errors.vacancies?.message}
+              keyboardType="number-pad"
+            />
+            <TextArea
+              label="Descrição"
+              placeholder="infomações adicionais sobre o roteiro"
+              value={watchDescription}
+              onChange={(value: string) => setValue('description', value)}
+              error={errors.description?.message}
+              ref={descriptionRef}
+            />
+            <ShadowBox>
+              <DataContentHeader>
+                <Icon name="calendar-blank-outline" color="#4885FD" size={24} />
+                <ContentTitle>Datas</ContentTitle>
+              </DataContentHeader>
+              <DateTimeInput
+                label="Saida"
+                date={watchDateOut}
+                onChange={(value: Date) => setValue('dateOut', value)}
+                error={errors.dateOut?.message}
+                isEdition={true}
               />
-              <Title>Imagens</Title>
-              <ImageList>
-                {renderImages()}
-                <FileInput onSelect={addImages}>
-                  <AddImageButton>
-                    <SIcon name="image-plus" color="#D9D8D8" size={30} />
-                  </AddImageButton>
-                </FileInput>
-              </ImageList>
-              <Input
-                label="Limite de Vagas"
-                placeholder="numero máximo de vagas"
-                value={watchVacancies}
-                onChange={(value: string) => setValue('vacancies', value)}
-                error={errors.vacancies?.message}
-                keyboardType="number-pad"
+              <DateTimeInput
+                label="Retorno"
+                date={watchDateReturn}
+                onChange={(value: Date) => setValue('dateReturn', value)}
+                error={errors.dateReturn?.message}
+                isEdition={true}
               />
-              <TextArea
-                label="Descrição"
-                placeholder="infomações adicionais sobre o roteiro"
-                value={watchDescription}
-                onChange={(value: string) => setValue('description', value)}
-                error={errors.description?.message}
-                ref={descriptionRef}
+              <DateTimeInput
+                label="Limite para inscrição"
+                date={watchDateLimit}
+                onChange={(value: Date) => setValue('dateLimit', value)}
+                error={errors.dateLimit?.message}
+                isEdition={true}
               />
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon
-                    name="calendar-blank-outline"
-                    color="#4885FD"
-                    size={24}
-                  />
-                  <ContentTitle>Datas</ContentTitle>
-                </DataContentHeader>
-                <DateTimeInput
-                  label="Saida"
-                  date={watchDateOut}
-                  onChange={(value: Date) => setValue('dateOut', value)}
-                  error={errors.dateOut?.message}
-                />
-                <DateTimeInput
-                  label="Retorno"
-                  date={watchDateReturn}
-                  onChange={(value: Date) => setValue('dateReturn', value)}
-                  error={errors.dateReturn?.message}
-                />
-                <DateTimeInput
-                  label="Limite para inscrição"
-                  date={watchDateLimit}
-                  onChange={(value: Date) => setValue('dateLimit', value)}
-                  error={errors.dateLimit?.message}
-                />
-              </ShadowBox>
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon name="map-check-outline" color="#4885FD" size={24} />
-                  <ContentTitle>Destino</ContentTitle>
-                </DataContentHeader>
-                <LocationPickerInput.Button
-                  title="Endereço"
-                  value={watchLocation}
-                  onPress={() => setLocationIsOpen(true)}
-                  error={errors.location?.message}
-                />
-              </ShadowBox>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="car" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Transporte</ContentTitle>
-              </RowGroup>
-              <TransportList>{renderTransports()}</TransportList>
-              <AddTransportButton onPress={() => setAddTransportVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-              </AddTransportButton>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="bed" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Hospedagem</ContentTitle>
-              </RowGroup>
-              <LodgingList>{renderLodgings()}</LodgingList>
-              <AddLodginButton onPress={() => setAddLodgingVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-              </AddLodginButton>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="lightning-bolt" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Atividades</ContentTitle>
-              </RowGroup>
-              <ActivityList>{renderActivities()}</ActivityList>
-              <AddActivityButton onPress={() => setAddActivityVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-              </AddActivityButton>
-            </CardContent>
-            <CardActions>
-              <SubmitButton onPress={handleSubmit(onSubmit)}>
-                <SubmitButtonText>Atualizar</SubmitButtonText>
-              </SubmitButton>
-            </CardActions>
-          </Card>
-        </Content>
+            </ShadowBox>
+            <ShadowBox>
+              <DataContentHeader>
+                <Icon name="map-check-outline" color="#4885FD" size={24} />
+                <ContentTitle>Destino</ContentTitle>
+              </DataContentHeader>
+              <LocationPickerInput.Button
+                title="Endereço"
+                value={watchLocation}
+                onPress={() => setLocationIsOpen(true)}
+                error={errors.location?.message}
+              />
+            </ShadowBox>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="car" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Transporte</ContentTitle>
+            </RowGroup>
+            {renderTransports}
+            <AddTransportButton onPress={() => setAddTransportVisible(true)}>
+              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+            </AddTransportButton>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="bed" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Hospedagem</ContentTitle>
+            </RowGroup>
+            {renderLodgings}
+            <AddLodginButton onPress={() => setAddLodgingVisible(true)}>
+              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+            </AddLodginButton>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="lightning-bolt" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Atividades</ContentTitle>
+            </RowGroup>
+            {renderActivities}
+            <AddActivityButton onPress={() => setAddActivityVisible(true)}>
+              <Icon name="plus-box-outline" color="#3dc77b" size={30} />
+            </AddActivityButton>
+          </CardContent>
+          <CardActions>
+            <SubmitButton onPress={handleSubmit(onSubmit)}>
+              <SubmitButtonText>Atualizar</SubmitButtonText>
+            </SubmitButton>
+          </CardActions>
+        </Card>
       </Container>
       <Modal
         title="Adicionar Transporte"
@@ -588,7 +645,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
             setOpen={setTransportsOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.transports}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -637,7 +697,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
             setOpen={setLodgingOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.lodgings}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -686,7 +749,10 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
             setOpen={setActivityOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.activities}
             listMode="SCROLLVIEW"
             onOpen={() => {}}

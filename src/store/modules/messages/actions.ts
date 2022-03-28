@@ -58,10 +58,13 @@ export function getConversationRequest(userId: number) {
   };
 }
 
-export function getConversationSuccess(messages: MessageProps[]) {
+export function getConversationSuccess(
+  messages: MessageProps[],
+  ownerId: number,
+) {
   return {
     type: MessageActions.CONVERSATION_SUCCESS,
-    payload: {messages},
+    payload: {messages, ownerId},
   };
 }
 

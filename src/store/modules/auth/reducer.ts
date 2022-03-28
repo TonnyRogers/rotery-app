@@ -1,11 +1,6 @@
 import produce from 'immer';
 import {AuthActions} from './actions';
-
-export interface UserProps {
-  id: number;
-  username: string;
-  email: string;
-}
+import {UserProps} from '../../../utils/types';
 
 interface InitialStateProps {
   token: string | null;
@@ -13,7 +8,7 @@ interface InitialStateProps {
   loading: boolean;
   authChecked: boolean;
   signed: boolean;
-  user: UserProps | any;
+  user: UserProps | null;
 }
 
 const INITIAL_STATE: InitialStateProps = {
@@ -22,13 +17,13 @@ const INITIAL_STATE: InitialStateProps = {
   refreshToken: null,
   signed: false,
   loading: false,
-  user: [],
+  user: null,
 };
 
 export interface ActionProps {
   type: string;
   payload: {
-    token: string;
+    access_token: string;
     refreshToken: string;
     user: UserProps;
   };
@@ -43,7 +38,7 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
       }
       case AuthActions.LOGIN_SUCCESS: {
         draft.loading = false;
-        draft.token = action.payload.token;
+        draft.token = action.payload.access_token;
         draft.refreshToken = action.payload.refreshToken;
         draft.user = action.payload.user;
         draft.signed = true;
@@ -54,9 +49,11 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case AuthActions.LOGOUT: {
-        draft.token = null;
-        draft.refreshToken = null;
-        draft.signed = false;
+        draft.user = INITIAL_STATE.user;
+        draft.token = INITIAL_STATE.token;
+        draft.refreshToken = INITIAL_STATE.refreshToken;
+        draft.signed = INITIAL_STATE.signed;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       case AuthActions.REGISTER_REQUEST: {
@@ -77,7 +74,7 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
       }
       case AuthActions.REFRESH_TOKEN_SUCCESS: {
         draft.loading = false;
-        draft.token = action.payload.token;
+        draft.token = action.payload.access_token;
         draft.refreshToken = action.payload.refreshToken;
         break;
       }

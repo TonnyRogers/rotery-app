@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {Animated} from 'react-native';
-import {Shadow} from 'react-native-shadow-2';
+import {Animated, View} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -15,12 +13,7 @@ import {
   Container,
   Logo,
   Header,
-  Title,
-  LoginHover,
-  LoginHeader,
-  SwitchLoginButton,
   TipContent,
-  TipText,
   RowGroup,
   LoginContent,
   Actions,
@@ -28,10 +21,6 @@ import {
   LoginButtonText,
   ForgotPasswordButton,
   ForgotPasswordButtonText,
-  RegisterContent,
-  RegisterText,
-  RegisterButton,
-  RegisterButtonText,
 } from './styles';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 import Input from '../../components/Input';
@@ -41,6 +30,10 @@ import DismissKeyboad from '../../components/DismissKeyboad';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import SplashScreen from '../../components/SplashScreen';
 import {homeImagesCarousel} from '../../utils/constants';
+import Text from '../../components/Text';
+import Button from '../../components/Button';
+import RowGroupComponent from '../../components/RowGroup';
+import BottomSheet from '../../components/BottomSheet';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('e-mail inválido').required('campo obrigatório'),
@@ -114,97 +107,80 @@ const Home: React.FC = () => {
         <Header>
           <Logo source={horizontalLogo} resizeMode="contain" />
         </Header>
-        <Title>Destaques {'&'} Informações</Title>
+        <Text.Title alignment="center">Destaques {'&'} Informações</Text.Title>
         <HighlightCarousel data={homeImagesCarousel} />
         <TipContent>
-          <Icon name="chevron-double-left" size={20} color="#4885fd" />
-          <TipText> Arraste para ver mais</TipText>
+          <Text textColor="green" textWeight="bold">
+            Arraste para ver mais
+          </Text>
         </TipContent>
-        <DismissKeyboad>
-          <LoginHover
-            visible={loginVisible}
-            style={{
-              transform: [
-                {
-                  translateY: panY.y.interpolate({
-                    inputRange: [-1, 0, 1],
-                    outputRange: [0, 0, 1],
-                  }),
-                },
-              ],
-            }}>
-            <Shadow
-              containerViewStyle={{
-                flex: 1,
-                margin: 2,
-              }}
-              contentViewStyle={{
-                flex: 1,
-                backgroundColor: '#FFF',
-                borderRadius: 12,
-              }}
-              radius={12}
-              startColor="#00000009"
-              finalColor="transparent"
-              offset={[0, 0, 0, 0]}
-              distance={5}>
-              <LoginHeader>
-                <SwitchLoginButton
-                  onPress={() => setLoginVisible(!loginVisible)}>
-                  <Icon
-                    name={loginVisible ? 'chevron-down' : 'chevron-up'}
-                    size={35}
-                    color="#3dc77b"
-                  />
-                </SwitchLoginButton>
-              </LoginHeader>
-              <LoginContent visible={loginVisible}>
-                <Input
-                  label="Email"
-                  placeholder="digite seu e-mail"
-                  icon="email-outline"
-                  onChange={(value: string) => setValue('email', value)}
-                  ref={emailRef}
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  onSubmitEditing={() => passwordRef.current?.focus()}
-                  error={errors.email?.message}
-                />
-                <Input
-                  label="Senha"
-                  placeholder="digite sua senha"
-                  secureTextEntry={passwordVisible}
-                  ref={passwordRef}
-                  onChange={(value: string) => setValue('password', value)}
-                  returnKeyType="done"
-                  buttonIcon
-                  onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-                  onSubmitEditing={handleSubmit(handleLogin)}
-                  error={errors.password?.message}
-                />
-                <Actions>
-                  <RowGroup>
-                    <LoginButton onPress={handleSubmit(handleLogin)}>
-                      <LoginButtonText>Logar</LoginButtonText>
-                    </LoginButton>
-                    <ForgotPasswordButton onPress={() => passwordRecover()}>
-                      <ForgotPasswordButtonText>
-                        Esqueceu a senha?
-                      </ForgotPasswordButtonText>
-                    </ForgotPasswordButton>
-                  </RowGroup>
-                  <RegisterContent>
-                    <RegisterText>Não tem uma conta?</RegisterText>
-                    <RegisterButton onPress={signUpNavigate}>
-                      <RegisterButtonText>Cadastre-se</RegisterButtonText>
-                    </RegisterButton>
-                  </RegisterContent>
-                </Actions>
-              </LoginContent>
-            </Shadow>
-          </LoginHover>
-        </DismissKeyboad>
+        <RowGroupComponent justify="center" isFlex={false}>
+          <Button
+            onPress={() => setLoginVisible(true)}
+            bgColor="blue"
+            textColor="white"
+            sizeMargin="0 1rem 0 1rem"
+            isEnabled>
+            Fazer Login
+          </Button>
+          <Button
+            onPress={signUpNavigate}
+            bgColor="transparent"
+            textColor="green"
+            sizeMargin="0 1rem 1.6rem 0rem"
+            isEnabled
+            hasShadow={false}>
+            <Text.Paragraph textColor="blue">Criar nova conta</Text.Paragraph>
+          </Button>
+        </RowGroupComponent>
       </Container>
+      <BottomSheet
+        topMargin={8}
+        visible={loginVisible}
+        onRequestClose={() => setLoginVisible(false)}
+        title="Login 🚀">
+        <LoginContent>
+          <DismissKeyboad>
+            <View style={{height: 200}}>
+              <Input
+                label="Email"
+                placeholder="digite seu e-mail"
+                icon="email-outline"
+                onChange={(value: string) => setValue('email', value.trim())}
+                ref={emailRef}
+                autoCapitalize="none"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+                error={errors.email?.message}
+              />
+              <Input
+                label="Senha"
+                placeholder="digite sua senha"
+                secureTextEntry={passwordVisible}
+                ref={passwordRef}
+                onChange={(value: string) => setValue('password', value)}
+                returnKeyType="done"
+                buttonIcon
+                onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+                onSubmitEditing={handleSubmit(handleLogin)}
+                error={errors.password?.message}
+              />
+            </View>
+          </DismissKeyboad>
+          <Actions>
+            <RowGroup>
+              <LoginButton onPress={handleSubmit(handleLogin)}>
+                <LoginButtonText>Logar</LoginButtonText>
+              </LoginButton>
+              <ForgotPasswordButton onPress={() => passwordRecover()}>
+                <ForgotPasswordButtonText>
+                  Esqueceu a senha?
+                </ForgotPasswordButtonText>
+              </ForgotPasswordButton>
+            </RowGroup>
+          </Actions>
+        </LoginContent>
+      </BottomSheet>
       <SplashScreen visible={loading} />
     </Page>
   );

@@ -2,7 +2,6 @@ import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Platform, SafeAreaView, StatusBar} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {format} from 'date-fns';
 
 import {getFeedFilteredRequest} from '../../store/modules/feed/actions';
 
@@ -17,6 +16,9 @@ import {
   Actions,
   FilterButton,
   FilterButtonText,
+  ActivityList,
+  Activity,
+  ActivityName,
 } from './styles';
 import DateInput from '../DateInput';
 import LocationPickerInput from '../LocationPickerInput';
@@ -24,10 +26,14 @@ import {
   LocationPickerInputSetItem,
   TomTomApiResponse,
   ProfileLocationJson,
+  ItineraryActivityItemProps,
 } from '../../utils/types';
+import formatLocale from '../../providers/dayjs-format-locale';
+import Text from '../Text';
 
 interface FilterInputProps {
   visible: boolean;
+  activities: ItineraryActivityItemProps[];
   onRequestClose(): void;
   onFiltered(filter: FilterReturnProps): void;
 }
@@ -46,6 +52,7 @@ const FilterInput: React.FC<FilterInputProps> = ({
   visible,
   onRequestClose,
   onFiltered,
+  activities,
 }) => {
   const dispatch = useDispatch();
   const [location, setLocation] = useState('');
@@ -56,8 +63,8 @@ const FilterInput: React.FC<FilterInputProps> = ({
 
   function handleFilter() {
     let filter: FilterReturnProps = {
-      begin: format(beginDate, 'yyyy-MM-dd'),
-      end: format(endDate, 'yyyy-MM-dd'),
+      begin: formatLocale(beginDate, 'YYYY-MM-DD'),
+      end: formatLocale(endDate, 'YYYY-MM-DD'),
     };
 
     const jsonContent: ProfileLocationJson = {
@@ -114,12 +121,21 @@ const FilterInput: React.FC<FilterInputProps> = ({
                   value={location}
                   error={undefined}
                 />
-                <Actions>
-                  <FilterButton onPress={handleFilter}>
-                    <FilterButtonText>Filtrar</FilterButtonText>
-                  </FilterButton>
-                </Actions>
+                <Text.Paragraph>Atividades</Text.Paragraph>
+                <ActivityList>
+                  {activities.map((item, index) => (
+                    <Activity key={index}>
+                      <Icon name="menu" size={24} color="#FFF" />
+                      <ActivityName>{item.activity.name}</ActivityName>
+                    </Activity>
+                  ))}
+                </ActivityList>
               </ModalContent>
+              <Actions>
+                <FilterButton onPress={handleFilter}>
+                  <FilterButtonText>Filtrar</FilterButtonText>
+                </FilterButton>
+              </Actions>
             </Content>
           </SafeAreaView>
         </KeyboardAvoidingView>

@@ -20,7 +20,53 @@ import {
   paginateFeedRequest,
   paginateFeedSuccess,
   paginateFeedFailure,
+  getFeedDetailRequest,
+  getFeedDetailSuccess,
+  getFeedDetailFailure,
+  FeedActions,
 } from './actions';
+import {AxiosResponse} from 'axios';
+import {
+  MemberProps,
+  FeedItineraryProps,
+  PaginatedResponse,
+  ItineraryProps,
+} from '../../../utils/types';
+
+interface ExceptionRequest {
+  response: string;
+  status: number;
+  message: string;
+  name: string;
+}
+
+export function* getFeedDetail({
+  payload,
+}: ReturnType<typeof getFeedDetailRequest>) {
+  try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(getFeedFailure());
+      return;
+    }
+
+    const {itineraryId} = payload;
+    const response: AxiosResponse<FeedItineraryProps> = yield call(
+      api.get,
+      `/itineraries/${itineraryId}/details`,
+    );
+
+    yield put(getFeedDetailSuccess(response.data));
+  } catch (error) {
+    yield put(getFeedDetailFailure());
+    Toast.show({
+      text1: 'Erro ao buscar seus roteiros.',
+      position: 'bottom',
+      type: 'error',
+    });
+  }
+}
 
 export function* getItineraries() {
   try {
@@ -31,9 +77,10 @@ export function* getItineraries() {
       return;
     }
 
-    const response = yield call(api.get, '/feed');
+    const response: AxiosResponse<{items: FeedItineraryProps[]; meta: any}> =
+      yield call(api.get, '/feed?page=1&limit=10');
 
-    yield put(getFeedSuccess(response.data.data));
+    yield put(getFeedSuccess(response.data.items));
   } catch (error) {
     yield put(getFeedFailure());
     Toast.show({
@@ -57,16 +104,17 @@ export function* getFilteredItineraries({
 
     const {filter} = payload;
 
-    const response = yield call(
-      api.get,
-      `/feed?page=1&begin=${filter.begin}&end=${filter.end}${
-        filter.location
-          ? `&city=${filter.location.city}&state=${filter.location.state}`
-          : ''
-      }`,
-    );
+    const response: AxiosResponse<PaginatedResponse<ItineraryProps>> =
+      yield call(
+        api.get,
+        `/feed?page=1&begin=${filter.begin}&end=${filter.end}${
+          filter.location
+            ? `&city=${filter.location.city}&state=${filter.location.state}`
+            : ''
+        }`,
+      );
 
-    yield put(getFeedFilteredSuccess(response.data.data));
+    yield put(getFeedFilteredSuccess(response.data.items));
   } catch (error) {
     yield put(getFeedFilteredFailure());
     Toast.show({
@@ -123,11 +171,16 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
     const {itineraryId} = payload;
     const currentDate = new Date();
 
-    const response = yield call(api.post, `/itineraries/${itineraryId}/join`, {
-      current_date: currentDate,
-    });
+    const response: AxiosResponse<MemberProps> = yield call(
+      api.post,
+      `/itineraries/${itineraryId}/join`,
+      {
+        currentDate,
+      },
+    );
 
     yield put(joinSuccess(response.data));
+
     Toast.show({
       text1: 'Solicitação enviada!',
       position: 'bottom',
@@ -136,7 +189,7 @@ export function* joinItinerary({payload}: ReturnType<typeof joinRequest>) {
   } catch (error) {
     yield put(joinFailure());
     Toast.show({
-      text1: `${translateError(error.response.data[0].message)}`,
+      text1: `${translateError(error.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -155,20 +208,22 @@ export function* getPaginatedItineraries({
     }
 
     const {
-      filter: {page, begin, end, location},
+      filter: {page, begin, end, location, limit},
     } = payload;
 
-    const url = `/feed?page=${page || 1}${begin ? `&begin=${begin}` : ''}${
-      end ? `&end=${end}` : ''
-    }${location ? `&city=${location.city}&state=${location.state}` : ''}`;
+    const url = `/feed?page=${page || 1}&limit=${limit || 10}${
+      begin ? `&begin=${begin}` : ''
+    }${end ? `&end=${end}` : ''}${
+      location ? `&city=${location.city}&state=${location.state}` : ''
+    }`;
 
     // TRIM and sanization
     // url.replace(/\s+/g, '').trim()
 
     const response = yield call(api.get, url);
 
-    if (response.data.data.length > 0) {
-      yield put(paginateFeedSuccess(response.data.data));
+    if (response.data.items.length > 0) {
+      yield put(paginateFeedSuccess(response.data.items));
     } else {
       yield put(paginateFeedFailure());
     }
@@ -183,6 +238,7 @@ export function* getPaginatedItineraries({
 }
 
 export default all([
+  takeLatest(FeedActions.GET_FEED_DETAIL_REQUEST, getFeedDetail),
   takeLatest('@feed/PAGINATE_FEED_REQUEST', getPaginatedItineraries),
   takeLatest('@feed/JOIN_REQUEST', joinItinerary),
   takeLatest('@feed/GET_FEED_REQUEST', getItineraries),

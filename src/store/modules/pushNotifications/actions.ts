@@ -1,9 +1,9 @@
 import {
   MessageProps,
-  ConnectionsProps,
   MemberProps,
   QuestionProps,
-  ItineraryProps,
+  InvitesProps,
+  ItineraryMemberAcceptWsResponse,
 } from '../../../utils/types';
 
 export enum PushNotificationsActions {
@@ -27,26 +27,24 @@ export function pushNotificationNewMessage(message: MessageProps) {
   };
 }
 
-export function pushNotificationRateItinerary(message: MessageProps) {
+export function pushNotificationRateItinerary(payload: {id: number}) {
   return {
     type: PushNotificationsActions.RATE_ITINERARY,
-    payload: {message},
+    payload: {payload},
   };
 }
 
-export function pushNotificationNewConnection(connection: ConnectionsProps) {
+export function pushNotificationNewConnection(invite: InvitesProps) {
   return {
     type: PushNotificationsActions.NEW_CONNECTION,
-    payload: {connection},
+    payload: {invite},
   };
 }
 
-export function pushNotificationConnectionAccepted(
-  connection: ConnectionsProps,
-) {
+export function pushNotificationConnectionAccepted(invite: InvitesProps) {
   return {
     type: PushNotificationsActions.CONNECTION_ACCEPTED,
-    payload: {connection},
+    payload: {invite},
   };
 }
 
@@ -60,21 +58,20 @@ export function pushNotificationItineraryNewMember(
 }
 
 export function pushNotificationItineraryAcceptedMember(
-  itinerary: ItineraryProps,
+  itineraryMemberWS: ItineraryMemberAcceptWsResponse,
 ) {
   return {
     type: PushNotificationsActions.ITINERARY_ACCEPT_MEMBER,
-    payload: {itinerary},
+    payload: {itineraryMemberWS},
   };
 }
 
-export function pushNotificationItineraryRejectMember(itineraryMember: {
-  itinerary_id: number;
-  user_id: number;
-}) {
+export function pushNotificationItineraryRejectMember(
+  itineraryMemberWs: ItineraryMemberAcceptWsResponse,
+) {
   return {
     type: PushNotificationsActions.ITINERARY_REJECT_MEMBER,
-    payload: {itineraryMember},
+    payload: {itineraryMemberWs},
   };
 }
 
@@ -96,7 +93,7 @@ export function pushNotificationItineraryAnswer(
   };
 }
 
-export function pushNotificationItineraryUpdated(itinerary: ItineraryProps) {
+export function pushNotificationItineraryUpdated(itinerary: {id: number}) {
   return {
     type: PushNotificationsActions.ITINERARY_UPDATED,
     payload: {itinerary},

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, StatusBar} from 'react-native';
+import {Platform, StatusBar, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
@@ -33,15 +33,17 @@ const Modal: React.FC<ModalProps> = ({
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <StatusBar backgroundColor="rgba(0,0,0,0.4)" />
-          <ModalContent>
-            <ModalHeader>
-              <Text.Title>{title}</Text.Title>
-              <CloseButton onPress={onCloseRequest}>
-                <Icon name="close" size={24} color="#3dc77b" />
-              </CloseButton>
-            </ModalHeader>
-            {children}
-          </ModalContent>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <ModalContent>
+              <ModalHeader>
+                <Text.Title>{title}</Text.Title>
+                <CloseButton onPress={onCloseRequest}>
+                  <Icon name="close" size={24} color="#3dc77b" />
+                </CloseButton>
+              </ModalHeader>
+              {children}
+            </ModalContent>
+          </ScrollView>
         </KeyboardAvoidingView>
       </Container>
     </>

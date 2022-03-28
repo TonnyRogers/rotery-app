@@ -33,6 +33,27 @@ export function translateError(errorMessage: string): string {
     case 'Limit of members reached!':
       translated = 'Limite de membros atingido.';
       break;
+    case 'Error on login.':
+      translated = 'E-mail ou senha incorreta.';
+      break;
+    case "Can't create user.":
+      translated = 'Erro ao se cadastrar.';
+      break;
+    case "Can't use this e-mail.":
+      translated = 'Erro ao se cadastrar.';
+      break;
+    case 'This username is already in use.':
+      translated = 'Erro ao se cadastrar.';
+      break;
+    case 'Inactive user, check your e-mail.':
+      translated = 'Usuário não ativado, verifique seu e-mail.';
+      break;
+    case "You can't join to this itinerary anymore.":
+      translated = 'Data limite de inscrição encerrada.';
+      break;
+    case 'Error on validade creation try again.':
+      translated = 'Não foi possivel validar esta ação tente mais tarde.';
+      break;
 
     default:
       translated = `${errorMessage}`;

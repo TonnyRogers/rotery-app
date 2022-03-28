@@ -143,9 +143,9 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
       }
 
       setIsOnLoading(true);
-      await api.put(`/users/new-password/${code}`, {
+      await api.put(`/users/reset-password/${code}`, {
         password,
-        password_confirmation: confirmPassword,
+        passwordConfirmation: confirmPassword,
       });
 
       setIsOnLoading(false);
@@ -221,7 +221,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
 
       try {
         setIsOnLoading(true);
-        await api.post(`/users/resetcode/${code}`);
+        await api.get(`/users/reset-password/${code}`);
         setIsOnLoading(false);
         setIsValid(true);
       } catch (error) {

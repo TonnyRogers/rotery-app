@@ -13,7 +13,9 @@ export const Container = styled.SafeAreaView`
 
 export const Content = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
-})``;
+})`
+  margin-top: -1.2rem;
+`;
 
 export const CardHeader = styled.View`
   flex-direction: row;
@@ -43,6 +45,12 @@ export const Name = styled.Text`
 export const RowGroup = styled.View`
   flex-direction: row;
   align-items: center;
+`;
+
+export const ItemsContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
 `;
 
 export const RowGroupSpaced = styled.View`

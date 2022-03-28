@@ -36,6 +36,15 @@ import {
   getItinerariesFailure,
   notifyItineraryFinishSuccess,
 } from './actions';
+import {
+  CreateItineraryPhotoItemProps,
+  CreateItineraryTransportItemProps,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryActivityItemProps,
+  ItineraryProps,
+  ItineraryMemberResponse,
+} from '../../../utils/types';
+import {AxiosResponse} from 'axios';
 interface UpdateItemProps {
   id: number;
   capacity: number;
@@ -54,7 +63,7 @@ export function* getItineraries() {
 
     const response = yield call(api.get, '/itineraries');
 
-    yield put(getItinerariesSuccess(response.data.data));
+    yield put(getItinerariesSuccess(response.data));
   } catch (error) {
     yield put(getItinerariesFailure());
     Toast.show({
@@ -78,34 +87,32 @@ export function* createItinerary({
 
     const {
       name,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      begin,
+      end,
+      deadlineForJoin,
       location,
       capacity,
       description,
-      images,
+      photos,
       lodgings,
       isPrivate,
       activities,
       transports,
-      location_json,
+      locationJson,
     } = payload;
 
-    const imageArray: {id: number}[] = [];
+    const imageArray: CreateItineraryPhotoItemProps[] = [];
 
-    images?.forEach((image) => {
-      imageArray.push({id: image.id});
+    photos?.forEach((image) => {
+      imageArray.push({file: image.id});
     });
-
-    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
 
     const payloadRequest: any = {
       name,
       description,
-      dateBegin: new Date(dateBegin.getTime() - userTimezoneOffset),
-      dateEnd: new Date(dateEnd.getTime() - userTimezoneOffset),
-      dateLimit: new Date(dateLimit.getTime() - userTimezoneOffset),
+      begin: begin.toISOString(),
+      end: end.toISOString(),
+      deadlineForJoin: deadlineForJoin.toISOString(),
       capacity,
       location,
       isPrivate,
@@ -115,10 +122,14 @@ export function* createItinerary({
       photos: imageArray,
     };
 
-    if (location_json) {
-      payloadRequest.location_json = location_json;
+    if (locationJson) {
+      payloadRequest.locationJson = locationJson;
     }
-    const response = yield call(api.post, '/itineraries', payloadRequest);
+    const response: AxiosResponse<ItineraryProps> = yield call(
+      api.post,
+      '/itineraries',
+      payloadRequest,
+    );
 
     yield put(createItinerarySuccess(response.data));
     RootNavigation.goBack();
@@ -144,11 +155,13 @@ export function* deleteItinerary({
       return;
     }
 
+    RootNavigation.replace('MyItineraries');
+
     const {itineraryId} = payload;
     yield call(api.delete, `/itineraries/${itineraryId}`);
 
     yield put(deleteItinerarySuccess(itineraryId));
-    RootNavigation.replace('MyItineraries');
+
     Toast.show({
       text1: 'Roteiro deletado.',
       position: 'bottom',
@@ -178,64 +191,65 @@ export function* updateItinerary({
     const {
       itineraryId,
       name,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      begin,
+      end,
+      deadlineForJoin,
       location,
       isPrivate,
       capacity,
       description,
-      images,
+      photos,
       lodgings,
       activities,
       transports,
-      location_json,
+      locationJson,
     } = payload;
 
-    const imageArray: {id: number}[] = [];
-    const transportArray: UpdateItemProps[] = [];
-    const lodgingArray: UpdateItemProps[] = [];
-    const activityArray: UpdateItemProps[] = [];
+    const imageArray: CreateItineraryPhotoItemProps[] = [];
+    const transportArray: CreateItineraryTransportItemProps[] = [];
+    const lodgingArray: CreateItineraryLodgingItemProps[] = [];
+    const activityArray: CreateItineraryActivityItemProps[] = [];
 
-    images?.forEach((image) => {
-      imageArray.push({id: image.id});
+    photos?.forEach((image) => {
+      imageArray.push({file: image.id});
     });
 
     transports?.forEach((transport) => {
       transportArray.push({
-        id: transport.id,
-        capacity: transport.pivot.capacity,
-        description: transport.pivot.description,
-        price: transport.pivot.price,
+        transport: transport.transport,
+        isFree: !!transport.price,
+        capacity: transport.capacity,
+        description: transport.description,
+        price: transport.price,
       });
     });
 
     lodgings?.forEach((lodging) => {
       lodgingArray.push({
-        id: lodging.id,
-        capacity: lodging.pivot.capacity,
-        description: lodging.pivot.description,
-        price: lodging.pivot.price,
+        lodging: lodging.lodging,
+        isFree: !!lodging.price,
+        capacity: lodging.capacity,
+        description: lodging.description,
+        price: lodging.price,
       });
     });
 
     activities?.forEach((activity) => {
       activityArray.push({
-        id: activity.id,
-        capacity: activity.pivot.capacity,
-        description: activity.pivot.description,
-        price: activity.pivot.price,
+        activity: activity.activity,
+        isFree: !!activity.price,
+        capacity: activity.capacity,
+        description: activity.description,
+        price: activity.price,
       });
     });
-
-    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
 
     const updatePayload: any = {
       name,
       description,
-      dateBegin: new Date(dateBegin.getTime() - userTimezoneOffset),
-      dateEnd: new Date(dateEnd.getTime() - userTimezoneOffset),
-      dateLimit: new Date(dateLimit.getTime() - userTimezoneOffset),
+      begin: begin.toISOString(),
+      end: end.toISOString(),
+      deadlineForJoin: deadlineForJoin.toISOString(),
       capacity,
       location,
       isPrivate,
@@ -245,8 +259,8 @@ export function* updateItinerary({
       photos: imageArray,
     };
 
-    if (location_json) {
-      updatePayload.location_json = location_json;
+    if (locationJson) {
+      updatePayload.locationJson = locationJson;
     }
 
     const response = yield call(
@@ -284,12 +298,12 @@ export function* replyQuestion({
       return;
     }
 
-    const {anwser, questionId, itineraryId} = payload;
+    const {answer, questionId, itineraryId} = payload;
 
     const response = yield call(
       api.put,
       `/itineraries/${itineraryId}/questions`,
-      {anwser, question_id: questionId},
+      {answer, questionId: questionId},
     );
 
     if (response.status !== 200) {
@@ -319,12 +333,12 @@ export function* promoteMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
-    const response = yield call(
+    const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/promote`,
-      {user_id: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -354,12 +368,12 @@ export function* demoteMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
-    const response = yield call(
+    const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/demote`,
-      {user_id: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -389,12 +403,12 @@ export function* acceptMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
-    const response = yield call(
+    const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/approve`,
-      {user_id: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -424,12 +438,12 @@ export function* removeMember({
       return;
     }
 
-    const {memberId, itineraryId} = payload;
+    const {userId, itineraryId} = payload;
 
-    const response = yield call(
+    const response: AxiosResponse<ItineraryMemberResponse> = yield call(
       api.post,
       `/itineraries/${itineraryId}/remove`,
-      {user_id: memberId},
+      {userId: userId},
     );
 
     if (response.status === 401) {
@@ -437,7 +451,7 @@ export function* removeMember({
       return;
     }
 
-    yield put(removeMemberSuccess(itineraryId, memberId));
+    yield put(removeMemberSuccess(itineraryId, userId));
   } catch (error) {
     yield put(removeMemberFailure());
     Toast.show({
@@ -461,8 +475,8 @@ export function* finishItinerary({
 
     const {itineraryId} = payload;
 
-    yield call(api.post, `/itineraries/${itineraryId}/notify`);
-    yield put(notifyItineraryFinishSuccess());
+    yield call(api.post, `/itineraries/${itineraryId}/finish`);
+    yield put(notifyItineraryFinishSuccess(itineraryId));
 
     RootNavigation.goBack();
     Toast.show({

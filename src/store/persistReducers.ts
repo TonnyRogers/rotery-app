@@ -8,8 +8,10 @@ export default (reducers: any) => {
       storage: AsyncStorage,
       whitelist: [
         'auth',
+        'bankAccount',
         'bottomsheet',
         'connections',
+        'checkout',
         'favorites',
         'feed',
         'guides',

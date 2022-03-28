@@ -1,6 +1,7 @@
 import produce from 'immer';
 import {ProfileActions} from './actions';
 import {ProfileProps} from '../../../utils/types';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
   data: ProfileProps | null;
@@ -54,11 +55,10 @@ export default function profile(state = INITIAL_STATE, action: ActionProps) {
       }
       case ProfileActions.UPDATE_PROFILE_IMAGE_SUCCESS: {
         draft.loading = false;
-        const {file, file_id} = action.payload.profile;
+        const {file} = action.payload.profile;
         const profilePayload = draft.data;
         if (profilePayload) {
           profilePayload.file = file;
-          profilePayload.file_id = file_id;
         }
         draft.data = profilePayload;
         break;
@@ -77,6 +77,11 @@ export default function profile(state = INITIAL_STATE, action: ActionProps) {
       }
       case ProfileActions.REMOVE_USER_FAILURE: {
         draft.loading = false;
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.data = INITIAL_STATE.data;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

@@ -16,6 +16,8 @@ import {
   removeUserFailure,
 } from './actions';
 import {logout} from '../auth/actions';
+import {ProfileProps} from '../../../utils/types';
+import {AxiosResponse} from 'axios';
 
 export function* getProfile() {
   try {
@@ -26,11 +28,12 @@ export function* getProfile() {
       return;
     }
 
-    const response = yield call(api.get, '/profile');
+    const response: AxiosResponse<ProfileProps> = yield call(
+      api.get,
+      '/profile',
+    );
 
-    const profile = response.data;
-
-    yield put(getProfileSuccess(profile));
+    yield put(getProfileSuccess(response.data));
   } catch (error) {
     yield put(getProfileFail());
   }
@@ -47,7 +50,7 @@ export function* updateProfile({
       return;
     }
 
-    let updatePayload = {};
+    let updatePayload: any = {};
 
     Object.entries(payload).forEach((item) => {
       if (item[1] !== undefined) {
@@ -58,11 +61,14 @@ export function* updateProfile({
       }
     });
 
-    const response = yield call(
+    updatePayload.birth = new Date(updatePayload.birth).toISOString();
+
+    const response: AxiosResponse<ProfileProps> = yield call(
       api.put,
       '/profile',
       Object.assign({}, updatePayload),
     );
+
     yield put(updateProfileSuccess(response.data));
     Toast.show({
       text1: 'Perfil atualizado',
@@ -91,8 +97,8 @@ export function* updateProfileImage({
     }
 
     const {file_id} = payload;
-    const response = yield call(api.put, '/profile/image', {
-      file_id,
+    const response = yield call(api.put, '/profile/avatar', {
+      file: file_id,
     });
 
     yield put(updateProfileImageSuccess(response.data));

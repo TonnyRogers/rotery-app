@@ -2,17 +2,18 @@ import produce from 'immer';
 // import {localNotification} from '../../../services/notifications';
 import {NotificationsActions} from './actions';
 import {NotificationsProps} from '../../../utils/types';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
-  data: NotificationsProps[] | null;
+  data: NotificationsProps<any>[] | null;
   counter: number;
 }
 
 interface ActionProps {
   type: string;
   payload: {
-    notifications: NotificationsProps[];
-    notification: NotificationsProps;
+    notifications: NotificationsProps<any>[];
+    notification: NotificationsProps<any>;
     notificationId: number;
   };
 }
@@ -30,10 +31,9 @@ export default function notifications(
     switch (action.type) {
       case NotificationsActions.GET_SUCCESS: {
         let notReadedCouter = 0;
-
         const notReadedNotifications = action.payload.notifications.filter(
           (item) => {
-            if (!item.readed) {
+            if (!item.isReaded) {
               notReadedCouter += 1;
               return item;
             }
@@ -59,9 +59,9 @@ export default function notifications(
           if (similar === -1) {
             allNotifications?.push(newNotification);
 
-            const notReadedNotifications: NotificationsProps[] =
+            const notReadedNotifications: NotificationsProps<any>[] =
               allNotifications.filter((item) => {
-                if (item.readed === false) {
+                if (item.isReaded === false) {
                   notReadedCouter += 1;
                   return item;
                 }
@@ -82,7 +82,7 @@ export default function notifications(
 
         if (allNotifications !== null) {
           const notificationIndex = allNotifications?.findIndex(
-            (item) => item.id === notificationId,
+            (item) => Number(item.id) === Number(notificationId),
           );
 
           if (notificationIndex !== -1) {
@@ -93,6 +93,10 @@ export default function notifications(
           }
         }
         break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.counter = INITAL_STATE.counter;
+        draft.data = INITAL_STATE.data;
       }
       default:
     }

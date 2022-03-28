@@ -3,6 +3,7 @@ import {MessageProps, NotificationsProps} from '../../../utils/types';
 import {MessageActions} from './actions';
 import {WsActions} from '../websocket/actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
   messages: MessageProps[];
@@ -16,7 +17,7 @@ interface ActionProps {
   payload: {
     messages: MessageProps[];
     message: MessageProps;
-    notification: NotificationsProps;
+    notification: NotificationsProps<any>;
     targetId: number;
     ownerId: number;
     authUserId: number;
@@ -40,17 +41,20 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
       }
       case MessageActions.GET_SUCCESS: {
         const grouped: MessageProps[] = action.payload.messages.reduce(
-          (accumulator: MessageProps[], current) => {
-            const found = accumulator.find(
-              (find) => find.sender_id === current.sender_id,
+          (accumulator: MessageProps[], current: MessageProps) => {
+            const foundIndex = accumulator.findIndex(
+              (find) => find.sender.id === current.sender.id,
             );
 
-            const value = current;
-            if (!found) {
-              accumulator.push({...value, unreaded: value.readed ? 0 : 1});
+            if (foundIndex === -1) {
+              accumulator.push({...current, unreaded: current.readed ? 0 : 1});
             } else {
-              found.unreaded += value.readed ? 0 : 1;
-              found.created_at = value.created_at;
+              const {unreaded} = accumulator[foundIndex];
+
+              accumulator[foundIndex] = {
+                ...current,
+                unreaded: unreaded + (current.readed ? 0 : 1),
+              };
             }
 
             return accumulator;
@@ -60,7 +64,7 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
 
         let counter = 0;
 
-        grouped.forEach((item) => (counter += item.unreaded));
+        grouped.forEach((item) => (counter += item.unreaded ? 1 : 0));
 
         draft.messages = grouped;
         draft.unreadCounter = counter;
@@ -78,7 +82,7 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
       case MessageActions.CONVERSATION_SUCCESS: {
         draft.conversation = [...action.payload.messages];
         const messageIndex = draft.messages.findIndex(
-          (item) => item.sender_id === action.payload.messages[0].sender_id,
+          (item) => item.sender.id === action.payload.ownerId,
         );
         if (messageIndex > -1) {
           const messageList = draft.messages;
@@ -88,7 +92,7 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
 
           let counter = 0;
 
-          draft.messages.forEach((item) => (counter += item.unreaded));
+          draft.messages.forEach((item) => (counter += item.unreaded ? 1 : 0));
           draft.unreadCounter = counter;
         }
         draft.loading = false;
@@ -113,15 +117,12 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
       }
       case WsActions.NEW_MESSAGE: {
         const grouped = draft.messages;
-        const newMessage =
-          typeof action.payload.notification.json_data === 'string'
-            ? JSON.parse(action.payload.notification.json_data)
-            : action.payload.notification.json_data;
+        const newMessage: MessageProps = action.payload.notification.jsonData;
 
         const foundedMessage = grouped.findIndex(
           (item) =>
-            item.sender_id === newMessage.sender_id &&
-            item.receiver_id === newMessage.receiver_id,
+            item.sender.id === newMessage.sender.id &&
+            item.receiver.id === newMessage.receiver.id,
         );
 
         if (foundedMessage === -1) {
@@ -156,21 +157,21 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
         break;
       }
       case WsActions.CHAT_MESSAGE: {
-        const newMessage = action.payload.message;
+        const newMessage: MessageProps = action.payload.message;
         newMessage.id = Math.random();
-        if (newMessage.sender_id !== action.payload.authUserId) {
+        if (newMessage.sender.id !== action.payload.authUserId) {
           draft.conversation = [action.payload.message, ...draft.conversation];
         }
         break;
       }
       case PushNotificationsActions.NEW_MESSAGE: {
         const grouped = draft.messages;
-        const newMessage = action.payload.message;
+        const newMessage: MessageProps = action.payload.message;
 
         const foundedMessage = grouped.findIndex(
           (item) =>
-            item.sender_id === newMessage.sender_id &&
-            item.receiver_id === newMessage.receiver_id,
+            item.sender.id === newMessage.sender.id &&
+            item.receiver.id === newMessage.receiver.id,
         );
 
         if (foundedMessage === -1) {
@@ -190,6 +191,14 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
         draft.unreadCounter = counter;
         draft.loading = false;
 
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.conversation = INITIAL_STATE.conversation;
+        draft.messages = INITIAL_STATE.messages;
+        draft.unreadCounter = INITIAL_STATE.unreadCounter;
+        draft.chatKey = INITIAL_STATE.chatKey;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

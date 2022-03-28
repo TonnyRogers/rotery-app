@@ -7,6 +7,7 @@ import api from '../../../services/api';
 import {RootStateProps} from '../rootReducer';
 import NetInfo from '../../../services/netinfo';
 import {translateError} from '../../../lib/utils';
+import * as RootNavigation from '../../../RootNavigation';
 
 import {
   loginRequest,
@@ -15,7 +16,6 @@ import {
   registerRequest,
   registerSuccess,
   registerFailure,
-  refreshTokenRequest,
   refreshTokenSuccess,
   refreshTokenFailure,
   setDeviceTokenRequest,
@@ -26,6 +26,9 @@ import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {getMessagesRequest} from '../messages/actions';
 import {getNextItinerariesRequest} from '../nextItineraries/actions';
+import {getBankAccountRequest} from '../bankAccount/actions';
+import {AxiosResponse} from 'axios';
+import {UserProps} from '../../../utils/types';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -38,12 +41,12 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const {email, password} = payload;
 
-    const response = yield call(api.post, '/sessions', {email, password});
+    const response: AxiosResponse<{access_token: string; user: UserProps}> =
+      yield call(api.post, '/auth/login', {email, password});
 
-    const {token, refreshToken} = response.data.token;
-    const {user} = response.data;
+    const {user, access_token} = response.data;
 
-    if (!token) {
+    if (!access_token) {
       Toast.show({
         text1: 'Email ou senha incorreto.',
         position: 'bottom',
@@ -54,44 +57,47 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
       return;
     }
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', token);
-    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    yield call([AsyncStorage, 'setItem'], '@auth:token', access_token);
+    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', '');
+    api.defaults.headers.Authorization = `Bearer ${access_token}`;
 
-    yield put(loginSuccess(token, refreshToken, user));
+    yield put(loginSuccess(access_token, user));
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getConnectionsRequest());
-    yield put(getItinerariesRequest());
     yield put(getNextItinerariesRequest());
     yield put(getMessagesRequest());
-    // yield put(getNotificationsRequest());
+
+    if (user.isHost) {
+      yield put(getItinerariesRequest());
+      yield put(getBankAccountRequest());
+    }
   } catch (error) {
+    yield put(loginFailure());
     Toast.show({
-      text1: `${translateError(error?.response.data[0].message)}`,
+      text1: `${translateError(error?.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
-    yield put(loginFailure());
   }
 }
 
 export function* setToken({payload}: any) {
-  if (!payload) {
+  if (!payload || !payload.auth) {
     return;
   }
 
   const {token} = payload.auth;
 
   if (token) {
-    api.defaults.headers.Authorization = `Bearer ${token}`;
-    yield put(refreshTokenRequest());
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    // yield put(refreshTokenRequest());
   }
 }
 
 export function* logout() {
   yield call([AsyncStorage, 'removeItem'], '@auth:token');
-  api.defaults.headers.Authorization = 'Bearer ';
+  api.defaults.headers.common.Authorization = 'Bearer ';
   // cancelNotifications();
 }
 
@@ -104,12 +110,13 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   }
 
   try {
-    const {username, email, password} = payload;
+    const {username, email, password, isHost} = payload;
 
     const response = yield call(api.post, '/users', {
       username,
       email,
       password,
+      isHost,
     });
 
     const {id} = response.data;
@@ -125,13 +132,21 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
       return;
     }
 
+    Toast.show({
+      text1: 'Bem-vindo(a)! 🤙🥳',
+      text2: 'Acesse o link enviado por e-mail para ativar seu cadastro.',
+      position: 'bottom',
+      type: 'success',
+      visibilityTime: 5000,
+    });
+
     yield put(registerSuccess(id));
-    yield put(loginRequest(email, password));
+    RootNavigation.goBack();
   } catch (error) {
     yield put(registerFailure());
 
     Toast.show({
-      text1: `${translateError(error.response.data[0].message)}`,
+      text1: `${translateError(error.response.data.message)}`,
       position: 'bottom',
       type: 'error',
     });
@@ -163,17 +178,17 @@ export function* handleRefreshToken() {
       refresh_token: refreshTokenSTR,
     });
 
-    const {token, refreshToken} = renewToken.data;
+    const {token: responseToken, refreshToken} = renewToken.data;
 
     yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
     yield call([AsyncStorage, 'removeItem'], '@auth:token');
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', token);
+    yield call([AsyncStorage, 'setItem'], '@auth:token', responseToken);
     yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
 
-    yield put(refreshTokenSuccess(token, refreshToken));
+    yield put(refreshTokenSuccess(responseToken, refreshToken));
 
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
 }
 
@@ -188,7 +203,7 @@ export function* setDeviceToken() {
       deviceToken = yield call([messaging(), 'getToken']);
     }
 
-    yield call(api.post, '/users/device', {
+    yield call(api.put, '/users/device', {
       token: deviceToken,
     });
     yield put(setDeviceTokenSuccess());
@@ -202,9 +217,9 @@ export function* setDeviceToken() {
 }
 
 export default all([
-  takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
   takeLatest('persist/REHYDRATE', setToken),
-  takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
+  takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
+  // takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),

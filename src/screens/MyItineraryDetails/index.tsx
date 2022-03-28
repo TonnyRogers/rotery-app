@@ -1,17 +1,16 @@
-import React, {useState, useRef, useMemo, useCallback, useEffect} from 'react';
-import {View, ScrollView, Platform} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useRef, useMemo, useCallback} from 'react';
+import {View, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
 
 import {formatBRL} from '../../lib/mask';
 import {
-  TransportProps,
-  LodgingProps,
-  ActivityProps,
   QuestionProps,
   MemberProps,
+  ItineraryTransportItemProps,
+  ItineraryLodgingItemProps,
+  ItineraryActivityItemProps,
 } from '../../utils/types';
 import {
   deleteItineraryRequest,
@@ -19,6 +18,7 @@ import {
 } from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import isOpen from '../../guards/itineraryStatus';
+import * as RootNavigation from '../../RootNavigation';
 
 import {
   Content,
@@ -46,6 +46,7 @@ import {
   StatusContent,
   Status,
   StatusName,
+  ItemsContent,
 } from './styles';
 import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
@@ -55,15 +56,15 @@ import Alert from '../../components/Alert';
 import Page from '../../components/Page';
 import Share from '../../components/Share';
 import Text from '../../components/Text';
-import {
-  showMyItineraryGuide,
-  hideMyItineraryGuide,
-} from '../../store/modules/guides/actions';
+import {hideMyItineraryGuide} from '../../store/modules/guides/actions';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import {myGuideImages} from '../../utils/constants';
+import formatLocale from '../../providers/dayjs-format-locale';
+import Empty from '../../components/Empty';
+import DividerComponent from '../../components/Divider';
 
 interface MyItineraryDetailsProps {
   route: {
@@ -100,30 +101,19 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   let endDateFormated = useRef('');
   let limitDateFormated = useRef('');
 
-  useEffect(() => {
-    dispatch(showMyItineraryGuide());
-  }, [dispatch]);
-
   useMemo(() => {
     if (itinerary) {
-      beginDateFormated.current = format(
-        new Date(itinerary.begin),
-        ' dd MMM yyyy H:mm',
-        {
-          locale: pt,
-        },
+      beginDateFormated.current = formatLocale(
+        itinerary.begin,
+        ' DD MMM YYYY H:mm',
       );
-      endDateFormated.current = format(
-        new Date(itinerary.end),
-        ' dd MMM yyyy H:mm',
-        {
-          locale: pt,
-        },
+      endDateFormated.current = formatLocale(
+        itinerary.end,
+        ' DD MMM YYYY H:mm',
       );
-      limitDateFormated.current = format(
-        new Date(itinerary.deadline_for_join),
-        ' dd MMM yyyy H:mm',
-        {locale: pt},
+      limitDateFormated.current = formatLocale(
+        itinerary.deadlineForJoin,
+        ' DD MMM YYYY H:mm',
       );
     }
   }, [itinerary]);
@@ -132,12 +122,17 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
     setAlertVisible(true);
   }
 
+  function hideFinish() {
+    setFinishAlertVisible(false);
+  }
+
   function hideDeleteAlert() {
     setAlertVisible(false);
   }
 
   function handleDeleteItinerary() {
     if (itinerary) {
+      setAlertVisible(false);
       dispatch(deleteItineraryRequest(itinerary?.id));
     }
   }
@@ -147,6 +142,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   }
 
   function handleFinishItinerary() {
+    setFinishAlertVisible(false);
     dispatch(notifyItineraryFinishRequest(id));
   }
 
@@ -156,47 +152,47 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
 
   const renderTransports = useCallback(
     () =>
-      itinerary?.transports.map((transport: TransportProps) => (
-        <ShadowBox key={transport.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
-            {transport.name}
-          </Text.Paragraph>
-          <Text textWeight="light">{transport.pivot?.description}</Text>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{transport.pivot?.capacity}</Text>
-            </ColumnGroup>
-            <ColumnGroup>
-              <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(transport.pivot?.price))}
-              </Text>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
+      itinerary?.transports.map(
+        (transport: ItineraryTransportItemProps, index) => (
+          <ShadowBox key={'transport' + index}>
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
+              {transport.transport.name}
+            </Text.Paragraph>
+            <Text textWeight="light">{transport.description}</Text>
+            <RowGroupSpaced>
+              <ColumnGroup>
+                <Text textWeight="light">Capacidade</Text>
+                <Text textWeight="bold">{transport.capacity}</Text>
+              </ColumnGroup>
+              <ColumnGroup>
+                <Text textWeight="light">Preço</Text>
+                <Text textWeight="bold">
+                  {formatBRL(String(transport.price))}
+                </Text>
+              </ColumnGroup>
+            </RowGroupSpaced>
+          </ShadowBox>
+        ),
+      ),
     [itinerary],
   );
 
   const renderLodgings = useCallback(
     () =>
-      itinerary?.lodgings.map((lodging: LodgingProps) => (
-        <ShadowBox key={lodging.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
-            {lodging.name}
+      itinerary?.lodgings.map((lodging: ItineraryLodgingItemProps, index) => (
+        <ShadowBox key={'lodging' + index}>
+          <Text.Paragraph textColor="primaryText" textWeight="bold">
+            {lodging.lodging.name}
           </Text.Paragraph>
-          <Text textWeight="light">{lodging.pivot?.description}</Text>
+          <Text textWeight="light">{lodging.description}</Text>
           <RowGroupSpaced>
             <ColumnGroup>
               <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{lodging.pivot?.capacity}</Text>
+              <Text textWeight="bold">{lodging.capacity}</Text>
             </ColumnGroup>
             <ColumnGroup>
               <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(lodging.pivot?.price))}
-              </Text>
+              <Text textWeight="bold">{formatBRL(String(lodging.price))}</Text>
             </ColumnGroup>
           </RowGroupSpaced>
         </ShadowBox>
@@ -206,26 +202,28 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
 
   const renderActivities = useCallback(
     () =>
-      itinerary?.activities.map((activity: ActivityProps) => (
-        <ShadowBox key={activity.id}>
-          <Text.Paragraph textColor="primary" textWeight="bold">
-            {activity.name}
-          </Text.Paragraph>
-          <Text textWeight="light">{activity.pivot?.description}</Text>
-          <RowGroupSpaced>
-            <ColumnGroup>
-              <Text textWeight="light">Capacidade</Text>
-              <Text textWeight="bold">{activity.pivot?.capacity}</Text>
-            </ColumnGroup>
-            <ColumnGroup>
-              <Text textWeight="light">Preço</Text>
-              <Text textWeight="bold">
-                {formatBRL(String(activity.pivot?.price))}
-              </Text>
-            </ColumnGroup>
-          </RowGroupSpaced>
-        </ShadowBox>
-      )),
+      itinerary?.activities.map(
+        (activity: ItineraryActivityItemProps, index) => (
+          <ShadowBox key={'activity' + index}>
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
+              {activity.activity.name}
+            </Text.Paragraph>
+            <Text textWeight="light">{activity.description}</Text>
+            <RowGroupSpaced>
+              <ColumnGroup>
+                <Text textWeight="light">Capacidade</Text>
+                <Text textWeight="bold">{activity.capacity}</Text>
+              </ColumnGroup>
+              <ColumnGroup>
+                <Text textWeight="light">Preço</Text>
+                <Text textWeight="bold">
+                  {formatBRL(String(activity.price))}
+                </Text>
+              </ColumnGroup>
+            </RowGroupSpaced>
+          </ShadowBox>
+        ),
+      ),
     [itinerary],
   );
 
@@ -256,7 +254,14 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
   );
 
   if (!itinerary) {
-    return null;
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
   }
 
   function goBack() {
@@ -272,7 +277,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
           id: itinerary?.id,
           type: 'itinerary',
           componentType: 'connectionShareList',
-          ownerId: itinerary?.owner_id,
+          ownerId: itinerary.owner.id,
         }}
       />
       <Content
@@ -286,7 +291,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             <BackButton onPress={goBack}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
             </BackButton>
-            {isOpen(itinerary.status.id, () => (
+            {isOpen(itinerary.status, () => (
               <EditButton
                 onPress={() =>
                   navigation.navigate('EditItinerary', {id: itinerary?.id})
@@ -298,31 +303,29 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
           <CardContent>
             <RowGroupSpaced>
               <Text.Paragraph
-                textColor="primary"
+                textColor="primaryText"
                 textWeight="bold"
                 maxLines={1}>
                 {itinerary?.name}
               </Text.Paragraph>
-              <Text.Paragraph textColor="primary" textWeight="bold">
+              <Text.Paragraph textColor="primaryText" textWeight="bold">
                 Vagas: {itinerary?.capacity}
               </Text.Paragraph>
             </RowGroupSpaced>
             <RowGroupSpaced>
-              <Text limitter={19} textWeight="light" maxLines={1}>
+              <Text alignment="start" textWeight="light" maxLines={1}>
                 {itinerary?.location}
-              </Text>
-              <Text textWeight="light" maxLines={1}>
-                {beginDateFormated.current}
               </Text>
             </RowGroupSpaced>
             <StatusContent>
               <Status>
-                <StatusName>{itinerary?.status.name}</StatusName>
+                <StatusName>{itinerary?.status}</StatusName>
               </Status>
             </StatusContent>
             <ImageCarousel data={itinerary?.photos || []} />
+            <DividerComponent />
             <View>
-              <Text.Paragraph textColor="primary" textWeight="bold">
+              <Text.Paragraph textColor="primaryText" textWeight="bold">
                 Descrição:
               </Text.Paragraph>
               <Text textWeight="light">{itinerary?.description}</Text>
@@ -336,12 +339,12 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               <HostButton>
                 <UserImage
                   source={{
-                    uri: itinerary?.owner.person.file?.url || undefined,
+                    uri: itinerary?.owner.profile.file?.url || undefined,
                   }}
                   resizeMode="cover"
                 />
                 <HostDetails>
-                  <Text textColor="primary" textWeight="bold" maxLines={1}>
+                  <Text textColor="primaryText" textWeight="bold" maxLines={1}>
                     {itinerary?.owner.username}
                   </Text>
                   <RateStars>
@@ -357,49 +360,49 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             <ShadowBox>
               <DataContentHeader>
                 <Icon name="calendar-blank-outline" color="#4885FD" size={24} />
-                <Text.Paragraph textColor="primary" textWeight="bold">
+                <Text.Paragraph textColor="primaryText" textWeight="bold">
                   Datas
                 </Text.Paragraph>
               </DataContentHeader>
               <RowGroupSpaced>
-                <Text textColor="primary" textWeight="bold">
+                <Text textColor="primaryText" textWeight="bold">
                   Saida
                 </Text>
                 <Text textWeight="light">{beginDateFormated.current}</Text>
               </RowGroupSpaced>
               <RowGroupSpaced>
-                <Text textColor="primary" textWeight="bold">
+                <Text textColor="primaryText" textWeight="bold">
                   Retorno
                 </Text>
                 <Text textWeight="light">{endDateFormated.current}</Text>
               </RowGroupSpaced>
               <RowGroupSpaced>
-                <Text textColor="primary" textWeight="bold">
-                  Limite Incrição
+                <Text textColor="primaryText" textWeight="bold">
+                  Limite Inscrição
                 </Text>
                 <Text textWeight="light">{limitDateFormated.current}</Text>
               </RowGroupSpaced>
             </ShadowBox>
-            <RowGroup>
+            <ItemsContent>
               <IconHolder>
                 <Icon name="car" color="#FFF" size={24} />
               </IconHolder>
               <Text.Title>Transporte</Text.Title>
-            </RowGroup>
+            </ItemsContent>
             {renderTransports()}
-            <RowGroup>
+            <ItemsContent>
               <IconHolder>
                 <Icon name="bed" color="#FFF" size={24} />
               </IconHolder>
               <Text.Title>Hospedagem</Text.Title>
-            </RowGroup>
+            </ItemsContent>
             {renderLodgings()}
-            <RowGroup>
+            <ItemsContent>
               <IconHolder>
                 <Icon name="lightning-bolt" color="#FFF" size={24} />
               </IconHolder>
               <Text.Title>Atividades</Text.Title>
-            </RowGroup>
+            </ItemsContent>
             {renderActivities()}
           </CardContent>
         </Card>
@@ -417,12 +420,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               <Text.Title>Dúvidas e Comentários</Text.Title>
             </RowGroup>
           </CardHeader>
-          <ScrollView
-            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-            scrollEventThrottle={16}
-            contentContainerStyle={{padding: 1}}>
-            {renderQuestions()}
-          </ScrollView>
+          {renderQuestions()}
         </Card>
 
         <Card>
@@ -434,15 +432,10 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
               <Text.Title>Membros</Text.Title>
             </RowGroup>
           </CardHeader>
-          <ScrollView
-            renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
-            scrollEventThrottle={16}
-            contentContainerStyle={{padding: 1}}>
-            {renderMembers()}
-          </ScrollView>
+          {renderMembers()}
         </Card>
         <RowGroupSpaced>
-          {isOpen(itinerary.status.id, () => (
+          {isOpen(itinerary.status, () => (
             <FinalizeItineraryButton onPress={showFinishAlert}>
               <Icon name="progress-check" size={24} color="#FFF" />
               <FinalizeItineraryButtonText>
@@ -463,7 +456,7 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
         message="Vode deseja realmente encerrar este roteiro?"
         icon="progress-check"
         visible={finishAlertVisible}
-        onCancel={hideDeleteAlert}
+        onCancel={hideFinish}
         onRequestClose={() => setFinishAlertVisible(false)}
         onConfirm={handleFinishItinerary}
       />

@@ -8,6 +8,7 @@ import {
 import {WsActions} from '../websocket/actions';
 import {ConnectionActions} from './actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 
 interface ActionProps {
   type: string;
@@ -16,7 +17,7 @@ interface ActionProps {
     connection: ConnectionsProps;
     invites: InvitesProps[];
     invite: InvitesProps;
-    notification: NotificationsProps;
+    notification: NotificationsProps<any>;
     userId: number;
   };
 }
@@ -91,10 +92,10 @@ export default function connections(
         const invitesList = draft.invites;
 
         const connectionIndex = connectionsList.findIndex(
-          (item) => item.user_id === userId,
+          (item) => item.target.id === userId,
         );
         const inviteIndex = invitesList.findIndex(
-          (item) => item.owner_id === userId,
+          (item) => item.owner.id === userId,
         );
 
         if (connectionIndex !== -1) {
@@ -113,24 +114,106 @@ export default function connections(
         draft.loading = false;
         break;
       }
+      case ConnectionActions.BLOCK_CONNECTION_SUCCESS: {
+        const connectionList = draft.connections;
+        const connectionIndex = connectionList.findIndex(
+          (item) => item.target.id === action.payload.userId,
+        );
+
+        if (connectionIndex !== -1) {
+          connectionList[connectionIndex].isBlocked = true;
+          draft.connections = connectionList;
+        }
+        break;
+      }
+      case ConnectionActions.UNBLOCK_CONNECTION_SUCCESS: {
+        const connectionList = draft.connections;
+        const connectionIndex = connectionList.findIndex(
+          (item) => item.target.id === action.payload.userId,
+        );
+
+        if (connectionIndex !== -1) {
+          connectionList[connectionIndex].isBlocked = false;
+          draft.connections = connectionList;
+        }
+        break;
+      }
       case WsActions.NEW_CONNECTION: {
-        const invite = JSON.parse(action.payload.notification.json_data);
-        draft.invites = [...draft.invites, invite];
+        const invite: InvitesProps = action.payload.notification.jsonData;
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.owner.id === invite.owner.id,
+        );
+
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
         break;
       }
       case WsActions.CONNECTION_ACCEPTED: {
-        const invite = JSON.parse(action.payload.notification.json_data);
-        draft.invites = [...draft.invites, invite];
+        const invite: InvitesProps = action.payload.notification.jsonData;
+
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.owner.id === invite.owner.id,
+        );
+
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
+        break;
+      }
+      case WsActions.CONNECTION_BLOCK: {
+        const invite: InvitesProps = action.payload.notification.jsonData;
+
+        const inviteList = draft.invites;
+        const inviteIndex = inviteList.findIndex(
+          (item) => item.id === invite.id,
+        );
+
+        if (inviteIndex !== -1) {
+          inviteList[inviteIndex].isBlocked = true;
+          draft.invites = inviteList;
+        }
+        break;
+      }
+      case WsActions.CONNECTION_UNBLOCK: {
+        const invite: InvitesProps = action.payload.notification.jsonData;
+
+        const inviteList = draft.invites;
+        const inviteIndex = inviteList.findIndex(
+          (item) => item.id === invite.id,
+        );
+
+        if (inviteIndex !== -1) {
+          inviteList[inviteIndex].isBlocked = false;
+          draft.invites = inviteList;
+        }
         break;
       }
       case PushNotificationsActions.NEW_CONNECTION: {
-        const invite = action.payload.connection;
-        draft.invites = [...draft.invites, invite];
+        const invite = action.payload.invite;
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.owner.id === invite.owner.id,
+        );
+
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
         break;
       }
       case PushNotificationsActions.CONNECTION_ACCEPTED: {
-        const invite = action.payload.connection;
-        draft.invites = [...draft.invites, invite];
+        const invite = action.payload.invite;
+        const inviteIndex = draft.invites.findIndex(
+          (item) => item.owner.id === invite.owner.id,
+        );
+        if (inviteIndex === -1) {
+          draft.invites = [...draft.invites, invite];
+        }
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.connections = INITIAL_STATE.connections;
+        draft.invites = INITIAL_STATE.invites;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

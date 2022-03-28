@@ -4,9 +4,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
+import Toast from 'react-native-toast-message';
 import * as yup from 'yup';
 
-import {formatBRL, clearValue} from '../../lib/mask';
+import * as RootNavigation from '../../RootNavigation';
+import {formatBRL, clearValue, realToUSCash} from '../../lib/mask';
 import {createItineraryRequest} from '../../store/modules/itineraries/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
@@ -16,21 +18,18 @@ import {
 } from '../../store/modules/options/actions';
 import {InitialStateProps} from '../../store/modules/options/reducer';
 import {
-  LodgingProps,
-  TransportProps,
-  ActivityProps,
   LocationJson,
   LocationPickerInputSetItem,
   TomTomApiResponse,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryTransportItemProps,
+  CreateItineraryActivityItemProps,
+  FileProps,
 } from '../../utils/types';
-import {
-  showNewItineraryGuide,
-  hideNewItineraryGuide,
-} from '../../store/modules/guides/actions';
+import {hideNewItineraryGuide} from '../../store/modules/guides/actions';
 
 import {
   Container,
-  Content,
   CardContent,
   CardActions,
   SubmitButton,
@@ -48,14 +47,11 @@ import {
   IconHolder,
   AddButton,
   AddButtonText,
-  TransportList,
   ColumnGroup,
   FieldTitle,
   FieldValue,
   RemoveButton,
   HeaderActions,
-  LodgingList,
-  ActivityList,
   AddImageButton,
   CardHeader,
   BackButton,
@@ -83,6 +79,10 @@ import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import {newGuideImages} from '../../utils/constants';
 import LocationPickerInput from '../../components/LocationPickerInput';
+import {theme} from '../../utils/theme';
+import api from '../../services/api';
+import {useIsAndroid} from '../../hooks/useIsAndroid';
+import {translateError} from '../../lib/utils';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -101,9 +101,16 @@ const validationOptionsSchema = yup.object().shape({
   description: yup.string(),
 });
 
+interface ValidateCreationReponse {
+  allowed: boolean;
+  count: number;
+  limit: number;
+}
+
 const NewItinerary: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {isAndroid, isIOs} = useIsAndroid();
   const {
     register,
     handleSubmit,
@@ -137,10 +144,30 @@ const NewItinerary: React.FC = () => {
   }, [getValues, optionRegister, register]);
 
   useEffect(() => {
+    async function verifyCreation() {
+      try {
+        const {data} = await api.get<ValidateCreationReponse>(
+          '/itineraries/validate',
+        );
+
+        if (data && !data.allowed) {
+          RootNavigation.replace('Disclaimer');
+        }
+      } catch (error) {
+        RootNavigation.goBack();
+        Toast.show({
+          text1: `${translateError(error?.response.data.message)}`,
+          position: 'bottom',
+          type: 'error',
+        });
+      }
+    }
+
+    verifyCreation();
+
     dispatch(getActivitiesRequest());
     dispatch(getLodgingsRequest());
     dispatch(getTransportsRequest());
-    dispatch(showNewItineraryGuide());
   }, [dispatch]);
 
   const options: InitialStateProps = useSelector(
@@ -159,9 +186,15 @@ const NewItinerary: React.FC = () => {
   const watchOptionType = optionWatch('type');
   const watchOptionPrice = optionWatch('price');
   const watchLocation = watch('location');
-  const [transports, setTransports] = useState([] as any);
-  const [lodgings, setLodgings] = useState([] as any);
-  const [activities, setActivities] = useState([] as any);
+  const [transports, setTransports] = useState<
+    CreateItineraryTransportItemProps[]
+  >([]);
+  const [lodgings, setLodgings] = useState<CreateItineraryLodgingItemProps[]>(
+    [],
+  );
+  const [activities, setActivities] = useState<
+    CreateItineraryActivityItemProps[]
+  >([]);
   const [images, setImages] = useState([] as any);
   const [privateItinerary, setPrivateItinerary] = useState(false);
   const [addTransportVisible, setAddTransportVisible] = useState(false);
@@ -172,6 +205,7 @@ const NewItinerary: React.FC = () => {
   const [activityOptionIsOpen, setActivityOptionIsOpen] = useState(false);
   const [locationIsOpen, setLocationIsOpen] = useState(false);
 
+  const optionTypeJson = useRef('');
   const descriptionRef = useRef() as any;
   const nameRef = useRef() as any;
   const vacanciesRef = useRef() as any;
@@ -184,21 +218,20 @@ const NewItinerary: React.FC = () => {
     dispatch(hideNewItineraryGuide());
   };
 
-  function addImages(imageList: []) {
-    setImages([...images, ...imageList]);
+  function addImages(imageList: FileProps) {
+    setImages([...images, imageList]);
   }
 
   const addLodgingItem = (data: any) => {
-    const optionItem = options.lodgings?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
-    const newItem: LodgingProps = {
-      id: Number(data.type),
-      price: Number(clearValue(data.price)),
+    const newItem: CreateItineraryLodgingItemProps = {
+      name: typeData.name,
+      lodging: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
-      name: optionItem?.name,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
     };
 
     lodgings.push(newItem);
@@ -212,16 +245,15 @@ const NewItinerary: React.FC = () => {
   };
 
   const addTransportItem = (data: any) => {
-    const optionItem = options.transports?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
-    const newItem: TransportProps = {
-      id: Number(data.type),
-      price: Number(clearValue(data.price)),
+    const newItem: CreateItineraryTransportItemProps = {
+      name: typeData.name,
+      transport: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
-      name: optionItem?.name,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
     };
 
     transports.push(newItem);
@@ -235,16 +267,15 @@ const NewItinerary: React.FC = () => {
   };
 
   const addActivityItem = (data: any) => {
-    const optionItem = options.activities?.find(
-      (option) => option.id === Number(data.type),
-    );
+    const typeData = JSON.parse(optionTypeJson.current);
 
-    const newItem: ActivityProps = {
-      id: Number(data.type),
-      price: Number(clearValue(data.price)),
+    const newItem: CreateItineraryActivityItemProps = {
+      name: typeData.name,
+      activity: Number(typeData.id),
+      price: String(realToUSCash(data.price)),
       capacity: Number(data.capacity),
       description: data.description,
-      name: optionItem?.name,
+      isFree: Number(clearValue(data.price)) > 0 ? false : true,
     };
 
     activities.push(newItem);
@@ -288,11 +319,6 @@ const NewItinerary: React.FC = () => {
         locationJson.current ? jsonContent : undefined,
       ),
     );
-
-    setImages([]);
-    setActivities([]);
-    setLodgings([]);
-    setTransports([]);
   };
 
   const renderImages = useCallback(() => {
@@ -310,7 +336,11 @@ const NewItinerary: React.FC = () => {
           }}
         />
         <BackgroundCover>
-          <SIcon name="delete-forever-outline" color="#F57373" size={30} />
+          <SIcon
+            name="delete-forever-outline"
+            color={theme.colors.red}
+            size={30}
+          />
         </BackgroundCover>
       </ImageButton>
     ));
@@ -322,11 +352,16 @@ const NewItinerary: React.FC = () => {
 
       setTransports([...transports]);
     }
-    return transports.map((item: TransportProps, index: number) => (
+
+    return transports.map((item, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeTransportItem(index)}>
-            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+            <Icon
+              name="delete-forever-outline"
+              color={theme.colors.red}
+              size={24}
+            />
           </RemoveButton>
         </HeaderActions>
         <FieldTitle>{item.name}</FieldTitle>
@@ -351,11 +386,15 @@ const NewItinerary: React.FC = () => {
 
       setLodgings([...lodgings]);
     }
-    return lodgings.map((item: LodgingProps, index: number) => (
+    return lodgings.map((item, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeLodgingItem(index)}>
-            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+            <Icon
+              name="delete-forever-outline"
+              color={theme.colors.red}
+              size={24}
+            />
           </RemoveButton>
         </HeaderActions>
         <FieldTitle>{item.name}</FieldTitle>
@@ -381,11 +420,15 @@ const NewItinerary: React.FC = () => {
       setActivities([...activities]);
     }
 
-    return activities.map((item: ActivityProps, index: number) => (
+    return activities.map((item, index: number) => (
       <ShadowBox key={index}>
         <HeaderActions>
           <RemoveButton onPress={() => removeActivityItem(index)}>
-            <Icon name="delete-forever-outline" color="#F57373" size={24} />
+            <Icon
+              name="delete-forever-outline"
+              color={theme.colors.red}
+              size={24}
+            />
           </RemoveButton>
         </HeaderActions>
         <FieldTitle>{item.name}</FieldTitle>
@@ -410,143 +453,166 @@ const NewItinerary: React.FC = () => {
     }
   }
 
+  const handleChangeOptionTypeJson = (data: string) => {
+    optionTypeJson.current = data;
+  };
+
   return (
     <Page showHeader={false}>
-      <Container>
-        <Content>
-          <Card>
-            <CardHeader>
-              <BackButton onPress={goBack}>
-                <Icon name="chevron-left" size={24} color="#3dc77b" />
-              </BackButton>
-            </CardHeader>
-            <CardContent>
-              <Title>Visibilidade</Title>
-              <RowGroup>
-                <PublicButton
-                  selected={privateItinerary}
-                  onPress={() => setPrivateItinerary(false)}>
-                  <PublicButtonText selected={privateItinerary}>
-                    Público
-                  </PublicButtonText>
-                </PublicButton>
-                <PrivateButton
-                  selected={privateItinerary}
-                  onPress={() => setPrivateItinerary(true)}>
-                  <PrivateButtonText selected={privateItinerary}>
-                    Privado
-                  </PrivateButtonText>
-                </PrivateButton>
-              </RowGroup>
-              <Input
-                label="Nome do Roteiro"
-                placeholder="dê um nome para este roteiro."
-                ref={nameRef}
-                onChange={(value: string) => setValue('name', value)}
-                error={errors.name?.message}
+      <Container
+        showsVerticalScrollIndicator={true}
+        renderToHardwareTextureAndroid={isAndroid}
+        shouldRasterizeIOS={isIOs}
+        scrollEventThrottle={16}
+        decelerationRate="normal">
+        <Card>
+          <CardHeader>
+            <BackButton onPress={goBack}>
+              <Icon name="chevron-left" size={24} color={theme.colors.green} />
+            </BackButton>
+          </CardHeader>
+          <CardContent>
+            <Title>Visibilidade</Title>
+            <RowGroup>
+              <PublicButton
+                selected={privateItinerary}
+                onPress={() => setPrivateItinerary(false)}>
+                <PublicButtonText selected={privateItinerary}>
+                  Público
+                </PublicButtonText>
+              </PublicButton>
+              <PrivateButton
+                selected={privateItinerary}
+                onPress={() => setPrivateItinerary(true)}>
+                <PrivateButtonText selected={privateItinerary}>
+                  Privado
+                </PrivateButtonText>
+              </PrivateButton>
+            </RowGroup>
+            <Input
+              label="Nome do Roteiro"
+              placeholder="dê um nome para este roteiro."
+              ref={nameRef}
+              onChange={(value: string) => setValue('name', value)}
+              error={errors.name?.message}
+            />
+            <Title>Imagens</Title>
+            <ImageList>
+              {renderImages()}
+              <FileInput onSelect={addImages}>
+                <AddImageButton>
+                  <SIcon name="image-plus" color="#D9D8D8" size={30} />
+                </AddImageButton>
+              </FileInput>
+            </ImageList>
+            <Input
+              label="Limite de Vagas"
+              placeholder="numero máximo de vagas"
+              ref={vacanciesRef}
+              onChange={(value: string) => setValue('vacancies', value)}
+              error={errors.vacancies?.message}
+              keyboardType="number-pad"
+            />
+            <TextArea
+              label="Descrição"
+              placeholder="infomações adicionais sobre o roteiro"
+              onChange={(value: string) => setValue('description', value)}
+              error={errors.description?.message}
+              ref={descriptionRef}
+            />
+            <ShadowBox>
+              <DataContentHeader>
+                <Icon
+                  name="calendar-blank-outline"
+                  color={theme.colors.blue}
+                  size={24}
+                />
+                <ContentTitle>Datas</ContentTitle>
+              </DataContentHeader>
+              <DateTimeInput
+                label="Saida"
+                date={watchDateOut}
+                onChange={(value: Date) => setValue('dateOut', value)}
+                error={errors.dateOut?.message}
               />
-              <Title>Imagens</Title>
-              <ImageList>
-                {renderImages()}
-                <FileInput onSelect={addImages}>
-                  <AddImageButton>
-                    <SIcon name="image-plus" color="#D9D8D8" size={30} />
-                  </AddImageButton>
-                </FileInput>
-              </ImageList>
-              <Input
-                label="Limite de Vagas"
-                placeholder="numero máximo de vagas"
-                ref={vacanciesRef}
-                onChange={(value: string) => setValue('vacancies', value)}
-                error={errors.vacancies?.message}
-                keyboardType="number-pad"
+              <DateTimeInput
+                label="Retorno"
+                date={watchDateReturn}
+                onChange={(value: Date) => setValue('dateReturn', value)}
+                error={errors.dateReturn?.message}
               />
-              <TextArea
-                label="Descrição"
-                placeholder="infomações adicionais sobre o roteiro"
-                onChange={(value: string) => setValue('description', value)}
-                error={errors.description?.message}
-                ref={descriptionRef}
+              <DateTimeInput
+                label="Limite para inscrição"
+                date={watchDateLimit}
+                onChange={(value: Date) => setValue('dateLimit', value)}
+                error={errors.dateLimit?.message}
               />
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon
-                    name="calendar-blank-outline"
-                    color="#4885FD"
-                    size={24}
-                  />
-                  <ContentTitle>Datas</ContentTitle>
-                </DataContentHeader>
-                <DateTimeInput
-                  label="Saida"
-                  date={watchDateOut}
-                  onChange={(value: Date) => setValue('dateOut', value)}
-                  error={errors.dateOut?.message}
+            </ShadowBox>
+            <ShadowBox>
+              <DataContentHeader>
+                <Icon
+                  name="map-check-outline"
+                  color={theme.colors.blue}
+                  size={24}
                 />
-                <DateTimeInput
-                  label="Retorno"
-                  date={watchDateReturn}
-                  onChange={(value: Date) => setValue('dateReturn', value)}
-                  error={errors.dateReturn?.message}
-                />
-                <DateTimeInput
-                  label="Limite para inscrição"
-                  date={watchDateLimit}
-                  onChange={(value: Date) => setValue('dateLimit', value)}
-                  error={errors.dateLimit?.message}
-                />
-              </ShadowBox>
-              <ShadowBox>
-                <DataContentHeader>
-                  <Icon name="map-check-outline" color="#4885FD" size={24} />
-                  <ContentTitle>Destino</ContentTitle>
-                </DataContentHeader>
-                <LocationPickerInput.Button
-                  title="Endereço"
-                  value={watchLocation}
-                  onPress={() => setLocationIsOpen(true)}
-                  error={errors.location?.message}
-                />
-              </ShadowBox>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="car" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Transporte</ContentTitle>
-              </RowGroup>
-              <TransportList>{renderTransports()}</TransportList>
-              <NewTransportButton onPress={() => setAddTransportVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-              </NewTransportButton>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="bed" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Hospedagem</ContentTitle>
-              </RowGroup>
-              <LodgingList>{renderLodgings()}</LodgingList>
-              <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-              </NewLodginButton>
-              <RowGroup>
-                <IconHolder>
-                  <Icon name="lightning-bolt" color="#FFF" size={24} />
-                </IconHolder>
-                <ContentTitle>Atividades</ContentTitle>
-              </RowGroup>
-              <ActivityList>{renderActivities()}</ActivityList>
-              <NewActivityButton onPress={() => setAddActivityVisible(true)}>
-                <Icon name="plus-box-outline" color="#3dc77b" size={30} />
-              </NewActivityButton>
-            </CardContent>
-            <CardActions>
-              <SubmitButton onPress={handleSubmit(onSubmit)}>
-                <SubmitButtonText>Salvar</SubmitButtonText>
-              </SubmitButton>
-            </CardActions>
-          </Card>
-        </Content>
+                <ContentTitle>Destino</ContentTitle>
+              </DataContentHeader>
+              <LocationPickerInput.Button
+                title="Endereço"
+                value={watchLocation}
+                onPress={() => setLocationIsOpen(true)}
+                error={errors.location?.message}
+              />
+            </ShadowBox>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="car" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Transporte</ContentTitle>
+            </RowGroup>
+            {renderTransports()}
+            <NewTransportButton onPress={() => setAddTransportVisible(true)}>
+              <Icon
+                name="plus-box-outline"
+                color={theme.colors.green}
+                size={30}
+              />
+            </NewTransportButton>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="bed" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Hospedagem</ContentTitle>
+            </RowGroup>
+            {renderLodgings()}
+            <NewLodginButton onPress={() => setAddLodgingVisible(true)}>
+              <Icon
+                name="plus-box-outline"
+                color={theme.colors.green}
+                size={30}
+              />
+            </NewLodginButton>
+            <RowGroup>
+              <IconHolder>
+                <Icon name="lightning-bolt" color="#FFF" size={24} />
+              </IconHolder>
+              <ContentTitle>Atividades</ContentTitle>
+            </RowGroup>
+            {renderActivities()}
+            <NewActivityButton onPress={() => setAddActivityVisible(true)}>
+              <Icon
+                name="plus-box-outline"
+                color={theme.colors.green}
+                size={30}
+              />
+            </NewActivityButton>
+          </CardContent>
+          <CardActions>
+            <SubmitButton onPress={handleSubmit(onSubmit)}>
+              <SubmitButtonText>Salvar</SubmitButtonText>
+            </SubmitButton>
+          </CardActions>
+        </Card>
       </Container>
       <Modal
         title="Adicionar Transporte"
@@ -559,7 +625,10 @@ const NewItinerary: React.FC = () => {
             setOpen={setTransportsOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.transports}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -608,7 +677,10 @@ const NewItinerary: React.FC = () => {
             setOpen={setLodgingOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.lodgings}
             listMode="SCROLLVIEW"
             onOpen={() => {}}
@@ -657,7 +729,10 @@ const NewItinerary: React.FC = () => {
             setOpen={setActivityOptionIsOpen}
             label="Tipo"
             value={watchOptionType}
-            onChange={(value: string) => optionSetValue('type', value)}
+            setValueJson={({name, value}) =>
+              handleChangeOptionTypeJson(JSON.stringify({id: value, name}))
+            }
+            onChange={(value) => optionSetValue('type', value)}
             options={options.activities}
             listMode="SCROLLVIEW"
             onOpen={() => {}}

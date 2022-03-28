@@ -56,6 +56,7 @@ export const AlertActions = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin: 0.5rem 0;
 `;
 
 export const ConfirmButton = styled.TouchableOpacity`

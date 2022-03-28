@@ -7,11 +7,9 @@ const shadow =
     ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
     : 'elevation: 1;';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.ScrollView`
   flex: 1;
 `;
-
-export const Content = styled.ScrollView``;
 
 export const CardHeader = styled.View`
   flex-direction: row;

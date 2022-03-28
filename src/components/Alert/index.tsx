@@ -60,7 +60,7 @@ const Alert: React.FC<AlertProps> = ({
     }).start();
     setTimeout(() => {
       onRequestClose();
-    }, 400);
+    }, 300);
   }, [height, onRequestClose, panY.y]);
 
   const panRespoders = useRef(
@@ -129,7 +129,7 @@ const Alert: React.FC<AlertProps> = ({
               )}
               <CancelButton onPress={handleDismiss}>
                 <Icon name="close" size={24} color="#FFF" />
-                <ButtonText>{onConfirm ? 'Cancelar' : 'Fechar'}</ButtonText>
+                <ButtonText>{onConfirm ? 'Voltar' : 'Fechar'}</ButtonText>
               </CancelButton>
             </AlertActions>
             <BaseBlock />

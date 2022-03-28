@@ -1,11 +1,8 @@
 import styled from 'styled-native-components';
-import {
-  Animated,
-  KeyboardAvoidingView as RNKAvoidingView,
-  Platform,
-} from 'react-native';
+import {Animated, Platform} from 'react-native';
 
 const metric = Platform.OS === 'ios' ? 'vh' : '%';
+const topPadding = Platform.OS === 'ios' ? '4.5rem' : '1.6rem';
 
 export const Container = styled.View`
 flex: 1;
@@ -16,22 +13,18 @@ height: 100${metric};
 width: 100%:
 `;
 
-export const KeyboardAvoidingView = styled(RNKAvoidingView)`
-  flex: 1;
-  justify-content: flex-start;
-`;
-
 export const Content = styled(Animated.View)`
   background: #fff;
   min-height: 30rem;
   border-bottom-left-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  padding: 4rem 1rem;
+  padding: ${topPadding} 1rem 0.8rem 1rem;
 `;
 
 export const Header = styled.View`
   flex-direction: row;
   align-items: center;
+  margin-left: 0.6rem;
 `;
 
 export const Title = styled.Text`
@@ -44,7 +37,7 @@ export const Title = styled.Text`
 export const NotificationList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  max-height: 50rem;
+  max-height: 35rem;
 `;
 
 export const CloseButton = styled.TouchableOpacity`
