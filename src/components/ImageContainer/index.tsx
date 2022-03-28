@@ -5,9 +5,11 @@ import {CustomImage, HeroImage} from './styles';
 interface ImageContainerProps {
   url: string;
   size?: 'small' | 'regular' | 'big';
+  fit?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
+  sizeStyle?: 'rect' | 'square';
 }
 
-const ImageContainer = ({url, size}: ImageContainerProps) => {
+const ImageContainer = ({url, size, fit = 'cover'}: ImageContainerProps) => {
   let imageSize = 0;
 
   switch (size) {
@@ -34,18 +36,23 @@ const ImageContainer = ({url, size}: ImageContainerProps) => {
       source={{
         uri: url || undefined,
       }}
-      resizeMode="cover"
+      resizeMode={fit}
     />
   );
 };
 
-const Hero = ({url}: ImageContainerProps) => {
+const Hero = ({
+  url,
+  fit = 'cover',
+  sizeStyle = 'rect',
+}: ImageContainerProps) => {
   return (
     <HeroImage
       source={{
         uri: url || undefined,
       }}
-      resizeMode="cover"
+      sizeStyle={sizeStyle}
+      resizeMode={fit}
     />
   );
 };

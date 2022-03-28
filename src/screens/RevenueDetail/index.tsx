@@ -112,7 +112,13 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
       default:
         break;
     }
-    return <Tag color={tagColor}>{tagText}</Tag>;
+    return (
+      <Tag color={tagColor}>
+        <Text textColor="white" textWeight="bold">
+          {tagText}
+        </Text>
+      </Tag>
+    );
   }, [revenue.paymentStatus]);
 
   return (
@@ -178,8 +184,8 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
               Transporte
             </Text.Paragraph>
           </ItemsContent>
-          {itinerary?.transports?.map((item) => (
-            <ItemsDetailContent key={item.id}>
+          {itinerary?.transports?.map((item, index) => (
+            <ItemsDetailContent key={'transports' + index}>
               <RowGroup>
                 <Text>{item.transport.name}</Text>
                 <Text>{formatBRL(String(item.price))}</Text>
@@ -194,8 +200,8 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
               Hospedagem
             </Text.Paragraph>
           </ItemsContent>
-          {itinerary?.lodgings?.map((item) => (
-            <ItemsDetailContent key={item.id}>
+          {itinerary?.lodgings?.map((item, index) => (
+            <ItemsDetailContent key={'lodgings' + index}>
               <RowGroup>
                 <Text>{item.lodging.name}</Text>
                 <Text>{formatBRL(String(item.price))}</Text>
@@ -210,8 +216,8 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
               Atividades
             </Text.Paragraph>
           </ItemsContent>
-          {itinerary?.activities?.map((item) => (
-            <ItemsDetailContent key={item.id}>
+          {itinerary?.activities?.map((item, index) => (
+            <ItemsDetailContent key={'activities' + index}>
               <RowGroup>
                 <Text>{item.activity.name}</Text>
                 <Text>{formatBRL(String(item.price))}</Text>

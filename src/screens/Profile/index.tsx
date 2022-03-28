@@ -45,7 +45,11 @@ import GuideCarousel from '../../components/GuideCarousel';
 import {hideProfileGuide} from '../../store/modules/guides/actions';
 import SplashScreen from '../../components/SplashScreen';
 import LocationPickerInput from '../../components/LocationPickerInput';
-import {sexOptions, profileGuideImages} from '../../utils/constants';
+import {
+  sexOptions,
+  travelerProfileGuideImages,
+  hostProfileGuideImages,
+} from '../../utils/constants';
 import {
   TomTomApiResponse,
   ProfileLocationJson,
@@ -433,7 +437,7 @@ const Profile: React.FC = () => {
       />
       <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
-          data={profileGuideImages}
+          data={isHost ? hostProfileGuideImages : travelerProfileGuideImages}
           onClose={() => dispatch(hideProfileGuide())}
         />
       </Ads>

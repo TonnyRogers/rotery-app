@@ -22,7 +22,6 @@ export const Disclaimer = ({}: DisclaimerProps) => {
         renderToHardwareTextureAndroid={isAndroid}
         shouldRasterizeIOS={isIOs}
         scrollEventThrottle={16}
-        nestedScrollEnabled
         decelerationRate="normal">
         <Header>
           <Button
@@ -49,7 +48,11 @@ export const Disclaimer = ({}: DisclaimerProps) => {
             Para criar roteiros sem limites e ter outras vantagens assine o
             plano para guias.
           </Text.Paragraph>
-          <ImageContainer.Hero url="https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-sobre-conexoes.webp" />
+          <ImageContainer.Hero
+            sizeStyle="square"
+            fit="center"
+            url="https://rotery-filestore.nyc3.digitaloceanspaces.com/hero-gestao-no-app-square.webp"
+          />
           <Divider />
           <Text.Paragraph textWeight="light">
             Com a assinatura além de roteiros ilimitados você pode oferecer

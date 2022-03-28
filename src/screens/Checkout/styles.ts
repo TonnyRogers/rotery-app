@@ -1,8 +1,5 @@
 import styled from 'styled-native-components';
-import {Platform} from 'react-native';
 import {theme} from '../../utils/theme';
-
-const metric = Platform.OS === 'ios' ? 'vh' : '%';
 
 export const BackButton = styled.TouchableOpacity`
   height: 4rem;
@@ -19,7 +16,6 @@ export const Container = styled.ScrollView.attrs({
   flex: 1;
   flex-direction: column;
   background: ${theme.colors.appBackground};
-  height: ${'100' + metric};
 `;
 
 export const Header = styled.View`

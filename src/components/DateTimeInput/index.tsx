@@ -16,6 +16,7 @@ interface DateTimeInputProps {
   error?: string;
   label: string;
   date: Date;
+  dateLimiter?: Date;
   onChange(date: Date): any;
   isEdition?: boolean;
 }
@@ -26,6 +27,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   error,
   onChange,
   isEdition,
+  dateLimiter,
 }) => {
   const [showDate, setShowDate] = useState(false);
   const [showTime, setShowTime] = useState(false);
@@ -72,6 +74,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
           )}
           {showDate && (
             <DateTimePicker
+              minimumDate={dateLimiter}
               value={date}
               mode="date"
               display={isAndroid ? 'default' : 'compact'}

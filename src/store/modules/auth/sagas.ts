@@ -90,14 +90,14 @@ export function* setToken({payload}: any) {
   const {token} = payload.auth;
 
   if (token) {
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
     // yield put(refreshTokenRequest());
   }
 }
 
 export function* logout() {
   yield call([AsyncStorage, 'removeItem'], '@auth:token');
-  api.defaults.headers.Authorization = 'Bearer ';
+  api.defaults.headers.common.Authorization = 'Bearer ';
   // cancelNotifications();
 }
 
@@ -188,7 +188,7 @@ export function* handleRefreshToken() {
 
     yield put(refreshTokenSuccess(responseToken, refreshToken));
 
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
 }
 

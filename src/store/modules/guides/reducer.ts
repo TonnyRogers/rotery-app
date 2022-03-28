@@ -6,6 +6,9 @@ interface InitalStateProps {
   newItineraryGuide: boolean;
   myItineraryGuide: boolean;
   profileGuide: boolean;
+  revenuesGuide: boolean;
+  subscriptionGuide: boolean;
+  itineraryPaymentGuide: boolean;
 }
 
 interface ActionProps {
@@ -17,6 +20,9 @@ const INITIAL_PROPS: InitalStateProps = {
   newItineraryGuide: true,
   myItineraryGuide: true,
   profileGuide: true,
+  revenuesGuide: false,
+  subscriptionGuide: true,
+  itineraryPaymentGuide: true,
 };
 
 export default function guides(state = INITIAL_PROPS, action: ActionProps) {
@@ -52,6 +58,30 @@ export default function guides(state = INITIAL_PROPS, action: ActionProps) {
       }
       case GuidesActions.HIDE_PROFILE_GUIDE: {
         draft.profileGuide = false;
+        break;
+      }
+      case GuidesActions.SHOW_REVENUE_GUIDE: {
+        draft.revenuesGuide = true;
+        break;
+      }
+      case GuidesActions.HIDE_REVENUE_GUIDE: {
+        draft.revenuesGuide = false;
+        break;
+      }
+      case GuidesActions.SHOW_SUBSCRIPTION_GUIDE: {
+        draft.subscriptionGuide = true;
+        break;
+      }
+      case GuidesActions.HIDE_SUBSCRIPTION_GUIDE: {
+        draft.subscriptionGuide = false;
+        break;
+      }
+      case GuidesActions.SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS: {
+        draft.itineraryPaymentGuide = true;
+        break;
+      }
+      case GuidesActions.HIDE_ITINERARY_PAYMENT_GUIDE: {
+        draft.itineraryPaymentGuide = false;
         break;
       }
       default:

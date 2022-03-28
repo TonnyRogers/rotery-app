@@ -56,8 +56,6 @@ const WebView = ({
         androidLayerType="hardware"
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        accessible
-        cacheEnabled
         injectedJavaScript={injectScript}
         onMessage={(event) => onMessageCallback && onMessageCallback(event)}
       />

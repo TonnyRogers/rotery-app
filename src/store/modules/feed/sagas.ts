@@ -26,7 +26,12 @@ import {
   FeedActions,
 } from './actions';
 import {AxiosResponse} from 'axios';
-import {MemberProps, FeedItineraryProps} from '../../../utils/types';
+import {
+  MemberProps,
+  FeedItineraryProps,
+  PaginatedResponse,
+  ItineraryProps,
+} from '../../../utils/types';
 
 interface ExceptionRequest {
   response: string;
@@ -99,16 +104,17 @@ export function* getFilteredItineraries({
 
     const {filter} = payload;
 
-    const response = yield call(
-      api.get,
-      `/feed?page=1&begin=${filter.begin}&end=${filter.end}${
-        filter.location
-          ? `&city=${filter.location.city}&state=${filter.location.state}`
-          : ''
-      }`,
-    );
+    const response: AxiosResponse<PaginatedResponse<ItineraryProps>> =
+      yield call(
+        api.get,
+        `/feed?page=1&begin=${filter.begin}&end=${filter.end}${
+          filter.location
+            ? `&city=${filter.location.city}&state=${filter.location.state}`
+            : ''
+        }`,
+      );
 
-    yield put(getFeedFilteredSuccess(response.data.data));
+    yield put(getFeedFilteredSuccess(response.data.items));
   } catch (error) {
     yield put(getFeedFilteredFailure());
     Toast.show({

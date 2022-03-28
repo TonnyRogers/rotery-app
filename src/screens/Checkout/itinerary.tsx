@@ -98,8 +98,8 @@ const CheckoutItinerary = ({
           Transporte
         </Text.Paragraph>
       </ItemsContent>
-      {itinerary?.transports.map((item) => (
-        <ItemsDetailContent key={item.id}>
+      {itinerary?.transports.map((item, index) => (
+        <ItemsDetailContent key={'transports' + index}>
           <RowGroup>
             <Text>{item.transport.name}</Text>
             <Text>{formatBRL(String(item.price))}</Text>
@@ -114,8 +114,8 @@ const CheckoutItinerary = ({
           Hospedagem
         </Text.Paragraph>
       </ItemsContent>
-      {itinerary?.lodgings.map((item) => (
-        <ItemsDetailContent key={item.id}>
+      {itinerary?.lodgings.map((item, index) => (
+        <ItemsDetailContent key={'lodgings' + index}>
           <RowGroup>
             <Text>{item.lodging.name}</Text>
             <Text>{formatBRL(String(item.price))}</Text>
@@ -130,8 +130,8 @@ const CheckoutItinerary = ({
           Atividades
         </Text.Paragraph>
       </ItemsContent>
-      {itinerary?.activities.map((item) => (
-        <ItemsDetailContent key={item.id}>
+      {itinerary?.activities.map((item, index) => (
+        <ItemsDetailContent key={'activities' + index}>
           <RowGroup>
             <Text>{item.activity.name}</Text>
             <Text>{formatBRL(String(item.price))}</Text>

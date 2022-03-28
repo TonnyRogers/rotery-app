@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 
 import {
   Container,
@@ -28,33 +28,39 @@ interface GuideCarouselProps {
 }
 
 const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
-  const [interval, setInterval] = useState(1);
-  const [intervals, setIntervals] = useState(1);
+  const [currentTab, setCurrentTab] = useState(1);
+  const [tabSize, setTabSize] = useState(1);
   const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    if (data.length) {
+      setTabSize(data.length);
+    }
+  }, [data.length]);
 
   const init = (itemWidth: number) => {
     setWidth(itemWidth);
     const totalItems = data && data.length;
-    setIntervals(Math.ceil(totalItems / 1));
+    setTabSize(Math.ceil(totalItems / 1));
   };
 
   const getInterval = (offset: any) => {
-    for (let i = 1; i <= intervals; i++) {
-      if (offset + 1 < (width / intervals) * i) {
+    for (let i = 1; i <= tabSize; i++) {
+      if (offset + 1 < (width / tabSize) * i) {
         return i;
       }
-      if (i === intervals) {
+      if (i === tabSize) {
         return i;
       }
     }
   };
 
   let bullets = [];
-  for (let counter = 1; counter <= intervals; counter++) {
+  for (let counter = 1; counter <= tabSize; counter++) {
     bullets.push(
       <Bullet
         style={{
-          backgroundColor: `${counter === interval ? '#3dc77b' : '#e6e6e6'}`,
+          backgroundColor: `${counter === currentTab ? '#3dc77b' : '#e6e6e6'}`,
         }}
         key={counter}
       />,
@@ -63,9 +69,9 @@ const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
 
   const renderItems = useCallback(
     () =>
-      data.map((item) => (
+      data.map((item, index) => (
         <GuideItem
-          key={item.id}
+          key={index}
           background={item.url}
           animation={item.isAnimation}>
           {item.withInfo && (
@@ -89,25 +95,27 @@ const GuideCarousel: React.FC<GuideCarouselProps> = ({data, onClose}) => {
 
   const renderButton = useCallback(
     () =>
-      interval === intervals && (
+      currentTab === tabSize && (
         <CloseButton onPress={onClose}>
           <CloseButtonText>Fechar</CloseButtonText>
         </CloseButton>
       ),
-    [interval, intervals, onClose],
+    [currentTab, tabSize, onClose],
   );
 
   return (
     <Container>
       <ImageList
         horizontal
-        contentContainerStyle={{width: `${100 * intervals}%`}}
+        contentContainerStyle={{
+          width: `${100 * tabSize}%`,
+        }}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
         onContentSizeChange={(w, _) => init(w)}
         onScroll={(e) => {
           setWidth(e.nativeEvent.contentSize.width);
-          setInterval(getInterval(e.nativeEvent.contentOffset.x) || 0);
+          setCurrentTab(getInterval(e.nativeEvent.contentOffset.x) || 0);
         }}
         decelerationRate="fast"
         pagingEnabled>

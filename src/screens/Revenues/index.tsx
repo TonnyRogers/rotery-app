@@ -24,12 +24,18 @@ import {theme} from '../../utils/theme';
 import ColumnGroup from '../../components/ColumnGroup';
 import ShadowBox from '../../components/ShadowBox';
 import {RootStateProps} from '../../store/modules/rootReducer';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {revenuesGuideImages} from '../../utils/constants';
+import {hideRevenueGuide} from '../../store/modules/guides/actions';
 
 const Revenues = () => {
   const [revenuesList, setRevenuesList] =
     useState<FindAllMemberRevenuesResponse>();
   const {data} = useSelector((state: RootStateProps) => state.bankAccount);
+  const {revenuesGuide} = useSelector((state: RootStateProps) => state.guides);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getRevenuesHistory = async () => {
@@ -158,6 +164,15 @@ const Revenues = () => {
           </ColumnGroup>
         </Button>
       </Container>
+      <Ads
+        visible={revenuesGuide}
+        onRequestClose={() => {}}
+        key="guide-revenues">
+        <GuideCarousel
+          data={revenuesGuideImages}
+          onClose={() => dispatch(hideRevenueGuide())}
+        />
+      </Ads>
     </Page>
   );
 };

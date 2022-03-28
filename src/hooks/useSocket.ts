@@ -17,7 +17,6 @@ import {
   wsConnectionUnblockedNotification,
   wsListenSubscriptions,
 } from '../store/modules/websocket/actions';
-import {Vibration} from 'react-native';
 import {
   NotificationsProps,
   NotificationAlias,
@@ -25,6 +24,7 @@ import {
 } from '../utils/types';
 import {getFeedDetailRequest} from '../store/modules/feed/actions';
 import {getNextItineraryDetailsRequest} from '../store/modules/nextItineraries/actions';
+import {useVibration} from './useVibration';
 
 interface useSocketProps {
   listeners?: () => void;
@@ -33,6 +33,7 @@ interface useSocketProps {
 
 export const useSocket = () => {
   const dispatch = useDispatch();
+  const {alternated} = useVibration();
   const {user, signed, token} = useSelector(
     (state: RootStateProps) => state.auth,
   );
@@ -46,7 +47,7 @@ export const useSocket = () => {
         socket.current.on(
           `notify:${user.id}`,
           (payload: NotificationsProps<any>) => {
-            Vibration.vibrate(200);
+            alternated();
             switch (payload.alias) {
               case NotificationAlias.NEW_CONNECTION:
                 dispatch(wsNewConnectionNotification(payload));
@@ -114,7 +115,7 @@ export const useSocket = () => {
         socket.current.close();
       }
     };
-  }, [signed, user, dispatch, token]);
+  }, [signed, user, dispatch, token, alternated]);
 
   return {socket: socket.current};
 };

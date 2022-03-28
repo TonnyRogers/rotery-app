@@ -13,10 +13,16 @@ import {useIsAndroid} from '../../hooks/useIsAndroid';
 interface DateInputProps {
   label?: string;
   date: Date;
+  dateLimiter?: Date;
   onChange(date: Date): any;
 }
 
-const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
+const DateInput: React.FC<DateInputProps> = ({
+  date,
+  label,
+  onChange,
+  dateLimiter,
+}) => {
   const [show, setShow] = useState(false);
   const {isAndroid} = useIsAndroid();
 
@@ -48,6 +54,7 @@ const DateInput: React.FC<DateInputProps> = ({date, label, onChange}) => {
         )}
         {show && (
           <DateTimePicker
+            minimumDate={dateLimiter}
             value={date}
             mode="date"
             display={isAndroid ? 'default' : 'compact'}

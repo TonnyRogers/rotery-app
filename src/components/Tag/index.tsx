@@ -1,7 +1,6 @@
 import React, {ReactNode} from 'react';
 
 import {Container, AlignTypes} from './styles';
-import Text from '../Text';
 import {ColorsType} from '../../utils/theme';
 
 interface TagProps {
@@ -13,9 +12,7 @@ interface TagProps {
 const Tag = ({children, color, align}: TagProps) => {
   return (
     <Container color={color} align={align}>
-      <Text alignment="center" textWeight="bold" textColor={color && 'white'}>
-        {children}
-      </Text>
+      {children}
     </Container>
   );
 };

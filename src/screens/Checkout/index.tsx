@@ -50,6 +50,10 @@ import {
   changeSubscriptionCardRequest,
 } from '../../store/modules/subscription/actions';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {travelerPaymentGuideImages} from '../../utils/constants';
+import {hideItineraryPaymentGuide} from '../../store/modules/guides/actions';
 const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 const processingAnimation = require('../../../assets/animations/animation_processing_card.json');
 const blockAnimation = require('../../../assets/animations/animation_block.json');
@@ -87,7 +91,8 @@ interface CheckoutProps {
   };
 }
 
-const paymentToken = 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e';
+// const paymentToken = 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e';
+const paymentToken = 'TEST-53f31d5a-bca4-4713-bfc4-1852f76d5fa5';
 
 const Checkout = ({route}: CheckoutProps) => {
   const dispatch = useDispatch();
@@ -103,6 +108,9 @@ const Checkout = ({route}: CheckoutProps) => {
   );
   const {loading: subscriptionLoading, data: subscriptionData} = useSelector(
     (state: RootStateProps) => state.subscription,
+  );
+  const {itineraryPaymentGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
   );
 
   const [webCardConfirmVisible, setWebCardConfirmVisible] = useState(false);
@@ -155,6 +163,7 @@ const Checkout = ({route}: CheckoutProps) => {
   const cardConfirmWebViewCb = (e: WebViewMessageEvent) => {
     const dataParse = JSON.parse(e.nativeEvent.data);
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
+    console.tron.log('dataParse', dataParse);
     if (dataParse.message === 'ok' && customer !== null) {
       if (selectedCard && cardTokenPayload.id) {
         switch (paymentType) {
@@ -193,7 +202,7 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const selectCard = (card: CheckoutCustomerCardResponse, amount: number) => {
     injectCardconfirmJs.current = `
-      const mp = new MercadoPago('${paymentToken}');
+      mp = new MercadoPago('${paymentToken}');
       document.querySelector('#cardId').value = ${card.id};
       document.querySelector('#transactionAmmount').value = ${amount.toFixed(
         2,
@@ -208,10 +217,10 @@ const Checkout = ({route}: CheckoutProps) => {
   };
 
   const injectCheckoutJs = `
+    mp = new MercadoPago('${paymentToken}');
     document.querySelector('#transactionAmmount').value = ${itineraryAmount.total.toFixed(
       2,
     )};
-    const mp = new MercadoPago('${paymentToken}');
     true;
   `;
 
@@ -430,7 +439,7 @@ const Checkout = ({route}: CheckoutProps) => {
   const renderCheckoutHead = useCallback(() => {
     switch (paymentType) {
       case 'itinerary':
-        if ('lodging' in data && data) {
+        if ('lodgings' in data && data) {
           return (
             <CheckoutItinerary
               itinerary={data}
@@ -649,6 +658,15 @@ const Checkout = ({route}: CheckoutProps) => {
       </Modal>
       <SplashScreen visible={loading} />
       <SplashScreen visible={subscriptionLoading} />
+      <Ads
+        visible={itineraryPaymentGuide}
+        onRequestClose={() => {}}
+        key="guide-feed">
+        <GuideCarousel
+          data={travelerPaymentGuideImages}
+          onClose={() => dispatch(hideItineraryPaymentGuide())}
+        />
+      </Ads>
     </Page>
   );
 };

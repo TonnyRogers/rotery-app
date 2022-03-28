@@ -82,7 +82,7 @@ export function getFeedFilteredRequest(filter: FilterProps) {
   };
 }
 
-export function getFeedFilteredSuccess(itineraries: FeedItineraryProps) {
+export function getFeedFilteredSuccess(itineraries: FeedItineraryProps[]) {
   return {
     type: FeedActions.GET_FEED_FILTERED_SUCCESS,
     payload: {itineraries},

@@ -146,7 +146,7 @@ const Home: React.FC = () => {
                 label="Email"
                 placeholder="digite seu e-mail"
                 icon="email-outline"
-                onChange={(value: string) => setValue('email', value)}
+                onChange={(value: string) => setValue('email', value.trim())}
                 ref={emailRef}
                 autoCapitalize="none"
                 returnKeyType="next"

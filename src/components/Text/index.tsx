@@ -76,7 +76,7 @@ const Title = ({
 const Paragraph = ({
   children,
   textColor,
-  textWeight,
+  textWeight = 'light',
   maxLines,
   alignment,
   withLineBreak,
@@ -99,7 +99,7 @@ const Paragraph = ({
 const Small = ({
   children,
   textColor,
-  textWeight,
+  textWeight = 'light',
   maxLines,
   alignment,
   withLineBreak,

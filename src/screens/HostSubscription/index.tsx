@@ -38,6 +38,10 @@ import Alert from '../../components/Alert';
 import Tag from '../../components/Tag';
 import api from '../../services/api';
 import {AxiosResponse} from 'axios';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {subscriptionGuideImages} from '../../utils/constants';
+import {hideSubscriptionGuide} from '../../store/modules/guides/actions';
 
 const HostSubscription = () => {
   const dispatch = useDispatch();
@@ -49,6 +53,10 @@ const HostSubscription = () => {
 
   const {data, loading} = useSelector(
     (state: RootStateProps) => state.subscription,
+  );
+
+  const {subscriptionGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
   );
 
   const handleCancelSubscription = () => {
@@ -259,14 +267,22 @@ const HostSubscription = () => {
                   Tenha mais vantagens para gerenciar suas viagens
                 </Text.Title>
                 <Divider />
-                <ImageContainer.Hero url="https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-banner.webp" />
+                <ImageContainer.Hero
+                  sizeStyle="square"
+                  fit="cover"
+                  url="https://rotery-filestore.nyc3.digitaloceanspaces.com/hero-pagamento-no-app-square.webp"
+                />
                 <Text.Paragraph alignment="start">
                   Com a assinatura você pode oferecer pagamento online (com
                   cartão de crédito) para os viajantes e rebecer tudo pelo do
                   app.
                 </Text.Paragraph>
                 <Divider />
-                <ImageContainer.Hero url="https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-sobre-conexoes.webp" />
+                <ImageContainer.Hero
+                  sizeStyle="square"
+                  fit="cover"
+                  url="https://rotery-filestore.nyc3.digitaloceanspaces.com/hero-roteiros-no-app-square.webp"
+                />
                 <Text.Paragraph alignment="start">
                   Você também pode criar quantos roteiros desejar sem limites.
                 </Text.Paragraph>
@@ -315,6 +331,17 @@ const HostSubscription = () => {
         onRequestClose={() => setCancelSubscriptionAlertVisible(false)}
         onConfirm={handleCancelSubscription}
       />
+      {data && (
+        <Ads
+          visible={subscriptionGuide}
+          onRequestClose={() => {}}
+          key="guide-feed">
+          <GuideCarousel
+            data={subscriptionGuideImages}
+            onClose={() => dispatch(hideSubscriptionGuide())}
+          />
+        </Ads>
+      )}
     </Page>
   );
 };

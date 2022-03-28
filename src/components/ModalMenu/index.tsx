@@ -172,7 +172,9 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
               size={24}
               color={user?.isHost ? '#FFF' : '#999'}
             />
-            <MenuButtonText active={user?.isHost}>Meus Roteiros</MenuButtonText>
+            <MenuButtonText active={user?.isHost}>
+              Meus{'\n'}Roteiros
+            </MenuButtonText>
           </MenuButton>
           {conditionalRender(
             <MenuButton onPress={toNewItinerary}>

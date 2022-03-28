@@ -18,6 +18,7 @@ import {
 import {AxiosResponse} from 'axios';
 import {Subscription} from '../../../utils/types';
 import api from '../../../services/api';
+import {showRevenueGuideSuccess} from '../guides/actions';
 
 export function* getSubscription() {
   try {
@@ -50,6 +51,7 @@ export function* createSubscription({
     );
 
     yield put(createSubscriptionSuccess(response.data));
+    yield put(showRevenueGuideSuccess());
   } catch (error) {
     yield put(createSubscriptionFailure());
     Toast.show({

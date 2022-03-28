@@ -319,11 +319,6 @@ const NewItinerary: React.FC = () => {
         locationJson.current ? jsonContent : undefined,
       ),
     );
-
-    setImages([]);
-    setActivities([]);
-    setLodgings([]);
-    setTransports([]);
   };
 
   const renderImages = useCallback(() => {

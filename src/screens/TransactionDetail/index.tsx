@@ -35,6 +35,7 @@ import Alert from '../../components/Alert';
 import {formatPrice} from '../../lib/utils';
 import api from '../../services/api';
 import Tag from '../../components/Tag';
+import {HelpRequestRouteParamsProps} from '../HelpRequest';
 
 const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
@@ -160,7 +161,13 @@ const TransactionDetail = ({route}: CheckoutProps) => {
       default:
         break;
     }
-    return <Tag color={tagColor}>{tagText}</Tag>;
+    return (
+      <Tag color={tagColor}>
+        <Text textColor="white" textWeight="bold">
+          {tagText}
+        </Text>
+      </Tag>
+    );
   }, [memberPayment.payment.status, memberPayment.payment.status_detail]);
 
   return (
@@ -200,7 +207,7 @@ const TransactionDetail = ({route}: CheckoutProps) => {
               <RowGroup>
                 <ImageContainer
                   size="small"
-                  url="https://media.motociclismoonline.com.br/uploads/2020/05/P90327721_highRes_the-new-bmw-f-850-gs-copy-1-e1590182850170.jpg"
+                  url={itinerary?.owner.profile.file?.url || ''}
                 />
                 <View>
                   <Text
@@ -229,8 +236,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
               Transporte
             </Text.Paragraph>
           </ItemsContent>
-          {itinerary?.transports?.map((item) => (
-            <ItemsDetailContent key={item.id}>
+          {itinerary?.transports?.map((item, index) => (
+            <ItemsDetailContent key={'transports' + index}>
               <RowGroup>
                 <Text>{item.transport.name}</Text>
                 <Text>{formatBRL(String(item.price))}</Text>
@@ -245,8 +252,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
               Hospedagem
             </Text.Paragraph>
           </ItemsContent>
-          {itinerary?.lodgings?.map((item) => (
-            <ItemsDetailContent key={item.id}>
+          {itinerary?.lodgings?.map((item, index) => (
+            <ItemsDetailContent key={'lodgings' + index}>
               <RowGroup>
                 <Text>{item.lodging.name}</Text>
                 <Text>{formatBRL(String(item.price))}</Text>
@@ -261,8 +268,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
               Atividades
             </Text.Paragraph>
           </ItemsContent>
-          {itinerary?.activities?.map((item) => (
-            <ItemsDetailContent key={item.id}>
+          {itinerary?.activities?.map((item, index) => (
+            <ItemsDetailContent key={'activities' + index}>
               <RowGroup>
                 <Text>{item.activity.name}</Text>
                 <Text>{formatBRL(String(item.price))}</Text>
@@ -323,25 +330,53 @@ const TransactionDetail = ({route}: CheckoutProps) => {
             </Card>
           </View>
         </Card>
+        {itinerary?.status === 'active' && (
+          <Button
+            isEnabled={!isRefunded}
+            bgColor="blueTransparent"
+            onPress={() => showPaymentRefund()}
+            customContent
+            sizeHeight={60}
+            sizeWidth={60}
+            sizeMargin="2rem 1rem"
+            isFlex>
+            <ColumnGroup>
+              <Icon
+                name="cash-refund"
+                size={24}
+                color={
+                  isRefunded ? theme.colors.disabledText : theme.colors.blue
+                }
+              />
+              <Text.Small
+                textColor={isRefunded ? 'disabledText' : 'blue'}
+                textWeight="bold">
+                Estorno
+              </Text.Small>
+            </ColumnGroup>
+          </Button>
+        )}
         <Button
-          isEnabled={!isRefunded}
           bgColor="blueTransparent"
-          onPress={() => showPaymentRefund()}
+          onPress={() =>
+            itinerary &&
+            RootNavigation.navigate<HelpRequestRouteParamsProps>(
+              'HelpRequest',
+              {
+                type: 'itinerary',
+                item: {...memberPayment, itinerary},
+              },
+            )
+          }
           customContent
           sizeHeight={60}
           sizeWidth={60}
           sizeMargin="2rem 1rem"
           isFlex>
           <ColumnGroup>
-            <Icon
-              name="cash-refund"
-              size={24}
-              color={isRefunded ? theme.colors.disabledText : theme.colors.blue}
-            />
-            <Text.Small
-              textColor={isRefunded ? 'disabledText' : 'blue'}
-              textWeight="bold">
-              Estorno
+            <Icon name="hand-left" size={24} color={theme.colors.blue} />
+            <Text.Small textColor={'blue'} textWeight="bold">
+              Ajuda
             </Text.Small>
           </ColumnGroup>
         </Button>

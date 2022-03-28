@@ -1,5 +1,16 @@
 import styled from 'styled-native-components';
 
+const heroSizeType = {
+  rect: `
+    height: 26vh; 
+    width: 87vw;
+  `,
+  square: `
+  height: 40vh; 
+  width: 87vw;
+`,
+};
+
 export const Container = styled.View`
   flex: 1;
 `;
@@ -12,8 +23,11 @@ export const CustomImage = styled.Image<{size?: number}>`
   background: #eee;
 `;
 
-export const HeroImage = styled.Image<{size?: number}>`
-  height: 30vh;
-  width: 100vw;
+export const HeroImage = styled.Image<{
+  size?: number;
+  sizeStyle: 'rect' | 'square';
+}>`
+  ${(props) => props.sizeStyle && heroSizeType[props.sizeStyle]}
   background: #eee;
+  margin-vertical: 1.6rem;
 `;

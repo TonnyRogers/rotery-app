@@ -3,7 +3,6 @@ import React, {useEffect, useState, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Vibration} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 
 import {
@@ -33,10 +32,12 @@ import Text from '../../components/Text';
 import Empty from '../../components/Empty';
 import {feedGuideImages} from '../../utils/constants';
 import {ItineraryProps, ItineraryActivityItemProps} from '../../utils/types';
+import {useVibration} from '../../hooks/useVibration';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const {alternated} = useVibration();
   const [filterVisible, setFilterVisible] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
   const [filter, setFilter] = useState({} as any);
@@ -76,11 +77,11 @@ const Feed: React.FC = () => {
   }
 
   const clearFilter = useCallback(() => {
-    Vibration.vibrate([100, 100, 200, 100]);
+    alternated();
     setPage(2);
     setFilter({});
     dispatch(getFeedRequest());
-  }, [dispatch]);
+  }, [alternated, dispatch]);
 
   const loadFeed = useCallback(() => {
     if (itineraries && itineraries.length > 3) {

@@ -23,6 +23,7 @@ import {
   EmailHelpRequestTypeTypes,
   Revenue,
   ItineraryProps,
+  MemberWithPaymentResponse,
 } from '../../utils/types';
 import ImageContainer from '../../components/ImageContainer';
 import {formatPrice} from '../../lib/utils';
@@ -41,13 +42,19 @@ interface formData {
 interface CustomRevenue extends Revenue {
   itinerary: ItineraryProps;
 }
+interface CustomMemberWithPaymentResponse
+  extends Omit<MemberWithPaymentResponse, 'itinerary'> {
+  itinerary: ItineraryProps;
+}
 
-interface HelpRequestProps {
+export interface HelpRequestRouteParamsProps {
+  item: CustomRevenue | CustomMemberWithPaymentResponse;
+  type: EmailHelpRequestTypeTypes;
+}
+
+export interface HelpRequestProps {
   route: {
-    params: {
-      item: CustomRevenue;
-      type: EmailHelpRequestTypeTypes;
-    };
+    params: HelpRequestRouteParamsProps;
   };
 }
 
@@ -75,10 +82,11 @@ const HelpRequest = ({route}: HelpRequestProps) => {
       String(item.itinerary?.begin),
       'DD MMM YY HH:mm',
     );
-    const paymentDateCreated = formatLocale(item.createdAt, 'DD MMM YY HH:mm');
+    const paymentDateCreated =
+      formatLocale(item?.createdAt, 'DD MMM YY HH:mm') || null;
 
     return {begin, paymentDateCreated};
-  }, [item.createdAt, item.itinerary]);
+  }, [item]);
 
   const handleRequestHelp = async (data: formData) => {
     try {
@@ -87,10 +95,13 @@ const HelpRequest = ({route}: HelpRequestProps) => {
         data: {
           Tipo: 'Roteiro',
           Nome: item.itinerary.name,
-          Id_membro: item.id,
+          Id_membro: item?.id,
           Id_roteiro: item.itinerary.id,
-          Status_pagamento: item.paymentStatus,
-          Valor: formatPrice(item.amount * 100),
+          Status_pagamento: item?.paymentStatus,
+          Valor:
+            'amount' in item
+              ? formatPrice(item?.amount * 100)
+              : formatPrice(item?.payment.transaction_amount * 100),
         },
         message: data.reportMessage,
         type,
@@ -162,7 +173,9 @@ const HelpRequest = ({route}: HelpRequestProps) => {
             <Content>
               <Divider />
               <Tag align="flex-start" color="orange">
-                Aviso:
+                <Text textColor="white" textWeight="bold">
+                  Aviso:
+                </Text>
               </Tag>
               <Text alignment="start" textWeight="light">
                 Você será respondido por uma pessoa da equipe que entrara em
@@ -188,22 +201,28 @@ const HelpRequest = ({route}: HelpRequestProps) => {
                   <Text textWeight="light">{formattedDated.begin}</Text>
                 </View>
                 <View>
-                  <RowGroup>
-                    <ImageContainer size="small" url={item.member.avatar} />
+                  <RowGroup justify="flex-start">
+                    <ImageContainer
+                      size="small"
+                      url={('member' in item && item.member.avatar) || ''}
+                    />
                     <View>
                       <Text
                         limitter={12}
                         maxLines={1}
+                        alignment="start"
                         textColor="primaryText"
                         textWeight="bold">
-                        {'Viajante'}
+                        {'member' in item ? 'Viajante' : 'Host'}
                       </Text>
                       <Text
                         limitter={12}
                         maxLines={1}
                         textColor="secondaryText"
                         textWeight="light">
-                        {item.member.username}
+                        {'member' in item
+                          ? item.member.username
+                          : item.itinerary.owner.username}
                       </Text>
                     </View>
                   </RowGroup>
@@ -215,7 +234,11 @@ const HelpRequest = ({route}: HelpRequestProps) => {
                     <Text textColor="primaryText" textWeight="light">
                       Total
                     </Text>
-                    <Text.Title>{formatPrice(item.amount * 100)}</Text.Title>
+                    <Text.Title>
+                      {'amount' in item
+                        ? formatPrice(item?.amount * 100)
+                        : formatPrice(item?.payment.transaction_amount * 100)}
+                    </Text.Title>
                   </RowGroup>
                 </View>
               </RowGroup>
