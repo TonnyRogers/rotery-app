@@ -26,7 +26,10 @@ export function* getMessages() {
       return;
     }
 
-    const response = yield call(api.get, '/messages');
+    const response: AxiosResponse<MessageProps[]> = yield call(
+      api.get,
+      '/messages',
+    );
 
     yield put(getMessagesSuccess(response.data));
   } catch (error) {
@@ -52,9 +55,12 @@ export function* getConversation({
 
     const {userId} = payload;
 
-    const response = yield call(api.get, `/users/${userId}/messages`);
+    const response: AxiosResponse<MessageProps[]> = yield call(
+      api.get,
+      `/messages/user/${userId}`,
+    );
 
-    yield put(getConversationSuccess(response.data));
+    yield put(getConversationSuccess(response.data, userId));
   } catch (error) {
     yield put(getConversationFailure());
     Toast.show({
@@ -78,7 +84,7 @@ export function* sendMessage({payload}: ReturnType<typeof sendMessageRequest>) {
 
     const messagePayload: AxiosResponse<MessageProps> = yield call(
       api.post,
-      `/users/${userId}/message`,
+      `/messages/${userId}`,
       {
         message,
       },

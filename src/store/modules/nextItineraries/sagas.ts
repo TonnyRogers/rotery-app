@@ -15,11 +15,45 @@ import {
   leaveItineraryRequest,
   leaveItinerarySuccess,
   leaveItineraryFailure,
+  NextItinerariesActions,
+  getNextItineraryDetailsRequest,
+  getNextItineraryDetailsFailure,
+  getNextItineraryDetailsSuccess,
 } from './actions';
 import * as RootNavigation from '../../../RootNavigation';
+import {AxiosResponse} from 'axios';
+import {ItineraryProps} from '../../../utils/types';
 
 const delay = (time: number) =>
   new Promise((resolve) => setTimeout(resolve, time));
+
+export function* getNextItineraryDetails({
+  payload,
+}: ReturnType<typeof getNextItineraryDetailsRequest>) {
+  try {
+    const {itineraryId} = payload;
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(getNextItinerariesFailure());
+      return;
+    }
+
+    const response: AxiosResponse<ItineraryProps> = yield call(
+      api.get,
+      `/itineraries/${itineraryId}/details`,
+    );
+
+    yield put(getNextItineraryDetailsSuccess(response.data));
+  } catch (error) {
+    yield put(getNextItineraryDetailsFailure());
+    Toast.show({
+      text1: 'Erro ao buscar novas mensagens.',
+      position: 'bottom',
+      type: 'error',
+    });
+  }
+}
 
 export function* getItineraries() {
   try {
@@ -30,7 +64,10 @@ export function* getItineraries() {
       return;
     }
 
-    const response = yield call(api.get, '/members/itineraries');
+    const response: AxiosResponse<ItineraryProps[]> = yield call(
+      api.get,
+      '/itineraries/member',
+    );
 
     yield put(getNextItinerariesSuccess(response.data));
   } catch (error) {
@@ -107,6 +144,13 @@ export function* rateItinerary({
       description: itineraryDescription,
     });
 
+    Toast.show({
+      text1: 'Avaliação enviada!',
+      text2: 'Obrigado 🥳🤙',
+      position: 'bottom',
+      type: 'success',
+    });
+
     yield put(rateItinerarySuccess());
     RootNavigation.replace('NextItineraries');
   } catch (error) {
@@ -147,8 +191,15 @@ export function* leaveItinerary({
 }
 
 export default all([
-  takeLatest('@nextItineraries/LEAVE_ITINERARY_REQUEST', leaveItinerary),
-  takeLatest('@nextItineraries/RATE_ITINERARY_REQUEST', rateItinerary),
-  takeLatest('@nextItineraries/MAKE_QUESTION_REQUEST', makeQuestion),
-  takeLatest('@nextItineraries/GET_NEXTITINERARIES_REQUEST', getItineraries),
+  takeLatest(
+    NextItinerariesActions.GET_NEXTITINERARIES_DETAILS_REQUEST,
+    getNextItineraryDetails,
+  ),
+  takeLatest(NextItinerariesActions.LEAVE_ITINERARY_REQUEST, leaveItinerary),
+  takeLatest(NextItinerariesActions.RATE_ITINERARY_REQUEST, rateItinerary),
+  takeLatest(NextItinerariesActions.MAKE_QUESTION_REQUEST, makeQuestion),
+  takeLatest(
+    NextItinerariesActions.GET_NEXTITINERARIES_REQUEST,
+    getItineraries,
+  ),
 ]);

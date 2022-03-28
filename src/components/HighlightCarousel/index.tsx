@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {
   Container,
@@ -6,11 +6,9 @@ import {
   Bullets,
   Bullet,
   HighlightContent,
-  Title,
-  Subtitle,
 } from './styles';
 import Highlight from '../Highlight';
-
+import Text from '../Text';
 interface dataProps {
   id: number;
   url: string;
@@ -24,33 +22,39 @@ interface HighlightCarouselProps {
 }
 
 const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
-  const [interval, setInterval] = useState(1);
-  const [intervals, setIntervals] = useState(1);
+  const [currentTab, setCurrentTab] = useState(1);
+  const [tabSize, setTabSize] = useState(1);
   const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    if (data.length) {
+      setTabSize(data.length);
+    }
+  }, [data.length]);
 
   const init = (itemWidth: number) => {
     setWidth(itemWidth);
     const totalItems = data && data.length;
-    setIntervals(Math.ceil(totalItems / 1));
+    setTabSize(Math.ceil(totalItems / 1));
   };
 
   const getInterval = (offset: any) => {
-    for (let i = 1; i <= intervals; i++) {
-      if (offset + 1 < (width / intervals) * i) {
+    for (let i = 1; i <= tabSize; i++) {
+      if (offset + 1 < (width / tabSize) * i) {
         return i;
       }
-      if (i === intervals) {
+      if (i === tabSize) {
         return i;
       }
     }
   };
 
   let bullets = [];
-  for (let counter = 1; counter <= intervals; counter++) {
+  for (let counter = 1; counter <= tabSize; counter++) {
     bullets.push(
       <Bullet
         style={{
-          backgroundColor: `${counter === interval ? '#3dc77b' : '#e6e6e6'}`,
+          backgroundColor: `${counter === currentTab ? '#3dc77b' : '#e6e6e6'}`,
         }}
         key={counter}
       />,
@@ -61,23 +65,27 @@ const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
     <Container>
       <ImageList
         horizontal
-        contentContainerStyle={{width: `${100 * intervals}%`}}
+        contentContainerStyle={{width: `${100 * tabSize}%`}}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
-        onContentSizeChange={(w, h) => init(w)}
+        onContentSizeChange={(w, _) => init(w)}
         onScroll={(e) => {
           setWidth(e.nativeEvent.contentSize.width);
-          setInterval(getInterval(e.nativeEvent.contentOffset.x));
+          setCurrentTab(Number(getInterval(e.nativeEvent.contentOffset.x)));
         }}
         decelerationRate="fast"
         pagingEnabled>
         {data &&
-          data.map((item) => (
-            <Highlight key={item.id} background={item.url}>
+          data.map((item, index) => (
+            <Highlight key={index} background={item.url}>
               {item.withInfo && (
                 <HighlightContent>
-                  <Title>{item.title}</Title>
-                  <Subtitle>{item.message}</Subtitle>
+                  <Text.Paragraph textWeight="bold" alignment="center">
+                    {item.title}
+                  </Text.Paragraph>
+                  <Text textWeight="light" alignment="center">
+                    {item.message}
+                  </Text>
                 </HighlightContent>
               )}
             </Highlight>

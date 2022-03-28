@@ -13,6 +13,8 @@ import {
   removeFavoriteSuccess,
   removeFavoriteFailure,
 } from './actions';
+import {AxiosResponse} from 'axios';
+import {ItineraryProps} from '../../../utils/types';
 
 export function* getFavoritedItineraries() {
   try {
@@ -22,7 +24,10 @@ export function* getFavoritedItineraries() {
       yield put(getFavoritesFailure());
       return;
     }
-    const response = yield call(api.get, '/favorites');
+    const response: AxiosResponse<ItineraryProps[]> = yield call(
+      api.get,
+      '/itineraries/favorites',
+    );
 
     yield put(getFavoritesSuccess(response.data));
   } catch (error) {
@@ -48,7 +53,7 @@ export function* favoriteItinerary({
 
     const {itineraryId} = payload;
 
-    const response = yield call(
+    const response: AxiosResponse<ItineraryProps> = yield call(
       api.post,
       `/itineraries/${itineraryId}/favorite`,
     );

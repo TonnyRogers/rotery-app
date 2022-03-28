@@ -7,11 +7,7 @@ const shadow =
     ? 'box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);'
     : 'elevation: 1;';
 
-export const Container = styled.SafeAreaView`
-  flex: 1;
-`;
-
-export const Content = styled.ScrollView`
+export const Container = styled.ScrollView`
   flex: 1;
 `;
 
@@ -43,6 +39,12 @@ export const Name = styled.Text`
 export const RowGroup = styled.View`
   flex-direction: row;
   align-items: center;
+`;
+
+export const ItemsContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
 `;
 
 export const RowGroupSpaced = styled.View`

@@ -2,8 +2,6 @@
 import React, {useRef, useState, useMemo, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {format, parse} from 'date-fns';
-import pt from 'date-fns/locale/pt';
 import {useNavigation} from '@react-navigation/native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -44,18 +42,24 @@ import Text from '../../components/Text';
 import FileInput from '../../components/FileInput';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {
-  showProfileGuide,
-  hideProfileGuide,
-} from '../../store/modules/guides/actions';
+import {hideProfileGuide} from '../../store/modules/guides/actions';
 import SplashScreen from '../../components/SplashScreen';
 import LocationPickerInput from '../../components/LocationPickerInput';
-import {sexOptions, profileGuideImages} from '../../utils/constants';
+import {
+  sexOptions,
+  travelerProfileGuideImages,
+  hostProfileGuideImages,
+} from '../../utils/constants';
 import {
   TomTomApiResponse,
   ProfileLocationJson,
   LocationPickerInputSetItem,
 } from '../../utils/types';
+import formatLocale from '../../providers/dayjs-format-locale';
+import {ScrollView} from 'react-native';
+import Button from '../../components/Button';
+import ColumnGroup from '../../components/ColumnGroup';
+import {useUserIsHost} from '../../hooks/useUserIsHost';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('campo obrigatório'),
@@ -65,7 +69,10 @@ const validationSchema = yup.object().shape({
     .string()
     .required('campo obrigatório')
     .min(11, 'telefone incompleto'),
-  cpf: yup.string().required('campo obrigatório').min(11, 'cpf incompleto'),
+  document: yup
+    .string()
+    .required('campo obrigatório')
+    .min(14, 'cpf incompleto'),
   state: yup.string(),
   city: yup.string(),
   profission: yup.string().required('campo obrigatório'),
@@ -75,6 +82,7 @@ const validationSchema = yup.object().shape({
 const Profile: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const {isHost, conditionalRender} = useUserIsHost();
   const {
     register,
     handleSubmit,
@@ -82,23 +90,24 @@ const Profile: React.FC = () => {
     watch,
     formState: {errors},
   } = useForm({resolver: yupResolver(validationSchema)});
-  const {user} = useSelector((state: RootStateProps) => state.auth);
   const {data, loading} = useSelector((state: RootStateProps) => state.profile);
   const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
+  const {data: subscriptionData} = useSelector(
+    (state: RootStateProps) => state.subscription,
+  );
 
   useEffect(() => {
-    dispatch(showProfileGuide());
-    if (data?.file_id && data.file?.url) {
+    if (data?.file && data.file?.url) {
       setProfileImage({uri: data.file.url});
     }
-  }, [data, dispatch]);
+  }, [data]);
 
   useEffect(() => {
     register('name');
     register('gender');
     register('email');
     register('phone');
-    register('cpf');
+    register('document');
     register('state');
     register('city');
     register('profission');
@@ -106,13 +115,13 @@ const Profile: React.FC = () => {
 
     setValue('name', data?.name || '');
     setValue('gender', data?.gender || '');
-    setValue('email', user?.email || '');
+    setValue('email', data?.user?.email || '');
     setValue('phone', data?.phone || '');
-    setValue('cpf', data?.cpf || '');
+    setValue('document', data?.document || '');
     setValue('profission', data?.profission || '');
     setValue('birthDate', data?.birth);
     setValue('city', data?.location);
-  }, [data, register, setValue, user]);
+  }, [data, register, setValue]);
 
   const watchBirthDate = watch('birthDate', new Date());
   const watchGender = watch('gender');
@@ -120,7 +129,7 @@ const Profile: React.FC = () => {
   const watchName = watch('name');
   const watchEmail = watch('email');
   const watchPhone = watch('phone', '');
-  const watchCpf = watch('cpf', '');
+  const watchCpf = watch('document', '');
   const watchProfission = watch('profission');
 
   const [alertVisible, setAlertVisible] = useState(false);
@@ -141,19 +150,27 @@ const Profile: React.FC = () => {
 
   const useSinceDate = useMemo(
     () =>
-      format(
-        parse(user.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-        "MMMM 'de' yyyy",
-        {locale: pt},
+      data?.user.createdAt &&
+      formatLocale(
+        new Date(Date.parse(data?.user.createdAt)),
+        'MMMM [de] YYYY',
       ),
-    [user],
+    [data],
   );
 
   function alertToggle() {
     setAlertVisible(!alertVisible);
   }
 
-  const updateProfileHandle = (data: any) => {
+  function financialNavigation() {
+    if (isHost) {
+      navigation.navigate('Revenues');
+    } else {
+      navigation.navigate('Wallet');
+    }
+  }
+
+  const updateProfileHandle = (profileData: any) => {
     const jsonContent: ProfileLocationJson = {
       city: locationJson.current?.value.address.municipality,
       country: locationJson.current?.value.address.country,
@@ -164,13 +181,13 @@ const Profile: React.FC = () => {
 
     dispatch(
       updateProfileRequest(
-        data.name,
-        data.gender,
-        data.birthDate.toDateString(),
-        Number(clearValue(String(data.cpf))),
-        data.profission,
-        Number(clearValue(String(data.phone))),
-        data.city,
+        profileData.name,
+        profileData.gender,
+        profileData.birthDate.toDateString(),
+        String(clearValue(profileData.document)),
+        profileData.profission,
+        String(clearValue(profileData.phone)),
+        profileData.city,
         locationJson.current ? jsonContent : undefined,
       ),
     );
@@ -198,10 +215,6 @@ const Profile: React.FC = () => {
     locationJson.current = value;
   };
 
-  // const onCityOpen = () => {
-  //   setGenderIsOpen(false);
-  // };
-
   return (
     <Page showHeader={false}>
       <Container
@@ -209,11 +222,10 @@ const Profile: React.FC = () => {
         renderItem={() => (
           <>
             <Card>
-              <CardHeader>
-                <BackButton onPress={goBack}>
-                  <Icon name="chevron-left" size={24} color="#3dc77b" />
-                </BackButton>
-              </CardHeader>
+              <BackButton onPress={goBack}>
+                <Icon name="chevron-left" size={24} color="#3dc77b" />
+              </BackButton>
+              <CardHeader />
               <User>
                 <Avatar
                   source={{uri: profileImage.uri}}
@@ -227,7 +239,9 @@ const Profile: React.FC = () => {
                     </ChangeAvatarButtonText>
                   </ChangeAvatarButton>
                 </FileInput>
-                <Text.Title alignment="center">{user.username}</Text.Title>
+                <Text.Title alignment="center">
+                  {data?.user.username}
+                </Text.Title>
                 <Reputation>
                   <Icon name="star" size={24} color="#3dc77b" />
                   <Icon name="star" size={24} color="#3dc77b" />
@@ -240,7 +254,62 @@ const Profile: React.FC = () => {
                 </Text>
               </User>
             </Card>
-
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{height: 70, margin: 10}}>
+              {conditionalRender(
+                subscriptionData && (
+                  <Button
+                    onPress={() => financialNavigation()}
+                    customContent
+                    sizeHeight={70}
+                    sizeWidth={70}
+                    sizeMargin="0 2rem 0 0"
+                    bgColor="blueTransparent"
+                    textColor="white">
+                    <ColumnGroup>
+                      <Icon name="wallet-outline" size={24} color="#4885fd" />
+                      <Text.Small textColor="blue" textWeight="bold">
+                        Carteira
+                      </Text.Small>
+                    </ColumnGroup>
+                  </Button>
+                ),
+                <Button
+                  onPress={() => financialNavigation()}
+                  customContent
+                  sizeHeight={70}
+                  sizeWidth={70}
+                  sizeMargin="0 2rem 0 0"
+                  bgColor="blueTransparent"
+                  textColor="white">
+                  <ColumnGroup>
+                    <Icon name="wallet-outline" size={24} color="#4885fd" />
+                    <Text.Small textColor="blue" textWeight="bold">
+                      Carteira
+                    </Text.Small>
+                  </ColumnGroup>
+                </Button>,
+              )}
+              {isHost && (
+                <Button
+                  onPress={() => navigation.navigate('HostSubscription')}
+                  customContent
+                  sizeHeight={70}
+                  sizeWidth={70}
+                  bgColor="blueTransparent"
+                  sizeMargin="0 2rem 0 0"
+                  textColor="white">
+                  <ColumnGroup>
+                    <Icon name="book-open-outline" size={24} color="#4885fd" />
+                    <Text.Small textColor="blue" textWeight="bold">
+                      Assinatura
+                    </Text.Small>
+                  </ColumnGroup>
+                </Button>
+              )}
+            </ScrollView>
             <Card>
               <InputContent>
                 <Input
@@ -304,10 +373,12 @@ const Profile: React.FC = () => {
                   ref={cpfRef}
                   maxLength={14}
                   value={cpfCnpj(watchCpf)}
-                  onChange={(value: string) => setValue('cpf', cpfCnpj(value))}
+                  onChange={(value: string) =>
+                    setValue('document', cpfCnpj(value))
+                  }
                   returnKeyType="next"
                   onSubmitEditing={() => stateRef.current?.focus()}
-                  error={errors.cpf?.message}
+                  error={errors.document?.message}
                   keyboardType="number-pad"
                 />
                 <LocationPickerInput.Button
@@ -366,7 +437,7 @@ const Profile: React.FC = () => {
       />
       <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
-          data={profileGuideImages}
+          data={isHost ? hostProfileGuideImages : travelerProfileGuideImages}
           onClose={() => dispatch(hideProfileGuide())}
         />
       </Ads>

@@ -1,11 +1,12 @@
 import {
   ItineraryProps,
-  ImageListProps,
-  CreateItemListProps,
-  UpdateItemListProps,
   QuestionProps,
-  MemberProps,
   LocationJson,
+  CreateItineraryActivityItemProps,
+  CreateItineraryLodgingItemProps,
+  CreateItineraryTransportItemProps,
+  ItineraryMemberResponse,
+  FileProps,
 } from '../../../utils/types';
 
 export enum ItineraryActions {
@@ -64,33 +65,33 @@ export function createItineraryRequest(
   name: string,
   capacity: number,
   description: string,
-  dateBegin: Date,
-  dateEnd: Date,
-  dateLimit: Date,
+  begin: Date,
+  end: Date,
+  deadlineForJoin: Date,
   location: string,
   isPrivate: boolean,
-  images?: ImageListProps[],
-  activities?: CreateItemListProps[],
-  lodgings?: CreateItemListProps[],
-  transports?: CreateItemListProps[],
-  location_json?: LocationJson,
+  photos?: FileProps[],
+  activities?: CreateItineraryActivityItemProps[],
+  lodgings?: CreateItineraryLodgingItemProps[],
+  transports?: CreateItineraryTransportItemProps[],
+  locationJson?: LocationJson,
 ) {
   return {
     type: ItineraryActions.CREATE_ITINERARY_REQUEST,
     payload: {
       name,
-      images,
+      photos,
       capacity,
       description,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      begin,
+      end,
+      deadlineForJoin,
       location,
       isPrivate,
       activities,
       lodgings,
       transports,
-      location_json,
+      locationJson,
     },
   };
 }
@@ -133,34 +134,34 @@ export function updateItineraryRequest(
   name: string,
   capacity: number,
   description: string,
-  dateBegin: Date,
-  dateEnd: Date,
-  dateLimit: Date,
+  begin: Date,
+  end: Date,
+  deadlineForJoin: Date,
   location: string,
   isPrivate: boolean,
-  images?: ImageListProps[],
-  activities?: UpdateItemListProps[],
-  lodgings?: UpdateItemListProps[],
-  transports?: UpdateItemListProps[],
-  location_json?: LocationJson,
+  photos?: FileProps[],
+  activities?: CreateItineraryActivityItemProps[],
+  lodgings?: CreateItineraryLodgingItemProps[],
+  transports?: CreateItineraryTransportItemProps[],
+  locationJson?: LocationJson,
 ) {
   return {
     type: ItineraryActions.UPDATE_ITINERARY_REQUEST,
     payload: {
       itineraryId,
       name,
-      images,
+      photos,
       capacity,
       description,
-      dateBegin,
-      dateEnd,
-      dateLimit,
+      begin,
+      end,
+      deadlineForJoin,
       location,
       isPrivate,
       activities,
       lodgings,
       transports,
-      location_json,
+      locationJson,
     },
   };
 }
@@ -180,12 +181,12 @@ export function updateItineraryFailure() {
 
 export function replyQuestionRequest(
   itineraryId: number,
-  questionId: number,
-  anwser: string,
+  questionId: string,
+  answer: string,
 ) {
   return {
     type: ItineraryActions.REPLY_QUESTION_REQUEST,
-    payload: {anwser, questionId, itineraryId},
+    payload: {answer, questionId, itineraryId},
   };
 }
 
@@ -202,14 +203,14 @@ export function replyQuestionFailure() {
   };
 }
 
-export function promoteMemberRequest(itineraryId: number, memberId: number) {
+export function promoteMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.PROMOTE_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
-export function promoteMemberSuccess(itineraryMember: MemberProps) {
+export function promoteMemberSuccess(itineraryMember: ItineraryMemberResponse) {
   return {
     type: ItineraryActions.PROMOTE_MEMBER_SUCCESS,
     payload: {itineraryMember},
@@ -222,14 +223,14 @@ export function promoteMemberFailure() {
   };
 }
 
-export function demoteMemberRequest(itineraryId: number, memberId: number) {
+export function demoteMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.DEMOTE_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
-export function demoteMemberSuccess(itineraryMember: MemberProps) {
+export function demoteMemberSuccess(itineraryMember: ItineraryMemberResponse) {
   return {
     type: ItineraryActions.DEMOTE_MEMBER_SUCCESS,
     payload: {itineraryMember},
@@ -242,14 +243,14 @@ export function demoteMemberFailure() {
   };
 }
 
-export function acceptMemberRequest(itineraryId: number, memberId: number) {
+export function acceptMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.ACCEPT_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
-export function acceptMemberSuccess(itineraryMember: MemberProps) {
+export function acceptMemberSuccess(itineraryMember: ItineraryMemberResponse) {
   return {
     type: ItineraryActions.ACCEPT_MEMBER_SUCCESS,
     payload: {itineraryMember},
@@ -262,17 +263,17 @@ export function acceptMemberFailure() {
   };
 }
 
-export function removeMemberRequest(itineraryId: number, memberId: number) {
+export function removeMemberRequest(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.REMOVE_MEMBER_REQUEST,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
-export function removeMemberSuccess(itineraryId: number, memberId: number) {
+export function removeMemberSuccess(itineraryId: number, userId: number) {
   return {
     type: ItineraryActions.REMOVE_MEMBER_SUCCESS,
-    payload: {itineraryId, memberId},
+    payload: {itineraryId, userId},
   };
 }
 
@@ -289,9 +290,10 @@ export function notifyItineraryFinishRequest(itineraryId: number) {
   };
 }
 
-export function notifyItineraryFinishSuccess() {
+export function notifyItineraryFinishSuccess(itineraryId: number) {
   return {
     type: ItineraryActions.NOTIFY_ITINERARY_FINISH_SUCCESS,
+    payload: {itineraryId},
   };
 }
 

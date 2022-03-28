@@ -1,4 +1,8 @@
-import {NotificationsProps, MessageProps} from '../../../utils/types';
+import {
+  NotificationsProps,
+  MessageProps,
+  SendChatMessagePayload,
+} from '../../../utils/types';
 
 export enum WsActions {
   NOTIFICATIONS = '@ws/NOTIFICATIONS',
@@ -9,9 +13,13 @@ export enum WsActions {
   NEW_CONNECTION = '@ws/NEW_CONNECTION',
   NEW_MESSAGE = '@ws/NEW_MESSAGE',
   CONNECTION_ACCEPTED = '@ws/CONNECTION_ACCEPTED',
+  CONNECTION_BLOCK = '@ws/CONNECTION_BLOCK',
+  CONNECTION_UNBLOCK = '@ws/CONNECTION_UNBLOCK',
   NEW_ITINERARY_MEMBER = '@ws/NEW_ITINERARY_MEMBER',
   MEMBER_ACCEPTED = '@ws/MEMBER_ACCEPTED',
   MEMBER_REJECTED = '@ws/MEMBER_REJECTED',
+  MEMBER_PROMOTED = '@ws/MEMBER_PROMOTED',
+  MEMBER_DEMOTED = '@ws/MEMBER_DEMOTED',
   ITINERARY_QUESTION = '@ws/ITINERARY_QUESTION',
   ITINERARY_ANSWER = '@ws/ITINERARY_ANSWER',
   SET_CONNECTED = '@ws/SET_CONNECTED',
@@ -19,6 +27,10 @@ export enum WsActions {
   ITINERARY_UPDATE = '@ws/ITINERARY_UPDATE',
   ITINERARY_DELETE = '@ws/ITINERARY_DELETE',
   ITINERARY_RATE = '@ws/ITINERARY_RATE',
+  SEND_CHAT_MESSAGE_REQUEST = '@ws/SEND_CHAT_MESSAGE_REQUEST',
+  SEND_CHAT_MESSAGE_SUCCESS = '@ws/SEND_CHAT_MESSAGE_SUCCESS',
+  SEND_CHAT_MESSAGE_FAILURE = '@ws/SEND_CHAT_MESSAGE_FAILURE',
+  LISTEN_SUBSCRIPTIONS = '@ws/LISTEN_SUBSCRIPTIONS',
 }
 
 export function wsSetConnected() {
@@ -66,7 +78,9 @@ export function wsSubscribeUserToNotifications() {
   };
 }
 
-export function wsNewConnectionNotification(notification: NotificationsProps) {
+export function wsNewConnectionNotification(
+  notification: NotificationsProps<any>,
+) {
   return {
     type: WsActions.NEW_CONNECTION,
     payload: {notification},
@@ -74,7 +88,7 @@ export function wsNewConnectionNotification(notification: NotificationsProps) {
 }
 
 export function wsConnectionAcceptedNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.CONNECTION_ACCEPTED,
@@ -82,7 +96,9 @@ export function wsConnectionAcceptedNotification(
   };
 }
 
-export function wsNewMessageNotification(notification: NotificationsProps) {
+export function wsNewMessageNotification(
+  notification: NotificationsProps<any>,
+) {
   return {
     type: WsActions.NEW_MESSAGE,
     payload: {notification},
@@ -90,7 +106,7 @@ export function wsNewMessageNotification(notification: NotificationsProps) {
 }
 
 export function wsNewItineraryMemeberNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.NEW_ITINERARY_MEMBER,
@@ -99,7 +115,7 @@ export function wsNewItineraryMemeberNotification(
 }
 
 export function wsAcceptedItineraryMemeberNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.MEMBER_ACCEPTED,
@@ -108,7 +124,7 @@ export function wsAcceptedItineraryMemeberNotification(
 }
 
 export function wsRejectedItineraryMemeberNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.MEMBER_REJECTED,
@@ -117,7 +133,7 @@ export function wsRejectedItineraryMemeberNotification(
 }
 
 export function wsItineraryQuestionNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_QUESTION,
@@ -126,7 +142,7 @@ export function wsItineraryQuestionNotification(
 }
 
 export function wsItineraryAnswerNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_ANSWER,
@@ -135,7 +151,7 @@ export function wsItineraryAnswerNotification(
 }
 
 export function wsItineraryUpdateNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_UPDATE,
@@ -144,7 +160,7 @@ export function wsItineraryUpdateNotification(
 }
 
 export function wsItineraryDeleteNotification(
-  notification: NotificationsProps,
+  notification: NotificationsProps<any>,
 ) {
   return {
     type: WsActions.ITINERARY_DELETE,
@@ -152,10 +168,62 @@ export function wsItineraryDeleteNotification(
   };
 }
 
-export function wsItineraryRateNotification(notification: NotificationsProps) {
+export function wsConnectionBlockedNotification(
+  notification: NotificationsProps<any>,
+) {
+  return {
+    type: WsActions.CONNECTION_BLOCK,
+    payload: {notification},
+  };
+}
+
+export function wsConnectionUnblockedNotification(
+  notification: NotificationsProps<any>,
+) {
+  return {
+    type: WsActions.CONNECTION_UNBLOCK,
+    payload: {notification},
+  };
+}
+
+export function wsItineraryRateNotification(
+  notification: NotificationsProps<any>,
+) {
   return {
     type: WsActions.ITINERARY_RATE,
     payload: {notification},
+  };
+}
+
+export function wsSendChatMessageRequest(
+  messagePayload: SendChatMessagePayload,
+) {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_REQUEST,
+    payload: {
+      messagePayload,
+    },
+  };
+}
+
+export function wsSendChatMessageSuccess(newMessage: MessageProps) {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_SUCCESS,
+    payload: {
+      newMessage,
+    },
+  };
+}
+
+export function wsListenSubscriptions() {
+  return {
+    type: WsActions.LISTEN_SUBSCRIPTIONS,
+  };
+}
+
+export function wsSendChatMessageFailure() {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_FAILURE,
   };
 }
 

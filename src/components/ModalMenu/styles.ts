@@ -7,14 +7,15 @@ import {
 
 const metricH = Platform.OS === 'ios' ? 'vh' : '%';
 const metricW = Platform.OS === 'ios' ? 'vw' : '%';
+const topPadding = Platform.OS === 'ios' ? '4.5rem' : '1.6rem';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
   position: absolute;
   height: ${'100' + metricH};
-  width: ${'100' + metricW}:;
+  width: ${'100' + metricW};
 `;
 
 export const KeyboardAvoidingView = styled(RNKAvoidView)`
@@ -27,12 +28,13 @@ export const Content = styled(Animated.View)`
   min-height: 30rem;
   border-bottom-left-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  padding: 4rem 1rem;
+  padding: ${topPadding} 1rem 0.8rem 1rem;
 `;
 
 export const Header = styled.View`
   flex-direction: row;
   align-items: center;
+  margin-left: 0.6rem;
 `;
 
 export const Title = styled.Text`
@@ -50,8 +52,13 @@ export const Actions = styled.View`
   margin-top: 1rem;
 `;
 
-export const MenuButton = styled.TouchableOpacity`
-  background: #3dc77b;
+export const MenuButton = styled.TouchableOpacity<{active?: boolean}>`
+  background: ${(props) =>
+    props.active !== undefined
+      ? props.active
+        ? '#3dc77b'
+        : '#d5d5d5'
+      : '#3dc77b'};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -62,11 +69,12 @@ export const MenuButton = styled.TouchableOpacity`
   position: relative;
 `;
 
-export const MenuButtonText = styled.Text`
+export const MenuButtonText = styled.Text<{active?: boolean}>`
   font-family: 'Roboto';
   font-size: 1.6rem;
   font-weight: bold;
-  color: #fff;
+  color: ${(props) =>
+    props.active !== undefined ? (props.active ? '#fff' : '#999') : '#fff'};
   text-align: center;
 `;
 

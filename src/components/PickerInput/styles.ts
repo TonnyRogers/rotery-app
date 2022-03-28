@@ -1,8 +1,8 @@
 import styled from 'styled-native-components';
 
 export const Container = styled.View`
-  margin-bottom: 2rem;
-  z-index: 50;
+  align-self: stretch;
+  margin: 1rem 0.2rem;
 `;
 
 export const Content = styled.View`

@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {Container, ImageItem, ImageList, Bullets, Bullet} from './styles';
+import {ItineraryPhotoProps} from '../../utils/types';
 
 interface dataProps {
   id: number;
@@ -8,37 +9,43 @@ interface dataProps {
 }
 
 interface ImageCarouselProps {
-  data: dataProps[];
+  data: ItineraryPhotoProps[];
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
-  const [interval, setInterval] = useState(1);
-  const [intervals, setIntervals] = useState(1);
+  const [currentTab, setCurrentTab] = useState(1);
+  const [tabSize, setTabSize] = useState(1);
   const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    if (data.length) {
+      setTabSize(data.length);
+    }
+  }, [data.length]);
 
   const init = (itemWidth: number) => {
     setWidth(itemWidth);
     const totalItems = data && data.length;
-    setIntervals(Math.ceil(totalItems / 1));
+    setTabSize(Math.ceil(totalItems / 1));
   };
 
   const getInterval = (offset: any) => {
-    for (let i = 1; i <= intervals; i++) {
-      if (offset + 1 < (width / intervals) * i) {
+    for (let i = 1; i <= tabSize; i++) {
+      if (offset + 1 < (width / tabSize) * i) {
         return i;
       }
-      if (i === intervals) {
+      if (i === tabSize) {
         return i;
       }
     }
   };
 
   let bullets = [];
-  for (let counter = 1; counter <= intervals; counter++) {
+  for (let counter = 1; counter <= tabSize; counter++) {
     bullets.push(
       <Bullet
         style={{
-          backgroundColor: `${counter === interval ? '#3dc77b' : '#e6e6e6'}`,
+          backgroundColor: `${counter === currentTab ? '#3dc77b' : '#e6e6e6'}`,
         }}
         key={counter}
       />,
@@ -49,26 +56,29 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
     <Container>
       <ImageList
         horizontal
-        contentContainerStyle={{width: `${100 * intervals}%`}}
+        contentContainerStyle={{width: `${100 * tabSize}%`}}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={200}
-        onContentSizeChange={(w, h) => init(w)}
+        onContentSizeChange={(w, _) => init(w)}
         onScroll={(e) => {
           setWidth(e.nativeEvent.contentSize.width);
-          setInterval(getInterval(e.nativeEvent.contentOffset.x));
+          setCurrentTab(Number(getInterval(e?.nativeEvent?.contentOffset?.x)));
         }}
         decelerationRate="fast"
         pagingEnabled>
         {data &&
-          data.map((item) => (
-            <ImageItem
-              key={item.id}
-              source={{
-                uri: item.url || undefined,
-              }}
-              resizeMode="cover"
-            />
-          ))}
+          data.map(
+            (item, index) =>
+              typeof item.file !== 'number' && (
+                <ImageItem
+                  key={index}
+                  source={{
+                    uri: item.file.url || undefined,
+                  }}
+                  resizeMode="cover"
+                />
+              ),
+          )}
       </ImageList>
       <Bullets>{bullets}</Bullets>
     </Container>

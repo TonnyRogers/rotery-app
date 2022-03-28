@@ -1,6 +1,6 @@
 import React, {useEffect, useCallback, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Dimensions, Animated, PanResponder, SafeAreaView} from 'react-native';
+import {Dimensions, Animated, PanResponder} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
@@ -86,12 +86,12 @@ const Notification: React.FC<NotificationProps> = ({
   }, [handleOpen, onRequestClose, visible]);
 
   const renderNotifications = useCallback(() => {
-    function childClose() {
-      onRequestClose();
-    }
-
     return data?.map((item) => (
-      <NotificationItem key={item?.id} notification={item} close={childClose} />
+      <NotificationItem
+        key={item?.id}
+        notification={item}
+        close={onRequestClose}
+      />
     ));
   }, [data, onRequestClose]);
 
@@ -101,29 +101,27 @@ const Notification: React.FC<NotificationProps> = ({
 
   return (
     <Container>
-      <SafeAreaView>
-        <Content
-          style={{
-            transform: [
-              {
-                translateY: panY.y.interpolate({
-                  inputRange: [-100, 0, 1],
-                  outputRange: [-100, 0, 1],
-                }),
-              },
-            ],
-          }}
-          {...panRespoders.panHandlers}>
-          <Header>
-            <Icon name={icon} size={24} color={iconColor} />
-            <Text.Title>{title}</Text.Title>
-          </Header>
-          <NotificationList>{renderNotifications()}</NotificationList>
-          <CloseButton onPress={handleDismiss}>
-            <Icon name="chevron-up" size={24} color="#808080" />
-          </CloseButton>
-        </Content>
-      </SafeAreaView>
+      <Content
+        style={{
+          transform: [
+            {
+              translateY: panY.y.interpolate({
+                inputRange: [-100, 0, 1],
+                outputRange: [-100, 0, 1],
+              }),
+            },
+          ],
+        }}
+        {...panRespoders.panHandlers}>
+        <Header>
+          <Icon name={icon} size={24} color={iconColor} />
+          <Text.Title>{title}</Text.Title>
+        </Header>
+        <NotificationList>{renderNotifications()}</NotificationList>
+        <CloseButton onPress={handleDismiss}>
+          <Icon name="chevron-up" size={24} color="#808080" />
+        </CloseButton>
+      </Content>
     </Container>
   );
 };

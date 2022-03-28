@@ -9,11 +9,14 @@ export type SocketClient = Socket;
 class WebSocket {
   private socket!: SocketClient;
 
-  public init(userId: number): SocketClient {
+  public init(userId: number, token: string): SocketClient {
     if (!this.socket) {
       this.socket = io(wsConnection, {
         query: {
           userId: String(userId),
+        },
+        extraHeaders: {
+          authorization: token,
         },
         secure: true,
         autoConnect: true,

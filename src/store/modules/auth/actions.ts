@@ -1,4 +1,4 @@
-import {UserProps} from './reducer';
+import {UserProps} from '../../../utils/types';
 
 export enum AuthActions {
   LOGIN_REQUEST = '@auth/LOGIN_REQUEST',
@@ -24,14 +24,10 @@ export function loginRequest(email: string, password: string) {
   };
 }
 
-export function loginSuccess(
-  token: string,
-  refreshToken: string,
-  user: UserProps,
-) {
+export function loginSuccess(access_token: string, user: UserProps) {
   return {
     type: AuthActions.LOGIN_SUCCESS,
-    payload: {token, refreshToken, user},
+    payload: {access_token, user},
   };
 }
 
@@ -51,10 +47,11 @@ export function registerRequest(
   username: string,
   email: string,
   password: string,
+  isHost: boolean,
 ) {
   return {
     type: AuthActions.REGISTER_REQUEST,
-    payload: {username, email, password},
+    payload: {username, email, password, isHost},
   };
 }
 

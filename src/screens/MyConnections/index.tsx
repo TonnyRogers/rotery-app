@@ -2,8 +2,6 @@ import React, {useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {
@@ -35,6 +33,7 @@ import Card from '../../components/Card';
 import Page from '../../components/Page';
 import FloatButton from '../../components/FloatButton';
 import Text from '../../components/Text';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 const MyConnections: React.FC = () => {
   const dispatch = useDispatch();
@@ -64,19 +63,18 @@ const MyConnections: React.FC = () => {
   }
 
   function formatDate(date: string) {
-    return format(
-      parse(date, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      'dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
+    return formatLocale(date, 'DD MMM YY');
   }
 
   const myConnections: ConnectionsProps[] = [];
 
   connections?.forEach((connect) => {
-    if (invites?.find((invite) => invite.owner_id === connect.user_id)) {
+    if (
+      invites?.find(
+        (invite) =>
+          invite.owner.id === connect.target.id && invite.isBlocked === false,
+      )
+    ) {
       myConnections.push(connect);
     }
   });
@@ -85,7 +83,7 @@ const MyConnections: React.FC = () => {
     invite,
   ) {
     return !connections?.some(function (connect) {
-      return invite.owner_id === connect.user_id;
+      return invite.owner.id === connect.target.id;
     });
   });
 
@@ -97,27 +95,27 @@ const MyConnections: React.FC = () => {
     return myInvites?.map((item) => (
       <User key={item.id}>
         <UserInfo>
-          <UserButton onPress={() => toUserProfile(item.owner_id)}>
+          <UserButton onPress={() => toUserProfile(item.owner.id)}>
             <UserImage
               source={{
-                uri: item.owner.person.file && item.owner.person.file.url,
+                uri: item.owner.profile.file?.url,
               }}
               resizeMode="cover"
             />
           </UserButton>
           <ColumnGroup>
-            <Text.Paragraph textColor="primary" textWeight="bold">
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
               {item.owner.username}
             </Text.Paragraph>
-            <Text>{formatDate(item.owner.created_at)}</Text>
+            <Text>desde {formatDate(item.owner.createdAt)}</Text>
           </ColumnGroup>
         </UserInfo>
         <Actions>
           <>
-            <AcceptButton onPress={() => handleAcceptConnection(item.owner_id)}>
+            <AcceptButton onPress={() => handleAcceptConnection(item.owner.id)}>
               <Icon name="check" size={24} color="#FFF" />
             </AcceptButton>
-            <RejectButton onPress={() => handleRejectConnection(item.owner_id)}>
+            <RejectButton onPress={() => handleRejectConnection(item.owner.id)}>
               <Icon name="close" size={24} color="#FFF" />
             </RejectButton>
           </>
@@ -142,25 +140,28 @@ const MyConnections: React.FC = () => {
     return myConnections?.map((item) => (
       <User key={item.id}>
         <UserInfo>
-          <UserButton onPress={() => toUserProfile(item.user_id)}>
+          <UserButton onPress={() => toUserProfile(item.target.id)}>
             <UserImage
               source={{
-                uri: item.target.person.file && item.target.person.file.url,
+                uri: item.target.profile.file?.url,
               }}
               resizeMode="cover"
             />
           </UserButton>
           <ColumnGroup>
-            <Text.Paragraph textColor="primary" textWeight="bold">
+            <Text.Paragraph textColor="primaryText" textWeight="bold">
               {item.target.username}
             </Text.Paragraph>
-            <Text>{formatDate(item.target.created_at)}</Text>
+            <Text textWeight="light">
+              desde {formatDate(item.target.createdAt)}
+            </Text>
           </ColumnGroup>
         </UserInfo>
         <Actions>
           <>
-            {!item.blocked && (
-              <MessageButton onPress={() => getUserConversation(item.user_id)}>
+            {!item.isBlocked && (
+              <MessageButton
+                onPress={() => getUserConversation(item.target.id)}>
                 <Icon
                   name="message-arrow-left-outline"
                   size={24}
@@ -168,17 +169,19 @@ const MyConnections: React.FC = () => {
                 />
               </MessageButton>
             )}
-            {item.blocked ? (
+            {item.isBlocked ? (
               <MessageButton
-                onPress={() => handleUnblockConnection(item.user_id)}>
+                onPress={() => handleUnblockConnection(item.target.id)}>
                 <Icon name="lock-open" size={24} color="#FFF" />
               </MessageButton>
             ) : (
-              <RejectButton onPress={() => handleBlockConnection(item.user_id)}>
+              <RejectButton
+                onPress={() => handleBlockConnection(item.target.id)}>
                 <Icon name="block-helper" size={24} color="#FFF" />
               </RejectButton>
             )}
-            <RejectButton onPress={() => handleRejectConnection(item.user_id)}>
+            <RejectButton
+              onPress={() => handleRejectConnection(item.target.id)}>
               <Icon name="close" size={24} color="#FFF" />
             </RejectButton>
           </>

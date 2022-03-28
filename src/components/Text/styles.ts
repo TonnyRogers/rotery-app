@@ -1,14 +1,5 @@
 import styled from 'styled-native-components';
-import {theme} from '../../utils/theme';
-
-const colors = {
-  primary: `color: ${theme.colors.primaryText};`,
-  secondary: `color: ${theme.colors.secondaryText};`,
-  blue: `color: ${theme.colors.blue};`,
-  red: `color: ${theme.colors.red};`,
-  green: `color: ${theme.colors.green};`,
-  white: `color: ${theme.colors.white};`,
-};
+import {theme, ColorsType} from '../../utils/theme';
 
 const alignment = {
   center: 'align-self: center; text-align: center;',
@@ -18,7 +9,7 @@ const alignment = {
 };
 
 export interface CustomStyledProps {
-  textColor?: 'primary' | 'secondary' | 'blue' | 'red' | 'green' | 'white';
+  textColor?: ColorsType;
   textWeight?: 'bold' | 'regular' | 'light';
   maxLines?: number;
   alignment?: 'center' | 'start' | 'end' | 'stretch';
@@ -27,7 +18,10 @@ export interface CustomStyledProps {
 export const SimpleText = styled.Text<CustomStyledProps>`
   font-family: 'Roboto';
   font-size: 1.4rem;
-  ${(props) => (props.textColor ? colors[props.textColor] : colors.secondary)};
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
   ${(props) =>
     props.textWeight
       ? theme.textWeight[props.textWeight]
@@ -40,7 +34,8 @@ export const TitleText = styled.Text<CustomStyledProps>`
   font-family: 'Roboto';
   font-size: 2rem;
   font-weight: bold;
-  ${(props) => (props.textColor ? colors[props.textColor] : colors.primary)};
+  color: ${(props) =>
+    props.textColor ? theme.colors[props.textColor] : theme.colors.primaryText};
   ${(props) =>
     props.textWeight
       ? theme.textWeight[props.textWeight]
@@ -52,7 +47,55 @@ export const TitleText = styled.Text<CustomStyledProps>`
 export const ParagraphText = styled.Text<CustomStyledProps>`
   font-family: 'Roboto';
   font-size: 1.6rem;
-  ${(props) => (props.textColor ? colors[props.textColor] : colors.secondary)};
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
+  ${(props) =>
+    props.textWeight
+      ? theme.textWeight[props.textWeight]
+      : theme.textWeight.regular};
+  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
+  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
+`;
+
+export const SmallText = styled.Text<CustomStyledProps>`
+  font-family: 'Roboto';
+  font-size: 0.9rem;
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
+  ${(props) =>
+    props.textWeight
+      ? theme.textWeight[props.textWeight]
+      : theme.textWeight.regular};
+  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
+  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
+`;
+
+export const BigText = styled.Text<CustomStyledProps>`
+  font-family: 'Roboto';
+  font-size: 4rem;
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
+  ${(props) =>
+    props.textWeight
+      ? theme.textWeight[props.textWeight]
+      : theme.textWeight.regular};
+  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
+  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
+`;
+
+export const BiggestText = styled.Text<CustomStyledProps>`
+  font-family: 'Roboto';
+  font-size: 6rem;
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
   ${(props) =>
     props.textWeight
       ? theme.textWeight[props.textWeight]

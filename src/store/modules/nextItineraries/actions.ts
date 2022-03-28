@@ -1,6 +1,9 @@
 import {ItineraryProps, QuestionProps} from '../../../utils/types';
 
 export enum NextItinerariesActions {
+  GET_NEXTITINERARIES_DETAILS_REQUEST = '@nextItineraries/GET_NEXTITINERARIES_DETAILS_REQUEST',
+  GET_NEXTITINERARIES_DETAILS_SUCCESS = '@nextItineraries/GET_NEXTITINERARIES_DETAILS_SUCCESS',
+  GET_NEXTITINERARIES_DETAILS_FAILURE = '@nextItineraries/GET_NEXTITINERARIES_DETAILS_FAILURE',
   GET_NEXTITINERARIES_REQUEST = '@nextItineraries/GET_NEXTITINERARIES_REQUEST',
   GET_NEXTITINERARIES_SUCCESS = '@nextItineraries/GET_NEXTITINERARIES_SUCCESS',
   GET_NEXTITINERARIES_FAILURE = '@nextItineraries/GET_NEXTITINERARIES_FAILURE',
@@ -15,13 +18,33 @@ export enum NextItinerariesActions {
   LEAVE_ITINERARY_FAILURE = '@nextItineraries/LEAVE_ITINERARY_FAILURE',
 }
 
+export function getNextItineraryDetailsRequest(itineraryId: number) {
+  return {
+    type: NextItinerariesActions.GET_NEXTITINERARIES_DETAILS_REQUEST,
+    payload: {itineraryId},
+  };
+}
+
+export function getNextItineraryDetailsSuccess(itinerary: ItineraryProps) {
+  return {
+    type: NextItinerariesActions.GET_NEXTITINERARIES_DETAILS_SUCCESS,
+    payload: {itinerary},
+  };
+}
+
+export function getNextItineraryDetailsFailure() {
+  return {
+    type: NextItinerariesActions.GET_NEXTITINERARIES_DETAILS_FAILURE,
+  };
+}
+
 export function getNextItinerariesRequest() {
   return {
     type: NextItinerariesActions.GET_NEXTITINERARIES_REQUEST,
   };
 }
 
-export function getNextItinerariesSuccess(itineraries: ItineraryProps) {
+export function getNextItinerariesSuccess(itineraries: ItineraryProps[]) {
   return {
     type: NextItinerariesActions.GET_NEXTITINERARIES_SUCCESS,
     payload: {itineraries},

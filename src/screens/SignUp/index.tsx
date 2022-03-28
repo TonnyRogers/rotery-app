@@ -20,14 +20,13 @@ import {
   CenteredView,
 } from './styles';
 import Input from '../../components/Input';
-import {TextInput} from 'react-native';
 import Page from '../../components/Page';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
-import DismissKeyboad from '../../components/DismissKeyboad';
 import SplashScreen from '../../components/SplashScreen';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import SwitchInput from '../../components/SwitchInput';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
 const validationSchema = yup.object().shape({
@@ -37,18 +36,24 @@ const validationSchema = yup.object().shape({
     .string()
     .required('campo obrigatório')
     .min(8, 'a senha deve ter mais de 8 digitos'),
+  isHost: yup
+    .boolean()
+    .required()
+    .default(() => false),
 });
 
 const SignUp: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [policyModalVisible, setPolicyModalVisible] = useState(false);
+  const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
   const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {
     register,
     setValue,
     handleSubmit,
+    watch,
     formState: {errors},
   } = useForm({resolver: yupResolver(validationSchema)});
 
@@ -56,11 +61,18 @@ const SignUp: React.FC = () => {
     register('username');
     register('password');
     register('email');
-  }, [register]);
+    register('isHost');
 
-  const usernameRef = useRef<TextInput>();
-  const emailRef = useRef<TextInput>();
-  const passwordRef = useRef<TextInput>();
+    setValue('isHost', false);
+  }, [register, setValue]);
+
+  const usernameRef = useRef<any>();
+  const emailRef = useRef<any>();
+  const passwordRef = useRef<any>();
+  const watchUsername = watch('username');
+  const watchPassword = watch('password');
+  const watchEmail = watch('email');
+  const watchIsHost = watch('isHost');
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -73,64 +85,84 @@ const SignUp: React.FC = () => {
   }
 
   const onSubmit = (data: any) => {
-    dispatch(registerRequest(data.username, data.email, data.password));
+    dispatch(
+      registerRequest(data.username, data.email, data.password, data.isHost),
+    );
+    setPolicyModalVisible(false);
+    setValue('username', '');
+    setValue('password', '');
+    setValue('email', '');
+    setValue('isHost', false);
   };
 
   return (
     <Page showHeader={false}>
-      <DismissKeyboad>
-        <Container>
-          <Header>
-            <Logo source={horizontalLogo} resizeMode="contain" />
-            <Text.Title alignment="center">Faça parte da Rotery.</Text.Title>
-          </Header>
-          <Fields>
-            <Input
-              icon="account-box-outline"
-              label="Usuário"
-              placeholder="nome de usuário"
-              ref={usernameRef}
-              onChange={(value: String) => setValue('username', value)}
-              returnKeyType="next"
-              onSubmitEditing={() => emailRef.current?.focus()}
-              error={errors.username?.message}
-            />
-            <Input
-              icon="email-outline"
-              label="Email"
-              keyboardType="email-address"
-              placeholder="seu e-mail"
-              autoCapitalize="none"
-              ref={emailRef}
-              onChange={(value: String) => setValue('email', value)}
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current?.focus()}
-              error={errors.email?.message}
-            />
-            <Input
-              label="Senha"
-              placeholder="sua senha"
-              ref={passwordRef}
-              onChange={(value: String) => setValue('password', value)}
-              secureTextEntry={passwordVisible}
-              buttonIcon
-              onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-              onSubmitEditing={() => setPolicyModalVisible(true)}
-              returnKeyType="done"
-              error={errors.password?.message}
-            />
-          </Fields>
+      {/* <DismissKeyboad> */}
+      <Container>
+        <Header>
+          <Logo source={horizontalLogo} resizeMode="contain" />
+          <Text.Title alignment="center">Faça parte da Rotery</Text.Title>
+        </Header>
+        <Fields>
+          <Input
+            icon="account-box-outline"
+            label="Usuário"
+            placeholder="nome de usuário"
+            ref={usernameRef.current}
+            value={watchUsername}
+            onChange={(value: String) => setValue('username', value)}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current?.focus()}
+            error={errors.username?.message}
+          />
+          <Input
+            icon="email-outline"
+            label="Email"
+            keyboardType="email-address"
+            placeholder="seu e-mail"
+            autoCapitalize="none"
+            ref={emailRef.current}
+            onChange={(value: String) => setValue('email', value)}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            error={errors.email?.message}
+            value={watchEmail}
+          />
+          <Input
+            label="Senha"
+            placeholder="sua senha"
+            ref={passwordRef.current}
+            onChange={(value: String) => setValue('password', value)}
+            secureTextEntry={passwordVisible}
+            buttonIcon
+            onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+            onSubmitEditing={() => setPolicyModalVisible(true)}
+            returnKeyType="done"
+            error={errors.password?.message}
+            value={watchPassword}
+          />
+          <SwitchInput
+            label="Voce deseja:"
+            trueOptionName="Criar Roteiros"
+            falseOption2Name="Encontrar Roteiros"
+            value={watchIsHost}
+            onValueSet={(value) => setValue('isHost', value)}
+          />
+        </Fields>
 
-          <Actions>
-            <BackButton onPress={goBack}>
-              <BackButtonText>Ja sou cadastrado</BackButtonText>
-            </BackButton>
-            <SubmitButton onPress={openPolicyModal}>
-              <SubmitButtonText>Cadastrar-se</SubmitButtonText>
-            </SubmitButton>
-          </Actions>
-        </Container>
-      </DismissKeyboad>
+        <Actions>
+          <SubmitButton
+            onPress={
+              isPolicyAccepted ? handleSubmit(onSubmit) : openPolicyModal
+            }>
+            <SubmitButtonText>Cadastrar-se</SubmitButtonText>
+          </SubmitButton>
+        </Actions>
+        <BackButton onPress={goBack}>
+          <BackButtonText>Ja sou cadastrado</BackButtonText>
+        </BackButton>
+      </Container>
+      {/* </DismissKeyboad> */}
       <Modal
         visible={policyModalVisible}
         title="Termos de Uso"
@@ -155,7 +187,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             1. O Nosso Serviço
@@ -192,7 +224,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             2. Seus compromissos com a Rotery
@@ -232,7 +264,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             3. Sua segurança nos Roteiros
@@ -261,7 +293,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             4. Sua parte na Preservação da Natureza e Meio Ambiente
@@ -278,7 +310,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             5. Como a Rotery se mantém
@@ -297,7 +329,7 @@ const SignUp: React.FC = () => {
 
           <Text.Paragraph
             alignment="start"
-            textColor="primary"
+            textColor="primaryText"
             textWeight="bold"
             withLineBreak>
             6. Atualização dos Termos
@@ -321,9 +353,10 @@ const SignUp: React.FC = () => {
             Ultima atualização 15/07/2021
           </Text>
           <SubmitButton
-            onPress={handleSubmit(onSubmit, () =>
-              setPolicyModalVisible(false),
-            )}>
+            onPress={handleSubmit(onSubmit, () => {
+              setPolicyModalVisible(false);
+              setIsPolicyAccepted(true);
+            })}>
             <SubmitButtonText>Aceito os Termos</SubmitButtonText>
           </SubmitButton>
         </ScrollView>

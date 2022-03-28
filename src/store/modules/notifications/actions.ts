@@ -12,7 +12,9 @@ export function getNotificationsRequest() {
   return {type: NotificationsActions.GET_REQUEST};
 }
 
-export function getNotificationsSuccess(notifications: NotificationsProps[]) {
+export function getNotificationsSuccess(
+  notifications: NotificationsProps<any>[],
+) {
   return {
     type: NotificationsActions.GET_SUCCESS,
     payload: {notifications},
@@ -33,7 +35,7 @@ export function setNoticationReadedSuccess(notificationId: number) {
   };
 }
 
-export function newNotification(notification: NotificationsProps) {
+export function newNotification(notification: NotificationsProps<any>) {
   return {
     type: NotificationsActions.NEW_NOTIFICATION,
     payload: {notification},

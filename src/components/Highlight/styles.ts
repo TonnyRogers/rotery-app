@@ -1,11 +1,4 @@
 import styled from 'styled-native-components';
-// import {Dimensions} from 'react-native';
-
-// const {width} = Dimensions.get('screen');
-
-export const Container = styled.View.attrs({})`
-  flex: 1;
-`;
 
 export const Background = styled.Image`
   flex: 1;
@@ -15,5 +8,5 @@ export const Background = styled.Image`
 `;
 
 export const Info = styled.View.attrs({})`
-  height: 10rem;
+  min-height: 12rem;
 `;

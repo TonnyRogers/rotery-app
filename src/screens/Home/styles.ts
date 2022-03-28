@@ -1,5 +1,5 @@
 import styled from 'styled-native-components';
-import {Animated, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import {theme} from '../../utils/theme';
 
 const metric = Platform.OS === 'ios' ? 'vh' : '%';
@@ -41,7 +41,7 @@ export const TipContent = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10rem;
+  margin-bottom: 2rem;
 `;
 
 export const TipText = styled.Text`
@@ -49,28 +49,6 @@ export const TipText = styled.Text`
   font-weight: bold;
   font-family: 'Roboto';
   color: ${theme.colors.blue};
-`;
-
-export const LoginHover = styled(Animated.View)<{visible: boolean}>`
-  height: 48rem;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-`;
-
-export const LoginHeader = styled.View`
-  align-items: center;
-  justify-content: center;
-`;
-
-export const SwitchLoginButton = styled.TouchableOpacity`
-  margin-top: 1rem;
-  height: 4rem;
-  width: 4rem;
-  border-radius: 2rem;
-  align-items: center;
-  justify-content: center;
-  background: ${theme.colors.greenTransparent};
 `;
 
 export const HighlightContent = styled.View``;
@@ -83,7 +61,6 @@ export const ItineraryName = styled.Text`
 export const RowGroup = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 `;
 
 export const ItineraryLocation = styled.Text`
@@ -98,9 +75,9 @@ export const ItineraryDate = styled.Text`
   color: ${theme.colors.secondaryText};
 `;
 
-export const LoginContent = styled.View<{visible: boolean}>`
-  margin: 2rem;
-  opacity: ${(props) => (props.visible ? 1 : 0)};
+export const LoginContent = styled.ScrollView`
+  flex: 1;
+  margin: 0 1rem;
 `;
 
 export const Actions = styled.View``;
@@ -130,28 +107,4 @@ export const ForgotPasswordButtonText = styled.Text`
   font-family: 'Roboto';
   font-size: 1.6rem;
   color: ${theme.colors.secondaryText};
-`;
-
-export const RegisterContent = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: 1.8rem 0;
-`;
-
-export const RegisterText = styled.Text`
-  font-family: 'Roboto';
-  font-size: 1.6rem;
-  color: ${theme.colors.secondaryText};
-`;
-
-export const RegisterButton = styled.TouchableOpacity`
-  margin: 0 1rem;
-`;
-
-export const RegisterButtonText = styled.Text`
-  font-family: 'Roboto';
-  font-weight: bold;
-  font-size: 1.6rem;
-  color: ${theme.colors.green};
 `;

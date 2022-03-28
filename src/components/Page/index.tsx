@@ -1,9 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import {Container} from './styles';
 import Header from '../Header';
-import {KeyboardAvoidingView, Platform} from 'react-native';
+import {StatusBar} from 'react-native';
+import {KeyboardShift} from '../KeyboardShift';
+import {Container} from './styles';
 
 interface PageProps {
   showHeader?: boolean;
@@ -11,14 +12,15 @@ interface PageProps {
 
 const Page: React.FC<PageProps> = ({children, showHeader = true}) => {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1, flexDirection: 'column'}}>
-      <Container>
-        {showHeader && <Header />}
-        {children}
-      </Container>
-    </KeyboardAvoidingView>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <KeyboardShift>
+        <Container>
+          {showHeader && <Header />}
+          {children}
+        </Container>
+      </KeyboardShift>
+    </>
   );
 };
 

@@ -3,14 +3,12 @@ import React, {useEffect, useState, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Vibration} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 
 import {
   getFeedRequest,
   paginateFeedRequest,
 } from '../../store/modules/feed/actions';
-import {showFeedGuide} from '../../store/modules/guides/actions';
 import {hideFeedGuide} from '../../store/modules/guides/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 
@@ -18,9 +16,6 @@ import {
   Container,
   Content,
   FilterContent,
-  ActivityList,
-  Activity,
-  ActivityName,
   ItineraryList,
   RowGroupSpaced,
   FilterButton,
@@ -36,10 +31,13 @@ import GuideCarousel from '../../components/GuideCarousel';
 import Text from '../../components/Text';
 import Empty from '../../components/Empty';
 import {feedGuideImages} from '../../utils/constants';
+import {ItineraryProps, ItineraryActivityItemProps} from '../../utils/types';
+import {useVibration} from '../../hooks/useVibration';
 
 const Feed: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const {alternated} = useVibration();
   const [filterVisible, setFilterVisible] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
   const [filter, setFilter] = useState({} as any);
@@ -48,24 +46,26 @@ const Feed: React.FC = () => {
   const {itineraries, loading} = useSelector(
     (state: RootStateProps) => state.feed,
   );
+  const {user} = useSelector((state: RootStateProps) => state.auth);
   const {feedGuide} = useSelector((state: RootStateProps) => state.guides);
 
-  const itineraryActivities: {id: number; name: string}[] = [];
+  const itineraryActivities: ItineraryActivityItemProps[] = [];
 
   useEffect(() => {
     dispatch(getFeedRequest());
-    dispatch(showFeedGuide());
   }, [dispatch]);
 
   if (itineraries) {
-    itineraries?.forEach((itinerary: any) =>
+    itineraries?.forEach((itinerary: ItineraryProps) =>
       itineraryActivities.push(...itinerary.activities),
     );
   }
 
   const removeDuplicatedActivities = itineraryActivities.filter(
     (item, index, arr) =>
-      arr.findIndex((comparable) => comparable.id === item.id) === index,
+      arr.findIndex(
+        (comparable) => comparable.activity.id === item.activity.id,
+      ) === index,
   );
 
   function itineraryDetail(itineraryId: number) {
@@ -77,14 +77,14 @@ const Feed: React.FC = () => {
   }
 
   const clearFilter = useCallback(() => {
-    Vibration.vibrate([100, 100, 200, 100]);
+    alternated();
     setPage(2);
     setFilter({});
     dispatch(getFeedRequest());
-  }, [dispatch]);
+  }, [alternated, dispatch]);
 
   const loadFeed = useCallback(() => {
-    if (itineraries.length > 3) {
+    if (itineraries && itineraries.length > 3) {
       setPage(page + 1);
       dispatch(
         paginateFeedRequest({
@@ -92,10 +92,11 @@ const Feed: React.FC = () => {
           begin: filter.begin,
           end: filter.end,
           location: filter.location,
+          limit: 10,
         }),
       );
     }
-  }, [dispatch, filter, itineraries.length, page]);
+  }, [dispatch, filter.begin, filter.end, filter.location, itineraries, page]);
 
   const handleCloseFeedGuide = () => {
     dispatch(hideFeedGuide());
@@ -107,7 +108,7 @@ const Feed: React.FC = () => {
         <Content>
           <FilterContent>
             <RowGroupSpaced>
-              <Text.Title>Afim de se aventurar?</Text.Title>
+              <Text.Title>Roteiros</Text.Title>
               <FilterButton onPress={toggleFilter} onLongPress={clearFilter}>
                 <Shadow
                   contentViewStyle={{
@@ -120,10 +121,10 @@ const Feed: React.FC = () => {
                     justifyContent: 'center',
                   }}
                   radius={26}
-                  startColor="#00000009"
+                  startColor="#00000007"
                   finalColor="transparent"
                   offset={[0, 0, 0, 0]}
-                  distance={5}>
+                  distance={7}>
                   <Icon name="filter" size={24} color="#3dc77b" />
                 </Shadow>
               </FilterButton>
@@ -146,16 +147,6 @@ const Feed: React.FC = () => {
                 subTitle="Crie seu prório roteiro agora mesmo!"
               />
             )}
-            ListHeaderComponent={() => (
-              <ActivityList>
-                {removeDuplicatedActivities.map((item, index) => (
-                  <Activity key={index}>
-                    <Icon name="menu" size={24} color="#FFF" />
-                    <ActivityName>{item.name}</ActivityName>
-                  </Activity>
-                ))}
-              </ActivityList>
-            )}
             onRefresh={() => {
               setPage(2);
               dispatch(getFeedRequest());
@@ -167,12 +158,14 @@ const Feed: React.FC = () => {
           />
         </Content>
       </Container>
-      <FloatButton
-        alignment="center"
-        shape="rounded"
-        icon={() => <Icon name="plus-box-outline" size={24} color="#FFF" />}
-        onPressAction={() => navigation.navigate('NewItinerary')}
-      />
+      {user?.isHost && (
+        <FloatButton
+          alignment="center"
+          shape="rounded"
+          icon={() => <Icon name="plus-box-outline" size={24} color="#FFF" />}
+          onPressAction={() => navigation.navigate('NewItinerary')}
+        />
+      )}
       <BottomSheet
         visible={sheetVisible}
         onRequestClose={() => setSheetVisible(false)}
@@ -184,6 +177,7 @@ const Feed: React.FC = () => {
         onFiltered={({begin, end, location}) => {
           setFilter({begin: begin, end: end, location: location || undefined});
         }}
+        activities={removeDuplicatedActivities}
       />
       <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel

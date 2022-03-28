@@ -4,19 +4,18 @@ import {
   ItineraryProps,
   NotificationsProps,
   QuestionProps,
+  CustomMemberPayload,
+  ItineraryMemberAcceptWsResponse,
 } from '../../../utils/types';
 import {WsActions} from '../websocket/actions';
 import {NextItinerariesActions} from './actions';
 import {PushNotificationsActions} from '../pushNotifications/actions';
+import {AuthActions} from '../auth/actions';
 interface InitialStateProps {
   itineraries: ItineraryProps[] | null;
   loading: boolean;
 }
 
-interface CustomMemberPayload {
-  itinerary_id: number;
-  user_id: number;
-}
 interface CustomItineraryPayload {
   id: number;
 }
@@ -26,9 +25,10 @@ interface ActionProps {
   payload: {
     itineraries: ItineraryProps[];
     itinerary: ItineraryProps;
-    notification: NotificationsProps;
+    notification: NotificationsProps<any>;
     itineraryQuestion: QuestionProps;
     itineraryMember: CustomMemberPayload;
+    itineraryMemberWs: ItineraryMemberAcceptWsResponse;
     customItineraryPayload: CustomItineraryPayload;
   };
 }
@@ -45,7 +45,7 @@ export default function itineraries(
   return produce(state, (draft) => {
     switch (action.type) {
       case NextItinerariesActions.GET_NEXTITINERARIES_SUCCESS: {
-        draft.itineraries = action.payload.itineraries;
+        draft.itineraries = action.payload.itineraries || null;
         break;
       }
       case NextItinerariesActions.MAKE_QUESTION_SUCCESS: {
@@ -53,7 +53,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -63,53 +63,43 @@ export default function itineraries(
         }
         break;
       }
-      case WsActions.MEMBER_ACCEPTED: {
-        const itineraryPayload: ItineraryProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
-        let itineraryList = draft.itineraries;
-
+      case NextItinerariesActions.GET_NEXTITINERARIES_DETAILS_SUCCESS: {
+        const {itinerary} = action.payload;
+        const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryPayload.id,
+            (item) => item.id === itinerary.id,
           );
 
-          if (itineraryIndex !== -1 && itineraryIndex !== undefined) {
-            itineraryList[itineraryIndex] = {...itineraryPayload};
+          if (itineraryIndex !== -1) {
+            itineraryList[itineraryIndex] = itinerary;
           } else {
-            itineraryList.push(itineraryPayload);
+            itineraryList.push(itinerary);
           }
-        } else {
-          itineraryList = [itineraryPayload];
+          draft.itineraries = itineraryList;
         }
-        draft.itineraries = itineraryList;
         break;
       }
       case WsActions.MEMBER_REJECTED: {
-        const jsonData = JSON.parse(action.payload.notification.json_data);
+        const jsonData: ItineraryMemberAcceptWsResponse =
+          action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === jsonData.itinerary_id,
+            (item) => item.id === jsonData.itineraryId,
           );
 
           if (itineraryIndex !== -1) {
-            const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.pivot.user_id === jsonData.user_id,
-            );
-            if (memberIndex !== -1) {
-              itineraryList[itineraryIndex].members.splice(memberIndex, 1);
-              draft.itineraries = itineraryList;
-            }
+            itineraryList.splice(itineraryIndex, 1);
+            draft.itineraries = itineraryList;
           }
         }
         break;
       }
       case WsActions.ITINERARY_UPDATE: {
-        const itineraryPayload: ItineraryProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const itineraryPayload: ItineraryProps =
+          action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
@@ -125,7 +115,7 @@ export default function itineraries(
         break;
       }
       case WsActions.ITINERARY_DELETE: {
-        const jsonData = JSON.parse(action.payload.notification.json_data);
+        const jsonData: {id: number} = action.payload.notification.jsonData;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
@@ -142,13 +132,12 @@ export default function itineraries(
       }
       case WsActions.ITINERARY_ANSWER: {
         const itineraryList = draft.itineraries;
-        const itineraryQuestion: QuestionProps = JSON.parse(
-          action.payload.notification.json_data,
-        );
+        const itineraryQuestion: QuestionProps =
+          action.payload.notification.jsonData;
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -167,58 +156,17 @@ export default function itineraries(
         }
         break;
       }
-      case PushNotificationsActions.ITINERARY_ACCEPT_MEMBER: {
-        const itineraryPayload = action.payload.itinerary;
-        let itineraryList = draft.itineraries;
-
-        if (itineraryList !== null) {
-          const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryPayload.id,
-          );
-
-          if (itineraryIndex !== -1 && itineraryIndex !== undefined) {
-            itineraryList[itineraryIndex] = {...itineraryPayload};
-          } else {
-            itineraryList.push(itineraryPayload);
-          }
-        } else {
-          itineraryList = [itineraryPayload];
-        }
-        draft.itineraries = itineraryList;
-        break;
-      }
       case PushNotificationsActions.ITINERARY_REJECT_MEMBER: {
-        const jsonData = action.payload.itineraryMember;
+        const jsonData = action.payload.itineraryMemberWs;
 
         const itineraryList = draft.itineraries;
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === jsonData.itinerary_id,
+            (item) => item.id === jsonData.itineraryId,
           );
 
           if (itineraryIndex !== -1) {
-            const memberIndex = itineraryList[itineraryIndex].members.findIndex(
-              (item) => item.pivot.user_id === jsonData.user_id,
-            );
-            if (memberIndex !== -1) {
-              itineraryList[itineraryIndex].members.splice(memberIndex, 1);
-              draft.itineraries = itineraryList;
-            }
-          }
-        }
-        break;
-      }
-      case PushNotificationsActions.ITINERARY_UPDATED: {
-        const itineraryPayload: ItineraryProps = action.payload.itinerary;
-
-        const itineraryList = draft.itineraries;
-        if (itineraryList !== null) {
-          const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryPayload.id,
-          );
-
-          if (itineraryIndex !== -1) {
-            itineraryList[itineraryIndex] = {...itineraryPayload};
+            itineraryList.splice(itineraryIndex, 1);
             draft.itineraries = itineraryList;
           }
         }
@@ -246,7 +194,7 @@ export default function itineraries(
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryQuestion.itinerary_id,
+            (item) => item.id === itineraryQuestion.itinerary,
           );
 
           if (itineraryIndex !== -1) {
@@ -263,6 +211,11 @@ export default function itineraries(
             }
           }
         }
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.itineraries = INITIAL_STATE.itineraries;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
       default:

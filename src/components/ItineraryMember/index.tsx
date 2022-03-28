@@ -2,9 +2,6 @@ import React, {useRef, useMemo, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
-
 import {
   promoteMemberRequest,
   demoteMemberRequest,
@@ -30,6 +27,7 @@ import {
 import {MemberProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
 import isOpen from '../../guards/itineraryStatus';
+import formatLocale from '../../providers/dayjs-format-locale';
 
 interface ItineraryMemberProps {
   member: MemberProps;
@@ -49,17 +47,14 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
 
   let createDateFormated = useRef('');
   useMemo(() => {
-    createDateFormated.current = format(
-      parse(member.pivot.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      ' dd MMM yyyy',
-      {
-        locale: pt,
-      },
+    createDateFormated.current = formatLocale(
+      new Date(member.createdAt),
+      'DD MMM YY',
     );
-  }, [member.pivot.created_at]);
+  }, [member.createdAt]);
 
   function viewProfile(userId: number) {
-    if (userId === user.id) {
+    if (userId === user?.id) {
       navigation.navigate('Profile');
     } else {
       navigation.navigate('UserDetails', {
@@ -69,82 +64,80 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
   }
 
   const renderMemberOptions = useCallback(() => {
-    function handlePromoteMember(memberId: number) {
-      dispatch(promoteMemberRequest(member.pivot.itinerary_id, memberId));
+    function handlePromoteMember(userId: number) {
+      dispatch(promoteMemberRequest(member.itinerary, userId));
     }
 
-    function handleDemoteMember(memberId: number) {
-      dispatch(demoteMemberRequest(member.pivot.itinerary_id, memberId));
+    function handleDemoteMember(userId: number) {
+      dispatch(demoteMemberRequest(member.itinerary, userId));
     }
 
-    function handleAcceptMember(memberId: number) {
-      dispatch(acceptMemberRequest(member.pivot.itinerary_id, memberId));
+    function handleAcceptMember(userId: number) {
+      dispatch(acceptMemberRequest(member.itinerary, userId));
     }
 
-    function handleRemoveMember(memberId: number) {
-      dispatch(removeMemberRequest(member.pivot.itinerary_id, memberId));
+    function handleRemoveMember(userId: number) {
+      dispatch(removeMemberRequest(member.itinerary, userId));
     }
 
     return (
       <MemberActions>
-        {!member.pivot.accepted && (
+        {!member.isAccepted && (
           <>
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+            <RejectButtonButton
+              onPress={() => handleRemoveMember(member.user.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
             </RejectButtonButton>
-            <AcceptButtonButton onPress={() => handleAcceptMember(member.id)}>
+            <AcceptButtonButton
+              onPress={() => handleAcceptMember(member.user.id)}>
               <Icon name="check" color="#FFF" size={24} />
             </AcceptButtonButton>
           </>
         )}
-        {member.pivot.accepted && member.pivot.is_admin && (
+        {member.isAccepted && member.isAdmin && (
           <>
-            <AdminButton onPress={() => handleDemoteMember(member.id)}>
+            <AdminButton onPress={() => handleDemoteMember(member.user.id)}>
               <Icon name="label-off-outline" color="#FFF" size={24} />
             </AdminButton>
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+            <RejectButtonButton
+              onPress={() => handleRemoveMember(member.user.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
             </RejectButtonButton>
           </>
         )}
-        {member.pivot.accepted && !member.pivot.is_admin && (
+        {member.isAccepted && !member.isAdmin && (
           <>
-            <AdminButton onPress={() => handlePromoteMember(member.id)}>
+            <AdminButton onPress={() => handlePromoteMember(member.user.id)}>
               <Icon name="label-outline" color="#FFF" size={24} />
             </AdminButton>
-            <RejectButtonButton onPress={() => handleRemoveMember(member.id)}>
+            <RejectButtonButton
+              onPress={() => handleRemoveMember(member.user.id)}>
               <Icon name="delete-forever-outline" color="#FFF" size={24} />
             </RejectButtonButton>
           </>
         )}
       </MemberActions>
     );
-  }, [
-    dispatch,
-    member.id,
-    member.pivot.accepted,
-    member.pivot.is_admin,
-    member.pivot.itinerary_id,
-  ]);
+  }, [dispatch, member]);
 
   return (
     <ShadowBox>
       <RowGroupSpaced>
         <MemberDetails>
-          <UserButton onPress={() => viewProfile(member.id)}>
+          <UserButton onPress={() => viewProfile(member.user.id)}>
             <UserImage
               source={{
-                uri: member.person.file?.url || undefined,
+                uri: member.user.profile.file?.url || undefined,
               }}
               resizeMode="cover"
             />
           </UserButton>
           <ColumnGroup>
-            <Name>{member.username}</Name>
+            <Name>{member.user.username}</Name>
             <JoinDate>{createDateFormated.current}</JoinDate>
           </ColumnGroup>
         </MemberDetails>
-        {owner && isOpen(itinerary.status.id, () => renderMemberOptions())}
+        {owner && isOpen(itinerary.status, () => renderMemberOptions())}
       </RowGroupSpaced>
     </ShadowBox>
   );

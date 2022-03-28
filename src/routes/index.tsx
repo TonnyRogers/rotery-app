@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -32,6 +33,15 @@ import ItineraryRate from '../screens/ItineraryRate';
 import RecoverPassword from '../screens/RecoverPassword';
 import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
+import Checkout from '../screens/Checkout';
+import Wallet from '../screens/Wallet';
+import TransactionDetail from '../screens/TransactionDetail';
+import Revenues from '../screens/Revenues';
+import RevenuesConfig from '../screens/RevenuesConfig';
+import RevenueDetail from '../screens/RevenueDetail';
+import HelpRequest from '../screens/HelpRequest';
+import HostSubscription from '../screens/HostSubscription';
+import {Disclaimer} from '../screens/Disclaimer';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 import {useSocket} from '../hooks/useSocket';
@@ -42,17 +52,23 @@ import {
   pushNotificationItineraryQuestion,
   pushNotificationItineraryAnswer,
   pushNotificationItineraryNewMember,
-  pushNotificationItineraryAcceptedMember,
-  pushNotificationItineraryUpdated,
   pushNotificationItineraryDeleted,
   pushNotificationItineraryRejectMember,
 } from '../store/modules/pushNotifications/actions';
+import {
+  MessageProps,
+  InvitesProps,
+  QuestionProps,
+  MemberProps,
+  ItineraryMemberAcceptWsResponse,
+} from '../utils/types';
+import {getNextItineraryDetailsRequest} from '../store/modules/nextItineraries/actions';
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
 
 const Routes = () => {
-  const {signed} = useSelector((state: RootStateProps) => state.auth);
+  const {signed, user} = useSelector((state: RootStateProps) => state.auth);
   const dispatch = useDispatch();
   useSocket();
 
@@ -65,7 +81,6 @@ const Routes = () => {
 
     //   'Notification caused app to open from background state:'
     messaging().onNotificationOpenedApp((remoteMessage) => {
-      // console.tron.log('Open App: ', remoteMessage);
       notificationActions(remoteMessage);
     });
 
@@ -75,13 +90,11 @@ const Routes = () => {
       .then((remoteMessage) => {
         if (remoteMessage) {
           notificationActions(remoteMessage);
-          // console.tron.log('Quit State: ', remoteMessage);
         }
       });
 
     //   'Notification when app is in background or terminated'
-    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-      // console.tron.log('Terminated (Minimized): ', remoteMessage);
+    messaging().setBackgroundMessageHandler(async (remoteMessage: any) => {
       // this.notificationActions(remoteMessage);
     });
 
@@ -119,69 +132,99 @@ const Routes = () => {
     const token = await AsyncStorage.getItem('@auth:token');
 
     if (token && notification) {
-      const jsonData = JSON.parse(notification.data.json_data);
       switch (notification.data.alias) {
         case 'new_message': {
+          const jsonData: MessageProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationNewMessage(jsonData));
           RootNavigation.replace('DirectMessagesTabs');
           break;
         }
         case 'rate_itinerary': {
+          const jsonData: {id: number} = JSON.parse(
+            notification.data.json_data,
+          );
           RootNavigation.navigate('ItineraryRate', {
             id: jsonData.id,
           });
           break;
         }
         case 'new_connection': {
+          const jsonData: InvitesProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationNewConnection(jsonData));
           RootNavigation.replace('Connections');
           break;
         }
         case 'new_connection_accepted': {
+          const jsonData: InvitesProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationConnectionAccepted(jsonData));
           RootNavigation.replace('Connections');
           break;
         }
         case 'itinerary_question': {
+          const jsonData: QuestionProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryQuestion(jsonData));
           RootNavigation.navigate('MyItineraryDetails', {
-            id: jsonData.itinerary_id,
+            id: jsonData.itinerary,
           });
           break;
         }
         case 'itinerary_member_request': {
+          const jsonData: MemberProps = JSON.parse(notification.data.json_data);
           dispatch(pushNotificationItineraryNewMember(jsonData));
           RootNavigation.navigate('MyItineraryDetails', {
-            id: jsonData.pivot.itinerary_id,
+            id: jsonData.itinerary,
           });
           break;
         }
         case 'itinerary_answer': {
+          const jsonData: QuestionProps = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryAnswer(jsonData));
           RootNavigation.navigate('FeedItineraryDetails', {
-            id: jsonData.itinerary_id,
+            id: jsonData.itinerary,
           });
           break;
         }
         case 'itinerary_member_accepted': {
-          dispatch(pushNotificationItineraryAcceptedMember(jsonData));
+          const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
+            notification.data.json_data,
+          );
+          dispatch(getNextItineraryDetailsRequest(jsonData.itineraryId));
           RootNavigation.navigate('NextItineraryDetails', {
-            id: jsonData.id,
+            id: jsonData.itineraryId,
           });
           break;
         }
         case 'itinerary_member_rejected': {
+          const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryRejectMember(jsonData));
           break;
         }
         case 'itinerary_updated': {
-          dispatch(pushNotificationItineraryUpdated(jsonData));
+          const jsonData: {id: number} = JSON.parse(
+            notification.data.json_data,
+          );
+          dispatch(getNextItineraryDetailsRequest(jsonData.id));
           RootNavigation.navigate('NextItineraryDetails', {
             id: jsonData.id,
           });
           break;
         }
         case 'itinerary_deleted': {
+          const jsonData: {id: number} = JSON.parse(
+            notification.data.json_data,
+          );
           dispatch(pushNotificationItineraryDeleted(jsonData));
           break;
         }
@@ -239,6 +282,21 @@ const Routes = () => {
                 name="DynamicItineraryDetails"
                 component={DynamicItineraryDetais}
               />
+              <Stack.Screen name="Checkout" component={Checkout} />
+              <Stack.Screen name="Wallet" component={Wallet} />
+              <Stack.Screen
+                name="TransactionDetail"
+                component={TransactionDetail}
+              />
+              <Stack.Screen name="Revenues" component={Revenues} />
+              <Stack.Screen name="RevenuesConfig" component={RevenuesConfig} />
+              <Stack.Screen name="RevenueDetail" component={RevenueDetail} />
+              <Stack.Screen name="HelpRequest" component={HelpRequest} />
+              <Stack.Screen
+                name="HostSubscription"
+                component={HostSubscription}
+              />
+              <Stack.Screen name="Disclaimer" component={Disclaimer} />
             </>
           ) : (
             <>

@@ -22,6 +22,13 @@ import {
   unblockConnectionSuccess,
   unblockConnectionFailure,
 } from './actions';
+import {AxiosResponse} from 'axios';
+import {ConnectionsProps, InvitesProps} from '../../../utils/types';
+
+interface ListConnectionResponse {
+  invites: InvitesProps[];
+  connections: ConnectionsProps[];
+}
 
 export function* getConnections() {
   try {
@@ -32,7 +39,10 @@ export function* getConnections() {
       return;
     }
 
-    const response = yield call(api.get, '/connections');
+    const response: AxiosResponse<ListConnectionResponse> = yield call(
+      api.get,
+      '/connections',
+    );
 
     const {connections, invites} = response.data;
 
@@ -59,7 +69,10 @@ export function* makeConnection({
     }
 
     const {userId} = payload;
-    const request = yield call(api.post, `/users/${userId}/connect`);
+    const request: AxiosResponse<ConnectionsProps> = yield call(
+      api.post,
+      `/connections/${userId}`,
+    );
 
     yield put(makeConnectionSuccess(request.data));
 
@@ -90,7 +103,10 @@ export function* acceptConnection({
     }
 
     const {userId} = payload;
-    const request = yield call(api.put, `/users/${userId}/accept`);
+    const request: AxiosResponse<ConnectionsProps> = yield call(
+      api.post,
+      `/connections/${userId}`,
+    );
 
     yield put(acceptConnectionSuccess(request.data));
     Toast.show({
@@ -120,7 +136,7 @@ export function* rejectConnection({
     }
 
     const {userId} = payload;
-    yield call(api.delete, `/users/${userId}/refuse`);
+    yield call(api.delete, `/connections/${userId}`);
 
     yield put(rejectConnectionSuccess(userId));
   } catch (error) {
@@ -145,9 +161,11 @@ export function* blockConnection({
     }
 
     const {userId} = payload;
-    yield call(api.post, `/users/${userId}/block`);
+    yield call(api.put, `/connections/${userId}`, {
+      isBlocked: true,
+    });
 
-    yield put(blockConnectionSuccess());
+    yield put(blockConnectionSuccess(userId));
   } catch (error) {
     yield put(blockConnectionFailure());
     Toast.show({
@@ -170,9 +188,11 @@ export function* unblockConnection({
     }
 
     const {userId} = payload;
-    yield call(api.put, `/users/${userId}/unblock`);
+    yield call(api.put, `/connections/${userId}`, {
+      isBlocked: false,
+    });
 
-    yield put(unblockConnectionSuccess());
+    yield put(unblockConnectionSuccess(userId));
   } catch (error) {
     yield put(unblockConnectionFailure());
     Toast.show({

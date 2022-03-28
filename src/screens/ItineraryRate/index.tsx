@@ -2,8 +2,6 @@ import React, {useState, useRef, useMemo} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TouchableOpacity} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {format, parse} from 'date-fns';
-import {pt} from 'date-fns/locale';
 
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {ItineraryProps} from '../../utils/types';
@@ -17,21 +15,17 @@ import {
   CardContent,
   User,
   Avatar,
-  UserName,
   Reputation,
-  Joined,
   ColumnGroup,
   RowGroup,
   SubmitButton,
   SubmitButtonText,
-  Title,
-  ItineraryName,
-  ItineraryLocation,
-  ItineraryDate,
 } from './styles';
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import Page from '../../components/Page';
+import formatLocale from '../../providers/dayjs-format-locale';
+import Text from '../../components/Text';
 
 interface ItineraryRateProps {
   route: {
@@ -54,28 +48,22 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     (state: RootStateProps) => state.nextItineraries,
   );
 
-  const itinerary: ItineraryProps | any = itineraries?.find(
-    (item: ItineraryProps) => item.id === id,
-  );
+  const itinerary = itineraries?.find((item: ItineraryProps) => item.id === id);
 
   const beginDateFormated = useRef('');
   const userJoinDateFormated = useRef('');
 
   useMemo(() => {
-    beginDateFormated.current = format(
-      new Date(itinerary.begin),
-      ' dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
-    userJoinDateFormated.current = format(
-      parse(itinerary.owner.created_at, 'yyyy-MM-dd HH:mm:ss', new Date()),
-      ' dd MMM yyyy',
-      {
-        locale: pt,
-      },
-    );
+    if (itinerary) {
+      beginDateFormated.current = formatLocale(
+        itinerary.begin,
+        ' DD MMM YYYY HH:mm',
+      );
+      userJoinDateFormated.current = formatLocale(
+        itinerary.owner.createdAt,
+        ' DD MMM YYYY',
+      );
+    }
   }, [itinerary]);
 
   function renderUserRateStars(rate: number) {
@@ -128,8 +116,8 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     }
     dispatch(
       rateItineraryRequest(
-        itinerary.id,
-        itinerary.owner.id,
+        Number(itinerary?.id),
+        Number(itinerary?.owner.id),
         itineraryStars,
         hostStars,
         itineraryDescription,
@@ -142,6 +130,10 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     }
+  }
+
+  if (!itinerary) {
+    return null;
   }
 
   return (
@@ -158,18 +150,20 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
               <User>
                 <RowGroup>
                   <Icon name="compass-outline" size={30} color="#3dc77b" />
-                  <Title>Hóspede</Title>
+                  <Text.Title textColor="blue">Host</Text.Title>
                 </RowGroup>
                 <Avatar
                   source={{
-                    uri:
-                      itinerary.owner.person.file &&
-                      itinerary.owner.person.file.url,
+                    uri: itinerary.owner.profile.file?.url,
                   }}
                   resizeMode="cover"
                 />
-                <UserName>{itinerary?.owner.username}</UserName>
-                <Joined>Ativo desde{userJoinDateFormated.current}</Joined>
+                <Text.Title textColor="secondaryText">
+                  {itinerary?.owner.username}
+                </Text.Title>
+                <Text textWeight="light" textColor="secondaryText">
+                  Ativo desde{userJoinDateFormated.current}
+                </Text>
                 <Reputation>{renderUserRateStars(hostStars)}</Reputation>
               </User>
               <TextArea
@@ -177,6 +171,7 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
                 ref={hostDescriptionRef}
                 value={hostDescription}
                 onChange={setHostDescription}
+                placeholder="fale o que achou do serviço deste Host..."
               />
             </CardContent>
           </Card>
@@ -186,21 +181,27 @@ const ItineraryRate: React.FC<ItineraryRateProps> = ({route, navigation}) => {
               <ColumnGroup>
                 <RowGroup>
                   <Icon name="map-outline" size={30} color="#3dc77b" />
-                  <Title>Roteiro</Title>
+                  <Text.Title textColor="blue">Roteiro</Text.Title>
                 </RowGroup>
-                <ItineraryName>{itinerary?.name}</ItineraryName>
-                <ItineraryLocation>{itinerary?.location}</ItineraryLocation>
-                <ItineraryDate>{beginDateFormated.current}</ItineraryDate>
+                <Text.Title textColor="secondaryText">
+                  {itinerary.name}
+                </Text.Title>
+                <Text textWeight="light" textColor="secondaryText">
+                  {itinerary.location}
+                </Text>
+                <Text textWeight="light" textColor="secondaryText">
+                  {beginDateFormated.current}
+                </Text>
                 <Reputation>
                   {renderItineraryRateStars(itineraryStars)}
                 </Reputation>
               </ColumnGroup>
-
               <TextArea
                 label="Descrição"
                 ref={itineraryDescriptionRef}
                 value={itineraryDescription}
                 onChange={setItineraryDescription}
+                placeholder="fale o que achou do destino..."
               />
             </CardContent>
           </Card>

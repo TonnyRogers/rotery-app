@@ -1,5 +1,4 @@
 import styled from 'styled-native-components';
-import {theme} from '../../utils/theme';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -39,8 +38,10 @@ export const Avatar = styled.Image`
   width: 11.4rem;
   border-radius: 0.8rem;
   background: #f8f8f8;
-  border-color: ${theme.colors.borderBottom};
-  border-width: 0.1rem;
+  border-top-width: 0.1rem;
+  border-right-width: 0.1rem;
+  border-bottom-width: 0.1rem;
+  border-left-width: 0.1rem;
 `;
 
 export const ChangeAvatarButton = styled.TouchableOpacity`
