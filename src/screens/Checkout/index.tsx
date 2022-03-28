@@ -91,8 +91,8 @@ interface CheckoutProps {
   };
 }
 
-// const paymentToken = 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e';
-const paymentToken = 'TEST-53f31d5a-bca4-4713-bfc4-1852f76d5fa5';
+const paymentToken = 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e';
+// const paymentToken = 'TEST-53f31d5a-bca4-4713-bfc4-1852f76d5fa5';
 
 const Checkout = ({route}: CheckoutProps) => {
   const dispatch = useDispatch();
@@ -163,7 +163,6 @@ const Checkout = ({route}: CheckoutProps) => {
   const cardConfirmWebViewCb = (e: WebViewMessageEvent) => {
     const dataParse = JSON.parse(e.nativeEvent.data);
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
-    console.tron.log('dataParse', dataParse);
     if (dataParse.message === 'ok' && customer !== null) {
       if (selectedCard && cardTokenPayload.id) {
         switch (paymentType) {
