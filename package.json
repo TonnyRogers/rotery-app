@@ -1,9 +1,11 @@
 {
   "name": "roteryApp",
-  "version": "1.0.0",
+  "version": "1.8.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android:generate-release": "cd android && ./gradlew bundleRelease",
+    "android:run-release": "npx react-native run-android --variant=release",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
