@@ -1,8 +1,7 @@
 import io, {Socket} from 'socket.io-client';
+import {apiBaseUrl} from './api';
 
-const wsConnection = __DEV__
-  ? 'http://127.0.0.1:3333'
-  : 'https://api.rotery.com.br';
+const wsConnectionType = __DEV__ ? 'ws://' : 'wss://';
 
 export type SocketClient = Socket;
 
@@ -11,7 +10,7 @@ class WebSocket {
 
   public init(userId: number, token: string): SocketClient {
     if (!this.socket) {
-      this.socket = io(wsConnection, {
+      this.socket = io(`${wsConnectionType}${apiBaseUrl}`, {
         query: {
           userId: String(userId),
         },

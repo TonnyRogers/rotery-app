@@ -1,13 +1,16 @@
 import axios from 'axios';
 import * as RNLocalize from 'react-native-localize';
 
-const base = __DEV__
-  ? 'http://127.0.0.1:3333'
-  : 'https://api.staging.rotery.com.br';
+export const apiBaseUrl = __DEV__
+  ? '127.0.0.1:3333'
+  : 'api.staging.rotery.com.br';
+
+const httpType = __DEV__ ? 'http://' : 'https://';
+
 const timezoneName = RNLocalize.getTimeZone();
 
 const api = axios.create({
-  baseURL: base,
+  baseURL: `${httpType}${apiBaseUrl}`,
   headers: {
     'User-TimezoneName': timezoneName,
   },
