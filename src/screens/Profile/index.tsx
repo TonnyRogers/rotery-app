@@ -54,6 +54,7 @@ import {
   TomTomApiResponse,
   ProfileLocationJson,
   LocationPickerInputSetItem,
+  FileProps,
 } from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
 import {ScrollView} from 'react-native';
@@ -204,10 +205,10 @@ const Profile: React.FC = () => {
     }
   }
 
-  function handleProfileImage(imageList: any) {
-    if (imageList !== undefined) {
-      setProfileImage({uri: imageList[0].uri});
-      dispatch(updateProfileImageRequest(imageList[0].id));
+  function handleProfileImage(image: FileProps) {
+    if (image.id) {
+      setProfileImage({uri: image.url});
+      dispatch(updateProfileImageRequest(image.id));
     }
   }
 
