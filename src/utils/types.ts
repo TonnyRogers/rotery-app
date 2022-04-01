@@ -256,6 +256,7 @@ export enum NotificationAlias {
   CONNECTION_UNBLOCK = 'connection_unblock',
   MEMBER_PROMOTED = 'itinerary_member_promoted',
   MEMBER_DEMOTED = 'itinerary_member_demoted',
+  HOST_SUBSCRIPTION = 'subscription',
 }
 
 export interface ImageListProps {

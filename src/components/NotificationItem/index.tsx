@@ -10,7 +10,6 @@ import {
   QuestionProps,
   MemberProps,
   ItineraryProps,
-  ItineraryMemberResponse,
 } from '../../utils/types';
 import {setNoticationReadedRequest} from '../../store/modules/notifications/actions';
 import * as RootNavigation from '../../RootNavigation';
@@ -92,9 +91,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         break;
       }
       case 'itinerary_member_accepted': {
-        const notificationItem: ItineraryMemberResponse = item.jsonData;
+        const notificationItem: MemberProps = item.jsonData;
         navigation.navigate('NextItineraryDetails', {
-          id: notificationItem.itinerary.id,
+          id: notificationItem.itinerary,
         });
         close();
         break;

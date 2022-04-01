@@ -5,7 +5,6 @@ import {
   NotificationsProps,
   QuestionProps,
   MemberProps,
-  ItineraryMemberResponse,
 } from '../../../utils/types';
 import {ItineraryActions} from './actions';
 import {WsActions} from '../websocket/actions';
@@ -25,7 +24,7 @@ interface ActionProps {
     itinerary: ItineraryProps;
     notification: NotificationsProps<any>;
     itineraryQuestion: QuestionProps;
-    itineraryMember: ItineraryMemberResponse;
+    itineraryMember: MemberProps;
     itineraryId: number;
     userId: number;
   };
@@ -101,7 +100,7 @@ export default function itineraries(
 
         if (itineraryList !== null) {
           const itineraryIndex = itineraryList.findIndex(
-            (item) => item.id === itineraryMember.itinerary.id,
+            (item) => item.id === itineraryMember.itinerary,
           );
           if (itineraryIndex !== -1) {
             const memberIndex = itineraryList[itineraryIndex].members.findIndex(
@@ -110,7 +109,7 @@ export default function itineraries(
             if (memberIndex !== -1) {
               itineraryList[itineraryIndex].members[memberIndex] = {
                 ...itineraryMember,
-                itinerary: itineraryMember.itinerary.id,
+                itinerary: itineraryMember.itinerary,
               };
               draft.itineraries = itineraryList;
             }
@@ -209,7 +208,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
 
         const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === itineraryMember.itinerary.id,
+          (item) => item.id === itineraryMember.itinerary,
         );
 
         if (itineraryIndex !== -1) {
@@ -219,7 +218,7 @@ export default function itineraries(
           if (memberIndex !== -1) {
             itineraryList[itineraryIndex].members[memberIndex] = {
               ...itineraryMember,
-              itinerary: itineraryMember.itinerary.id,
+              itinerary: itineraryMember.itinerary,
             };
             draft.itineraries = itineraryList;
           }
@@ -240,7 +239,7 @@ export default function itineraries(
         const itineraryList = draft.itineraries;
 
         const itineraryIndex = itineraryList.findIndex(
-          (item) => item.id === itineraryMember.itinerary.id,
+          (item) => item.id === itineraryMember.itinerary,
         );
 
         if (itineraryIndex !== -1) {
@@ -250,7 +249,7 @@ export default function itineraries(
           if (memberIndex !== -1) {
             itineraryList[itineraryIndex].members[memberIndex] = {
               ...itineraryMember,
-              itinerary: itineraryMember.itinerary.id,
+              itinerary: itineraryMember.itinerary,
             };
             draft.itineraries = itineraryList;
           }

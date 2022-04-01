@@ -101,7 +101,7 @@ export const useSocket = () => {
         );
 
         if (user.isHost) {
-          socket.current.emit('subscription', user.id);
+          socket.current.emit(NotificationAlias.HOST_SUBSCRIPTION, user.id);
           dispatch(wsListenSubscriptions());
         }
       }
