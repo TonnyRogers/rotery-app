@@ -40,10 +40,10 @@ export function translateError(errorMessage: string): string {
       translated = 'Erro ao se cadastrar.';
       break;
     case "Can't use this e-mail.":
-      translated = 'Erro ao se cadastrar.';
+      translated = 'Você não pode usar este e-mail.';
       break;
     case 'This username is already in use.':
-      translated = 'Erro ao se cadastrar.';
+      translated = 'Nome de usuário já utilizado.';
       break;
     case 'Inactive user, check your e-mail.':
       translated = 'Usuário não ativado, verifique seu e-mail.';
@@ -53,6 +53,10 @@ export function translateError(errorMessage: string): string {
       break;
     case 'Error on validade creation try again.':
       translated = 'Não foi possivel validar esta ação tente mais tarde.';
+      break;
+    case "Can't set capacity less than members list.":
+      translated =
+        'Você não pode setar a capacidade menor que o número de membros.';
       break;
 
     default:

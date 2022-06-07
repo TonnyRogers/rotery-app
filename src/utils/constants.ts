@@ -159,13 +159,6 @@ export const homeImagesCarousel = [
     message:
       'Queremos criar a melhor plataforma para viajantes, de forma independênte, nos apoie no APOIA-SE.',
   },
-  {
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-defender.jpg',
-    withInfo: true,
-    title: 'Nos Apoie:',
-    message:
-      'Queremos criar a melhor plataforma para viajantes, de forma independênte, nos apoie no APOIA-SE.',
-  },
 ];
 
 export const feedGuideImages = [

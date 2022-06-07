@@ -54,6 +54,8 @@ import {
   pushNotificationItineraryNewMember,
   pushNotificationItineraryDeleted,
   pushNotificationItineraryRejectMember,
+  pushNotificationConnectionUnblock,
+  pushNotificationConnectionBlock,
 } from '../store/modules/pushNotifications/actions';
 import {
   MessageProps,
@@ -226,6 +228,22 @@ const Routes = () => {
             notification.data.json_data,
           );
           dispatch(pushNotificationItineraryDeleted(jsonData));
+          break;
+        }
+        case 'connection_unblock': {
+          console.tron.log('connection_unblock', notification);
+          const jsonData: InvitesProps = JSON.parse(
+            notification.data.json_data,
+          );
+          dispatch(pushNotificationConnectionUnblock(jsonData));
+          break;
+        }
+        case 'connection_block': {
+          console.tron.log('connection_block', notification);
+          const jsonData: InvitesProps = JSON.parse(
+            notification.data.json_data,
+          );
+          dispatch(pushNotificationConnectionBlock(jsonData));
           break;
         }
         default:

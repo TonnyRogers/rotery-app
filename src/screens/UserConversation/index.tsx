@@ -55,15 +55,19 @@ const validationSchema = yup.object().shape({
   message: yup.string().required('campo obrigatório'),
 });
 
-interface UserConversation {
+export interface UserConversationParams {
+  userId: number;
+  username: string;
+  avatarUrl?: string;
+}
+
+interface UserConversationRouteParams {
   route: {
-    params: {
-      userId: number;
-    };
+    params: UserConversationParams;
   };
 }
 
-const UserConversation: React.FC<UserConversation> = ({route}) => {
+const UserConversation: React.FC<UserConversationRouteParams> = ({route}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {
@@ -77,7 +81,7 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
   const watchMessage = watch('message');
   const scrollViewRef = useRef<ScrollView>();
   const messageRef = useRef<any>();
-  const {userId} = route.params;
+  const {userId, username, avatarUrl} = route.params;
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {conversation} = useSelector((state: RootStateProps) => state.messages);
   const {itineraries} = useSelector(
@@ -106,8 +110,6 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
     () => scrollViewRef.current?.scrollToEnd({animated: true}),
     [conversation],
   );
-
-  const sender = conversation?.find((item) => item.sender.id === userId);
 
   const formatDate = useCallback(
     (date?: string, withParser: boolean = true) => {
@@ -210,13 +212,13 @@ const UserConversation: React.FC<UserConversation> = ({route}) => {
             <UserButton>
               <UserImage
                 source={{
-                  uri: sender && sender.sender.profile.file?.url,
+                  uri: avatarUrl,
                 }}
                 resizeMode="cover"
               />
             </UserButton>
             <ColumnGroup>
-              <Name>{sender && sender.sender.username}</Name>
+              <Name>{username}</Name>
               <JoinDate>Conversa</JoinDate>
             </ColumnGroup>
           </UserInfo>

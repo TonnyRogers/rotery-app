@@ -99,6 +99,7 @@ interface EditItineraryProps {
 }
 
 const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
+  const todayDate = new Date();
   const dispatch = useDispatch();
   const {isAndroid, isIOs} = useIsAndroid();
   const {id} = route.params;
@@ -564,6 +565,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               </DataContentHeader>
               <DateTimeInput
                 label="Saida"
+                dateLimiter={todayDate}
                 date={watchDateOut}
                 onChange={(value: Date) => setValue('dateOut', value)}
                 error={errors.dateOut?.message}
@@ -571,6 +573,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               />
               <DateTimeInput
                 label="Retorno"
+                dateLimiter={todayDate}
                 date={watchDateReturn}
                 onChange={(value: Date) => setValue('dateReturn', value)}
                 error={errors.dateReturn?.message}
@@ -578,6 +581,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               />
               <DateTimeInput
                 label="Limite para inscrição"
+                dateLimiter={todayDate}
                 date={watchDateLimit}
                 onChange={(value: Date) => setValue('dateLimit', value)}
                 error={errors.dateLimit?.message}

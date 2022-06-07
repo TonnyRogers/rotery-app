@@ -108,6 +108,7 @@ interface ValidateCreationReponse {
 }
 
 const NewItinerary: React.FC = () => {
+  const todayDate = new Date();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {isAndroid, isIOs} = useIsAndroid();
@@ -531,18 +532,21 @@ const NewItinerary: React.FC = () => {
               </DataContentHeader>
               <DateTimeInput
                 label="Saida"
+                dateLimiter={todayDate}
                 date={watchDateOut}
                 onChange={(value: Date) => setValue('dateOut', value)}
                 error={errors.dateOut?.message}
               />
               <DateTimeInput
                 label="Retorno"
+                dateLimiter={todayDate}
                 date={watchDateReturn}
                 onChange={(value: Date) => setValue('dateReturn', value)}
                 error={errors.dateReturn?.message}
               />
               <DateTimeInput
                 label="Limite para inscrição"
+                dateLimiter={todayDate}
                 date={watchDateLimit}
                 onChange={(value: Date) => setValue('dateLimit', value)}
                 error={errors.dateLimit?.message}

@@ -25,6 +25,7 @@ import Page from '../../components/Page';
 import Text from '../../components/Text';
 import formatLocale from '../../providers/dayjs-format-locale';
 import {ConnectionsProps} from '../../utils/types';
+import {UserConversationParams} from '../UserConversation';
 
 const DirectMessages: React.FC = () => {
   const navigation = useNavigation();
@@ -39,8 +40,12 @@ const DirectMessages: React.FC = () => {
   );
 
   const getUserConversation = useCallback(
-    (userId: number) => {
-      navigation.navigate('UserConversation', {userId});
+    ({username, userId, avatarUrl}: UserConversationParams) => {
+      navigation.navigate('UserConversation', {
+        userId,
+        username,
+        avatarUrl,
+      });
     },
     [navigation],
   );
@@ -64,7 +69,13 @@ const DirectMessages: React.FC = () => {
         ) && (
           <UserMessage
             key={message.id}
-            onPress={() => getUserConversation(message.sender.id)}>
+            onPress={() =>
+              getUserConversation({
+                userId: message.sender.id,
+                username: message.sender.username,
+                avatarUrl: message.sender.profile.file?.url,
+              })
+            }>
             <UserInfo>
               <UserButton>
                 <UserImage

@@ -82,7 +82,7 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
             <Text.Title alignment="center">Recuperar acesso</Text.Title>
           </Header>
           <Input
-            onChange={setEmail}
+            onChange={(value: string) => setEmail(value.trim())}
             value={email}
             label="E-mail"
             placeholder="seu e-mail de acesso"

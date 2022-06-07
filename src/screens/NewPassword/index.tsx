@@ -1,6 +1,7 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback, RefAttributes} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
+import {TextInput} from 'react-native';
 
 import api from '../../services/api';
 import * as RootNavigation from '../../RootNavigation';
@@ -46,14 +47,14 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isOnLoading, setIsOnLoading] = useState(false);
 
-  const numberOneRef = useRef<any>();
-  const numberTwoRef = useRef<any>();
-  const numberThreeRef = useRef<any>();
-  const numberFourRef = useRef<any>();
-  const numberFiveRef = useRef<any>();
-  const numberSixRef = useRef<any>();
-  const passwordRef = useRef<any>();
-  const confirmPasswordRef = useRef<any>();
+  const numberOneRef = useRef<TextInput>();
+  const numberTwoRef = useRef<TextInput>();
+  const numberThreeRef = useRef<TextInput>();
+  const numberFourRef = useRef<TextInput>();
+  const numberFiveRef = useRef<TextInput>();
+  const numberSixRef = useRef<TextInput>();
+  const passwordRef = useRef<TextInput>();
+  const confirmPasswordRef = useRef<TextInput>();
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -142,19 +143,18 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
         return;
       }
 
-      setIsOnLoading(true);
-      await api.put(`/users/reset-password/${code}`, {
-        password,
-        passwordConfirmation: confirmPassword,
-      });
-
-      setIsOnLoading(false);
       try {
+        setIsOnLoading(true);
+        await api.put(`/users/reset-password/${code}`, {
+          password,
+          passwordConfirmation: confirmPassword,
+        });
         Toast.show({
           text1: 'Senha alterada.',
           position: 'bottom',
           type: 'success',
         });
+        setIsOnLoading(false);
         RootNavigation.replace('Home');
       } catch (error) {
         setIsOnLoading(false);

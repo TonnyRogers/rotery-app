@@ -11,6 +11,8 @@ export enum PushNotificationsActions {
   RATE_ITINERARY = '@push/RATE_ITINERARY',
   NEW_CONNECTION = '@push/NEW_CONNECTION',
   CONNECTION_ACCEPTED = '@push/CONNECTION_ACCEPTED',
+  CONNECTION_BLOCK = '@push/CONNECTION_BLOCK',
+  CONNECTION_UNBLOCK = '@push/CONNECTION_UNBLOCK',
   ITINERARY_MEMBER = '@push/ITINERARY_MEMBER',
   ITINERARY_ACCEPT_MEMBER = '@push/ITINERARY_ACCEPT_MEMBER',
   ITINERARY_REJECT_MEMBER = '@push/ITINERARY_REJECT_MEMBER',
@@ -44,6 +46,20 @@ export function pushNotificationNewConnection(invite: InvitesProps) {
 export function pushNotificationConnectionAccepted(invite: InvitesProps) {
   return {
     type: PushNotificationsActions.CONNECTION_ACCEPTED,
+    payload: {invite},
+  };
+}
+
+export function pushNotificationConnectionBlock(invite: InvitesProps) {
+  return {
+    type: PushNotificationsActions.CONNECTION_BLOCK,
+    payload: {invite},
+  };
+}
+
+export function pushNotificationConnectionUnblock(invite: InvitesProps) {
+  return {
+    type: PushNotificationsActions.CONNECTION_UNBLOCK,
     payload: {invite},
   };
 }

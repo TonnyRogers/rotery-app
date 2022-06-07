@@ -34,6 +34,7 @@ import Page from '../../components/Page';
 import FloatButton from '../../components/FloatButton';
 import Text from '../../components/Text';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {UserConversationParams} from '../UserConversation';
 
 const MyConnections: React.FC = () => {
   const dispatch = useDispatch();
@@ -133,8 +134,16 @@ const MyConnections: React.FC = () => {
       dispatch(unblockConnectionRequest(userId));
     }
 
-    function getUserConversation(userId: number) {
-      navigation.navigate('UserConversation', {userId});
+    function getUserConversation({
+      userId,
+      username,
+      avatarUrl,
+    }: UserConversationParams) {
+      navigation.navigate('UserConversation', {
+        userId,
+        username,
+        avatarUrl,
+      });
     }
 
     return myConnections?.map((item) => (
@@ -161,7 +170,13 @@ const MyConnections: React.FC = () => {
           <>
             {!item.isBlocked && (
               <MessageButton
-                onPress={() => getUserConversation(item.target.id)}>
+                onPress={() =>
+                  getUserConversation({
+                    userId: item.target.id,
+                    username: item.target.username,
+                    avatarUrl: item.target.profile.file?.url,
+                  })
+                }>
                 <Icon
                   name="message-arrow-left-outline"
                   size={24}
