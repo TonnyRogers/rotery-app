@@ -80,7 +80,9 @@ export const LoginContent = styled.ScrollView`
   margin: 0 1rem;
 `;
 
-export const Actions = styled.View``;
+export const Actions = styled.View`
+  margin-top: 1rem;
+`;
 
 export const LoginButton = styled.TouchableOpacity`
   flex: 1;

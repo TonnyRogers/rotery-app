@@ -19,15 +19,9 @@ import {
   Container,
   User,
   Avatar,
-  ChangeAvatarButton,
-  ChangeAvatarButtonText,
   Reputation,
   InputContent,
   ActionContent,
-  SubmitButton,
-  SubmitButtonText,
-  DeleteAccountButton,
-  DeleteAccountButtonText,
   CardHeader,
   BackButton,
 } from './styles';
@@ -61,23 +55,25 @@ import {ScrollView} from 'react-native';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
 import {useUserIsHost} from '../../hooks/useUserIsHost';
+import {YupValidationMessages} from '../../utils/enums';
+import RowGroup from '../../components/RowGroup';
 
 const validationSchema = yup.object().shape({
-  name: yup.string().required('campo obrigatório'),
-  gender: yup.string().required('campo obrigatório'),
-  email: yup.string().required('campo obrigatório'),
+  name: yup.string().required(YupValidationMessages.REQUIRED),
+  gender: yup.string().required(YupValidationMessages.REQUIRED),
+  email: yup.string().required(YupValidationMessages.REQUIRED),
   phone: yup
     .string()
-    .required('campo obrigatório')
+    .required(YupValidationMessages.REQUIRED)
     .min(11, 'telefone incompleto'),
   document: yup
     .string()
-    .required('campo obrigatório')
+    .required(YupValidationMessages.REQUIRED)
     .min(14, 'cpf incompleto'),
   state: yup.string(),
-  city: yup.string(),
-  profission: yup.string().required('campo obrigatório'),
-  birthDate: yup.date().required('campo obrigatório'),
+  city: yup.string().required(YupValidationMessages.REQUIRED),
+  profission: yup.string().required(YupValidationMessages.REQUIRED),
+  birthDate: yup.date().required(YupValidationMessages.REQUIRED),
 });
 
 const Profile: React.FC = () => {
@@ -121,12 +117,12 @@ const Profile: React.FC = () => {
     setValue('document', data?.document || '');
     setValue('profission', data?.profission || '');
     setValue('birthDate', data?.birth);
-    setValue('city', data?.location);
+    setValue('city', data?.location || '');
   }, [data, register, setValue]);
 
   const watchBirthDate = watch('birthDate', new Date());
   const watchGender = watch('gender');
-  const watchCity = watch('city');
+  const watchCity = watch('city', '');
   const watchName = watch('name');
   const watchEmail = watch('email');
   const watchPhone = watch('phone', '');
@@ -234,11 +230,15 @@ const Profile: React.FC = () => {
                   style={{borderColor: '#e1e1e1'}}
                 />
                 <FileInput onSelect={handleProfileImage}>
-                  <ChangeAvatarButton>
-                    <ChangeAvatarButtonText>
+                  <Button
+                    sizeMargin="10px 0"
+                    sizeHeight={4}
+                    customContent
+                    bgColor="blueDark">
+                    <Text textWeight="bold" textColor="white">
                       Alterar imagem
-                    </ChangeAvatarButtonText>
-                  </ChangeAvatarButton>
+                    </Text>
+                  </Button>
                 </FileInput>
                 <Text.Title alignment="center">
                   {data?.user.username}
@@ -264,8 +264,8 @@ const Profile: React.FC = () => {
                   <Button
                     onPress={() => financialNavigation()}
                     customContent
-                    sizeHeight={70}
-                    sizeWidth={70}
+                    sizeHeight={7}
+                    sizeWidth={7}
                     sizeMargin="0 2rem 0 0"
                     bgColor="blueTransparent"
                     textColor="white">
@@ -280,8 +280,8 @@ const Profile: React.FC = () => {
                 <Button
                   onPress={() => financialNavigation()}
                   customContent
-                  sizeHeight={70}
-                  sizeWidth={70}
+                  sizeHeight={7}
+                  sizeWidth={7}
                   sizeMargin="0 2rem 0 0"
                   bgColor="blueTransparent"
                   textColor="white">
@@ -297,8 +297,8 @@ const Profile: React.FC = () => {
                 <Button
                   onPress={() => navigation.navigate('HostSubscription')}
                   customContent
-                  sizeHeight={70}
-                  sizeWidth={70}
+                  sizeHeight={7}
+                  sizeWidth={7}
                   bgColor="blueTransparent"
                   sizeMargin="0 2rem 0 0"
                   textColor="white">
@@ -346,7 +346,11 @@ const Profile: React.FC = () => {
                   placeholder="Digite seu e-mail"
                   ref={emailRef}
                   value={watchEmail}
-                  onChange={(value: string) => setValue('email', value)}
+                  onChange={(value: string) =>
+                    setValue('email', value.trim().toLocaleLowerCase())
+                  }
+                  readOnly
+                  editable={false}
                   returnKeyType="next"
                   onSubmitEditing={() => phoneRef.current?.focus()}
                   error={errors.email?.message}
@@ -405,16 +409,39 @@ const Profile: React.FC = () => {
                 />
               </InputContent>
               <ActionContent>
-                <SubmitButton onPress={handleSubmit(updateProfileHandle)}>
-                  <SubmitButtonText>Atualizar</SubmitButtonText>
-                </SubmitButton>
+                <Button
+                  onPress={handleSubmit(updateProfileHandle)}
+                  textColor="white"
+                  bgColor="green"
+                  sizeHeight={4.6}
+                  customContent
+                  sizeWidth={12}
+                  cornerRadius={{
+                    bottomL: 12,
+                    bottomR: 12,
+                    topL: 0,
+                    topR: 12,
+                  }}>
+                  <Text.Paragraph textWeight="bold" textColor="white">
+                    Atualizar
+                  </Text.Paragraph>
+                </Button>
               </ActionContent>
             </Card>
-
-            <DeleteAccountButton onPress={alertToggle}>
-              <Icon name="delete-forever-outline" size={24} color="#FFF" />
-              <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
-            </DeleteAccountButton>
+            <Button
+              onPress={alertToggle}
+              sizeMargin="1rem"
+              customContent
+              bgColor="red"
+              sizeHeight={4.6}
+              textColor="white">
+              <RowGroup>
+                <Icon name="delete-forever-outline" size={24} color="#FFF" />
+                <Text.Paragraph textWeight="bold" textColor="white">
+                  Desativar Conta
+                </Text.Paragraph>
+              </RowGroup>
+            </Button>
           </>
         )}
       />

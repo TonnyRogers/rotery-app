@@ -24,6 +24,7 @@ export const Content = styled.View`
   padding: 1rem;
   margin: 7rem 1rem 0 1rem;
   z-index: 101;
+  flex: 1;
 `;
 
 export const ModalHeader = styled.View`
@@ -51,31 +52,16 @@ export const ModalContent = styled.ScrollView`
   margin-bottom: 1rem;
 `;
 
-export const Actions = styled.View``;
-
-export const FilterButton = styled.TouchableOpacity`
-  background: #4885fd;
-  height: 4rem;
-  width: 12rem;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  border-top-right-radius: 0.8rem;
-  border-bottom-left-radius: 0.8rem;
-  border-bottom-right-radius: 0.8rem;
-`;
-
-export const FilterButtonText = styled.Text`
-  font-family: 'Roboto';
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #fff;
+export const Actions = styled.View`
+  height: 4.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 export const ActivityList = styled.ScrollView.attrs({
   horizontal: true,
   showsHorizontalScrollIndicator: false,
 })`
+  flex: 1;
   margin: 1rem 0;
 `;
 

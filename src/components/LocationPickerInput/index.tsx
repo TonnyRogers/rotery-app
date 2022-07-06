@@ -64,11 +64,13 @@ const LocationPickerInput = ({
 }: LocationPickerInputProps) => {
   const [list, setList] = useState<any>(null);
   const [location, setLocation] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSearchPlace = useCallback(async () => {
     Keyboard.dismiss();
     if (location.length > 3) {
       try {
+        setIsLoading(true);
         const response = await tomtomApi.get<TomTomResult<PlacesSearchGeo>>(
           `${location}.json`,
           {
@@ -87,10 +89,12 @@ const LocationPickerInput = ({
           value: item,
         }));
 
+        setIsLoading(false);
         if (formated) {
           setList(formated);
         }
       } catch (error) {
+        setIsLoading(false);
         Toast.show({
           text1: 'Erro ao buscar localização.',
           text2: error.message,
@@ -157,7 +161,14 @@ const LocationPickerInput = ({
                 </Text.Paragraph>
               </ListItem>
             )}
-            ListEmptyComponent={() => <Text alignment="center">Vazio</Text>}
+            refreshing={isLoading}
+            ListEmptyComponent={() =>
+              isLoading ? (
+                <Text alignment="center">Buscando...</Text>
+              ) : (
+                <Text alignment="center">Vazio</Text>
+              )
+            }
           />
         </>
       </DismissKeyboad>

@@ -50,9 +50,10 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import Page from '../../components/Page';
 import ShadowBox from '../../components/ShadowBox';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({
-  message: yup.string().required('campo obrigatório'),
+  message: yup.string().required(YupValidationMessages.REQUIRED),
 });
 
 export interface UserConversationParams {

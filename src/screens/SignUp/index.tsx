@@ -27,14 +27,18 @@ import {ScrollView} from 'react-native-gesture-handler';
 import SplashScreen from '../../components/SplashScreen';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import SwitchInput from '../../components/SwitchInput';
+import {YupValidationMessages} from '../../utils/enums';
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required('campo obrigatório'),
-  email: yup.string().email('e-mail inválido').required('campo obrigatório'),
+  username: yup.string().required(YupValidationMessages.REQUIRED),
+  email: yup
+    .string()
+    .email('e-mail inválido')
+    .required(YupValidationMessages.REQUIRED),
   password: yup
     .string()
-    .required('campo obrigatório')
+    .required(YupValidationMessages.REQUIRED)
     .min(8, 'a senha deve ter mais de 8 digitos'),
   isHost: yup
     .boolean()

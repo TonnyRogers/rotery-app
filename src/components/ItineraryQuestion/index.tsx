@@ -26,9 +26,10 @@ import TextArea from '../TextArea';
 import {QuestionProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({
-  answer: yup.string().required('campo obrigatório'),
+  answer: yup.string().required(YupValidationMessages.REQUIRED),
 });
 
 interface ItineraryQuestionProps {

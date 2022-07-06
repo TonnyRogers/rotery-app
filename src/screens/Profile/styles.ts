@@ -38,22 +38,6 @@ export const Avatar = styled.Image`
   border-left-width: 0.1rem;
 `;
 
-export const ChangeAvatarButton = styled.View`
-  height: 3.1rem;
-  width: 11.4rem;
-  background: #3e44c7;
-  border-radius: 0.8rem;
-  margin-top: 1rem;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ChangeAvatarButtonText = styled.Text`
-  font-family: 'Roboto';
-  font-size: 1.4rem;
-  color: #fff;
-`;
-
 export const UserName = styled.Text`
   font-family: 'Roboto';
   font-size: 2.4rem;
@@ -78,44 +62,6 @@ export const InputContent = styled.View`
 export const ActionContent = styled.View`
   flex: 1;
   width: 100%;
-`;
-
-export const SubmitButton = styled.TouchableOpacity`
-  background: #3dc77b;
-  border-top-right-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  height: 4.4rem;
-  padding: 1rem 2rem;
-  align-self: flex-start;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const SubmitButtonText = styled.Text`
-  font-family: 'Roboto';
-  font-weight: bold;
-  color: #fff;
-  font-size: 2rem;
-`;
-
-export const DeleteAccountButton = styled.TouchableOpacity`
-  flex-direction: row;
-  background: #f57373;
-  flex: 1;
-  height: 5.2rem;
-  align-items: center;
-  justify-content: center;
-  margin: 1rem;
-  border-radius: 0.8rem;
-`;
-
-export const DeleteAccountButtonText = styled.Text`
-  font-size: 2rem;
-  font-family: 'Roboto';
-  color: #fff;
-  font-weight: bold;
-  margin: 0 0.8rem;
 `;
 
 export const AlertContent = styled.View`

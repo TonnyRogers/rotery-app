@@ -52,8 +52,8 @@ const Wallet = () => {
             <Button
               bgColor="greenTransparent"
               onPress={() => RootNavigation.goBack()}
-              sizeHeight={40}
-              sizeWidth={40}
+              sizeHeight={4}
+              sizeWidth={4}
               sizeBorderRadius={20}
               sizePadding={0}
               customContent>

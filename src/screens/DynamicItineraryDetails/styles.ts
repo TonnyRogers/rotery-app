@@ -119,10 +119,6 @@ export const HostDetails = styled.View`
   padding: 0.5rem;
 `;
 
-export const RateStars = styled.View`
-  flex-direction: row;
-`;
-
 export const DataContent = styled.View`
   background: #fff;
   padding: 1rem;

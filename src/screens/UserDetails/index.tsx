@@ -18,7 +18,6 @@ import {
   TitleContent,
   ConnectButton,
   ConnectButtonText,
-  RateStars,
   RateList,
   IconContent,
   RowGroupSpaced,
@@ -30,6 +29,7 @@ import Text from '../../components/Text';
 import Page from '../../components/Page';
 import {ProfileProps} from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
+import StarRate from '../../components/StarRate';
 
 interface RateProps {
   id: number;
@@ -71,25 +71,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     };
   }, [userId]);
 
-  function renderRateStars(rate: number) {
-    const starsComponent = [];
-    for (let index = 1; index <= 5; index++) {
-      starsComponent.push(
-        rate >= index ? (
-          <Icon key={Math.random()} name="star" size={24} color="#3dc77b" />
-        ) : (
-          <Icon
-            key={Math.random()}
-            name="star-outline"
-            size={24}
-            color="#000"
-          />
-        ),
-      );
-    }
-    return starsComponent;
-  }
-
   let createDateFormated = useRef('');
 
   useMemo(() => {
@@ -103,15 +84,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     (state: RootStateProps) => state.connections,
   );
   const {user} = useSelector((state: RootStateProps) => state.auth);
-
-  let finalRate = 0;
-  let countRate = 0;
-  profile?.user &&
-    profile.user.ratings &&
-    profile.user.ratings.map((rate: RateProps) => {
-      finalRate += rate.rate;
-      countRate++;
-    });
 
   const isConnection = connections?.find((connection) => {
     if (connection.owner.id === user?.id && connection.target.id === userId) {
@@ -167,7 +139,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
               <Text.Title alignment="center">
                 {profile?.user && profile.user.username}
               </Text.Title>
-              <RateStars>{renderRateStars(finalRate / countRate)}</RateStars>
+              <StarRate rate={profile?.user.ratingAvg || 0} size="regular" />
               <Text alignment="center" textWeight="light">
                 Ativo desde {createDateFormated.current}
               </Text>
@@ -201,7 +173,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                   <CardHeader>
                     <RowGroupSpaced>
                       <ColumnGroup>
-                        <Text.Paragraph textColor="secondaryText" textWeight="bold">
+                        <Text.Paragraph
+                          textColor="secondaryText"
+                          textWeight="bold">
                           Host de Roteiro
                         </Text.Paragraph>
                         <Text textWeight="light">
@@ -216,7 +190,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
                   <CardCotent>
                     <UserRate>
                       <Text textWeight="light">{item.description}</Text>
-                      <Text>{renderRateStars(item.rate)}</Text>
+                      <StarRate rate={item.rate} size="regular" />
                     </UserRate>
                   </CardCotent>
                 </Card>

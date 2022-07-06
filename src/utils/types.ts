@@ -71,8 +71,8 @@ export interface UserProps {
   isActive: boolean;
   isHost: boolean;
   ratings?: UserRateProps[];
-  g_email: string;
   customerId?: string;
+  ratingAvg?: number;
 }
 
 export interface OwnerProps extends UserProps {}

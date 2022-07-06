@@ -269,8 +269,8 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
             })
           }
           customContent
-          sizeHeight={60}
-          sizeWidth={60}
+          sizeHeight={6}
+          sizeWidth={6}
           sizeMargin="2rem 1rem"
           isFlex>
           <ColumnGroup>

@@ -34,10 +34,14 @@ import Text from '../../components/Text';
 import Button from '../../components/Button';
 import RowGroupComponent from '../../components/RowGroup';
 import BottomSheet from '../../components/BottomSheet';
+import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({
-  email: yup.string().email('e-mail inválido').required('campo obrigatório'),
-  password: yup.string().required('campo obrigatório'),
+  email: yup
+    .string()
+    .email('e-mail inválido')
+    .required(YupValidationMessages.REQUIRED),
+  password: yup.string().required(YupValidationMessages.REQUIRED),
 });
 
 const Home: React.FC = () => {
@@ -146,7 +150,9 @@ const Home: React.FC = () => {
                 label="Email"
                 placeholder="digite seu e-mail"
                 icon="email-outline"
-                onChange={(value: string) => setValue('email', value.trim())}
+                onChange={(value: string) =>
+                  setValue('email', value.trim().toLocaleLowerCase())
+                }
                 ref={emailRef}
                 autoCapitalize="none"
                 returnKeyType="next"

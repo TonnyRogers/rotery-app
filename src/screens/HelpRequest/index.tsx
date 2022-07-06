@@ -30,9 +30,10 @@ import {formatPrice} from '../../lib/utils';
 import formatLocale from '../../providers/dayjs-format-locale';
 import Toast from 'react-native-toast-message';
 import SplashScreen from '../../components/SplashScreen';
+import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({
-  reportMessage: yup.string().required('campo obrigatório'),
+  reportMessage: yup.string().required(YupValidationMessages.REQUIRED),
 });
 
 interface formData {
@@ -153,8 +154,8 @@ const HelpRequest = ({route}: HelpRequestProps) => {
             <Button
               bgColor="greenTransparent"
               onPress={() => RootNavigation.goBack()}
-              sizeHeight={40}
-              sizeWidth={40}
+              sizeHeight={4}
+              sizeWidth={4}
               sizeBorderRadius={20}
               sizePadding={0}
               customContent>

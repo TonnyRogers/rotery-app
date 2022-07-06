@@ -83,21 +83,22 @@ import {theme} from '../../utils/theme';
 import api from '../../services/api';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 import {translateError} from '../../lib/utils';
+import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({
-  name: yup.string().required('campo obrigatório'),
-  vacancies: yup.number().required('campo obrigatório'),
-  location: yup.string().required('campo obrigatório'),
-  description: yup.string().required('campo obrigatório'),
-  dateOut: yup.date().required('campo obrigatório'),
-  dateReturn: yup.date().required('campo obrigatório'),
-  dateLimit: yup.date().required('campo obrigatório'),
+  name: yup.string().required(YupValidationMessages.REQUIRED),
+  vacancies: yup.number().required(YupValidationMessages.REQUIRED),
+  location: yup.string().required(YupValidationMessages.REQUIRED),
+  description: yup.string().required(YupValidationMessages.REQUIRED),
+  dateOut: yup.date().required(YupValidationMessages.REQUIRED),
+  dateReturn: yup.date().required(YupValidationMessages.REQUIRED),
+  dateLimit: yup.date().required(YupValidationMessages.REQUIRED),
 });
 
 const validationOptionsSchema = yup.object().shape({
-  type: yup.string().required('campo obrigatório'),
-  price: yup.string().required('campo obrigatório'),
-  capacity: yup.string().required('campo obrigatório'),
+  type: yup.string().required(YupValidationMessages.REQUIRED),
+  price: yup.string().required(YupValidationMessages.REQUIRED),
+  capacity: yup.string().required(YupValidationMessages.REQUIRED),
   description: yup.string(),
 });
 

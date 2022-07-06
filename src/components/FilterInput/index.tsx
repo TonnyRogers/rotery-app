@@ -14,8 +14,6 @@ import {
   CloseButton,
   ModalContent,
   Actions,
-  FilterButton,
-  FilterButtonText,
   ActivityList,
   Activity,
   ActivityName,
@@ -30,6 +28,8 @@ import {
 } from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
 import Text from '../Text';
+import RowGroup from '../RowGroup';
+import Button from '../Button';
 
 interface FilterInputProps {
   visible: boolean;
@@ -82,6 +82,12 @@ const FilterInput: React.FC<FilterInputProps> = ({
     onRequestClose();
   }
 
+  function clearFilters() {
+    setLocation('');
+    setBeginDate(new Date());
+    setEndDate(new Date());
+  }
+
   const handleSetLocation = (value: any) => {
     locationJson.current = value;
   };
@@ -132,9 +138,32 @@ const FilterInput: React.FC<FilterInputProps> = ({
                 </ActivityList>
               </ModalContent>
               <Actions>
-                <FilterButton onPress={handleFilter}>
-                  <FilterButtonText>Filtrar</FilterButtonText>
-                </FilterButton>
+                <RowGroup>
+                  <Button
+                    onPress={handleFilter}
+                    textColor="white"
+                    bgColor="blue"
+                    cornerRadius={{
+                      bottomL: 12,
+                      bottomR: 12,
+                      topL: 0,
+                      topR: 12,
+                    }}>
+                    Filtrar
+                  </Button>
+                  <Button
+                    onPress={clearFilters}
+                    textColor="white"
+                    bgColor="green"
+                    cornerRadius={{
+                      bottomL: 12,
+                      bottomR: 12,
+                      topL: 12,
+                      topR: 0,
+                    }}>
+                    Limpar
+                  </Button>
+                </RowGroup>
               </Actions>
             </Content>
           </SafeAreaView>

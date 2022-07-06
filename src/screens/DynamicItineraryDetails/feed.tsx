@@ -15,6 +15,7 @@ import {
   ItineraryActivityItemProps,
   ItineraryLodgingItemProps,
   ItineraryTransportItemProps,
+  ItineraryStatusTranlated,
 } from '../../utils/types';
 import {
   makeQuestionRequest,
@@ -38,7 +39,6 @@ import {
   HostButton,
   UserImage,
   HostDetails,
-  RateStars,
   DataContentHeader,
   IconHolder,
   SendButton,
@@ -60,9 +60,11 @@ import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 import SplashScreen from '../../components/SplashScreen';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {YupValidationMessages} from '../../utils/enums';
+import StarRate from '../../components/StarRate';
 
 const validationSchema = yup.object().shape({
-  question: yup.string().required('campo obrigatório'),
+  question: yup.string().required(YupValidationMessages.REQUIRED),
 });
 interface DynamicFeedItineraryDetailsProps {
   itinerary: ItineraryProps;
@@ -290,7 +292,9 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
               </RowGroupSpaced>
               <StatusContent>
                 <Status>
-                  <StatusName>{itinerary?.status}</StatusName>
+                  <StatusName>
+                    {ItineraryStatusTranlated[itinerary.status]}
+                  </StatusName>
                 </Status>
               </StatusContent>
               <ImageCarousel data={itinerary?.photos} />
@@ -320,13 +324,10 @@ const DynamicFeedItineraryDetails: React.FC<DynamicFeedItineraryDetailsProps> =
                       maxLines={1}>
                       {itinerary?.owner.username}
                     </Text>
-                    <RateStars>
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star" size={24} color="#3dc77b" />
-                      <Icon name="star-outline" size={24} color="#000" />
-                    </RateStars>
+                    <StarRate
+                      rate={itinerary?.owner.ratingAvg || 0}
+                      size="regular"
+                    />
                   </HostDetails>
                 </HostButton>
               </HostContent>

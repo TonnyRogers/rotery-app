@@ -336,8 +336,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
             bgColor="blueTransparent"
             onPress={() => showPaymentRefund()}
             customContent
-            sizeHeight={60}
-            sizeWidth={60}
+            sizeHeight={6}
+            sizeWidth={6}
             sizeMargin="2rem 1rem"
             isFlex>
             <ColumnGroup>
@@ -369,8 +369,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
             )
           }
           customContent
-          sizeHeight={60}
-          sizeWidth={60}
+          sizeHeight={6}
+          sizeWidth={6}
           sizeMargin="2rem 1rem"
           isFlex>
           <ColumnGroup>

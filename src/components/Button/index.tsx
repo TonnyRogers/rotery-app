@@ -14,12 +14,18 @@ interface ButtonProps extends TouchableOpacityProps {
   sizeHeight?: number;
   sizeWidth?: number;
   sizeBorderRadius?: number;
-  sizePadding?: number;
+  sizePadding?: number | string;
   sizeMargin?: string;
   hasShadow?: boolean;
   isFlex?: boolean;
   customContent?: boolean;
   containerAlignSelf?: FlexAlignType;
+  cornerRadius?: {
+    topL: number;
+    topR: number;
+    bottomL: number;
+    bottomR: number;
+  };
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -28,7 +34,7 @@ const Button: React.FC<ButtonProps> = ({
   isEnabled = true,
   textColor = 'white',
   customContent = false,
-  sizeHeight,
+  sizeHeight = 5,
   sizeWidth,
   sizeBorderRadius = 12,
   sizePadding = 12,
@@ -36,11 +42,13 @@ const Button: React.FC<ButtonProps> = ({
   containerAlignSelf,
   isFlex,
   hasShadow = true,
+  cornerRadius,
   ...props
 }) => {
   return (
     <Container
       {...props}
+      height={sizeHeight}
       isFlex={isFlex}
       margin={sizeMargin}
       disabled={!isEnabled}>
@@ -55,13 +63,23 @@ const Button: React.FC<ButtonProps> = ({
             ? theme.colors[bgColor]
             : theme.colors.disabled,
           padding: sizePadding,
-          borderRadius: sizeBorderRadius,
+          borderRadius: cornerRadius?.bottomL ? undefined : sizeBorderRadius,
           alignItems: 'center',
           justifyContent: 'center',
-          height: sizeHeight,
-          width: sizeWidth,
+          height: sizeHeight * 10,
+          width: sizeWidth ? sizeWidth * 10 : undefined,
+          borderBottomLeftRadius: cornerRadius?.bottomL,
+          borderBottomRightRadius: cornerRadius?.bottomR,
+          borderTopLeftRadius: cornerRadius?.topL,
+          borderTopRightRadius: cornerRadius?.topR,
         }}
-        radius={12}
+        radius={{
+          default: cornerRadius?.bottomL ? undefined : sizeBorderRadius,
+          bottomLeft: cornerRadius?.bottomL,
+          bottomRight: cornerRadius?.bottomR,
+          topLeft: cornerRadius?.topL,
+          topRight: cornerRadius?.topR,
+        }}
         startColor={hasShadow ? '#00000007' : 'transparent'}
         finalColor={'transparent'}
         offset={[0, 0, 0, 0]}

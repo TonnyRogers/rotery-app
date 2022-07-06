@@ -24,9 +24,6 @@ export function translateError(errorMessage: string): string {
     case 'email validation failed on email':
       translated = 'Erro ao fazer login.';
       break;
-    case 'email validation failed on email':
-      translated = 'Erro ao carregar conexões.';
-      break;
     case 'You cannot join to this itinerary anymore.':
       translated = 'Prazo para participar expirado.';
       break;
