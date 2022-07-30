@@ -231,7 +231,6 @@ const Routes = () => {
           break;
         }
         case 'connection_unblock': {
-          console.tron.log('connection_unblock', notification);
           const jsonData: InvitesProps = JSON.parse(
             notification.data.json_data,
           );
@@ -239,7 +238,6 @@ const Routes = () => {
           break;
         }
         case 'connection_block': {
-          console.tron.log('connection_block', notification);
           const jsonData: InvitesProps = JSON.parse(
             notification.data.json_data,
           );

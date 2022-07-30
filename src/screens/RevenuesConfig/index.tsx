@@ -144,9 +144,9 @@ const RevenuesConfig = () => {
                 categorySelectable={true}
                 setOpen={setBankIsOpen}
                 onOpen={() => accountTypeIsOpen && setAccountTypeIsOpen(false)}
-                zIndex={200}
                 open={bankIsOpen}
-                zIndexInverse={100}
+                zIndex={10}
+                zIndexInverse={1}
                 listMode="SCROLLVIEW"
               />
               <RowGroup justify="space-between">
@@ -179,9 +179,9 @@ const RevenuesConfig = () => {
                 categorySelectable={true}
                 setOpen={setAccountTypeIsOpen}
                 onOpen={() => bankIsOpen && setBankIsOpen(false)}
-                zIndex={200}
                 open={accountTypeIsOpen}
-                zIndexInverse={100}
+                zIndex={1}
+                zIndexInverse={10}
                 listMode="SCROLLVIEW"
               />
 

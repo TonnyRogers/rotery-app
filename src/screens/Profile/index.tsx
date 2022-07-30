@@ -24,6 +24,7 @@ import {
   ActionContent,
   CardHeader,
   BackButton,
+  ChangeImageView,
 } from './styles';
 
 import Card from '../../components/Card';
@@ -230,15 +231,11 @@ const Profile: React.FC = () => {
                   style={{borderColor: '#e1e1e1'}}
                 />
                 <FileInput onSelect={handleProfileImage}>
-                  <Button
-                    sizeMargin="10px 0"
-                    sizeHeight={4}
-                    customContent
-                    bgColor="blueDark">
+                  <ChangeImageView>
                     <Text textWeight="bold" textColor="white">
                       Alterar imagem
                     </Text>
-                  </Button>
+                  </ChangeImageView>
                 </FileInput>
                 <Text.Title alignment="center">
                   {data?.user.username}

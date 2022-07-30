@@ -99,7 +99,7 @@ const validationOptionsSchema = yup.object().shape({
   type: yup.string().required(YupValidationMessages.REQUIRED),
   price: yup.string().required(YupValidationMessages.REQUIRED),
   capacity: yup.string().required(YupValidationMessages.REQUIRED),
-  description: yup.string(),
+  description: yup.string().required(YupValidationMessages.REQUIRED),
 });
 
 interface ValidateCreationReponse {

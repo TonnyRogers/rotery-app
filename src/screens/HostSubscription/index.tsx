@@ -76,7 +76,7 @@ const HostSubscription = () => {
       const response: AxiosResponse<SearchSubscriptionResult[]> = await api.get(
         `/subscriptions/details?ref=${data?.referenceId}`,
       );
-      setSubscriptionHistoric(response.data[0]);
+      setSubscriptionHistoric(response.data[0] || null);
     };
 
     if (data) {
@@ -177,7 +177,7 @@ const HostSubscription = () => {
             </ShadowBox>
             <Text.Title alignment="start">Movimentação</Text.Title>
             <TransactionContainer>
-              {subscriptionHistoric !== null && (
+              {subscriptionHistoric !== null && subscriptionHistoric.id && (
                 <ItemContainer key={subscriptionHistoric.id} onPress={() => {}}>
                   <ItemIconHover>
                     <Icon

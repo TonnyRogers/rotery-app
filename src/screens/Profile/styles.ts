@@ -1,4 +1,5 @@
 import styled from 'styled-native-components';
+import {theme} from '../../utils/theme';
 
 export const SafeView = styled.View`
   flex: 1;
@@ -122,4 +123,15 @@ export const BaseBlock = styled.View`
   border-radius: 0.3rem;
   width: 17.2rem;
   margin-top: 9rem;
+`;
+
+export const ChangeImageView = styled.View`
+  background-color: ${theme.colors.blueDark};
+  border-radius: 1rem;
+  height: 4.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem;
+  margin: 1rem;
 `;
