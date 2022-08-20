@@ -1,8 +1,6 @@
 import produce from 'immer';
 import {MessageProps, NotificationsProps} from '../../../utils/types';
 import {MessageActions} from './actions';
-import {WsActions} from '../websocket/actions';
-import {PushNotificationsActions} from '../pushNotifications/actions';
 import {AuthActions} from '../auth/actions';
 
 interface InitialStateProps {
@@ -115,84 +113,84 @@ export default function messages(state = INITIAL_STATE, action: ActionProps) {
         draft.loading = false;
         break;
       }
-      case WsActions.NEW_MESSAGE: {
-        const grouped = draft.messages;
-        const newMessage: MessageProps = action.payload.notification.jsonData;
+      // case WsActions.NEW_MESSAGE: {
+      //   const grouped = draft.messages;
+      //   const newMessage: MessageProps = action.payload.notification.jsonData;
 
-        const foundedMessage = grouped.findIndex(
-          (item) =>
-            item.sender.id === newMessage.sender.id &&
-            item.receiver.id === newMessage.receiver.id,
-        );
+      //   const foundedMessage = grouped.findIndex(
+      //     (item) =>
+      //       item.sender.id === newMessage.sender.id &&
+      //       item.receiver.id === newMessage.receiver.id,
+      //   );
 
-        if (foundedMessage === -1) {
-          grouped.push({...newMessage, unreaded: 1});
-        } else {
-          grouped[foundedMessage] = {
-            ...newMessage,
-            unreaded: grouped[foundedMessage].unreaded + 1,
-          };
-        }
+      //   if (foundedMessage === -1) {
+      //     grouped.push({...newMessage, unreaded: 1});
+      //   } else {
+      //     grouped[foundedMessage] = {
+      //       ...newMessage,
+      //       unreaded: grouped[foundedMessage].unreaded + 1,
+      //     };
+      //   }
 
-        let counter = 0;
+      //   let counter = 0;
 
-        grouped.forEach((item) => (counter += item.unreaded));
+      //   grouped.forEach((item) => (counter += item.unreaded));
 
-        draft.messages = grouped;
-        draft.unreadCounter = counter;
-        draft.loading = false;
+      //   draft.messages = grouped;
+      //   draft.unreadCounter = counter;
+      //   draft.loading = false;
 
-        break;
-      }
-      case WsActions.CHAT_SUBSCRIBE: {
-        const {targetId, ownerId} = action.payload;
-        const idsArr = [targetId, ownerId];
-        const sortedArr = idsArr.sort();
+      //   break;
+      // }
+      // case WsActions.CHAT_SUBSCRIBE: {
+      //   const {targetId, ownerId} = action.payload;
+      //   const idsArr = [targetId, ownerId];
+      //   const sortedArr = idsArr.sort();
 
-        draft.chatKey = `chat:${sortedArr[0]}and${sortedArr[1]}`;
-        break;
-      }
-      case WsActions.CLOSE_CHAT_CHANNEL: {
-        draft.chatKey = null;
-        break;
-      }
-      case WsActions.CHAT_MESSAGE: {
-        const newMessage: MessageProps = action.payload.message;
-        newMessage.id = Math.random();
-        if (newMessage.sender.id !== action.payload.authUserId) {
-          draft.conversation = [action.payload.message, ...draft.conversation];
-        }
-        break;
-      }
-      case PushNotificationsActions.NEW_MESSAGE: {
-        const grouped = draft.messages;
-        const newMessage: MessageProps = action.payload.message;
+      //   draft.chatKey = `chat:${sortedArr[0]}and${sortedArr[1]}`;
+      //   break;
+      // }
+      // case WsActions.CLOSE_CHAT_CHANNEL: {
+      //   draft.chatKey = null;
+      //   break;
+      // }
+      // case WsActions.CHAT_MESSAGE: {
+      //   const newMessage: MessageProps = action.payload.message;
+      //   newMessage.id = Math.random();
+      //   if (newMessage.sender.id !== action.payload.authUserId) {
+      //     draft.conversation = [action.payload.message, ...draft.conversation];
+      //   }
+      //   break;
+      // }
+      // case PushNotificationsActions.NEW_MESSAGE: {
+      //   const grouped = draft.messages;
+      //   const newMessage: MessageProps = action.payload.message;
 
-        const foundedMessage = grouped.findIndex(
-          (item) =>
-            item.sender.id === newMessage.sender.id &&
-            item.receiver.id === newMessage.receiver.id,
-        );
+      //   const foundedMessage = grouped.findIndex(
+      //     (item) =>
+      //       item.sender.id === newMessage.sender.id &&
+      //       item.receiver.id === newMessage.receiver.id,
+      //   );
 
-        if (foundedMessage === -1) {
-          grouped.push({...newMessage, unreaded: 1});
-        } else {
-          grouped[foundedMessage] = {
-            ...newMessage,
-            unreaded: grouped[foundedMessage].unreaded + 1,
-          };
-        }
+      //   if (foundedMessage === -1) {
+      //     grouped.push({...newMessage, unreaded: 1});
+      //   } else {
+      //     grouped[foundedMessage] = {
+      //       ...newMessage,
+      //       unreaded: grouped[foundedMessage].unreaded + 1,
+      //     };
+      //   }
 
-        let counter = 0;
+      //   let counter = 0;
 
-        grouped.forEach((item) => (counter += item.unreaded));
+      //   grouped.forEach((item) => (counter += item.unreaded));
 
-        draft.messages = grouped;
-        draft.unreadCounter = counter;
-        draft.loading = false;
+      //   draft.messages = grouped;
+      //   draft.unreadCounter = counter;
+      //   draft.loading = false;
 
-        break;
-      }
+      //   break;
+      // }
       case AuthActions.LOGOUT: {
         draft.conversation = INITIAL_STATE.conversation;
         draft.messages = INITIAL_STATE.messages;

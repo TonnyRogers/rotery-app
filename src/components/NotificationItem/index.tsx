@@ -10,6 +10,8 @@ import {
   QuestionProps,
   MemberProps,
   ItineraryProps,
+  NotificationAlias,
+  RateChatNotificationJsonData,
 } from '../../utils/types';
 import {setNoticationReadedRequest} from '../../store/modules/notifications/actions';
 import * as RootNavigation from '../../RootNavigation';
@@ -42,13 +44,19 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
   function notificationActionHandle(item: NotificationsProps<any>) {
     dispatch(setNoticationReadedRequest(item.id));
+    // called when user click in notification component
     switch (item.alias) {
-      case 'new_message': {
+      case NotificationAlias.NEW_MESSAGE: {
         RootNavigation.replace('DirectMessagesTabs');
         close();
         break;
       }
-      case 'rate_itinerary': {
+      case NotificationAlias.NEW_CHAT: {
+        RootNavigation.replace('ChatMessages');
+        close();
+        break;
+      }
+      case NotificationAlias.RATE_ITINERARY: {
         const notificationItem: {id: number} = item.jsonData;
         navigation.navigate('ItineraryRate', {
           id: notificationItem.id,
@@ -56,17 +64,26 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         close();
         break;
       }
-      case 'new_connection': {
+      case NotificationAlias.RATE_LOCATION: {
+        const notificationItem: RateChatNotificationJsonData = item.jsonData;
+        RootNavigation.navigate<RateChatNotificationJsonData>(
+          'RateChat',
+          notificationItem,
+        );
+        close();
+        break;
+      }
+      case NotificationAlias.NEW_CONNECTION: {
         RootNavigation.replace('Connections');
         close();
         break;
       }
-      case 'new_connection_accepted': {
+      case NotificationAlias.CONNECTION_ACCEPTED: {
         RootNavigation.replace('Connections');
         close();
         break;
       }
-      case 'itinerary_question': {
+      case NotificationAlias.NEW_QUESTION: {
         const notificationItem: QuestionProps = item.jsonData;
         navigation.navigate('MyItineraryDetails', {
           id: notificationItem.itinerary,
@@ -74,7 +91,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         close();
         break;
       }
-      case 'itinerary_member_request': {
+      case NotificationAlias.NEW_MEMBER: {
         const notificationItem: MemberProps = item.jsonData;
         navigation.navigate('MyItineraryDetails', {
           id: notificationItem.itinerary,
@@ -82,7 +99,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         close();
         break;
       }
-      case 'itinerary_answer': {
+      case NotificationAlias.NEW_ANSWER: {
         const notificationItem: QuestionProps = item.jsonData;
         navigation.navigate('FeedItineraryDetails', {
           id: notificationItem.itinerary,
@@ -90,7 +107,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         close();
         break;
       }
-      case 'itinerary_member_accepted': {
+      case NotificationAlias.MEMBER_ACCEPTED: {
         const notificationItem: MemberProps = item.jsonData;
         navigation.navigate('NextItineraryDetails', {
           id: notificationItem.itinerary,
@@ -98,7 +115,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         close();
         break;
       }
-      case 'itinerary_updated': {
+      case NotificationAlias.ITINERARY_UPDATED: {
         const notificationItem: ItineraryProps = item.jsonData;
         navigation.navigate('NextItineraryDetails', {
           id: notificationItem.id,

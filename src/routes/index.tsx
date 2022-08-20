@@ -12,7 +12,7 @@ import * as RootNavigation from '../RootNavigation';
 import api from '../services/api';
 const Stack = createStackNavigator();
 
-import Home from '../screens/Home';
+import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import Favorites from '../screens/Favorites';
 import Feed from '../screens/Feed';
@@ -35,6 +35,7 @@ import NewPassword from '../screens/NewPassword';
 import DynamicItineraryDetais from '../screens/DynamicItineraryDetails';
 import Checkout from '../screens/Checkout';
 import Wallet from '../screens/Wallet';
+import {Welcome} from '../screens/Welcome';
 import TransactionDetail from '../screens/TransactionDetail';
 import Revenues from '../screens/Revenues';
 import RevenuesConfig from '../screens/RevenuesConfig';
@@ -42,6 +43,12 @@ import RevenueDetail from '../screens/RevenueDetail';
 import HelpRequest from '../screens/HelpRequest';
 import HostSubscription from '../screens/HostSubscription';
 import {Disclaimer} from '../screens/Disclaimer';
+import {ExploreLocations} from '../screens/ExploreLocations';
+import {LocationFeed} from '../screens/LocationFeed';
+import {LocationFeedDetails} from '../screens/LocationFeedDetails';
+import {ChatMessages} from '../screens/ChatMessages';
+import {Chat} from '../screens/Chat';
+import {RateChat} from '../screens/RateChat';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 import {useSocket} from '../hooks/useSocket';
@@ -56,6 +63,7 @@ import {
   pushNotificationItineraryRejectMember,
   pushNotificationConnectionUnblock,
   pushNotificationConnectionBlock,
+  pushNotificationNewChat,
 } from '../store/modules/pushNotifications/actions';
 import {
   MessageProps,
@@ -63,8 +71,12 @@ import {
   QuestionProps,
   MemberProps,
   ItineraryMemberAcceptWsResponse,
+  NotificationAlias,
+  ChatMessage,
+  RateChatNotificationJsonData,
 } from '../utils/types';
 import {getNextItineraryDetailsRequest} from '../store/modules/nextItineraries/actions';
+
 interface RoutesProps {
   (arg: {isSigned: boolean}): any;
 }
@@ -134,8 +146,9 @@ const Routes = () => {
     const token = await AsyncStorage.getItem('@auth:token');
 
     if (token && notification) {
+      // called when user click in pushNotification
       switch (notification.data.alias) {
-        case 'new_message': {
+        case NotificationAlias.NEW_MESSAGE: {
           const jsonData: MessageProps = JSON.parse(
             notification.data.json_data,
           );
@@ -143,7 +156,13 @@ const Routes = () => {
           RootNavigation.replace('DirectMessagesTabs');
           break;
         }
-        case 'rate_itinerary': {
+        case NotificationAlias.NEW_CHAT: {
+          const jsonData: ChatMessage = JSON.parse(notification.data.json_data);
+          dispatch(pushNotificationNewChat(jsonData));
+          RootNavigation.replace('ChatMessages');
+          break;
+        }
+        case NotificationAlias.RATE_ITINERARY: {
           const jsonData: {id: number} = JSON.parse(
             notification.data.json_data,
           );
@@ -152,7 +171,17 @@ const Routes = () => {
           });
           break;
         }
-        case 'new_connection': {
+        case NotificationAlias.RATE_LOCATION: {
+          const jsonData: RateChatNotificationJsonData = JSON.parse(
+            notification.data.json_data,
+          );
+          RootNavigation.navigate<RateChatNotificationJsonData>(
+            'RateChat',
+            jsonData,
+          );
+          break;
+        }
+        case NotificationAlias.NEW_CONNECTION: {
           const jsonData: InvitesProps = JSON.parse(
             notification.data.json_data,
           );
@@ -160,7 +189,7 @@ const Routes = () => {
           RootNavigation.replace('Connections');
           break;
         }
-        case 'new_connection_accepted': {
+        case NotificationAlias.CONNECTION_ACCEPTED: {
           const jsonData: InvitesProps = JSON.parse(
             notification.data.json_data,
           );
@@ -168,7 +197,7 @@ const Routes = () => {
           RootNavigation.replace('Connections');
           break;
         }
-        case 'itinerary_question': {
+        case NotificationAlias.NEW_QUESTION: {
           const jsonData: QuestionProps = JSON.parse(
             notification.data.json_data,
           );
@@ -178,7 +207,7 @@ const Routes = () => {
           });
           break;
         }
-        case 'itinerary_member_request': {
+        case NotificationAlias.NEW_MEMBER: {
           const jsonData: MemberProps = JSON.parse(notification.data.json_data);
           dispatch(pushNotificationItineraryNewMember(jsonData));
           RootNavigation.navigate('MyItineraryDetails', {
@@ -186,7 +215,7 @@ const Routes = () => {
           });
           break;
         }
-        case 'itinerary_answer': {
+        case NotificationAlias.NEW_ANSWER: {
           const jsonData: QuestionProps = JSON.parse(
             notification.data.json_data,
           );
@@ -196,7 +225,7 @@ const Routes = () => {
           });
           break;
         }
-        case 'itinerary_member_accepted': {
+        case NotificationAlias.MEMBER_ACCEPTED: {
           const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
             notification.data.json_data,
           );
@@ -206,14 +235,14 @@ const Routes = () => {
           });
           break;
         }
-        case 'itinerary_member_rejected': {
+        case NotificationAlias.MEMBER_REJECTED: {
           const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
             notification.data.json_data,
           );
           dispatch(pushNotificationItineraryRejectMember(jsonData));
           break;
         }
-        case 'itinerary_updated': {
+        case NotificationAlias.ITINERARY_UPDATED: {
           const jsonData: {id: number} = JSON.parse(
             notification.data.json_data,
           );
@@ -223,21 +252,21 @@ const Routes = () => {
           });
           break;
         }
-        case 'itinerary_deleted': {
+        case NotificationAlias.ITINERARY_DELETED: {
           const jsonData: {id: number} = JSON.parse(
             notification.data.json_data,
           );
           dispatch(pushNotificationItineraryDeleted(jsonData));
           break;
         }
-        case 'connection_unblock': {
+        case NotificationAlias.CONNECTION_UNBLOCK: {
           const jsonData: InvitesProps = JSON.parse(
             notification.data.json_data,
           );
           dispatch(pushNotificationConnectionUnblock(jsonData));
           break;
         }
-        case 'connection_block': {
+        case NotificationAlias.CONNECTION_BLOCK: {
           const jsonData: InvitesProps = JSON.parse(
             notification.data.json_data,
           );
@@ -257,7 +286,7 @@ const Routes = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={signed ? 'Feed' : 'Home'}>
+          initialRouteName={signed ? 'Welcome' : 'SignIn'}>
           {signed ? (
             <>
               <Stack.Screen name="Feed" component={Feed} />
@@ -313,10 +342,23 @@ const Routes = () => {
                 component={HostSubscription}
               />
               <Stack.Screen name="Disclaimer" component={Disclaimer} />
+              <Stack.Screen
+                name="ExploreLocations"
+                component={ExploreLocations}
+              />
+              <Stack.Screen name="LocationFeed" component={LocationFeed} />
+              <Stack.Screen
+                name="LocationFeedDetails"
+                component={LocationFeedDetails}
+              />
+              <Stack.Screen name="ChatMessages" component={ChatMessages} />
+              <Stack.Screen name="Chat" component={Chat} />
+              <Stack.Screen name="RateChat" component={RateChat} />
+              <Stack.Screen name="Welcome" component={Welcome} />
             </>
           ) : (
             <>
-              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="SignIn" component={SignIn} />
               <Stack.Screen name="SignUp" component={SignUp} />
               <Stack.Screen
                 name="RecoverPassword"

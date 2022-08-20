@@ -66,15 +66,17 @@ import formatLocale from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
 import DividerComponent from '../../components/Divider';
 import StarRate from '../../components/StarRate';
+import ItineraryDetails from '../../components/ItineraryDetails';
+import {NavigationProp} from '@react-navigation/native';
 
 interface MyItineraryDetailsProps {
   route: {
     params: {id: number};
   };
-  navigation: any;
+  navigation: NavigationProp<Record<string, object | undefined>>;
 }
 
-const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
+const MyItineraryDetails2: React.FC<MyItineraryDetailsProps> = ({
   route,
   navigation,
 }) => {
@@ -450,6 +452,123 @@ const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
             </DeleteItineraryButtonText>
           </DeleteItineraryButton>
         </RowGroupSpaced>
+      </Content>
+      <Alert
+        title="Fim do Roteiro!"
+        message="Vode deseja realmente encerrar este roteiro?"
+        icon="progress-check"
+        visible={finishAlertVisible}
+        onCancel={hideFinish}
+        onRequestClose={() => setFinishAlertVisible(false)}
+        onConfirm={handleFinishItinerary}
+      />
+      <Alert
+        title="Ops!"
+        message="você deseja realmente excluir este roteiro?"
+        icon="delete-forever-outline"
+        visible={alertVisible}
+        onCancel={hideDeleteAlert}
+        onRequestClose={() => setAlertVisible(false)}
+        onConfirm={handleDeleteItinerary}
+      />
+      <Ads visible={myItineraryGuide} onRequestClose={() => {}}>
+        <GuideCarousel
+          data={myGuideImages}
+          onClose={() => handleCloseMyGuide()}
+          key="guide-my-itinerary"
+        />
+      </Ads>
+      <SplashScreen visible={loading} />
+    </Page>
+  );
+};
+
+const MyItineraryDetails: React.FC<MyItineraryDetailsProps> = ({
+  route,
+  navigation,
+}) => {
+  const {id} = route.params;
+  const {itineraries, loading} = useSelector(
+    (state: RootStateProps) => state.itineraries,
+  );
+  const {myItineraryGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
+  );
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [finishAlertVisible, setFinishAlertVisible] = useState(false);
+  const dispatch = useDispatch();
+
+  const itinerary = useMemo(
+    () => itineraries?.find((item: {id: number}) => item.id === id),
+    [id, itineraries],
+  );
+
+  if (!itinerary) {
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
+  }
+
+  function showDeleteAlert() {
+    setAlertVisible(true);
+  }
+
+  function hideFinish() {
+    setFinishAlertVisible(false);
+  }
+
+  function hideDeleteAlert() {
+    setAlertVisible(false);
+  }
+
+  function handleDeleteItinerary() {
+    if (itinerary) {
+      setAlertVisible(false);
+      dispatch(deleteItineraryRequest(itinerary?.id));
+    }
+  }
+
+  function showFinishAlert() {
+    setFinishAlertVisible(true);
+  }
+
+  function handleFinishItinerary() {
+    setFinishAlertVisible(false);
+    dispatch(notifyItineraryFinishRequest(id));
+  }
+
+  const handleCloseMyGuide = () => {
+    dispatch(hideMyItineraryGuide());
+  };
+
+  return (
+    <Page showHeader={false}>
+      <Share
+        data={{
+          id: itinerary?.id,
+          type: 'itinerary',
+          componentType: 'connectionShareList',
+          ownerId: itinerary.owner.id,
+        }}
+      />
+      <Content
+        renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+        shouldRasterizeIOS={!!(Platform.OS === 'ios')}
+        scrollEventThrottle={16}
+        nestedScrollEnabled
+        decelerationRate="normal">
+        <ItineraryDetails
+          isOwner
+          itinerary={itinerary}
+          navigation={navigation}
+          onShowDeleteAlert={showDeleteAlert}
+          onShowFinishAlert={showFinishAlert}
+        />
       </Content>
       <Alert
         title="Fim do Roteiro!"

@@ -168,7 +168,7 @@ const MyConnections: React.FC = () => {
         </UserInfo>
         <Actions>
           <>
-            {!item.isBlocked && (
+            {false && (
               <MessageButton
                 onPress={() =>
                   getUserConversation({

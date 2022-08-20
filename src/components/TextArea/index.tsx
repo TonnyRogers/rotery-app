@@ -10,14 +10,22 @@ interface TextAreaProps extends TextInputProps {
   placeholder?: string;
   icon?: string;
   onChange: any;
+  isFlex?: boolean;
 }
 
 const TextArea = (
-  {label, placeholder, onChange, error, ...props}: TextAreaProps,
+  {
+    label,
+    placeholder,
+    onChange,
+    error,
+    isFlex = false,
+    ...props
+  }: TextAreaProps,
   ref,
 ) => {
   return (
-    <Container>
+    <Container isFlex={isFlex}>
       <Label>{label}</Label>
       <Field
         placeholder={placeholder}

@@ -4,6 +4,7 @@ import {Shadow} from 'react-native-shadow-2';
 
 import {CardContent} from './styles';
 import {ViewStyle} from 'react-native';
+import {theme, ColorsType} from '../../utils/theme';
 
 interface CardProps {
   containerStyle?: ViewStyle;
@@ -11,6 +12,7 @@ interface CardProps {
   children: ReactNode;
   marginHorizontal?: number;
   marginVertical?: number;
+  bgColor?: ColorsType;
 }
 
 const Card = ({
@@ -19,6 +21,7 @@ const Card = ({
   containerStyle,
   marginVertical = 12,
   marginHorizontal = 12,
+  bgColor,
 }: CardProps) => {
   return (
     <Shadow
@@ -30,7 +33,7 @@ const Card = ({
       }}
       contentViewStyle={{
         flex: 1,
-        backgroundColor: '#FFF',
+        backgroundColor: bgColor ? theme.colors[bgColor] : theme.colors.white,
         padding: 12,
         borderRadius: 12,
         ...contentStyle,

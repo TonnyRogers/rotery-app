@@ -25,6 +25,7 @@ import {
   wsItineraryUpdateNotification,
   wsItineraryDeleteNotification,
   wsItineraryAnswerNotification,
+  wsNewChatNotification,
 } from '../websocket/actions';
 import {NotificationsActions} from './actions';
 import {RootStateProps} from '../rootReducer';
@@ -56,6 +57,9 @@ export function* getNotifications() {
           break;
         case NotificationAlias.NEW_MESSAGE:
           yield put(wsNewMessageNotification(iterator));
+          break;
+        case NotificationAlias.NEW_CHAT:
+          yield put(wsNewChatNotification(iterator));
           break;
         case NotificationAlias.NEW_QUESTION:
           yield put(wsItineraryQuestionNotification(iterator));
@@ -115,9 +119,9 @@ export function* setNewNotification({
 export default all([
   takeLatest('persist/REHYDRATE', getNotifications),
   takeLatest(NotificationsActions.SET_READED_REQUEST, setNotificationReaded),
-  takeLatest(WsActions.NOTIFICATIONS, getNotifications),
   takeLatest(NotificationsActions.GET_REQUEST, getNotifications),
   takeLatest(WsActions.NEW_MESSAGE, setNewNotification),
+  takeLatest(WsActions.NEW_CHAT_NOTIFICATION, setNewNotification),
   takeLatest(WsActions.NEW_ITINERARY_MEMBER, setNewNotification),
   takeLatest(WsActions.MEMBER_ACCEPTED, setNewNotification),
   takeLatest(WsActions.MEMBER_REJECTED, setNewNotification),

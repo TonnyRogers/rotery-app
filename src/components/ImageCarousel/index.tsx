@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import {Container, ImageItem, ImageList, Bullets, Bullet} from './styles';
-import {ItineraryPhotoProps} from '../../utils/types';
+import {FileProps} from '../../utils/types';
 
 interface dataProps {
   id: number;
@@ -9,7 +9,7 @@ interface dataProps {
 }
 
 interface ImageCarouselProps {
-  data: ItineraryPhotoProps[];
+  data: FileProps[];
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
@@ -69,11 +69,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
         {data &&
           data.map(
             (item, index) =>
-              typeof item.file !== 'number' && (
+              item && (
                 <ImageItem
                   key={index}
                   source={{
-                    uri: item.file.url || undefined,
+                    uri: item.url || undefined,
                   }}
                   resizeMode="cover"
                 />

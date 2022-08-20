@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import {NavigationProp} from '@react-navigation/native';
 
 import {formatBRL} from '../../lib/mask';
 import {
@@ -16,6 +17,7 @@ import {
   ItineraryLodgingItemProps,
   ItineraryActivityItemProps,
   ItineraryStatusTranlated,
+  UserProps,
 } from '../../utils/types';
 import {
   makeQuestionRequest,
@@ -68,6 +70,8 @@ import {CheckoutRouteParamsProps} from '../Checkout';
 import {YupValidationMessages} from '../../utils/enums';
 import StarRate from '../../components/StarRate';
 
+import ItineraryDetails from '../../components/ItineraryDetails';
+
 const validationSchema = yup.object().shape({
   question: yup.string().required(YupValidationMessages.REQUIRED),
 });
@@ -75,10 +79,10 @@ interface FeedItineraryDetailsProps {
   route: {
     params: {id: number};
   };
-  navigation: any;
+  navigation: NavigationProp<Record<string, object | undefined>>;
 }
 
-const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
+const FeedItineraryDetails2: React.FC<FeedItineraryDetailsProps> = ({
   route,
   navigation,
 }) => {
@@ -508,6 +512,95 @@ const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
           </CardHeader>
           {renderMembers()}
         </Card>
+      </Container>
+      <SplashScreen visible={loading} />
+    </Page>
+  );
+};
+
+const FeedItineraryDetails: React.FC<FeedItineraryDetailsProps> = ({
+  route,
+  navigation,
+}) => {
+  const {id} = route.params;
+  const dispatch = useDispatch();
+
+  const {itineraries, loading} = useSelector(
+    (state: RootStateProps) => state.feed,
+  );
+
+  const {user}: {user: UserProps | null} = useSelector(
+    (state: RootStateProps) => state.auth,
+  );
+
+  const {itineraries: nextItineraries} = useSelector(
+    (state: RootStateProps) => state.nextItineraries,
+  );
+
+  const itinerary = useMemo(
+    () =>
+      itineraries &&
+      itineraries?.find((item: ItineraryProps) => item.id === id),
+    [id, itineraries],
+  );
+
+  const isMember = useMemo(
+    () =>
+      itinerary?.members &&
+      itinerary.members.find(
+        (member: MemberProps) => member.user.id === user?.id,
+      ),
+    [itinerary, user],
+  );
+
+  useEffect(() => {
+    if (
+      isMember &&
+      isMember.isAccepted === true &&
+      nextItineraries?.find((item) => item.id === isMember.itinerary)
+    ) {
+      RootNavigation.replace('NextItineraryDetails', {id});
+    }
+  }, [id, isMember, nextItineraries]);
+
+  if (!itinerary) {
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
+  }
+
+  return (
+    <Page showHeader={false}>
+      <Share
+        data={{
+          id: itinerary?.id,
+          type: 'itinerary',
+          componentType: 'connectionShareList',
+          ownerId: itinerary.owner.id,
+        }}
+      />
+      <Container
+        renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+        shouldRasterizeIOS={!!(Platform.OS === 'ios')}
+        scrollEventThrottle={16}
+        nestedScrollEnabled
+        decelerationRate="normal">
+        <ItineraryDetails
+          isOwner={false}
+          isMember={isMember}
+          user={user}
+          itinerary={itinerary}
+          navigation={navigation}
+          onJoinSuccess={(itineraryId) => dispatch(joinRequest(itineraryId))}
+          onMakeQuestion={(data) =>
+            dispatch(makeQuestionRequest(data.itineraryId, data.text))
+          }
+        />
       </Container>
       <SplashScreen visible={loading} />
     </Page>

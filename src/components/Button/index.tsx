@@ -49,6 +49,7 @@ const Button: React.FC<ButtonProps> = ({
     <Container
       {...props}
       height={sizeHeight}
+      width={sizeWidth}
       isFlex={isFlex}
       margin={sizeMargin}
       disabled={!isEnabled}>
@@ -83,7 +84,7 @@ const Button: React.FC<ButtonProps> = ({
         startColor={hasShadow ? '#00000007' : 'transparent'}
         finalColor={'transparent'}
         offset={[0, 0, 0, 0]}
-        distance={hasShadow ? 7 : 0}>
+        distance={hasShadow ? 7 : 1}>
         {customContent ? (
           children
         ) : (

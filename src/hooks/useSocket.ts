@@ -16,6 +16,8 @@ import {
   wsConnectionBlockedNotification,
   wsConnectionUnblockedNotification,
   wsListenSubscriptions,
+  wsNewChatNotification,
+  wsLocationRateNotification,
 } from '../store/modules/websocket/actions';
 import {
   NotificationsProps,
@@ -58,6 +60,9 @@ export const useSocket = () => {
               case NotificationAlias.NEW_MESSAGE:
                 dispatch(wsNewMessageNotification(payload));
                 break;
+              case NotificationAlias.NEW_CHAT:
+                dispatch(wsNewChatNotification(payload));
+                break;
               case NotificationAlias.NEW_MEMBER:
                 dispatch(wsNewItineraryMemeberNotification(payload));
                 break;
@@ -86,6 +91,9 @@ export const useSocket = () => {
                 break;
               case NotificationAlias.RATE_ITINERARY:
                 dispatch(wsItineraryRateNotification(payload));
+                break;
+              case NotificationAlias.RATE_LOCATION:
+                dispatch(wsLocationRateNotification(payload));
                 break;
               case NotificationAlias.CONNECTION_BLOCK:
                 dispatch(wsConnectionBlockedNotification(payload));

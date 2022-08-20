@@ -4,11 +4,15 @@ import {
   QuestionProps,
   InvitesProps,
   ItineraryMemberAcceptWsResponse,
+  ChatMessage,
+  RateChatNotificationJsonData,
 } from '../../../utils/types';
 
 export enum PushNotificationsActions {
   NEW_MESSAGE = '@push/NEW_MESSAGE',
+  NEW_CHAT = '@push/NEW_CHAT',
   RATE_ITINERARY = '@push/RATE_ITINERARY',
+  RATE_LOCATION = '@push/RATE_LOCATION',
   NEW_CONNECTION = '@push/NEW_CONNECTION',
   CONNECTION_ACCEPTED = '@push/CONNECTION_ACCEPTED',
   CONNECTION_BLOCK = '@push/CONNECTION_BLOCK',
@@ -29,9 +33,25 @@ export function pushNotificationNewMessage(message: MessageProps) {
   };
 }
 
+export function pushNotificationNewChat(chatMessage: ChatMessage) {
+  return {
+    type: PushNotificationsActions.NEW_CHAT,
+    payload: {chatMessage},
+  };
+}
+
 export function pushNotificationRateItinerary(payload: {id: number}) {
   return {
     type: PushNotificationsActions.RATE_ITINERARY,
+    payload: {payload},
+  };
+}
+
+export function pushNotificationRateLocation(
+  payload: RateChatNotificationJsonData,
+) {
+  return {
+    type: PushNotificationsActions.RATE_LOCATION,
     payload: {payload},
   };
 }

@@ -4,10 +4,12 @@ import auth from './auth/sagas';
 import bankAccount from './bankAccount/sagas';
 import bottomSheet from './bottomsheet/sagas';
 import connections from './connections/sagas';
+import chats from './chats/sagas';
 import dynamicItinerary from './dynamicItinerary/sagas';
 import favorites from './favorites/sagas';
 import feed from './feed/sagas';
 import guides from './guides/sagas';
+import locations from './locations/sagas';
 import profile from './profile/sagas';
 import itineraries from './itineraries/sagas';
 import nextItineraries from './nextItineraries/sagas';
@@ -24,11 +26,13 @@ export default function* rootSaga() {
     bankAccount,
     bottomSheet,
     connections,
+    chats,
     checkout,
     dynamicItinerary,
     favorites,
     feed,
     guides,
+    locations,
     profile,
     itineraries,
     messages,

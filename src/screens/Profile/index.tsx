@@ -109,19 +109,19 @@ const Profile: React.FC = () => {
     register('state');
     register('city');
     register('profission');
-    register('birthDate', {value: new Date(), valueAsDate: true});
+    register('birthDate', {valueAsDate: true});
 
     setValue('name', data?.name || '');
     setValue('gender', data?.gender || '');
     setValue('email', data?.user?.email || '');
     setValue('phone', data?.phone || '');
-    setValue('document', data?.document || '');
+    setValue('document', cpfCnpj(String(data?.document)) || '1');
     setValue('profission', data?.profission || '');
     setValue('birthDate', data?.birth);
     setValue('city', data?.location || '');
   }, [data, register, setValue]);
 
-  const watchBirthDate = watch('birthDate', new Date());
+  const watchBirthDate = watch('birthDate');
   const watchGender = watch('gender');
   const watchCity = watch('city', '');
   const watchName = watch('name');
@@ -143,7 +143,6 @@ const Profile: React.FC = () => {
   const phoneRef = useRef<any>();
   const cpfRef = useRef<any>();
   const stateRef = useRef<any>();
-  // const cityRef = useRef<any>();
   const profissionRef = useRef<any>();
 
   const useSinceDate = useMemo(
@@ -328,14 +327,9 @@ const Profile: React.FC = () => {
                   options={sexOptions}
                   byValue={true}
                   error={errors.gender?.message}
-                  categorySelectable={true}
                   open={genderIsOpen}
                   setOpen={setGenderIsOpen}
-                  onOpen={() => {}}
-                  zIndex={200}
-                  zIndexInverse={100}
                   key="gender"
-                  listMode="SCROLLVIEW"
                 />
                 <Input
                   icon="email-outline"
@@ -401,7 +395,7 @@ const Profile: React.FC = () => {
                 />
                 <DateInput
                   label="Nascimento"
-                  date={watchBirthDate}
+                  date={watchBirthDate || new Date()}
                   onChange={(value: Date) => setValue('birthDate', value)}
                 />
               </InputContent>
@@ -410,14 +404,15 @@ const Profile: React.FC = () => {
                   onPress={handleSubmit(updateProfileHandle)}
                   textColor="white"
                   bgColor="green"
-                  sizeHeight={4.6}
+                  sizeHeight={4.4}
                   customContent
+                  sizePadding={0}
                   sizeWidth={12}
                   cornerRadius={{
                     bottomL: 12,
                     bottomR: 12,
-                    topL: 0,
-                    topR: 12,
+                    topL: 12,
+                    topR: 0,
                   }}>
                   <Text.Paragraph textWeight="bold" textColor="white">
                     Atualizar
@@ -430,7 +425,7 @@ const Profile: React.FC = () => {
               sizeMargin="1rem"
               customContent
               bgColor="red"
-              sizeHeight={4.6}
+              sizeHeight={4.4}
               textColor="white">
               <RowGroup>
                 <Icon name="delete-forever-outline" size={24} color="#FFF" />

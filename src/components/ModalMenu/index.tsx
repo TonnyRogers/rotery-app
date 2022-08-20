@@ -21,7 +21,7 @@ import {
   CloseButton,
 } from './styles';
 import Text from '../Text';
-import {useUserIsHost} from '../../hooks/useUserIsHost';
+// import {useUserIsHost} from '../../hooks/useUserIsHost';
 
 interface ModalMenuProps {
   visible: boolean;
@@ -32,8 +32,8 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const dispatch = useDispatch();
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
-  const {user} = useSelector((state: RootStateProps) => state.auth);
-  const {conditionalRender} = useUserIsHost();
+  // const {user} = useSelector((state: RootStateProps) => state.auth);
+  // const {conditionalRender} = useUserIsHost();
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -82,31 +82,34 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
     }
   }, [handleDismiss, handleOpen, visible]);
 
-  const {unreadCounter} = useSelector(
-    (state: RootStateProps) => state.messages,
-  );
+  const {unreadCounter} = useSelector((state: RootStateProps) => state.chats);
 
   async function handleLogout() {
     onRequestClose();
     dispatch(logout());
   }
 
-  function toItineraries() {
-    if (user?.isHost) {
-      onRequestClose();
-      RootNavigation.replace('MyItineraries');
-    }
-  }
+  // function toItineraries() {
+  //   if (user?.isHost) {
+  //     onRequestClose();
+  //     RootNavigation.replace('MyItineraries');
+  //   }
+  // }
 
-  function toNextItineraries() {
+  // function toNextItineraries() {
+  //   onRequestClose();
+  //   RootNavigation.replace('NextItineraries');
+  // }
+
+  // function toFavorites() {
+  //   onRequestClose();
+
+  //   RootNavigation.replace('Favorites');
+  // }
+
+  function toHome() {
     onRequestClose();
-    RootNavigation.replace('NextItineraries');
-  }
-
-  function toFavorites() {
-    onRequestClose();
-
-    RootNavigation.replace('Favorites');
+    RootNavigation.replace('Welcome');
   }
 
   function toConnections() {
@@ -114,20 +117,25 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
     RootNavigation.replace('Connections');
   }
 
-  function toDirecMessages() {
+  function toChatMessages() {
     onRequestClose();
-    RootNavigation.replace('DirectMessagesTabs');
+    RootNavigation.replace('ChatMessages');
   }
+
+  // function toDirecMessages() {
+  //   onRequestClose();
+  //   RootNavigation.replace('DirectMessagesTabs');
+  // }
 
   function toFeed() {
     onRequestClose();
-    RootNavigation.replace('Feed');
+    RootNavigation.replace('ExploreLocations');
   }
 
-  function toNewItinerary() {
-    onRequestClose();
-    RootNavigation.navigate('NewItinerary');
-  }
+  // function toNewItinerary() {
+  //   onRequestClose();
+  //   RootNavigation.navigate('NewItinerary');
+  // }
 
   if (!visible) {
     return null;
@@ -152,18 +160,29 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
           <Text.Title>Menu</Text.Title>
         </Header>
         <Actions>
-          <MenuButton onPress={toFavorites}>
+          {/* <MenuButton onPress={toFavorites}>
             <Icon name="heart-outline" size={24} color="#FFF" />
             <MenuButtonText>Favoritos</MenuButtonText>
+          </MenuButton> */}
+          <MenuButton onPress={toHome}>
+            <Icon name="home" size={24} color="#FFF" />
+            <MenuButtonText>Inicio</MenuButtonText>
           </MenuButton>
-          <MenuButton onPress={toDirecMessages}>
+          <MenuButton onPress={toChatMessages}>
+            <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
+            <MenuButtonText>Chats</MenuButtonText>
+            <CounterContent>
+              <Counter>{unreadCounter}</Counter>
+            </CounterContent>
+          </MenuButton>
+          {/* <MenuButton onPress={toDirecMessages}>
             <Icon name="inbox-arrow-down-outline" size={24} color="#FFF" />
             <MenuButtonText>Mensagens Diretas</MenuButtonText>
             <CounterContent>
               <Counter>{unreadCounter}</Counter>
             </CounterContent>
-          </MenuButton>
-          <MenuButton
+          </MenuButton> */}
+          {/* <MenuButton
             active={user?.isHost}
             onPress={toItineraries}
             disabled={!user?.isHost}>
@@ -175,8 +194,8 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
             <MenuButtonText active={user?.isHost}>
               Meus{'\n'}Roteiros
             </MenuButtonText>
-          </MenuButton>
-          {conditionalRender(
+          </MenuButton> */}
+          {/* {conditionalRender(
             <MenuButton onPress={toNewItinerary}>
               <Icon name="plus-box-outline" size={24} color="#FFF" />
               <MenuButtonText>Novo{'\n'}Roteiro</MenuButtonText>
@@ -185,21 +204,21 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
               <Icon name="map-check" size={24} color="#FFF" />
               <MenuButtonText>Próximos Roteiros</MenuButtonText>
             </MenuButton>,
-          )}
+          )} */}
           <MenuButton onPress={toConnections}>
             <Icon name="link-variant" size={24} color="#FFF" />
             <MenuButtonText>Minhas Conexões</MenuButtonText>
           </MenuButton>
           <MenuButton onPress={toFeed}>
             <Icon name="format-list-text" size={24} color="#FFF" />
-            <MenuButtonText>Feed</MenuButtonText>
+            <MenuButtonText>Locais</MenuButtonText>
           </MenuButton>
         </Actions>
         <SignOutButton onPress={() => handleLogout()}>
           <SignOutButtonText>Sair</SignOutButtonText>
         </SignOutButton>
         <CloseButton onPress={handleDismiss}>
-          <Icon name="chevron-up" size={24} color="#808080" />
+          <Icon name="chevron-up" size={30} color="#808080" />
         </CloseButton>
       </Content>
     </Container>

@@ -64,6 +64,8 @@ import formatLocale from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
 import {YupValidationMessages} from '../../utils/enums';
 import StarRate from '../../components/StarRate';
+import {NavigationProp} from '@react-navigation/native';
+import ItineraryDetails from '../../components/ItineraryDetails';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required(YupValidationMessages.REQUIRED),
@@ -72,10 +74,10 @@ interface ItineraryDetailsProps {
   route: {
     params: {id: number};
   };
-  navigation: any;
+  navigation: NavigationProp<Record<string, object | undefined>>;
 }
 
-const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
+const NextItineraryDetails2: React.FC<ItineraryDetailsProps> = ({
   route,
   navigation,
 }) => {
@@ -468,6 +470,101 @@ const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
             </DeleteItineraryButtonText>
           </DeleteItineraryButton>
         ))}
+      </Container>
+      <Alert
+        title="Ops!"
+        message="você deseja realmente sair deste roteiro?"
+        visible={alertVisible}
+        onCancel={hideAlert}
+        onRequestClose={hideAlert}
+        onConfirm={() => handleLeaveItinerary()}
+      />
+    </Page>
+  );
+};
+
+const NextItineraryDetails: React.FC<ItineraryDetailsProps> = ({
+  route,
+  navigation,
+}) => {
+  const {id} = route.params;
+
+  const {itineraries} = useSelector(
+    (state: RootStateProps) => state.nextItineraries,
+  );
+
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const dispatch = useDispatch();
+
+  const itinerary = useMemo(
+    () => itineraries?.find((item: ItineraryProps) => item.id === id),
+    [id, itineraries],
+  );
+
+  const isMember = useMemo(
+    () =>
+      itinerary?.members &&
+      itinerary.members.find(
+        (member: MemberProps) =>
+          member.user.id === user?.id && member.isAccepted === true,
+      ),
+    [itinerary, user],
+  );
+
+  if (!itinerary) {
+    return (
+      <Empty
+        title="Ops!"
+        subTitle="Nada por aqui."
+        onPressTo={() => RootNavigation.goBack()}
+        buttonText="Voltar"
+      />
+    );
+  }
+
+  function showAlert() {
+    setAlertVisible(true);
+  }
+
+  function hideAlert() {
+    setAlertVisible(false);
+  }
+
+  function handleLeaveItinerary() {
+    if (itinerary) {
+      dispatch(leaveItineraryRequest(itinerary?.id));
+    }
+  }
+
+  return (
+    <Page showHeader={false}>
+      <Share
+        data={{
+          id: itinerary?.id,
+          type: 'itinerary',
+          componentType: 'connectionShareList',
+          ownerId: itinerary.owner.id,
+        }}
+      />
+      <Container
+        renderToHardwareTextureAndroid={!!(Platform.OS === 'android')}
+        shouldRasterizeIOS={!!(Platform.OS === 'ios')}
+        scrollEventThrottle={16}
+        nestedScrollEnabled
+        decelerationRate="normal">
+        <ItineraryDetails
+          itinerary={itinerary}
+          isMember={isMember}
+          isOwner={false}
+          navigation={navigation}
+          user={user}
+          onShowLeaveAlert={showAlert}
+          onMakeQuestion={({itineraryId, text}) =>
+            dispatch(makeQuestionRequest(itineraryId, text))
+          }
+        />
       </Container>
       <Alert
         title="Ops!"

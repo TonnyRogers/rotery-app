@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = () => {
             <Icon
               name="account-box-outline"
               size={24}
-              color={theme.colors.white}
+              color={theme.colors.blue}
             />
           </ProfileButton>
           <NotificationsButton onPress={toggleNotifications}>
@@ -90,7 +90,7 @@ const Header: React.FC<HeaderProps> = () => {
             />
           </NotificationsButton>
           <MenuButton onPress={toggleMenu}>
-            <Icon name="menu" size={24} color={theme.colors.white} />
+            <Icon name="menu" size={24} color={theme.colors.blue} />
           </MenuButton>
         </Menu>
       </Container>

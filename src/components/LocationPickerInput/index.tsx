@@ -79,6 +79,7 @@ const LocationPickerInput = ({
               limit: responseLimit || '5',
               language: 'pt-BR',
               idxSet: searchType || undefined,
+              countrySet: 'BR',
             },
           },
         );

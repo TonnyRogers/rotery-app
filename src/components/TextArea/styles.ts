@@ -1,7 +1,8 @@
 import styled from 'styled-native-components';
 import {theme} from '../../utils/theme';
 
-export const Container = styled.View`
+export const Container = styled.View<{isFlex: boolean}>`
+  ${(props) => (props.isFlex ? 'flex: 1;' : '')}
   margin-bottom: 2rem;
 `;
 

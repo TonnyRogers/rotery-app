@@ -3,12 +3,14 @@ import React, {ReactNode} from 'react';
 import {
   SimpleText,
   TitleText,
+  SubtitleText,
   ParagraphText,
   SmallText,
   CustomStyledProps,
   Limiter,
   BigText,
   BiggestText,
+  SemiSmallText,
 } from './styles';
 
 interface TextProps extends CustomStyledProps {
@@ -73,6 +75,29 @@ const Title = ({
   );
 };
 
+const Subtitle = ({
+  children,
+  textColor,
+  textWeight,
+  maxLines,
+  alignment,
+  withLineBreak,
+  limitter,
+}: TitleProps) => {
+  return (
+    <Limiter maxWidth={limitter}>
+      <SubtitleText
+        textColor={textColor}
+        textWeight={textWeight}
+        maxLines={maxLines}
+        alignment={alignment}>
+        {children}
+        {withLineBreak && '\n'}
+      </SubtitleText>
+    </Limiter>
+  );
+};
+
 const Paragraph = ({
   children,
   textColor,
@@ -92,6 +117,29 @@ const Paragraph = ({
         {children}
         {withLineBreak && '\n'}
       </ParagraphText>
+    </Limiter>
+  );
+};
+
+const SemiSmall = ({
+  children,
+  textColor,
+  textWeight = 'light',
+  maxLines,
+  alignment,
+  withLineBreak,
+  limitter,
+}: SmallProps) => {
+  return (
+    <Limiter maxWidth={limitter}>
+      <SemiSmallText
+        textColor={textColor}
+        textWeight={textWeight}
+        maxLines={maxLines}
+        alignment={alignment}>
+        {children}
+        {withLineBreak && '\n'}
+      </SemiSmallText>
     </Limiter>
   );
 };
@@ -166,7 +214,9 @@ const Biggest = ({
 };
 
 Text.Title = Title;
+Text.Subtitle = Subtitle;
 Text.Paragraph = Paragraph;
+Text.SemiSmall = SemiSmall;
 Text.Small = Small;
 Text.Big = Big;
 Text.Biggest = Biggest;

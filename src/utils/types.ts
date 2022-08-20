@@ -1,3 +1,15 @@
+import {
+  LocationType,
+  LocationDetailingType,
+  LocationDetailingLevel,
+  ChatType,
+} from './enums';
+import {
+  TransportProps,
+  ActivityProps,
+  LodgingProps,
+} from '../store/modules/options/reducer';
+
 export interface ProfileProps {
   id: number;
   name: string | null;
@@ -45,10 +57,10 @@ export type ItineraryLocationJson = Pick<
 >;
 
 export interface UserRateProps {
-  id: number;
   rate: number;
   description: string;
   user: UserProps;
+  owner: UserProps;
   updatedAt: string;
   createdAt: string;
 }
@@ -199,7 +211,7 @@ export interface FavoriteProps {
 
 export interface BottomSheetData {
   componentype: string;
-  type: string;
+  type: 'itinerary' | 'user';
   id: number;
 }
 
@@ -242,7 +254,9 @@ export interface NotificationsProps<T> {
 
 export enum NotificationAlias {
   NEW_MESSAGE = 'new_message',
+  NEW_CHAT = 'new_chat',
   RATE_ITINERARY = 'rate_itinerary',
+  RATE_LOCATION = 'rate_location',
   ITINERARY_UPDATED = 'itinerary_updated',
   ITINERARY_DELETED = 'itinerary_deleted',
   NEW_MEMBER = 'itinerary_member_request',
@@ -351,7 +365,6 @@ export interface TomTomApiResponse {
 export interface SendChatMessagePayload {
   receiver: {id: number};
   message: string;
-  jsonData?: Record<string, unknown>;
 }
 
 export enum MessageTypeEnum {
@@ -855,3 +868,135 @@ export interface MLPaginatedResponse<T> {
   };
   results: T[];
 }
+
+export type Location = {
+  id: number;
+  name: string;
+  description: string;
+  location: string;
+  locationJson?: LocationJson;
+  alias: string;
+  type: LocationType;
+  createdAt: string;
+  updatedAt: string;
+  ratingAvg: number | null;
+  detailings: (LocationDetailing | LocationDetailingFormatted)[];
+  transports: LocationTransport[];
+  activities: LocationActivity[];
+  lodgings: LocationLodging[];
+  ratings: LocationRating[];
+  photos: LocationPhoto[];
+};
+
+export type LocationDetailing = {
+  location: number;
+  type: LocationDetailingType;
+  text: string;
+  validation: string;
+  level: LocationDetailingLevel;
+  quantity: number;
+  measure: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type LocationDetailingFormatted = LocationDetailing & {
+  icon: string;
+  iconType: string;
+};
+
+export type LocationTransport = {
+  location: number;
+  transport: TransportProps;
+  price: string;
+  description: string | null;
+  isFree: boolean;
+};
+
+export type LocationLodging = {
+  location: number;
+  lodging: LodgingProps;
+  price: string;
+  description: string | null;
+  isFree: boolean;
+};
+
+export type LocationActivity = {
+  location: number;
+  activity: ActivityProps;
+  price: string;
+  description: string | null;
+  isFree: boolean;
+};
+
+export type LocationRating = {
+  location: number;
+  rate: number;
+  description: string;
+  owner: UserProps;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type LocationPhoto = {
+  location: number;
+  file: FileProps;
+};
+
+export type LocationFeedFilterResponse = {
+  activities: {
+    id: number;
+    name: string;
+  }[];
+  locationTypes: {
+    id: number;
+    name: string;
+  }[];
+};
+
+export type ChatMessage = {
+  id: number;
+  sender: UserProps;
+  receiver: UserProps;
+  message: string;
+  readed: boolean;
+  jsonData: ChatMessageJsonData;
+  type: ChatType;
+  createdAt: string;
+  updatedAt: string;
+  unreadedCount: number;
+};
+
+export type ChatMessageJsonData = {
+  locationId: number;
+  locationName: string;
+  locationCityState: string;
+};
+
+export type RateChatNotificationJsonData = {
+  guide: {
+    id: number;
+    username: string;
+    createdAt: string;
+    profile: ProfileProps;
+  };
+  location: {
+    id: number;
+    name: string;
+    state: string;
+  };
+};
+
+export type GuideLocation = {
+  location: number;
+  user: UserProps;
+};
+
+export type WelcomeBackpackerMetadata = {
+  ratedLocations: number;
+  ratedGuides: number;
+};
+
+export type WelcomeGuideMetadata = {
+  helpedBackpackers: number;
+};

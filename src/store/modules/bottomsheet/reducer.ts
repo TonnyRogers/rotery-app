@@ -4,7 +4,7 @@ import {BottomSheetData} from '../../../utils/types';
 import {BottomSheetActions} from './actions';
 
 interface DataType {
-  type: string;
+  type: 'itinerary' | 'user';
   id: number;
 }
 

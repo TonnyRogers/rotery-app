@@ -1,6 +1,16 @@
-import React from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {ReactElement} from 'react';
 
-import {CustomImage, HeroImage} from './styles';
+import {
+  CustomImage,
+  HeroImage,
+  OverlayedContainer,
+  OverlayedTouchableContainer,
+  BackgroundOverlay,
+  OverlayedImage,
+  OverlayedTextContainer,
+} from './styles';
+import {View} from 'react-native';
 
 interface ImageContainerProps {
   url: string;
@@ -9,25 +19,27 @@ interface ImageContainerProps {
   sizeStyle?: 'rect' | 'square';
 }
 
+interface OverlayedProps extends Pick<ImageContainerProps, 'url'> {
+  children: ReactElement;
+  height?: number;
+  width?: number;
+  isTouchable?: boolean;
+}
+
 const ImageContainer = ({url, size, fit = 'cover'}: ImageContainerProps) => {
   let imageSize = 0;
 
-  switch (size) {
-    case 'small':
-      imageSize = 4;
-      break;
+  const sizes = {
+    small: 4,
+    regular: 7,
+    big: 9,
+    default: 5,
+  };
 
-    case 'regular':
-      imageSize = 7;
-      break;
-
-    case 'big':
-      imageSize = 9;
-      break;
-
-    default:
-      imageSize = 5;
-      break;
+  if (!size) {
+    imageSize = sizes.default;
+  } else {
+    imageSize = sizes[size];
   }
 
   return (
@@ -57,6 +69,37 @@ const Hero = ({
   );
 };
 
+const Overlayed = ({
+  children,
+  url,
+  height,
+  width,
+  isTouchable,
+}: OverlayedProps) => {
+  if (!isTouchable) {
+    return (
+      <View style={{height, width, marginVertical: 8}}>
+        <OverlayedContainer>
+          <OverlayedImage source={{uri: url}} />
+          <BackgroundOverlay />
+          <OverlayedTextContainer>{children}</OverlayedTextContainer>
+        </OverlayedContainer>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{height, width, marginVertical: 8}}>
+      <OverlayedTouchableContainer>
+        <OverlayedImage source={{uri: url}} />
+        <BackgroundOverlay />
+        <OverlayedTextContainer>{children}</OverlayedTextContainer>
+      </OverlayedTouchableContainer>
+    </View>
+  );
+};
+
 ImageContainer.Hero = Hero;
+ImageContainer.Overlayed = Overlayed;
 
 export default ImageContainer;

@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {RowGroup} from '../../screens/Home/styles';
+import RowGroup from '../RowGroup';
 
 interface StarRateProps {
   rate: number;
@@ -51,7 +51,7 @@ const StarRate = ({rate, size}: StarRateProps) => {
     return starsComponent;
   }, [rate, size]);
 
-  return <RowGroup>{renderStars()}</RowGroup>;
+  return <RowGroup isFlex={false}>{renderStars()}</RowGroup>;
 };
 
 export default StarRate;

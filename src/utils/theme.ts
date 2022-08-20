@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
     white: '#FFF',
-    appBackground: '#f9f9f9',
+    appBackground: '#f7f7f7',
     appBackgroundDarker: '#ebebeb',
     green: '#3dc77b',
     greenTransparent: 'rgba(61, 199, 123, 0.2)',
@@ -9,8 +9,11 @@ export const theme = {
     blueTransparent: 'rgba(72, 133, 253, 0.2)',
     blueDark: '#3e44c7',
     red: '#f57373',
+    redTransparent: 'rgba(245, 115, 115, 0.2)',
     orange: '#f5ca73',
+    orangeTransparent: 'rgba(245, 202, 115, 0.2)',
     yellow: '#f5df73',
+    yellowTransparent: 'rgba(245, 223, 115, 0.2)',
     disabled: '#ECECEC',
     primaryText: '#262626',
     secondaryText: '#7a7a7a',
@@ -37,8 +40,11 @@ export type ColorsType =
   | 'blueTransparent'
   | 'blueDark'
   | 'red'
+  | 'redTransparent'
   | 'orange'
+  | 'orangeTransparent'
   | 'yellow'
+  | 'yellowTransparent'
   | 'disabled'
   | 'primaryText'
   | 'secondaryText'

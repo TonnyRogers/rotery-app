@@ -30,13 +30,7 @@ import Page from '../../components/Page';
 import {ProfileProps} from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
 import StarRate from '../../components/StarRate';
-
-interface RateProps {
-  id: number;
-  description: string;
-  rate: number;
-  createdAt: string;
-}
+import {PageContainer} from '../../components/PageContainer';
 
 interface UserDetailsProps {
   route: {
@@ -121,8 +115,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
 
   return (
     <Page showHeader={false}>
-      <Content>
-        <Card>
+      <PageContainer isScrollable>
+        <Card marginHorizontal={0} marginVertical={8}>
           <CardHeader>
             <BackButton onPress={goBack}>
               <Icon name="chevron-left" size={24} color="#3dc77b" />
@@ -161,43 +155,44 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <Icon name="account-voice" size={24} color="#FFF" />
           </ConnectButton>
         )}
-        <Card>
-          <TitleContent>
-            <Text.Title alignment="center">Avaliações</Text.Title>
-          </TitleContent>
-          <RateList>
-            {profile?.user &&
-              profile.user.ratings &&
-              profile.user.ratings.map((item: RateProps) => (
-                <Card key={item.id}>
-                  <CardHeader>
-                    <RowGroupSpaced>
-                      <ColumnGroup>
-                        <Text.Paragraph
-                          textColor="secondaryText"
-                          textWeight="bold">
-                          Host de Roteiro
-                        </Text.Paragraph>
-                        <Text textWeight="light">
-                          {formatDate(item.createdAt)}
-                        </Text>
-                      </ColumnGroup>
-                      <IconContent>
-                        <Icon name="content-paste" size={24} color="#FFF" />
-                      </IconContent>
-                    </RowGroupSpaced>
-                  </CardHeader>
-                  <CardCotent>
-                    <UserRate>
-                      <Text textWeight="light">{item.description}</Text>
-                      <StarRate rate={item.rate} size="regular" />
-                    </UserRate>
-                  </CardCotent>
-                </Card>
-              ))}
-          </RateList>
-        </Card>
-      </Content>
+        {profile?.user && profile?.user.isHost && (
+          <Card marginHorizontal={0} marginVertical={8}>
+            <TitleContent>
+              <Text.Title alignment="center">Avaliações</Text.Title>
+            </TitleContent>
+            <RateList>
+              {profile.user.ratings &&
+                profile.user.ratings.map((item, index) => (
+                  <Card marginHorizontal={0} key={index}>
+                    <CardHeader>
+                      <RowGroupSpaced>
+                        <ColumnGroup>
+                          <Text.Paragraph
+                            textColor="secondaryText"
+                            textWeight="bold">
+                            {item.owner.username}
+                          </Text.Paragraph>
+                          <Text textWeight="light">
+                            {formatDate(item.createdAt)}
+                          </Text>
+                        </ColumnGroup>
+                        <IconContent>
+                          <Icon name="content-paste" size={24} color="#FFF" />
+                        </IconContent>
+                      </RowGroupSpaced>
+                    </CardHeader>
+                    <CardCotent>
+                      <UserRate>
+                        <Text textWeight="light">{item.description}</Text>
+                        <StarRate rate={item.rate} size="regular" />
+                      </UserRate>
+                    </CardCotent>
+                  </Card>
+                ))}
+            </RateList>
+          </Card>
+        )}
+      </PageContainer>
     </Page>
   );
 };

@@ -22,8 +22,9 @@ const ShadowBox = ({
     <Shadow
       containerViewStyle={{
         flex: 1,
-        marginVertical: 6,
+        marginVertical: 0,
         alignSelf: containerAlign,
+        padding: 4,
       }}
       contentViewStyle={{
         flex: width || height ? undefined : 1,
@@ -37,8 +38,8 @@ const ShadowBox = ({
       radius={12}
       startColor="#00000007"
       finalColor="transparent"
-      offset={[0, 0, 0, 0]}
-      distance={7}>
+      offset={[4, 6, 10, 10]}
+      distance={10}>
       {children}
     </Shadow>
   );

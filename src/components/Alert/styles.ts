@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView as RNKAvoidingView,
   Platform,
 } from 'react-native';
+import {theme} from '../../utils/theme';
 
 const metricH = Platform.OS === 'ios' ? 'vh' : '%';
 const metricW = Platform.OS === 'ios' ? 'vw' : '%';
@@ -94,9 +95,9 @@ export const ButtonText = styled.Text`
 `;
 
 export const BaseBlock = styled.View`
-  background: #9d9d9d;
+  background: ${theme.colors.borderBottom};
   height: 0.7rem;
   border-radius: 0.3rem;
-  width: 17.2rem;
+  width: 8rem;
   margin-top: 9rem;
 `;

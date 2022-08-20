@@ -1,17 +1,20 @@
 import {
   NotificationsProps,
-  MessageProps,
   SendChatMessagePayload,
+  ChatMessage,
 } from '../../../utils/types';
 
 export enum WsActions {
   NOTIFICATIONS = '@ws/NOTIFICATIONS',
   CHAT_MESSAGE = '@ws/CHAT_MESSAGE',
   CHAT_SUBSCRIBE = '@ws/CHAT_SUBSCRIBE',
+  CHAT_BEGIN = '@ws/CHAT_BEGIN',
+  CHAT_FINISH = '@ws/CHAT_FINISH',
   CLOSE_CHAT_CHANNEL = '@ws/CLOSE_CHAT_CHANNEL',
   SUBSCRIBE_USER = '@ws/SUBSCRIBE_USER_TO_NOTIFICATIONS',
   NEW_CONNECTION = '@ws/NEW_CONNECTION',
   NEW_MESSAGE = '@ws/NEW_MESSAGE',
+  NEW_CHAT_NOTIFICATION = '@ws/NEW_CHAT_NOTIFICATION',
   CONNECTION_ACCEPTED = '@ws/CONNECTION_ACCEPTED',
   CONNECTION_BLOCK = '@ws/CONNECTION_BLOCK',
   CONNECTION_UNBLOCK = '@ws/CONNECTION_UNBLOCK',
@@ -22,27 +25,13 @@ export enum WsActions {
   MEMBER_DEMOTED = '@ws/MEMBER_DEMOTED',
   ITINERARY_QUESTION = '@ws/ITINERARY_QUESTION',
   ITINERARY_ANSWER = '@ws/ITINERARY_ANSWER',
-  SET_CONNECTED = '@ws/SET_CONNECTED',
-  SET_DISCONNECTED = '@ws/SET_DISCONNECTED',
   ITINERARY_UPDATE = '@ws/ITINERARY_UPDATE',
   ITINERARY_DELETE = '@ws/ITINERARY_DELETE',
   ITINERARY_RATE = '@ws/ITINERARY_RATE',
+  LOCATION_RATE_NOTIFICATION = '@ws/LOCATION_RATE_NOTIFICATION',
   SEND_CHAT_MESSAGE_REQUEST = '@ws/SEND_CHAT_MESSAGE_REQUEST',
   SEND_CHAT_MESSAGE_SUCCESS = '@ws/SEND_CHAT_MESSAGE_SUCCESS',
-  SEND_CHAT_MESSAGE_FAILURE = '@ws/SEND_CHAT_MESSAGE_FAILURE',
   LISTEN_SUBSCRIPTIONS = '@ws/LISTEN_SUBSCRIPTIONS',
-}
-
-export function wsSetConnected() {
-  return {
-    type: WsActions.SET_CONNECTED,
-  };
-}
-
-export function wsSetDisconnected() {
-  return {
-    type: WsActions.SET_DISCONNECTED,
-  };
 }
 
 export function wsNotifications() {
@@ -51,14 +40,23 @@ export function wsNotifications() {
   };
 }
 
-export function wsChatMessage(message: MessageProps, authUserId: number) {
+export function wsNewChatNotification(notification: NotificationsProps<any>) {
+  return {
+    type: WsActions.NEW_CHAT_NOTIFICATION,
+    payload: {notification},
+  };
+}
+
+export function wsChatMessage(chatMessage: ChatMessage, authUserId: number) {
+  // when message is received by user
   return {
     type: WsActions.CHAT_MESSAGE,
-    payload: {message, authUserId},
+    payload: {chatMessage, authUserId},
   };
 }
 
 export function wsChatSubscribe(ownerId: number, targetId: number) {
+  // when user enters in a chat room (if allowed)
   return {
     type: WsActions.CHAT_SUBSCRIBE,
     payload: {ownerId, targetId},
@@ -66,9 +64,46 @@ export function wsChatSubscribe(ownerId: number, targetId: number) {
 }
 
 export function wsCloseChatChannel(ownerId: number, targetId: number) {
+  // when user leave an chat room (if allowed)
   return {
     type: WsActions.CLOSE_CHAT_CHANNEL,
     payload: {ownerId, targetId},
+  };
+}
+
+export function wsChatBegin(chatMessage: ChatMessage) {
+  // when message is received by user
+  return {
+    type: WsActions.CHAT_BEGIN,
+    payload: {chatMessage},
+  };
+}
+
+export function wsChatFininsh(chatMessage: ChatMessage) {
+  // when message is received by user
+  return {
+    type: WsActions.CHAT_FINISH,
+    payload: {chatMessage},
+  };
+}
+
+export function wsSendChatMessageRequest(
+  messagePayload: SendChatMessagePayload,
+) {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_REQUEST,
+    payload: {
+      messagePayload,
+    },
+  };
+}
+
+export function wsSendChatMessageSuccess(chatMessage: ChatMessage) {
+  return {
+    type: WsActions.SEND_CHAT_MESSAGE_SUCCESS,
+    payload: {
+      chatMessage,
+    },
   };
 }
 
@@ -195,35 +230,18 @@ export function wsItineraryRateNotification(
   };
 }
 
-export function wsSendChatMessageRequest(
-  messagePayload: SendChatMessagePayload,
+export function wsLocationRateNotification(
+  notification: NotificationsProps<any>,
 ) {
   return {
-    type: WsActions.SEND_CHAT_MESSAGE_REQUEST,
-    payload: {
-      messagePayload,
-    },
-  };
-}
-
-export function wsSendChatMessageSuccess(newMessage: MessageProps) {
-  return {
-    type: WsActions.SEND_CHAT_MESSAGE_SUCCESS,
-    payload: {
-      newMessage,
-    },
+    type: WsActions.LOCATION_RATE_NOTIFICATION,
+    payload: {notification},
   };
 }
 
 export function wsListenSubscriptions() {
   return {
     type: WsActions.LISTEN_SUBSCRIPTIONS,
-  };
-}
-
-export function wsSendChatMessageFailure() {
-  return {
-    type: WsActions.SEND_CHAT_MESSAGE_FAILURE,
   };
 }
 

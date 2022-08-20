@@ -97,7 +97,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
         type: 'success',
       });
       setIsOnLoading(false);
-      RootNavigation.replace('Home');
+      RootNavigation.replace('SignIn');
     } catch (error) {
       setIsOnLoading(false);
       Toast.show({

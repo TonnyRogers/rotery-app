@@ -15,9 +15,54 @@ export interface CustomStyledProps {
   alignment?: 'center' | 'start' | 'end' | 'stretch';
 }
 
+export const SmallText = styled.Text<CustomStyledProps>`
+  font-family: 'Roboto';
+  font-size: 0.9rem;
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
+  ${(props) =>
+    props.textWeight
+      ? theme.textWeight[props.textWeight]
+      : theme.textWeight.regular};
+  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
+  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
+`;
+
+export const SemiSmallText = styled.Text<CustomStyledProps>`
+  font-family: 'Roboto';
+  font-size: 1rem;
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
+  ${(props) =>
+    props.textWeight
+      ? theme.textWeight[props.textWeight]
+      : theme.textWeight.regular};
+  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
+  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
+`;
+
 export const SimpleText = styled.Text<CustomStyledProps>`
   font-family: 'Roboto';
   font-size: 1.4rem;
+  color: ${(props) =>
+    props.textColor
+      ? theme.colors[props.textColor]
+      : theme.colors.secondaryText};
+  ${(props) =>
+    props.textWeight
+      ? theme.textWeight[props.textWeight]
+      : theme.textWeight.regular};
+  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
+  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
+`;
+
+export const ParagraphText = styled.Text<CustomStyledProps>`
+  font-family: 'Roboto';
+  font-size: 1.6rem;
   color: ${(props) =>
     props.textColor
       ? theme.colors[props.textColor]
@@ -44,32 +89,16 @@ export const TitleText = styled.Text<CustomStyledProps>`
   ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
 `;
 
-export const ParagraphText = styled.Text<CustomStyledProps>`
+export const SubtitleText = styled.Text<CustomStyledProps>`
   font-family: 'Roboto';
-  font-size: 1.6rem;
+  font-size: 3rem;
+  font-weight: bold;
   color: ${(props) =>
-    props.textColor
-      ? theme.colors[props.textColor]
-      : theme.colors.secondaryText};
+    props.textColor ? theme.colors[props.textColor] : theme.colors.primaryText};
   ${(props) =>
     props.textWeight
       ? theme.textWeight[props.textWeight]
-      : theme.textWeight.regular};
-  ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
-  ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
-`;
-
-export const SmallText = styled.Text<CustomStyledProps>`
-  font-family: 'Roboto';
-  font-size: 0.9rem;
-  color: ${(props) =>
-    props.textColor
-      ? theme.colors[props.textColor]
-      : theme.colors.secondaryText};
-  ${(props) =>
-    props.textWeight
-      ? theme.textWeight[props.textWeight]
-      : theme.textWeight.regular};
+      : theme.textWeight.bold};
   ${(props) => (props.alignment ? alignment[props.alignment] : alignment.start)}
   ${(props) => (props.maxLines ? (props.numberOfLines = props.maxLines) : '')}
 `;

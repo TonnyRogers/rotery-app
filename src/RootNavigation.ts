@@ -7,8 +7,8 @@ export function navigate<T>(name: string, params?: T) {
   navigationRef.current?.navigate(name, params);
 }
 
-export function replace(name: string, params: any = {}) {
-  navigationRef.current?.dispatch(StackActions.replace(name, params));
+export function replace<T>(name: string, params?: T) {
+  navigationRef.current?.dispatch(StackActions.replace(name, params as {}));
 }
 
 export function goBack() {

@@ -1,18 +1,18 @@
 {
   "images" : [
     {
-      "filename" : "Rotery-V.png",
-      "idiom" : "iphone",
+      "filename" : "mochileeV.png",
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Rotery-V@2x.png",
-      "idiom" : "iphone",
+      "filename" : "mochileeV@2x.png",
+      "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Rotery-V@3x.png",
-      "idiom" : "iphone",
+      "filename" : "mochileeV@3x.png",
+      "idiom" : "universal",
       "scale" : "3x"
     }
   ],
