@@ -3,6 +3,8 @@ import {
   LocationDetailingType,
   LocationDetailingLevel,
   ChatType,
+  WelcomeStepListType,
+  AppRoutes,
 } from './enums';
 import {
   TransportProps,
@@ -999,4 +1001,17 @@ export type WelcomeBackpackerMetadata = {
 
 export type WelcomeGuideMetadata = {
   helpedBackpackers: number;
+};
+
+export type WelcomeStepItem = {
+  type: WelcomeStepListType;
+  title: string;
+  text: string;
+  appNavigationTarget: AppRoutes;
+  done: boolean;
+};
+
+export type FirstStepResponseData = {
+  stepList: WelcomeStepItem[];
+  allDone: boolean;
 };

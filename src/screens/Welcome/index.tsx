@@ -1,6 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
+import {AxiosResponse} from 'axios';
+
+import api from '../../services/api';
+import * as RootNavigation from '../../RootNavigation';
+const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 
 import Page from '../../components/Page';
 import {PageContainer} from '../../components/PageContainer';
@@ -14,7 +19,7 @@ import {
 } from './styles';
 import {SimpleList} from '../../components/SimpleList';
 import Tag from '../../components/Tag';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import RowGroup from '../../components/RowGroup';
 import ImageContainer from '../../components/ImageContainer';
@@ -22,8 +27,9 @@ import {
   WelcomeBackpackerMetadata,
   WelcomeGuideMetadata,
 } from '../../utils/types';
-import api from '../../services/api';
-import {AxiosResponse} from 'axios';
+import {AppRoutes} from '../../utils/enums';
+import {AnimationContent} from '../../components/AnimationContent';
+import {getFirstStepsRequest} from '../../store/modules/metadata/actions';
 
 const stepList = [
   {
@@ -47,7 +53,9 @@ const stepList = [
 ];
 
 export function Welcome() {
+  const dispatch = useDispatch();
   const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {firstStep} = useSelector((state: RootStateProps) => state.metadata);
   const [welcomeMeta, setWelcomeMeta] = useState<
     WelcomeBackpackerMetadata | WelcomeGuideMetadata
   >();
@@ -66,6 +74,49 @@ export function Welcome() {
     getWelcomeMetadata();
   }, [user]);
 
+  useEffect(() => {
+    dispatch(getFirstStepsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function handleStepNavigation(target: AppRoutes) {
+    if (target === AppRoutes.EXPLORE_LOCATIONS) {
+      RootNavigation.replace(target);
+    } else {
+      RootNavigation.navigate(target);
+    }
+  }
+
+  function renderStepList() {
+    return (
+      <SimpleList isHorizontal={false}>
+        {firstStep?.stepList.map((item, index) => (
+          <StepItemContainer
+            key={index}
+            active={item.done}
+            isLast={stepList.length - 1 === index}>
+            <StepItemCircleContainer active={item.done}>
+              <StepItemCircle />
+            </StepItemCircleContainer>
+            <TouchableOpacity
+              onPress={() => handleStepNavigation(item.appNavigationTarget)}
+              disabled={item.done}>
+              <Text textWeight="bold" textColor="primaryText">
+                {item.title}
+              </Text>
+              <Text>{item.text}</Text>
+              {!item.done && (
+                <Tag align="flex-start">
+                  <Text.Small textWeight="bold">clique aqui</Text.Small>
+                </Tag>
+              )}
+            </TouchableOpacity>
+          </StepItemContainer>
+        ))}
+      </SimpleList>
+    );
+  }
+
   return (
     <Page>
       <PageContainer isScrollable={false}>
@@ -73,37 +124,6 @@ export function Welcome() {
           OLÁ, {user && user.username.toLocaleUpperCase()} 🤙
         </Text>
         <Divider />
-        <Card
-          containerStyle={{flex: undefined, height: 270}}
-          marginHorizontal={0}>
-          <Text.Title>Primeiros Passos</Text.Title>
-          <Text>
-            Antes de mais nada existem algumas tarefas que preparamos, elas nos
-            auxiliam a saber um pouco mais sobre você.
-          </Text>
-          <Divider />
-          <SimpleList isHorizontal={false}>
-            {stepList.map((item, index) => (
-              <StepItemContainer
-                key={index}
-                active={item.done}
-                isLast={stepList.length - 1 === index}>
-                <StepItemCircleContainer active={item.done}>
-                  <StepItemCircle />
-                </StepItemCircleContainer>
-                <TouchableOpacity>
-                  <Text textWeight="bold" textColor="primaryText">
-                    {item.title}
-                  </Text>
-                  <Text>{item.text}</Text>
-                  <Tag align="flex-start">
-                    <Text.Small textWeight="bold">clique aqui</Text.Small>
-                  </Tag>
-                </TouchableOpacity>
-              </StepItemContainer>
-            ))}
-          </SimpleList>
-        </Card>
         {!user?.isHost ? (
           <>
             <Text textWeight="bold" textColor="primaryText">
@@ -149,18 +169,6 @@ export function Welcome() {
                 </Text.Big>
               </Card>
             </RowGroup>
-            <ImageContainer.Overlayed
-              height={100}
-              url="https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg">
-              <>
-                <Text.Title textWeight="bold" textColor="white">
-                  Principais Destinos de Inverno
-                </Text.Title>
-                <Text textColor="white">
-                  Confira os locais mais procurados nesta estação do ano
-                </Text>
-              </>
-            </ImageContainer.Overlayed>
           </>
         ) : (
           <>
@@ -190,6 +198,42 @@ export function Welcome() {
             </RowGroup>
           </>
         )}
+        <Card marginHorizontal={0}>
+          <Text.Title>Primeiros Passos</Text.Title>
+          <Text>
+            Antes de mais nada existem algumas tarefas que preparamos, elas nos
+            auxiliam a saber um pouco mais sobre você.
+          </Text>
+          <Divider />
+          {!firstStep?.allDone ? (
+            renderStepList()
+          ) : (
+            <>
+              <AnimationContent
+                duration={3000}
+                align="center"
+                animationJson={confirmAnimation}
+                height={130}
+              />
+              <Text.Title alignment="center">Tudo Certo!</Text.Title>
+            </>
+          )}
+        </Card>
+        <ImageContainer.Overlayed
+          height={100}
+          url="https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg">
+          <>
+            <Text.Title textWeight="bold" textColor="white">
+              Principais Destinos de Inverno
+            </Text.Title>
+            <Text textWeight="regular" textColor="white">
+              Confira os locais mais procurados nesta estação do ano
+            </Text>
+            <Text textWeight="regular" textColor="white">
+              🚧 Indisponivel no momento🚧
+            </Text>
+          </>
+        </ImageContainer.Overlayed>
       </PageContainer>
     </Page>
   );

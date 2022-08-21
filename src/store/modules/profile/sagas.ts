@@ -1,5 +1,6 @@
 import {all, takeLatest, put, call} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
+import {AxiosResponse} from 'axios';
 
 import api from '../../../services/api';
 import NetInfo from '../../../services/netinfo';
@@ -17,7 +18,8 @@ import {
 } from './actions';
 import {logout} from '../auth/actions';
 import {ProfileProps} from '../../../utils/types';
-import {AxiosResponse} from 'axios';
+
+import {getFirstStepsRequest} from '../metadata/actions';
 
 export function* getProfile() {
   try {
@@ -70,6 +72,7 @@ export function* updateProfile({
     );
 
     yield put(updateProfileSuccess(response.data));
+    yield put(getFirstStepsRequest());
     Toast.show({
       text1: 'Perfil atualizado',
       position: 'bottom',

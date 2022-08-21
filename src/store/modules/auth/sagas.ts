@@ -22,11 +22,7 @@ import {
   setDeviceTokenSuccess,
 } from './actions';
 import {getProfileRequest} from '../profile/actions';
-import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
-import {getMessagesRequest} from '../messages/actions';
-import {getNextItinerariesRequest} from '../nextItineraries/actions';
-import {getBankAccountRequest} from '../bankAccount/actions';
 import {AxiosResponse} from 'axios';
 import {UserProps} from '../../../utils/types';
 
@@ -65,12 +61,12 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getConnectionsRequest());
-    yield put(getNextItinerariesRequest());
-    yield put(getMessagesRequest());
+    // yield put(getNextItinerariesRequest());
+    // yield put(getMessagesRequest());
 
     if (user.isHost) {
-      yield put(getItinerariesRequest());
-      yield put(getBankAccountRequest());
+      // yield put(getItinerariesRequest());
+      // yield put(getBankAccountRequest());
     }
   } catch (error) {
     yield put(loginFailure());

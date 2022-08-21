@@ -10,6 +10,7 @@ import favorites from './favorites/sagas';
 import feed from './feed/sagas';
 import guides from './guides/sagas';
 import locations from './locations/sagas';
+import metadata from './metadata/sagas';
 import profile from './profile/sagas';
 import itineraries from './itineraries/sagas';
 import nextItineraries from './nextItineraries/sagas';
@@ -33,6 +34,7 @@ export default function* rootSaga() {
     feed,
     guides,
     locations,
+    metadata,
     profile,
     itineraries,
     messages,

@@ -9,6 +9,7 @@ import favorites from './favorites/reducer';
 import feed from './feed/reducer';
 import guides from './guides/reducer';
 import locations from './locations/reducer';
+import metadata from './metadata/reducer';
 import profile from './profile/reducer';
 import itineraries from './itineraries/reducer';
 import messages from './messages/reducer';
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   feed,
   guides,
   locations,
+  metadata,
   profile,
   itineraries,
   messages,

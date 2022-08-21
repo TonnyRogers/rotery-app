@@ -61,19 +61,16 @@ import RowGroup from '../../components/RowGroup';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(YupValidationMessages.REQUIRED),
-  gender: yup.string().required(YupValidationMessages.REQUIRED),
+  gender: yup.string(),
   email: yup.string().required(YupValidationMessages.REQUIRED),
-  phone: yup
-    .string()
-    .required(YupValidationMessages.REQUIRED)
-    .min(11, 'telefone incompleto'),
+  phone: yup.string().min(11, 'telefone incompleto'),
   document: yup
     .string()
     .required(YupValidationMessages.REQUIRED)
     .min(14, 'cpf incompleto'),
   state: yup.string(),
-  city: yup.string().required(YupValidationMessages.REQUIRED),
-  profission: yup.string().required(YupValidationMessages.REQUIRED),
+  city: yup.string(),
+  profission: yup.string(),
   birthDate: yup.date().required(YupValidationMessages.REQUIRED),
 });
 
