@@ -30,25 +30,63 @@ import {
 import {AppRoutes} from '../../utils/enums';
 import {AnimationContent} from '../../components/AnimationContent';
 import {getFirstStepsRequest} from '../../store/modules/metadata/actions';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {hideWelcomeGuide} from '../../store/modules/guides/actions';
 
-const stepList = [
+const guideWelcomeGuideImages = [
   {
-    title: 'Foto do perfil 📸',
-    text: 'saber com quem estamos interagindo tras muito mais segurança que tal mostrar seu rostinho ?',
-    navigationTarget: '',
-    done: true,
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Bem-vindo(a)',
+    message:
+      'Olá! Vamos para uma breve explicação do que você pode fazer no app arrasta para a esquerda para ver as próximas dicas.',
+    isAnimation: false,
   },
   {
-    title: ' Um pouco mais sobre você 🙈',
-    text: 'preencha seus dados do perfil e assim todos vão saber mais sobre quem você é.',
-    navigationTarget: '',
-    done: false,
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Complete seu perfil',
+    message:
+      'Adicione foto e seus dados para uma melhor experiência na comunidade.',
+    isAnimation: false,
   },
   {
-    title: 'Primeiro contato 🤝',
-    text: 'entre num chat com um guia, vai que o primeiro é de graça.',
-    navigationTarget: '',
-    done: false,
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Notificações',
+    message:
+      'Clique no sino para ver e então clique em uma das notificações para setar como lida, algumas notificações podem te redirecionar para uma nova tela.',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Menu',
+    message:
+      'Aqui você pode navegar pelo app, assim que alguma nova funcionalidade for adicionada este guia deve aparecer novamente 😌.',
+    isAnimation: false,
+  },
+  {
+    id: 4,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Contribuições',
+    message: 'Suas interações com outros usuários vão ser contabilizadas aqui.',
+    isAnimation: false,
+  },
+  {
+    id: 5,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Primeiros Passos',
+    message:
+      'Uma lista com terefas inicias para ingressar no mundo dos mochileiros digitais, tente completa-la antes de qualquer coisa 😉.',
+    isAnimation: false,
   },
 ];
 
@@ -56,6 +94,7 @@ export function Welcome() {
   const dispatch = useDispatch();
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {firstStep} = useSelector((state: RootStateProps) => state.metadata);
+  const {welcomeGuide} = useSelector((state: RootStateProps) => state.guides);
   const [welcomeMeta, setWelcomeMeta] = useState<
     WelcomeBackpackerMetadata | WelcomeGuideMetadata
   >();
@@ -94,7 +133,7 @@ export function Welcome() {
           <StepItemContainer
             key={index}
             active={item.done}
-            isLast={stepList.length - 1 === index}>
+            isLast={firstStep.stepList.length - 1 === index}>
             <StepItemCircleContainer active={item.done}>
               <StepItemCircle />
             </StepItemCircleContainer>
@@ -235,6 +274,12 @@ export function Welcome() {
           </>
         </ImageContainer.Overlayed>
       </PageContainer>
+      <Ads visible={welcomeGuide} onRequestClose={() => {}} key="guide-welcome">
+        <GuideCarousel
+          data={guideWelcomeGuideImages}
+          onClose={() => dispatch(hideWelcomeGuide())}
+        />
+      </Ads>
     </Page>
   );
 }

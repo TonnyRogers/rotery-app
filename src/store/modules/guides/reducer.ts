@@ -3,12 +3,14 @@ import {GuidesActions} from './actions';
 
 interface InitalStateProps {
   feedGuide: boolean;
+  welcomeGuide: boolean;
   newItineraryGuide: boolean;
   myItineraryGuide: boolean;
   profileGuide: boolean;
   revenuesGuide: boolean;
   subscriptionGuide: boolean;
   itineraryPaymentGuide: boolean;
+  exploreLocationsGuide: boolean;
 }
 
 interface ActionProps {
@@ -23,37 +25,23 @@ const INITIAL_PROPS: InitalStateProps = {
   revenuesGuide: false,
   subscriptionGuide: true,
   itineraryPaymentGuide: true,
+  welcomeGuide: true,
+  exploreLocationsGuide: true,
 };
 
 export default function guides(state = INITIAL_PROPS, action: ActionProps) {
   return produce(state, (draft) => {
     switch (action.type) {
-      case GuidesActions.SHOW_FEED_GUIDE_SUCCESS: {
-        draft.feedGuide = true;
-        break;
-      }
       case GuidesActions.HIDE_FEED_GUIDE: {
         draft.feedGuide = false;
-        break;
-      }
-      case GuidesActions.SHOW_NEW_ITINERARY_GUIDE_SUCCESS: {
-        draft.newItineraryGuide = true;
         break;
       }
       case GuidesActions.HIDE_NEW_ITINERARY_GUIDE: {
         draft.newItineraryGuide = false;
         break;
       }
-      case GuidesActions.SHOW_MY_ITINERARY_GUIDE_SUCCESS: {
-        draft.myItineraryGuide = true;
-        break;
-      }
       case GuidesActions.HIDE_MY_ITINERARY_GUIDE: {
         draft.myItineraryGuide = false;
-        break;
-      }
-      case GuidesActions.SHOW_PROFILE_GUIDE_SUCCESS: {
-        draft.profileGuide = true;
         break;
       }
       case GuidesActions.HIDE_PROFILE_GUIDE: {
@@ -68,10 +56,6 @@ export default function guides(state = INITIAL_PROPS, action: ActionProps) {
         draft.revenuesGuide = false;
         break;
       }
-      case GuidesActions.SHOW_SUBSCRIPTION_GUIDE: {
-        draft.subscriptionGuide = true;
-        break;
-      }
       case GuidesActions.HIDE_SUBSCRIPTION_GUIDE: {
         draft.subscriptionGuide = false;
         break;
@@ -82,6 +66,14 @@ export default function guides(state = INITIAL_PROPS, action: ActionProps) {
       }
       case GuidesActions.HIDE_ITINERARY_PAYMENT_GUIDE: {
         draft.itineraryPaymentGuide = false;
+        break;
+      }
+      case GuidesActions.HIDE_WELCOME_GUIDE: {
+        draft.welcomeGuide = false;
+        break;
+      }
+      case GuidesActions.HIDE_EXPLORE_LOCATIONS_GUIDE: {
+        draft.exploreLocationsGuide = false;
         break;
       }
       default:

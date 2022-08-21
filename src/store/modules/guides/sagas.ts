@@ -19,10 +19,6 @@ export function* setItineraryPaymentViewed() {
 
 export default all([
   takeLatest(
-    GuidesActions.SHOW_ITINERARY_PAYMENT_GUIDE,
-    handleShowItineraryPaymentViewed,
-  ),
-  takeLatest(
     GuidesActions.HIDE_ITINERARY_PAYMENT_GUIDE,
     setItineraryPaymentViewed,
   ),

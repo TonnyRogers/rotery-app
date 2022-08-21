@@ -171,14 +171,14 @@ const Feed: React.FC = () => {
         onRequestClose={() => setSheetVisible(false)}
         title="Anuncio"
       />
-      <FilterInput
+      {/* <FilterInput
         visible={filterVisible}
         onRequestClose={toggleFilter}
         onFiltered={({begin, end, location}) => {
           setFilter({begin: begin, end: end, location: location || undefined});
         }}
         activities={removeDuplicatedActivities}
-      />
+      /> */}
       <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
           data={feedGuideImages}

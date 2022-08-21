@@ -23,6 +23,11 @@ import {
 import CustomIcon from '../../components/CustomIcon';
 import {PageContainer} from '../../components/PageContainer';
 import {LocationFeedFilterParams} from '../LocationFeed';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {useDispatch, useSelector} from 'react-redux';
+import {hideExploreLocationsGuide} from '../../store/modules/guides/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 const exploreBrazilRegions = [
   {
@@ -74,7 +79,33 @@ const activitiesFilter = [
   {title: 'Rappel', icon: 'rappel'},
 ];
 
+const exploreLocationsGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Exporando Locais 1/2',
+    message:
+      'Nessa tela você pode fazer uma pré seleção dos locais que você deseja ver a seguir, filtrando por atividade, região do Brasil e outros...',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
+    withInfo: true,
+    title: 'Exporando Locais 2/2',
+    message:
+      'Depois da pré seleção você vai poder ver o feed de locais, além do filtro da pré seleção ainda é possivel adicionar outros filtros deixando sua pesquisa mais objetiva, basta clicar aqui.',
+    isAnimation: false,
+  },
+];
+
 export function ExploreLocations() {
+  const dispatch = useDispatch();
+  const {exploreLocationsGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
+  );
+
   return (
     <Page showHeader={false}>
       <PageContainer isScrollable>
@@ -143,6 +174,15 @@ export function ExploreLocations() {
           ))}
         </LocationCardList>
       </PageContainer>
+      <Ads
+        visible={exploreLocationsGuide}
+        onRequestClose={() => {}}
+        key="guide-welcome">
+        <GuideCarousel
+          data={exploreLocationsGuideImages}
+          onClose={() => dispatch(hideExploreLocationsGuide())}
+        />
+      </Ads>
     </Page>
   );
 }
