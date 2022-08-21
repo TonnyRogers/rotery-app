@@ -382,3 +382,286 @@ export const bankList = [
     value: '336',
   },
 ];
+
+export const guideChatsGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-chats-guide.png',
+    withInfo: true,
+    title: 'Chats 1/3',
+    message:
+      'Aqui você tem a listagem de todos os seus chats, clicando em algum deles você será direcionado para a conversa com o mochileiro, seja respeitoso 😇.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-chats-finish.png',
+    withInfo: true,
+    title: 'Chats 2/3',
+    message:
+      'Apenas os mochileiros podem iniciar um chat mas você pode finaliza-lo caso o assunto se encerre, procure se limitar apenas por informações do local em que foi solicitado tirar duvidas.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-chats-finish-alert.png',
+    withInfo: true,
+    title: 'Chats 3/3',
+    message:
+      'Ao finalizar o chat (por você ou pelo mochileiro) será solicitado para ele avaliar como tudo correu e ele pode contribuir com você doando algum valor como agradecimento.',
+    isAnimation: false,
+  },
+];
+
+export const backpackerChatsGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-chats-backpacker.png',
+    withInfo: true,
+    title: 'Chats 1/3',
+    message:
+      'Aqui você tem a listagem de todos os seus chats, clicando em algum deles você será direcionado para a conversa com o guia, seja respeitoso 😇. Você só pode inicar um chat a partir de um local que deseja tirar duvidas.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-chats-finish.png',
+    withInfo: true,
+    title: 'Chats 2/3',
+    message:
+      'Quando sua duvida for exclarecida você deve finalizar o chat (o guia pode fazer isso também), depois disso você irá avaliar o guia e poderá retribuir com algum valor que vai para ele.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-chats-finish-alert.png',
+    withInfo: true,
+    title: 'Chats 3/3',
+    message:
+      'Os chats são limitados na versão gratuita (1 por mês), caso queira chats ilimitados você pode assinar o plano para mochileiros 🚀.',
+    isAnimation: false,
+  },
+];
+
+export const exploreLocationsGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-explore-location-1.png',
+    withInfo: true,
+    title: 'Exporando Locais 1/2',
+    message:
+      'Nessa tela você pode fazer uma pré seleção dos locais que você deseja ver a seguir, filtrando por atividade, região do Brasil e outros...',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-explore-location-2.png',
+    withInfo: true,
+    title: 'Exporando Locais 2/2',
+    message:
+      'Depois da pré seleção você vai poder ver o feed de locais, além do filtro da pré seleção ainda é possivel adicionar outros filtros deixando sua pesquisa mais objetiva, basta clicar aqui.',
+    isAnimation: false,
+  },
+];
+
+export const guideLocationDetailsGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-1.png',
+    withInfo: true,
+    title: 'Detalhes do local',
+    message:
+      'Essas são as caracteristicas deste local e auxiliam os mochileiros no momento de escolher o próximo local para descobrir.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-guide-1.png',
+    withInfo: true,
+    title: 'Vincular local a você',
+    message:
+      'Clicando aqui você se vincula a ele e os mochileiros vão poder entrar em contato com você através daqui, por isso selecione apenas o locais que você tem experiência e domínio.',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-ratings.png',
+    withInfo: true,
+    title: 'Avaliações',
+    message:
+      'Com base na experiência que tiveram com guias e com o local os mochileiros deixam sua avaliação sobre este local e isso pode ajudar outros na hora de decidir.',
+    isAnimation: false,
+  },
+];
+
+export const backpackerLocationDetailsGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-1.png',
+    withInfo: true,
+    title: 'Detalhes do local',
+    message:
+      'Essas são as caracteristicas deste local e auxiliam os mochileiros no momento de escolher o próximo local para descobrir.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-backpacker-1.png',
+    withInfo: true,
+    title: 'Guias',
+    message:
+      'Você pode escolher um dos guias digitais para te auxiliar sobre este local, dando dicas, melhores rotas, e etc... considere a nota de outros mochileiros ao escolher.',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-ratings.png',
+    withInfo: true,
+    title: 'Avaliações',
+    message:
+      'Com base na experiência que tiveram com guias e com o local os mochileiros deixam sua avaliação sobre este local e isso pode ajudar outros na hora de decidir.',
+    isAnimation: false,
+  },
+];
+
+export const guideWelcomeGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-montanha.webp',
+    withInfo: true,
+    title: 'Bem-vindo(a)',
+    message:
+      'Olá! Vamos para uma breve explicação do que você pode fazer no app arrasta para a esquerda para ver as próximas dicas.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-guide-1.png',
+    withInfo: true,
+    title: 'Complete seu perfil',
+    message:
+      'Adicione foto e seus dados para uma melhor experiência na comunidade.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-guide-2.png',
+    withInfo: true,
+    title: 'Notificações',
+    message:
+      'Clique no sino para ver e então clique em uma das notificações para setar como lida, algumas notificações podem te redirecionar para uma nova tela.',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-guide-3.png',
+    withInfo: true,
+    title: 'Menu',
+    message:
+      'Aqui você pode navegar pelo app, assim que alguma nova funcionalidade for adicionada este guia deve aparecer novamente 😌.',
+    isAnimation: false,
+  },
+  {
+    id: 4,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-guide-4.png',
+    withInfo: true,
+    title: 'Contribuições',
+    message: 'Suas interações com outros usuários vão ser contabilizadas aqui.',
+    isAnimation: false,
+  },
+  {
+    id: 5,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-firs-steps.png',
+    withInfo: true,
+    title: 'Primeiros Passos',
+    message:
+      'Uma lista com terefas inicias para ingressar no mundo dos mochileiros digitais, tente completa-la antes de qualquer coisa 😉.',
+    isAnimation: false,
+  },
+];
+
+export const backpackerWelcomeGuideImages = [
+  {
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/rotery-montanha.webp',
+    withInfo: true,
+    title: 'Bem-vindo(a)',
+    message:
+      'Olá! Vamos para uma breve explicação do que você pode fazer no app arrasta para a esquerda para ver as próximas dicas.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-backpacer-1.png',
+    withInfo: true,
+    title: 'Complete seu perfil',
+    message:
+      'Adicione foto e seus dados para uma melhor experiência na comunidade.',
+    isAnimation: false,
+  },
+  {
+    id: 2,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-backpacer-2.png',
+    withInfo: true,
+    title: 'Notificações',
+    message:
+      'Clique no sino para ver e então clique em uma das notificações para setar como lida, algumas notificações podem te redirecionar para uma nova tela.',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-backpacer-3.png',
+    withInfo: true,
+    title: 'Menu',
+    message:
+      'Aqui você pode navegar pelo app, assim que alguma nova funcionalidade for adicionada este guia deve aparecer novamente 😌.',
+    isAnimation: false,
+  },
+  {
+    id: 4,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-backpacer-4.png',
+    withInfo: true,
+    title: 'Contribuições',
+    message: 'Suas interações com outros usuários vão ser contabilizadas aqui.',
+    isAnimation: false,
+  },
+  {
+    id: 5,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-welcome-firs-steps.png',
+    withInfo: true,
+    title: 'Primeiros Passos',
+    message:
+      'Uma lista com terefas inicias para ingressar no mundo dos mochileiros digitais, tente completa-la antes de qualquer coisa 😉.',
+    isAnimation: false,
+  },
+];
+
+export const beginChatGuide = [
+  {
+    id: 1,
+    title: 'Chat com Guias 1/3',
+    message:
+      'Para iniciar um chat é necessário selecionar um local que deseja ajuda de um guia.',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-explore-location-1.png',
+    isAnimation: false,
+    withInfo: true,
+  },
+  {
+    id: 2,
+    title: 'Chat com Guias 2/3',
+    message:
+      'Vá para o feed de locais, selecione um e veja os guias relacionados.',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-feed.png',
+    isAnimation: false,
+    withInfo: true,
+  },
+  {
+    id: 3,
+    title: 'Chat com Guias 3/3',
+    message:
+      'Ao selecionar um deles as informações do local poderão ser enviadas para o guia e assim ele pode te responder com mais precisão.',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-location-details-backpacker-1.png',
+    isAnimation: false,
+    withInfo: true,
+  },
+];

@@ -29,10 +29,16 @@ import {LocationRatingItem} from '../../components/LocationRatingItem';
 import ShadowBox from '../../components/ShadowBox';
 import {theme} from '../../utils/theme';
 import formatLocale from '../../providers/dayjs-format-locale';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import Toast from 'react-native-toast-message';
-
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {hideLocationDetailsGuide} from '../../store/modules/guides/actions';
+import {
+  guideLocationDetailsGuideImages,
+  backpackerLocationDetailsGuideImages,
+} from '../../utils/constants';
 interface LocationFeedDetailsProps {
   route: {
     params: {
@@ -46,11 +52,16 @@ export function LocationFeedDetails({
     params: {location},
   },
 }: LocationFeedDetailsProps) {
+  const dispatch = useDispatch();
   const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {locationDetailsGuide} = useSelector(
+    (state: RootStateProps) => state.guides,
+  );
 
   const updatedAtFormatted = useMemo(() => {
     return formatLocale(location.updatedAt, 'DD MMM YYYY');
   }, [location.updatedAt]);
+
   const [locationGuides, setLocationGuides] = useState<GuideLocation[] | null>(
     null,
   );
@@ -293,6 +304,19 @@ export function LocationFeedDetails({
           ))}
         </Card>
       </PageContainer>
+      <Ads
+        visible={locationDetailsGuide}
+        onRequestClose={() => {}}
+        key="guide-welcome">
+        <GuideCarousel
+          data={
+            user?.isHost
+              ? guideLocationDetailsGuideImages
+              : backpackerLocationDetailsGuideImages
+          }
+          onClose={() => dispatch(hideLocationDetailsGuide())}
+        />
+      </Ads>
     </Page>
   );
 }

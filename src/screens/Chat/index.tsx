@@ -40,6 +40,7 @@ import formatLocale from '../../providers/dayjs-format-locale';
 import {useUserIsHost} from '../../hooks/useUserIsHost';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
+import {beginChatGuide} from '../../utils/constants';
 
 export interface ChatRouteParams {
   target: UserProps;
@@ -322,35 +323,7 @@ export function Chat({
         onRequestClose={() => {}}
         key="guide-feed">
         <GuideCarousel
-          data={[
-            {
-              id: 1,
-              title: 'Chat com Guias 1/3',
-              message:
-                'Para iniciar um chat é necessário selecionar um local que deseja ajuda de um guia.',
-              url: '',
-              isAnimation: false,
-              withInfo: true,
-            },
-            {
-              id: 2,
-              title: 'Chat com Guias 2/3',
-              message:
-                'Vá para o feed de locais, selecione um e veja os guias relacionados.',
-              url: '',
-              isAnimation: false,
-              withInfo: true,
-            },
-            {
-              id: 3,
-              title: 'Chat com Guias 3/3',
-              message:
-                'Ao selecionar um deles as informações do local poderão ser enviadas para o guia e assim ele pode te responder com mais precisão.',
-              url: '',
-              isAnimation: false,
-              withInfo: true,
-            },
-          ]}
+          data={beginChatGuide}
           onClose={() => setChatLocationGuide(false)}
         />
       </Ads>

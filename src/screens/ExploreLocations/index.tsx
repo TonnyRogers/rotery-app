@@ -28,6 +28,7 @@ import GuideCarousel from '../../components/GuideCarousel';
 import {useDispatch, useSelector} from 'react-redux';
 import {hideExploreLocationsGuide} from '../../store/modules/guides/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import {exploreLocationsGuideImages} from '../../utils/constants';
 
 const exploreBrazilRegions = [
   {
@@ -77,27 +78,6 @@ const activitiesFilter = [
   {title: 'Montanhismo', icon: 'mountain-flag'},
   {title: 'Bungee Jump', icon: 'bungee-jumping'},
   {title: 'Rappel', icon: 'rappel'},
-];
-
-const exploreLocationsGuideImages = [
-  {
-    id: 0,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Exporando Locais 1/2',
-    message:
-      'Nessa tela você pode fazer uma pré seleção dos locais que você deseja ver a seguir, filtrando por atividade, região do Brasil e outros...',
-    isAnimation: false,
-  },
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Exporando Locais 2/2',
-    message:
-      'Depois da pré seleção você vai poder ver o feed de locais, além do filtro da pré seleção ainda é possivel adicionar outros filtros deixando sua pesquisa mais objetiva, basta clicar aqui.',
-    isAnimation: false,
-  },
 ];
 
 export function ExploreLocations() {

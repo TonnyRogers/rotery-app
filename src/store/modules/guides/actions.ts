@@ -10,6 +10,8 @@ export enum GuidesActions {
   HIDE_ITINERARY_PAYMENT_GUIDE = '@guides/HIDE_ITINERARY_PAYMENT_GUIDE',
   HIDE_WELCOME_GUIDE = '@guides/HIDE_WELCOME_GUIDE',
   HIDE_EXPLORE_LOCATIONS_GUIDE = '@guides/HIDE_EXPLORE_LOCATIONS_GUIDE',
+  HIDE_LOCATION_DETAILS_GUIDE = '@guides/HIDE_LOCATION_DETAILS_GUIDE',
+  HIDE_CHATS_GUIDE = '@guides/HIDE_CHATS_GUIDE',
 }
 
 export function hideFeedGuide() {
@@ -75,5 +77,17 @@ export function hideWelcomeGuide() {
 export function hideExploreLocationsGuide() {
   return {
     type: GuidesActions.HIDE_EXPLORE_LOCATIONS_GUIDE,
+  };
+}
+
+export function hideLocationDetailsGuide() {
+  return {
+    type: GuidesActions.HIDE_LOCATION_DETAILS_GUIDE,
+  };
+}
+
+export function hideChatsGuide() {
+  return {
+    type: GuidesActions.HIDE_CHATS_GUIDE,
   };
 }

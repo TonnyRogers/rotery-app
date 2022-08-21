@@ -22,11 +22,20 @@ import {getChatMessagesRequest} from '../../store/modules/chats/actions';
 import {ChatRouteParams} from '../Chat';
 import {UserProps} from '../../utils/types';
 import {useUserIsHost} from '../../hooks/useUserIsHost';
+import Ads from '../../components/Ads';
+import GuideCarousel from '../../components/GuideCarousel';
+import {hideChatsGuide} from '../../store/modules/guides/actions';
+import {
+  guideChatsGuideImages,
+  backpackerChatsGuideImages,
+} from '../../utils/constants';
 
 export function ChatMessages() {
   const dispatch = useDispatch();
 
   const {chats} = useSelector((state: RootStateProps) => state.chats);
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {chatsGuide} = useSelector((state: RootStateProps) => state.guides);
   const {conditionalRender} = useUserIsHost();
 
   function toChat(target: UserProps) {
@@ -100,6 +109,14 @@ export function ChatMessages() {
           <SimpleList>{renderChats()}</SimpleList>
         </Card>
       </PageContainer>
+      <Ads visible={chatsGuide} onRequestClose={() => {}} key="guide-welcome">
+        <GuideCarousel
+          data={
+            user?.isHost ? guideChatsGuideImages : backpackerChatsGuideImages
+          }
+          onClose={() => dispatch(hideChatsGuide())}
+        />
+      </Ads>
     </Page>
   );
 }

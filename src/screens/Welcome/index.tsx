@@ -33,62 +33,10 @@ import {getFirstStepsRequest} from '../../store/modules/metadata/actions';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {hideWelcomeGuide} from '../../store/modules/guides/actions';
-
-const guideWelcomeGuideImages = [
-  {
-    id: 0,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Bem-vindo(a)',
-    message:
-      'Olá! Vamos para uma breve explicação do que você pode fazer no app arrasta para a esquerda para ver as próximas dicas.',
-    isAnimation: false,
-  },
-  {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Complete seu perfil',
-    message:
-      'Adicione foto e seus dados para uma melhor experiência na comunidade.',
-    isAnimation: false,
-  },
-  {
-    id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Notificações',
-    message:
-      'Clique no sino para ver e então clique em uma das notificações para setar como lida, algumas notificações podem te redirecionar para uma nova tela.',
-    isAnimation: false,
-  },
-  {
-    id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Menu',
-    message:
-      'Aqui você pode navegar pelo app, assim que alguma nova funcionalidade for adicionada este guia deve aparecer novamente 😌.',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Contribuições',
-    message: 'Suas interações com outros usuários vão ser contabilizadas aqui.',
-    isAnimation: false,
-  },
-  {
-    id: 5,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile.png',
-    withInfo: true,
-    title: 'Primeiros Passos',
-    message:
-      'Uma lista com terefas inicias para ingressar no mundo dos mochileiros digitais, tente completa-la antes de qualquer coisa 😉.',
-    isAnimation: false,
-  },
-];
+import {
+  guideWelcomeGuideImages,
+  backpackerWelcomeGuideImages,
+} from '../../utils/constants';
 
 export function Welcome() {
   const dispatch = useDispatch();
@@ -276,7 +224,11 @@ export function Welcome() {
       </PageContainer>
       <Ads visible={welcomeGuide} onRequestClose={() => {}} key="guide-welcome">
         <GuideCarousel
-          data={guideWelcomeGuideImages}
+          data={
+            user?.isHost
+              ? guideWelcomeGuideImages
+              : backpackerWelcomeGuideImages
+          }
           onClose={() => dispatch(hideWelcomeGuide())}
         />
       </Ads>

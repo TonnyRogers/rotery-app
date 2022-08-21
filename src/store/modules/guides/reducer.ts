@@ -11,13 +11,15 @@ interface InitalStateProps {
   subscriptionGuide: boolean;
   itineraryPaymentGuide: boolean;
   exploreLocationsGuide: boolean;
+  locationDetailsGuide: boolean;
+  chatsGuide: boolean;
 }
 
 interface ActionProps {
   type: string;
 }
 
-const INITIAL_PROPS: InitalStateProps = {
+const INITAL_STATE: InitalStateProps = {
   feedGuide: true,
   newItineraryGuide: true,
   myItineraryGuide: true,
@@ -27,9 +29,11 @@ const INITIAL_PROPS: InitalStateProps = {
   itineraryPaymentGuide: true,
   welcomeGuide: true,
   exploreLocationsGuide: true,
+  chatsGuide: true,
+  locationDetailsGuide: true,
 };
 
-export default function guides(state = INITIAL_PROPS, action: ActionProps) {
+export default function guides(state = INITAL_STATE, action: ActionProps) {
   return produce(state, (draft) => {
     switch (action.type) {
       case GuidesActions.HIDE_FEED_GUIDE: {
@@ -74,6 +78,14 @@ export default function guides(state = INITIAL_PROPS, action: ActionProps) {
       }
       case GuidesActions.HIDE_EXPLORE_LOCATIONS_GUIDE: {
         draft.exploreLocationsGuide = false;
+        break;
+      }
+      case GuidesActions.HIDE_LOCATION_DETAILS_GUIDE: {
+        draft.locationDetailsGuide = false;
+        break;
+      }
+      case GuidesActions.HIDE_CHATS_GUIDE: {
+        draft.chatsGuide = false;
         break;
       }
       default:
