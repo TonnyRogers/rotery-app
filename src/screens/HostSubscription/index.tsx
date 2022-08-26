@@ -211,8 +211,8 @@ const HostSubscription = () => {
                         textWeight="bold">
                         {formatPrice(
                           Number(
-                            subscriptionHistoric.summarized.charged_amount *
-                              100,
+                            subscriptionHistoric.summarized
+                              .last_charged_amount * 100,
                           ),
                         )}
                       </Text>

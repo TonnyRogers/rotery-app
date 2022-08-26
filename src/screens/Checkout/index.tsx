@@ -91,8 +91,11 @@ interface CheckoutProps {
   };
 }
 
-const paymentToken = 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e';
-// const paymentToken = 'TEST-53f31d5a-bca4-4713-bfc4-1852f76d5fa5';
+const paymentToken = {
+  prod: 'APP_USR-dbb42677-45aa-4d3d-9786-94b2ea4ddcf8',
+  dev: 'TEST-53f31d5a-bca4-4713-bfc4-1852f76d5fa5',
+  subscription: 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e',
+}; // production
 
 const Checkout = ({route}: CheckoutProps) => {
   const dispatch = useDispatch();
@@ -147,7 +150,7 @@ const Checkout = ({route}: CheckoutProps) => {
   const checkoutWebViewCb = (e: WebViewMessageEvent) => {
     const dataParse = JSON.parse(e.nativeEvent.data);
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
-    console.tron.log('cardTokenPayload', cardTokenPayload);
+
     if (dataParse.message === 'ok' && customer !== null) {
       dispatch(addCustomerCardRequest(cardTokenPayload.id, customer?.id));
       setWebCheckouVisible(false);
@@ -188,6 +191,7 @@ const Checkout = ({route}: CheckoutProps) => {
             setSubmitButtonActive(true);
             break;
         }
+        setInstallment('');
       }
     } else {
       setSelectedCard(null);
@@ -201,7 +205,7 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const selectCard = (card: CheckoutCustomerCardResponse, amount: number) => {
     injectCardconfirmJs.current = `
-      mp = new MercadoPago('${paymentToken}');
+      mp = new MercadoPago('${paymentToken.subscription}');
       document.querySelector('#cardId').value = ${card.id};
       document.querySelector('#transactionAmmount').value = ${amount.toFixed(
         2,
@@ -216,7 +220,7 @@ const Checkout = ({route}: CheckoutProps) => {
   };
 
   const injectCheckoutJs = `
-    mp = new MercadoPago('${paymentToken}');
+    mp = new MercadoPago('${paymentToken.subscription}');
     document.querySelector('#transactionAmmount').value = ${itineraryAmount.total.toFixed(
       2,
     )};
@@ -291,7 +295,13 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const verifyCustomer = useCallback(() => {
     if (!profile?.user.customerId && !customer) {
-      dispatch(createCustomerRequest(String(profile?.user.email)));
+      dispatch(
+        createCustomerRequest({
+          email: String(profile?.user.email),
+          fullName: profile?.name ? profile?.name : undefined,
+          phone: profile?.phone ? Number(profile?.phone) : undefined,
+        }),
+      );
     }
     setCardsVisible(true);
   }, [customer, dispatch, profile]);

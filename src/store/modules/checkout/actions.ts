@@ -48,10 +48,14 @@ export function getCustomerFailure() {
   };
 }
 
-export function createCustomerRequest(email: string) {
+export function createCustomerRequest(cratePayload: {
+  email: string;
+  fullName?: string;
+  phone?: number;
+}) {
   return {
     type: CheckoutActions.CREATE_CUSTOMER_REQUEST,
-    payload: {email},
+    payload: {cratePayload},
   };
 }
 

@@ -23,6 +23,7 @@ import {
   ChatMessage,
   UserProps,
   RateChatNotificationJsonData,
+  CanBeginChatResponse,
 } from '../../utils/types';
 import {
   getCurrentChatRequest,
@@ -41,6 +42,10 @@ import {useUserIsHost} from '../../hooks/useUserIsHost';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {beginChatGuide} from '../../utils/constants';
+import api from '../../services/api';
+import netConnection from '../../services/netinfo';
+import Toast from 'react-native-toast-message';
+import ColumnGroup from '../../components/ColumnGroup';
 
 export interface ChatRouteParams {
   target: UserProps;
@@ -65,7 +70,9 @@ export function Chat({
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [isFinishChatAlertVisible, setFinishChatAlertVisible] = useState(false);
-  const [chatLocationGuide, setChatLocationGuide] = useState(false);
+  const [chatLocationGuideVisible, setChatLocationGuideVisible] =
+    useState(false);
+  const [chatLimitMessageVisible, setChatLimitMessageVisible] = useState(false);
   const {isHost} = useUserIsHost();
 
   const {currentChat, loading} = useSelector(
@@ -122,21 +129,64 @@ export function Chat({
     setMessage('');
   }
 
-  function handleBeginChat() {
+  async function handleBeginChat() {
     if (location) {
-      dispatch(
-        beginChatRequest({
-          locationCityState: currentLocation.locationCityState,
-          locationId: currentLocation.locationId,
-          locationName: currentLocation.locationName,
-          targetId: target.id,
-        }),
-      );
+      const info = await netConnection();
 
-      return;
+      if (!info.status) {
+        return;
+      }
+
+      try {
+        const response = await api.get<CanBeginChatResponse>(
+          'chats/begin-validation',
+        );
+
+        if (!response.data.allowed) {
+          setChatLimitMessageVisible(true);
+          return;
+        }
+
+        dispatch(
+          beginChatRequest({
+            locationCityState: currentLocation.locationCityState,
+            locationId: currentLocation.locationId,
+            locationName: currentLocation.locationName,
+            targetId: target.id,
+          }),
+        );
+
+        return;
+      } catch (error) {
+        Toast.show({
+          text1: 'Erro ao validar inicio do chat.',
+          position: 'bottom',
+          type: 'error',
+        });
+      }
     }
 
-    setChatLocationGuide(true);
+    setChatLocationGuideVisible(true);
+  }
+
+  const renderMessage = (item: ChatMessage) => {
+    return (
+      <Message isReply={item.sender.id !== user?.id} key={item.id}>
+        <Text withLineBreak textColor="white">
+          {item.message}
+        </Text>
+        <Text alignment="end" textColor="white">
+          {formatLocale(item.createdAt, 'DD MMM YY HH:mm')}
+        </Text>
+      </Message>
+    );
+  };
+
+  function navigateToSubscription() {
+    setChatLimitMessageVisible(false);
+    RootNavigation.goBack();
+    RootNavigation.goBack();
+    RootNavigation.navigate('BackpackerSubscription');
   }
 
   useEffect(() => {
@@ -157,19 +207,6 @@ export function Chat({
       <Empty onPressTo={() => RootNavigation.goBack()} buttonText="Voltar" />
     );
   }
-
-  const renderMessage = (item: ChatMessage) => {
-    return (
-      <Message isReply={item.sender.id !== user?.id} key={item.id}>
-        <Text withLineBreak textColor="white">
-          {item.message}
-        </Text>
-        <Text alignment="end" textColor="white">
-          {formatLocale(item.createdAt, 'DD MMM YY HH:mm')}
-        </Text>
-      </Message>
-    );
-  };
 
   return (
     <Page showHeader={false}>
@@ -319,13 +356,62 @@ export function Chat({
         onCancel={closeChatAlert}
       />
       <Ads
-        visible={chatLocationGuide}
+        visible={chatLocationGuideVisible}
         onRequestClose={() => {}}
-        key="guide-feed">
+        key="chat-guide">
         <GuideCarousel
           data={beginChatGuide}
-          onClose={() => setChatLocationGuide(false)}
+          onClose={() => setChatLocationGuideVisible(false)}
         />
+      </Ads>
+      <Ads
+        visible={chatLimitMessageVisible}
+        onRequestClose={() => {}}
+        key="chat-limit-message">
+        <>
+          <ColumnGroup>
+            <Text.Title alignment="start">Você chegou ao limite 🥺</Text.Title>
+            <Text>
+              Utilizando o app no plano gratuito você tem o limite de um chat
+              com guia por mês, mas você deseja mais ?
+            </Text>
+            <ImageContainer.Hero
+              sizeStyle="square"
+              fit="cover"
+              url="https://rotery-filestore.nyc3.digitaloceanspaces.com/hero-gestao-no-app-square.webp"
+            />
+            <Text>
+              Sem problemas! Assine agora mesmo o plano base para ter direito a
+              chats ilimitados com os melhores guias do Brasil 🇧🇷
+            </Text>
+          </ColumnGroup>
+          <RowGroup isFlex={false} justify="space-between">
+            <Button
+              onPress={() => setChatLimitMessageVisible(false)}
+              customContent
+              sizeHeight={4.4}
+              sizeMargin="1rem 0 0 0.5rem"
+              sizePadding={8}
+              bgColor="red"
+              textColor="white">
+              <Text.Paragraph textColor="white" textWeight="bold">
+                Não, obrigado
+              </Text.Paragraph>
+            </Button>
+            <Button
+              onPress={navigateToSubscription}
+              customContent
+              sizeHeight={4.4}
+              sizeMargin="1rem 0 0 0.5rem"
+              sizePadding={8}
+              bgColor="blue"
+              textColor="white">
+              <Text.Paragraph textColor="white" textWeight="bold">
+                Saber mais!
+              </Text.Paragraph>
+            </Button>
+          </RowGroup>
+        </>
       </Ads>
     </Page>
   );

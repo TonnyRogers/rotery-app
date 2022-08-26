@@ -21,10 +21,12 @@ const ShadowBox = ({
   return (
     <Shadow
       containerViewStyle={{
-        flex: 1,
+        flex: width || height ? undefined : 1,
         marginVertical: 0,
         alignSelf: containerAlign,
         padding: 4,
+        height,
+        width,
       }}
       contentViewStyle={{
         flex: width || height ? undefined : 1,

@@ -49,6 +49,7 @@ import {LocationFeedDetails} from '../screens/LocationFeedDetails';
 import {ChatMessages} from '../screens/ChatMessages';
 import {Chat} from '../screens/Chat';
 import {RateChat} from '../screens/RateChat';
+import {BackpackerSubscription} from '../screens/BackpackerSubscription';
 
 import {RootStateProps} from '../store/modules/rootReducer';
 import {useSocket} from '../hooks/useSocket';
@@ -355,6 +356,10 @@ const Routes = () => {
               <Stack.Screen name="Chat" component={Chat} />
               <Stack.Screen name="RateChat" component={RateChat} />
               <Stack.Screen name="Welcome" component={Welcome} />
+              <Stack.Screen
+                name="BackpackerSubscription"
+                component={BackpackerSubscription}
+              />
             </>
           ) : (
             <>

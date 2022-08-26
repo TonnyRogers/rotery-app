@@ -1015,3 +1015,8 @@ export type FirstStepResponseData = {
   stepList: WelcomeStepItem[];
   allDone: boolean;
 };
+
+export type CanBeginChatResponse = {
+  allowed: boolean;
+  message: string;
+};

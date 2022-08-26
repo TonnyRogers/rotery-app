@@ -14,6 +14,7 @@ import {
   changeSubscriptionCardRequest,
   changeSubscriptionCardSuccess,
   changeSubscriptionCardFailure,
+  getSubscriptionRequest,
 } from './actions';
 import {AxiosResponse} from 'axios';
 import {Subscription} from '../../../utils/types';
@@ -90,6 +91,7 @@ export function* changeSubscriptionCard({
     });
 
     yield put(changeSubscriptionCardSuccess());
+    yield put(getSubscriptionRequest());
     Toast.show({
       text1: 'Cartão alterado!',
       position: 'bottom',

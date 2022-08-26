@@ -5,10 +5,10 @@ export const ContainerView = styled.View<{bgColor?: ColorsType}>`
   background-color: ${(props) =>
     props.bgColor ? theme.colors[props.bgColor] : theme.colors.transparent};
   flex: 1;
-  padding: 0 1rem;
+  padding: 1rem;
 `;
 
 export const ContainerScrollView = styled.ScrollView<{bgColor?: ColorsType}>`
   flex: 1;
-  padding: 0 1rem;
+  padding: 1rem;
 `;

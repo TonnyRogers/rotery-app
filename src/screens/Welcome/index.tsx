@@ -37,6 +37,7 @@ import {
   guideWelcomeGuideImages,
   backpackerWelcomeGuideImages,
 } from '../../utils/constants';
+import ColumnGroup from '../../components/ColumnGroup';
 
 export function Welcome() {
   const dispatch = useDispatch();
@@ -195,15 +196,20 @@ export function Welcome() {
           {!firstStep?.allDone ? (
             renderStepList()
           ) : (
-            <>
+            <ColumnGroup>
               <AnimationContent
                 duration={3000}
                 align="center"
                 animationJson={confirmAnimation}
-                height={130}
+                height={120}
               />
-              <Text.Title alignment="center">Tudo Certo!</Text.Title>
-            </>
+              <Text.Paragraph
+                textWeight="bold"
+                textColor="primaryText"
+                alignment="center">
+                Tudo Certo!
+              </Text.Paragraph>
+            </ColumnGroup>
           )}
         </Card>
         <ImageContainer.Overlayed

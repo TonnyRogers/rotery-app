@@ -14,6 +14,7 @@ interface AnimationContentProps {
     | 'baseline';
   animationJson: any;
   duration?: number;
+  loop?: boolean;
 }
 
 export function AnimationContent({
@@ -21,13 +22,14 @@ export function AnimationContent({
   height,
   animationJson,
   duration,
+  loop = true,
 }: AnimationContentProps) {
   const {isAndroid} = useIsAndroid();
 
   return (
     <LottieView
       source={animationJson}
-      loop={false}
+      loop={loop}
       autoPlay
       resizeMode="contain"
       hardwareAccelerationAndroid={!!isAndroid}

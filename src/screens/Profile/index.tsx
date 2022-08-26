@@ -286,9 +286,9 @@ const Profile: React.FC = () => {
                   </ColumnGroup>
                 </Button>,
               )}
-              {isHost && (
+              {!isHost && (
                 <Button
-                  onPress={() => navigation.navigate('HostSubscription')}
+                  onPress={() => navigation.navigate('BackpackerSubscription')}
                   customContent
                   sizeHeight={7}
                   sizeWidth={7}

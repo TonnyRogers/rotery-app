@@ -53,7 +53,7 @@ export function* getCustomer({payload}: ReturnType<typeof getCustomerRequest>) {
 }
 
 export function* createCustomer({
-  payload,
+  payload: {cratePayload},
 }: ReturnType<typeof createCustomerRequest>) {
   try {
     const info = yield call(NetInfo);
@@ -63,11 +63,21 @@ export function* createCustomer({
       return;
     }
 
-    const {email} = payload;
+    const {email, fullName, phone} = cratePayload;
+    const firstName = fullName?.split(' ')[0];
+    const lastName = fullName?.split(' ').splice(1).join(' ');
+    const phoneArea = String(phone).slice(0, 2);
+    const phoneNumber = String(phone).slice(2);
+
     const response: AxiosResponse<CheckoutCustomerResponse> = yield call(
       api.post,
       '/payments/customer',
-      {email},
+      {
+        email,
+        ...(fullName ? {first_name: firstName, last_name: lastName} : {}),
+        ...(phone ? {phone: {area_code: phoneArea, number: phoneNumber}} : {}),
+        description: 'Mochilee App Payment User',
+      },
     );
     yield put(createCustomerSuccess(response.data));
   } catch (error) {
