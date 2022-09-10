@@ -52,8 +52,8 @@ import {
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {travelerPaymentGuideImages} from '../../utils/constants';
-import {hideItineraryPaymentGuide} from '../../store/modules/guides/actions';
+import {subscriptionCheckoutGuideImages} from '../../utils/constants';
+import {hideSubscriptionCheckoutGuide} from '../../store/modules/guides/actions';
 const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 const processingAnimation = require('../../../assets/animations/animation_processing_card.json');
 const blockAnimation = require('../../../assets/animations/animation_block.json');
@@ -112,7 +112,7 @@ const Checkout = ({route}: CheckoutProps) => {
   const {loading: subscriptionLoading, data: subscriptionData} = useSelector(
     (state: RootStateProps) => state.subscription,
   );
-  const {itineraryPaymentGuide} = useSelector(
+  const {subscriptionCheckoutGuide} = useSelector(
     (state: RootStateProps) => state.guides,
   );
 
@@ -668,12 +668,12 @@ const Checkout = ({route}: CheckoutProps) => {
       <SplashScreen visible={loading} />
       <SplashScreen visible={subscriptionLoading} />
       <Ads
-        visible={itineraryPaymentGuide}
+        visible={subscriptionCheckoutGuide}
         onRequestClose={() => {}}
         key="guide-feed">
         <GuideCarousel
-          data={travelerPaymentGuideImages}
-          onClose={() => dispatch(hideItineraryPaymentGuide())}
+          data={subscriptionCheckoutGuideImages}
+          onClose={() => dispatch(hideSubscriptionCheckoutGuide())}
         />
       </Ads>
     </Page>

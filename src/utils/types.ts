@@ -764,6 +764,11 @@ export interface FindAllMemberRevenuesResponse {
   total: number;
 }
 
+export interface TipRevenueResponse {
+  revenues: Tip[];
+  total: number;
+}
+
 export type EmailHelpRequestTypeTypes =
   | 'payment'
   | 'itinerary'
@@ -949,6 +954,7 @@ export type LocationFeedFilterResponse = {
   activities: {
     id: number;
     name: string;
+    icon: string;
   }[];
   locationTypes: {
     id: number;
@@ -1019,4 +1025,16 @@ export type FirstStepResponseData = {
 export type CanBeginChatResponse = {
   allowed: boolean;
   message: string;
+};
+
+export type Tip = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  paidAt: string | null;
+  payer: UserProps;
+  paymentAmount: string;
+  paymentId: string;
+  paymentStatus: string;
+  user: UserProps;
 };

@@ -1,6 +1,6 @@
 /* eslint-disable no-sparse-arrays */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import * as RootNavigation from '../../RootNavigation';
@@ -29,6 +29,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {hideExploreLocationsGuide} from '../../store/modules/guides/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {exploreLocationsGuideImages} from '../../utils/constants';
+import {getActivitiesRequest} from '../../store/modules/options/actions';
 
 const exploreBrazilRegions = [
   {
@@ -59,32 +60,17 @@ const exploreBrazilRegions = [
   ,
 ];
 
-const activitiesFilter = [
-  {title: 'Trilha', icon: 'trekking-pole'},
-  {title: 'Camping', icon: 'tent'},
-  {title: 'Off Road', icon: 'jeep'},
-  {title: 'Quadriciclo', icon: 'offroad'},
-  {title: 'Mergulho', icon: 'scuba-diving'},
-  {title: 'Caminhada', icon: 'hiking'},
-  {title: 'Escalada', icon: 'climbing'},
-  {title: 'Rafting', icon: 'raft'},
-  {title: 'Surf', icon: 'surfboard'},
-  {title: 'Stake', icon: 'skateboard'},
-  {title: 'Pedalada', icon: 'bicycle'},
-  {title: 'Tirolesa', icon: 'zipline'},
-  {title: 'Passeio de Barco', icon: 'boat'},
-  {title: 'Salto de Paraquedas', icon: 'skydiving'},
-  {title: 'Asa Delta', icon: 'hang-gliding'},
-  {title: 'Montanhismo', icon: 'mountain-flag'},
-  {title: 'Bungee Jump', icon: 'bungee-jumping'},
-  {title: 'Rappel', icon: 'rappel'},
-];
-
 export function ExploreLocations() {
   const dispatch = useDispatch();
   const {exploreLocationsGuide} = useSelector(
     (state: RootStateProps) => state.guides,
   );
+  const {activities} = useSelector((state: RootStateProps) => state.options);
+
+  useEffect(() => {
+    dispatch(getActivitiesRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Page showHeader={false}>
@@ -99,7 +85,7 @@ export function ExploreLocations() {
         </Text.Subtitle>
         <Text.Title>Atividades em destaque</Text.Title>
         <ActivityList horizontal showsHorizontalScrollIndicator={false}>
-          {activitiesFilter.map((val, index) => (
+          {activities.map((val, index) => (
             <Button
               key={index}
               onPress={() => {}}
@@ -111,12 +97,12 @@ export function ExploreLocations() {
               textColor="white">
               <ColumnGroup>
                 {/* <Icon name="menu" size={24} color={theme.colors.white} /> */}
-                <CustomIcon name={val.icon} size={25} color="#FFF" />
+                <CustomIcon name={val.icon} size={30} color="#FFF" />
                 <Text.Small
                   alignment="center"
                   textColor="white"
                   textWeight="bold">
-                  {val.title}
+                  {val.name}
                 </Text.Small>
               </ColumnGroup>
             </Button>
@@ -130,14 +116,16 @@ export function ExploreLocations() {
           {exploreBrazilRegions.map((val, index) => (
             <LocationButton
               key={index}
-              onPress={() =>
-                RootNavigation.replace<LocationFeedFilterParams>(
-                  'LocationFeed',
-                  {
-                    activity: val?.title,
-                  },
-                )
-              }>
+              onPress={() => {
+                if (val?.title) {
+                  RootNavigation.replace<LocationFeedFilterParams>(
+                    'LocationFeed',
+                    {
+                      region: val?.title,
+                    },
+                  );
+                }
+              }}>
               <LocationImage
                 blurRadius={4}
                 source={{

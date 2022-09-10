@@ -6,8 +6,7 @@ export enum GuidesActions {
   SHOW_REVENUE_GUIDE = '@guides/SHOW_REVENUE_GUIDE',
   HIDE_REVENUE_GUIDE = '@guides/HIDE_REVENUE_GUIDE',
   HIDE_SUBSCRIPTION_GUIDE = '@guides/HIDE_SUBSCRIPTION_GUIDE',
-  SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS = '@guides/SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS',
-  HIDE_ITINERARY_PAYMENT_GUIDE = '@guides/HIDE_ITINERARY_PAYMENT_GUIDE',
+  HIDE_SUBSCRIPTION_CHECKOUT_GUIDE = '@guides/HIDE_SUBSCRIPTION_CHECKOUT_GUIDE',
   HIDE_WELCOME_GUIDE = '@guides/HIDE_WELCOME_GUIDE',
   HIDE_EXPLORE_LOCATIONS_GUIDE = '@guides/HIDE_EXPLORE_LOCATIONS_GUIDE',
   HIDE_LOCATION_DETAILS_GUIDE = '@guides/HIDE_LOCATION_DETAILS_GUIDE',
@@ -56,15 +55,9 @@ export function hideSubscriptionGuide() {
   };
 }
 
-export function showItineraryPaymentGuideSuccess() {
+export function hideSubscriptionCheckoutGuide() {
   return {
-    type: GuidesActions.SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS,
-  };
-}
-
-export function hideItineraryPaymentGuide() {
-  return {
-    type: GuidesActions.HIDE_ITINERARY_PAYMENT_GUIDE,
+    type: GuidesActions.HIDE_SUBSCRIPTION_CHECKOUT_GUIDE,
   };
 }
 

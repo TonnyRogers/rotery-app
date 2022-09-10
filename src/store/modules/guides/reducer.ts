@@ -9,7 +9,7 @@ interface InitalStateProps {
   profileGuide: boolean;
   revenuesGuide: boolean;
   subscriptionGuide: boolean;
-  itineraryPaymentGuide: boolean;
+  subscriptionCheckoutGuide: boolean;
   exploreLocationsGuide: boolean;
   locationDetailsGuide: boolean;
   chatsGuide: boolean;
@@ -26,7 +26,7 @@ const INITAL_STATE: InitalStateProps = {
   profileGuide: true,
   revenuesGuide: false,
   subscriptionGuide: true,
-  itineraryPaymentGuide: true,
+  subscriptionCheckoutGuide: true,
   welcomeGuide: true,
   exploreLocationsGuide: true,
   chatsGuide: true,
@@ -64,12 +64,8 @@ export default function guides(state = INITAL_STATE, action: ActionProps) {
         draft.subscriptionGuide = false;
         break;
       }
-      case GuidesActions.SHOW_ITINERARY_PAYMENT_GUIDE_SUCCESS: {
-        draft.itineraryPaymentGuide = true;
-        break;
-      }
-      case GuidesActions.HIDE_ITINERARY_PAYMENT_GUIDE: {
-        draft.itineraryPaymentGuide = false;
+      case GuidesActions.HIDE_SUBSCRIPTION_CHECKOUT_GUIDE: {
+        draft.subscriptionCheckoutGuide = false;
         break;
       }
       case GuidesActions.HIDE_WELCOME_GUIDE: {

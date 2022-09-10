@@ -22,6 +22,8 @@ import {
   processJoinItineraryPaymentRequest,
   processJoinItinerarySuccess,
   processJoinItineraryFailure,
+  processTipRequest,
+  processTipSuccess,
 } from './actions';
 import api from '../../../services/api';
 import {
@@ -29,6 +31,7 @@ import {
   CheckoutCustomerCardResponse,
   ProcessPaymentReponse,
   JoinItineraryWithPaymentResponse,
+  Tip,
 } from '../../../utils/types';
 import {translateError} from '../../../lib/utils';
 
@@ -200,6 +203,37 @@ export function* processJoinItinerary({
   }
 }
 
+export function* processTip({payload}: ReturnType<typeof processTipRequest>) {
+  try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(getCustomerFailure());
+      return;
+    }
+
+    const {processTipPayload} = payload;
+    const response: AxiosResponse<Tip> = yield call(api.post, '/tips', {
+      ...processTipPayload,
+    });
+    yield put(processTipSuccess(response.data));
+
+    Toast.show({
+      text1: 'Contribuição enviada ✅.',
+      text2: 'Obrigado',
+      position: 'bottom',
+      type: 'success',
+    });
+  } catch (error) {
+    yield put(processPaymentFailure());
+    Toast.show({
+      text1: 'Erro ao processar pagamento, tente novamente.',
+      position: 'bottom',
+      type: 'error',
+    });
+  }
+}
+
 export default all([
   takeLatest(CheckoutActions.GET_CUSTOMER_REQUEST, getCustomer),
   takeLatest(CheckoutActions.CREATE_CUSTOMER_REQUEST, createCustomer),
@@ -210,4 +244,5 @@ export default all([
     processJoinItinerary,
   ),
   takeLatest(CheckoutActions.REMOVE_CUSTOMER_CARD_REQUEST, removeCustomerCard),
+  takeLatest(CheckoutActions.PROCESS_TIP_REQUEST, processTip),
 ]);

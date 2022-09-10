@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 
 import api from '../../services/api';
 import NetInfo from '../../services/netinfo';
@@ -15,10 +15,19 @@ import ColumnGroup from '../../components/ColumnGroup';
 import {StarPicker} from '../../components/StarPicker';
 import TextArea from '../../components/TextArea';
 import Button from '../../components/Button';
-import {RateChatNotificationJsonData} from '../../utils/types';
+import {
+  RateChatNotificationJsonData,
+  CardTokenResponse,
+} from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
 import Toast from 'react-native-toast-message';
 import SplashScreen from '../../components/SplashScreen';
+import Input from '../../components/Input';
+import {formatBRL, realToUSCash} from '../../lib/mask';
+import {CardConfirm} from '../../components/CardConfirm';
+import {useDispatch, useSelector} from 'react-redux';
+import {processTipRequest} from '../../store/modules/checkout/actions';
+import {RootStateProps} from '../../store/modules/rootReducer';
 
 export interface RateChatRouteParams extends RateChatNotificationJsonData {}
 
@@ -33,11 +42,25 @@ export function RateChat({
     params: {guide, location},
   },
 }: RateChatProps) {
+  const dispatch = useDispatch();
   const [guideRating, setGuideRating] = useState(0);
   const [guideReview, setGuideReview] = useState('');
   const [locationRating, setLocationRating] = useState(0);
   const [locationReview, setLocationReview] = useState('');
+  const [webCardConfirmVisible, setWebCardConfirmVisible] = useState(false);
+  const [tipValue, setTipValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const validatedCard = useRef<CardTokenResponse>();
+  const {defaultCard} = useSelector((state: RootStateProps) => state.checkout);
+  const {user} = useSelector((state: RootStateProps) => state.auth);
+
+  function handleTipProcess() {
+    if (Number(realToUSCash(tipValue)) > 0) {
+      setWebCardConfirmVisible(true);
+    } else {
+      handleSendRatings();
+    }
+  }
 
   async function handleSendRatings() {
     if (guideRating === 0 || locationRating === 0) {
@@ -82,6 +105,25 @@ export function RateChat({
       });
       setLoading(false);
       return;
+    }
+
+    if (
+      Number(realToUSCash(tipValue)) > 0 &&
+      validatedCard.current &&
+      defaultCard &&
+      user
+    ) {
+      dispatch(
+        processTipRequest({
+          cardInfo: {
+            issuerId: String(defaultCard?.issuer.id),
+            paymentMethod: defaultCard?.payment_method.id,
+            token: validatedCard.current.id,
+          },
+          paymentAmount: String(realToUSCash(tipValue)),
+          user: {id: guide.id},
+        }),
+      );
     }
 
     setLoading(false);
@@ -136,12 +178,73 @@ export function RateChat({
             onChange={(review: string) => setLocationReview(review)}
           />
         </Card>
+        <Card marginHorizontal={0}>
+          <ColumnGroup isFlex={false}>
+            <Text.Title>Contribuir</Text.Title>
+            <Text alignment="center">
+              Mostre seu apoio a guias como {guide.username}, contribua com
+              algum valor que vai direto para ele.
+            </Text>
+            <Input
+              placeholder="R$0,00"
+              keyboardType="number-pad"
+              value={tipValue}
+              onChange={(value: string) =>
+                setTipValue(String(formatBRL(value)))
+              }
+            />
+            <RowGroup justify="center">
+              <Button
+                onPress={() => setTipValue(String(formatBRL('500')))}
+                customContent
+                sizeBorderRadius={10}
+                sizeWidth={8}
+                sizeHeight={4}
+                sizePadding={0}
+                sizeMargin="0 1rem 0 0"
+                bgColor="blue"
+                textColor="white">
+                <Text.Paragraph textWeight="bold" textColor="white">
+                  5,00
+                </Text.Paragraph>
+              </Button>
+              <Button
+                onPress={() => setTipValue(String(formatBRL('1500')))}
+                customContent
+                sizeBorderRadius={10}
+                sizeWidth={8}
+                sizeHeight={4}
+                sizePadding={0}
+                sizeMargin="0 1rem 0 0"
+                bgColor="blue"
+                textColor="white">
+                <Text.Paragraph textWeight="bold" textColor="white">
+                  15,00
+                </Text.Paragraph>
+              </Button>
+              <Button
+                onPress={() => setTipValue(String(formatBRL('2500')))}
+                customContent
+                sizeBorderRadius={10}
+                sizeWidth={8}
+                sizeHeight={4}
+                sizePadding={0}
+                bgColor="blue"
+                textColor="white">
+                <Text.Paragraph textWeight="bold" textColor="white">
+                  25,00
+                </Text.Paragraph>
+              </Button>
+            </RowGroup>
+            <Text>sugestão rápida de valores</Text>
+          </ColumnGroup>
+        </Card>
         <Button
-          onPress={handleSendRatings}
+          onPress={handleTipProcess}
           customContent
           sizeBorderRadius={10}
           sizePadding={0}
-          sizeMargin="1rem 0"
+          sizeMargin="1rem 0 2rem 0"
           bgColor="blue"
           textColor="white">
           <Text.Paragraph textWeight="bold" textColor="white">
@@ -149,6 +252,17 @@ export function RateChat({
           </Text.Paragraph>
         </Button>
       </PageContainer>
+      <CardConfirm
+        visible={webCardConfirmVisible}
+        amount={Number(realToUSCash(tipValue))}
+        onValidateCard={(card) => {
+          validatedCard.current = card;
+          handleSendRatings();
+        }}
+        onRequestClose={() => {
+          setWebCardConfirmVisible(false);
+        }}
+      />
       <SplashScreen visible={loading} />
     </Page>
   );

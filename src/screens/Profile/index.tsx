@@ -52,12 +52,12 @@ import {
   FileProps,
 } from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
-import {ScrollView} from 'react-native';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
 import {useUserIsHost} from '../../hooks/useUserIsHost';
 import {YupValidationMessages} from '../../utils/enums';
 import RowGroup from '../../components/RowGroup';
+import {SimpleList} from '../../components/SimpleList';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(YupValidationMessages.REQUIRED),
@@ -87,9 +87,6 @@ const Profile: React.FC = () => {
   } = useForm({resolver: yupResolver(validationSchema)});
   const {data, loading} = useSelector((state: RootStateProps) => state.profile);
   const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
-  const {data: subscriptionData} = useSelector(
-    (state: RootStateProps) => state.subscription,
-  );
 
   useEffect(() => {
     if (data?.file && data.file?.url) {
@@ -248,28 +245,23 @@ const Profile: React.FC = () => {
                 </Text>
               </User>
             </Card>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{height: 70, margin: 10}}>
+            <SimpleList isHorizontal>
               {conditionalRender(
-                subscriptionData && (
-                  <Button
-                    onPress={() => financialNavigation()}
-                    customContent
-                    sizeHeight={7}
-                    sizeWidth={7}
-                    sizeMargin="0 2rem 0 0"
-                    bgColor="blueTransparent"
-                    textColor="white">
-                    <ColumnGroup>
-                      <Icon name="wallet-outline" size={24} color="#4885fd" />
-                      <Text.Small textColor="blue" textWeight="bold">
-                        Carteira
-                      </Text.Small>
-                    </ColumnGroup>
-                  </Button>
-                ),
+                <Button
+                  onPress={() => financialNavigation()}
+                  customContent
+                  sizeHeight={7}
+                  sizeWidth={7}
+                  sizeMargin="0 2rem 0 0"
+                  bgColor="blueTransparent"
+                  textColor="white">
+                  <ColumnGroup>
+                    <Icon name="wallet-outline" size={24} color="#4885fd" />
+                    <Text.Small textColor="blue" textWeight="bold">
+                      Ganhos
+                    </Text.Small>
+                  </ColumnGroup>
+                </Button>,
                 <Button
                   onPress={() => financialNavigation()}
                   customContent
@@ -303,7 +295,7 @@ const Profile: React.FC = () => {
                   </ColumnGroup>
                 </Button>
               )}
-            </ScrollView>
+            </SimpleList>
             <Card>
               <InputContent>
                 <Input

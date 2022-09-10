@@ -186,7 +186,9 @@ export function Welcome() {
             </RowGroup>
           </>
         )}
-        <Card marginHorizontal={0}>
+        <Card
+          marginHorizontal={0}
+          containerStyle={{height: 250, flex: undefined}}>
           <Text.Title>Primeiros Passos</Text.Title>
           <Text>
             Antes de mais nada existem algumas tarefas que preparamos, elas nos
@@ -202,6 +204,7 @@ export function Welcome() {
                 align="center"
                 animationJson={confirmAnimation}
                 height={120}
+                loop={false}
               />
               <Text.Paragraph
                 textWeight="bold"
@@ -213,17 +216,17 @@ export function Welcome() {
           )}
         </Card>
         <ImageContainer.Overlayed
-          height={100}
+          height={110}
           url="https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg">
           <>
             <Text.Title textWeight="bold" textColor="white">
               Principais Destinos de Inverno
             </Text.Title>
             <Text textWeight="regular" textColor="white">
-              Confira os locais mais procurados nesta estação do ano
+              Confira os locais mais procurados nesta estação do ano...
             </Text>
-            <Text textWeight="regular" textColor="white">
-              🚧 Indisponivel no momento🚧
+            <Text textWeight="bold" textColor="white">
+              🚧 Indisponivel no momento 🚧
             </Text>
           </>
         </ImageContainer.Overlayed>

@@ -27,6 +27,7 @@ import {useVibration} from '../../hooks/useVibration';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import PickerInput from '../../components/PickerInput';
 import {Activity, ActivityList} from './styles';
+import CustomIcon from '../../components/CustomIcon';
 
 interface PageFilters {
   region?: string;
@@ -202,7 +203,7 @@ export function LocationFeed({route}: LocationFeedProps) {
                   selected={item.id === locationActivity}
                   key={index}
                   onPress={() => setLocationActivity(item.id)}>
-                  <Icon name="menu" size={24} color="#FFF" />
+                  <CustomIcon name={item.icon} size={24} color="#FFF" />
                   <Text.Small textColor="white">{item.name}</Text.Small>
                 </Activity>
               ))}

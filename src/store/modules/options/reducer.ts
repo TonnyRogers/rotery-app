@@ -5,6 +5,7 @@ export interface ActivityProps {
   id: number;
   name: string;
   value: string;
+  icon: string;
 }
 
 export interface TransportProps {

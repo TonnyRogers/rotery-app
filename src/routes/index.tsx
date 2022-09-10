@@ -286,6 +286,7 @@ const Routes = () => {
           detachInactiveScreens
           screenOptions={{
             headerShown: false,
+            gestureEnabled: false,
           }}
           initialRouteName={signed ? 'Welcome' : 'SignIn'}>
           {signed ? (

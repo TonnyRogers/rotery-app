@@ -1,6 +1,7 @@
 import {Location} from '../../../utils/types';
 import {LocationActions} from './actions';
 import produce from 'immer';
+import {AuthActions} from '../auth/actions';
 
 type InitalState = {
   loading: boolean;
@@ -13,7 +14,7 @@ const INITIAL_STATE: InitalState = {
 };
 
 interface ActionProps {
-  type: LocationActions;
+  type: string;
   payload: {
     locations: Location[];
     page: number;
@@ -39,6 +40,11 @@ export default function locations(state = INITIAL_STATE, action: ActionProps) {
       }
       case LocationActions.GET_LOCATION_FEED_FAILURE: {
         draft.loading = false;
+        break;
+      }
+      case AuthActions.LOGOUT: {
+        draft.locations = INITIAL_STATE.locations;
+        draft.loading = INITIAL_STATE.loading;
         break;
       }
     }

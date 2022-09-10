@@ -55,6 +55,9 @@ export function translateError(errorMessage: string): string {
       translated =
         'Você não pode setar a capacidade menor que o número de membros.';
       break;
+    case 'Invalid document.':
+      translated = 'Documento Inválido.';
+      break;
 
     default:
       translated = `${errorMessage}`;

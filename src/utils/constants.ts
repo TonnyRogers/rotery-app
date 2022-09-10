@@ -1,7 +1,7 @@
 export const travelerProfileGuideImages = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile1.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile-new.png',
     withInfo: true,
     title: 'Adicionando Foto',
     message:
@@ -10,7 +10,7 @@ export const travelerProfileGuideImages = [
   },
   {
     id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile2.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile-new1.png',
     withInfo: true,
     title: 'Preenchendo seus dados',
     message:
@@ -19,36 +19,19 @@ export const travelerProfileGuideImages = [
   },
   {
     id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-traveler-profile-buttons.webp',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile-backpacker.png',
+    withInfo: true,
+    title: 'Assinatura',
+    message:
+      'Assinando o plano para mochileiros você tem mais vantagens saiba mais clicando aqui. (a assinatura não é obrigatória mas te da acesso a mais funcionalidades)',
+    isAnimation: false,
+  },
+  {
+    id: 3,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile-backpacker2.png',
     withInfo: true,
     title: 'Acessar Carteira',
-    message:
-      'Clicando aqui você vai pode acompanhar seus pagamentos de roteiros e solicitar ajuda caso tenha problemas.',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-wallet-screen.webp',
-    withInfo: true,
-    title: 'Carteira',
-    message:
-      'Clique em um dos itens da listagem de compras para ver os detalhes.',
-    isAnimation: false,
-  },
-  {
-    id: 5,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenue-detail-1.webp',
-    withInfo: true,
-    title: 'Detalhe do Pagamento',
-    message: 'Além de ver os detalhes do pagamento, você pode solicitar ajuda.',
-    isAnimation: false,
-  },
-  {
-    id: 6,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenue-help.webp',
-    withInfo: true,
-    title: 'Ajuda com Pagamento',
-    message: 'Detalhe o problema e logo vamos te contactar para resolver.',
+    message: 'Aqui você pode cadastrar e gerenciar seus cartões.',
     isAnimation: false,
   },
 ];
@@ -56,7 +39,7 @@ export const travelerProfileGuideImages = [
 export const hostProfileGuideImages = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile1.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile-new.png',
     withInfo: true,
     title: 'Adicionando Foto',
     message:
@@ -65,20 +48,11 @@ export const hostProfileGuideImages = [
   },
   {
     id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile2.png',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-profile-new1.png',
     withInfo: true,
     title: 'Preenchendo seus dados',
     message:
       'É muito importante saber quem é você de verdade, por isso seja sincero ao preencher seu perfil.',
-    isAnimation: false,
-  },
-  {
-    id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-host-profile-buttons.webp',
-    withInfo: true,
-    title: 'Assinatura e Carteira',
-    message:
-      'Assinando o plano para host você vai ter acesso a carteira e poder acompanhar sua assinatura. (a assinatura não é obrigatória mas te da acesso a mais funcionalidades)',
     isAnimation: false,
   },
 ];
@@ -216,17 +190,35 @@ export const feedGuideImages = [
 
 export const revenuesGuideImages = [
   {
-    id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenue-1.webp',
+    id: 0,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenues1.png',
     withInfo: true,
-    title: 'Detalhes da movimentação',
+    title: 'Tela de faturamento',
     message:
-      'Você pode conferir os detalhes dos pagamentos dos seus roteiros na lista de movimentação.',
+      'Aqui você pode acompanhar as contribuições enviadas pelos mochileiros que você ajudou.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenues2.png',
+    withInfo: true,
+    title: 'Dia de Trânsferencia',
+    message:
+      'Essa data é o dia de corte em que vamos limitar para tranferir o valor acomualdo (desse dia até o primeiro do mês), você pode cadastra-lo na tela de configurações de faturamento.',
+    isAnimation: false,
+  },
+  {
+    id: 4,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenues-config.png',
+    withInfo: true,
+    title: 'Configurando dia de pagamento',
+    message:
+      'Para receber pelo app você precisa cadastrar seus dados bancários e definir uma data de corte (data da transferência).',
     isAnimation: false,
   },
   {
     id: 2,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenue-detail-1.webp',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenues-reqeust-help1.png',
     withInfo: true,
     title: 'Ajuda com movimentação 1/2',
     message: 'Caso haja algum problema você pode solicitar ajuda pelo app.',
@@ -234,41 +226,40 @@ export const revenuesGuideImages = [
   },
   {
     id: 3,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenue-help.webp',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenues-reqeust-help2.png',
     withInfo: true,
     title: 'Ajuda com movimentação 2/2',
     message:
-      'Detalhe o problema e logo em seguida vamos te contactar por e-mail ou telefone.',
-    isAnimation: false,
-  },
-  {
-    id: 4,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-revenue-config.webp',
-    withInfo: true,
-    title: 'Configurando dia de pagamento',
-    message:
-      'Para receber pelo app você precisa cadastrar seus dados bancários e definir uma data de corte (data da transferência).',
+      'Detalhe o problema e logo em seguida vamos te contactar por e-mail ou telefone, lembrando que o limite de caracteres é de 255.',
     isAnimation: false,
   },
 ];
 
-export const travelerPaymentGuideImages = [
+export const subscriptionCheckoutGuideImages = [
   {
     id: 1,
-    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-itinerary-payment-1.webp',
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-checkout-new1.png',
     withInfo: true,
-    title: 'Pagando Roteiro Pelo App 1/2',
+    title: 'Selecionando Cartão 1/2',
+    message: 'Selecione sua forma de pagamento clicando aqui.',
+    isAnimation: false,
+  },
+  {
+    id: 1,
+    url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-checkout-new2.png',
+    withInfo: true,
+    title: 'Selecionando Cartão 2/2',
     message:
-      'Selecione seu cartão ou adicione um novo para liberar o pagamento.',
+      'Após isso seus cartões cadastrados serão listados aqui, caso não tenha nenhum adicione clicando aqui e preenchendo os dados.',
     isAnimation: false,
   },
   {
     id: 1,
     url: 'https://rotery-filestore.nyc3.digitaloceanspaces.com/guides-itinerary-payment-2.webp',
     withInfo: true,
-    title: 'Pagando Roteiro Pelo App 2/2',
+    title: 'Confirmando Pagamento',
     message:
-      'Uma vez que o cartão for adicionado, você pode prosseguir com o pagamento e selecionar a quantidade de parcelas caso queira.',
+      'Após selecionar o cartão e código você verá o botão de pagamento ficar ativo.',
     isAnimation: false,
   },
 ];

@@ -17,6 +17,7 @@ interface ActionProps {
     cardId: string;
     paymentResponse: ProcessPaymentReponse;
     paymentJoinResponse: JoinItineraryWithPaymentResponse;
+    selectedCard: CheckoutCustomerCardResponse;
   };
 }
 
@@ -24,12 +25,14 @@ interface InitialStateProps {
   checkoutStatus: PaymentSatatusDetailType | null;
   loading: boolean;
   customer: CheckoutCustomerResponse | null;
+  defaultCard: CheckoutCustomerCardResponse | null;
 }
 
 const INITIAL_STATE: InitialStateProps = {
   loading: false,
   customer: null,
   checkoutStatus: null,
+  defaultCard: null,
 };
 
 export default function checkout(state = INITIAL_STATE, action: ActionProps) {
@@ -171,9 +174,27 @@ export default function checkout(state = INITIAL_STATE, action: ActionProps) {
         draft.loading = false;
         break;
       }
+      case CheckoutActions.PROCESS_TIP_REQUEST: {
+        draft.loading = true;
+        break;
+      }
+      case CheckoutActions.PROCESS_TIP_SUCCESS: {
+        draft.loading = false;
+        break;
+      }
+      case CheckoutActions.PROCESS_TIP_FAILURE: {
+        draft.loading = false;
+        break;
+      }
+      case CheckoutActions.SET_DEFAULT_CARD: {
+        draft.defaultCard = action.payload.selectedCard;
+        break;
+      }
       case AuthActions.LOGOUT: {
         draft.customer = INITIAL_STATE.customer;
         draft.loading = INITIAL_STATE.loading;
+        draft.checkoutStatus = INITIAL_STATE.checkoutStatus;
+        draft.defaultCard = INITIAL_STATE.defaultCard;
         break;
       }
       default:

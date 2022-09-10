@@ -51,3 +51,10 @@ export enum AppRoutes {
   PROFILE = 'Profile',
   CONNECTIONS = 'Connections',
 }
+
+export enum TipPaymentStatus {
+  PAID = 'paid',
+  PENDING = 'pending',
+  REFUNDED = 'refunded',
+  REFUSED = 'refused',
+}

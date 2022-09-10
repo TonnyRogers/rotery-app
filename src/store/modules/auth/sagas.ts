@@ -25,6 +25,8 @@ import {getProfileRequest} from '../profile/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {AxiosResponse} from 'axios';
 import {UserProps} from '../../../utils/types';
+import {getNotificationsRequest} from '../notifications/actions';
+import {getBankAccountRequest} from '../bankAccount/actions';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -58,15 +60,17 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     api.defaults.headers.Authorization = `Bearer ${access_token}`;
 
     yield put(loginSuccess(access_token, user));
+    RootNavigation.replace('Welcome');
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getConnectionsRequest());
+    yield put(getNotificationsRequest());
     // yield put(getNextItinerariesRequest());
     // yield put(getMessagesRequest());
 
     if (user.isHost) {
       // yield put(getItinerariesRequest());
-      // yield put(getBankAccountRequest());
+      yield put(getBankAccountRequest());
     }
   } catch (error) {
     yield put(loginFailure());

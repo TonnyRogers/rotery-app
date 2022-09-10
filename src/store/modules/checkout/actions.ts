@@ -4,6 +4,7 @@ import {
   ProcessPaymentPayload,
   ProcessPaymentReponse,
   JoinItineraryWithPaymentResponse,
+  Tip,
 } from '../../../utils/types';
 
 export enum CheckoutActions {
@@ -25,7 +26,11 @@ export enum CheckoutActions {
   PROCESS_JOIN_ITINERARY_REQUEST = '@checkout/PROCESS_JOIN_ITINERARY_REQUEST',
   PROCESS_JOIN_ITINERARY_SUCCESS = '@checkout/PROCESS_JOIN_ITINERARY_SUCCESS',
   PROCESS_JOIN_ITINERARY_FAILURE = '@checkout/PROCESS_JOIN_ITINERARY_FAILURE',
+  PROCESS_TIP_REQUEST = '@checkout/PROCESS_TIP_REQUEST',
+  PROCESS_TIP_SUCCESS = '@checkout/PROCESS_TIP_SUCCESS',
+  PROCESS_TIP_FAILURE = '@checkout/PROCESS_TIP_FAILURE',
   RESET_STATUS = '@checkout/RESET_STATUS',
+  SET_DEFAULT_CARD = '@checkout/SET_DEFAULT_CARD',
 }
 
 export function getCustomerRequest(id: string) {
@@ -162,5 +167,46 @@ export function processJoinItineraryFailure() {
 export function resetCheckoutStatus() {
   return {
     type: CheckoutActions.RESET_STATUS,
+  };
+}
+
+export function setDefaultCard(selectedCard: CheckoutCustomerCardResponse) {
+  return {
+    type: CheckoutActions.SET_DEFAULT_CARD,
+    payload: {
+      selectedCard,
+    },
+  };
+}
+
+export interface ProcessTip {
+  user: {
+    id: number;
+  };
+  paymentAmount: string;
+  cardInfo: {
+    token: string;
+    paymentMethod: string;
+    issuerId: string;
+  };
+}
+
+export function processTipRequest(processTipPayload: ProcessTip) {
+  return {
+    type: CheckoutActions.PROCESS_TIP_REQUEST,
+    payload: {processTipPayload},
+  };
+}
+
+export function processTipSuccess(tip: Tip) {
+  return {
+    type: CheckoutActions.PROCESS_TIP_SUCCESS,
+    payload: {tip},
+  };
+}
+
+export function processTipFailure() {
+  return {
+    type: CheckoutActions.PROCESS_TIP_FAILURE,
   };
 }

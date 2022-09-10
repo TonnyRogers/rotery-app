@@ -58,7 +58,7 @@ const RevenuesConfig = () => {
     setValue,
     watch,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<formData>({resolver: yupResolver(validationSchema)});
   const [bankIsOpen, setBankIsOpen] = useState(false);
   const [accountTypeIsOpen, setAccountTypeIsOpen] = useState(false);
   const {data, loading} = useSelector(
@@ -123,9 +123,7 @@ const RevenuesConfig = () => {
               style={{
                 flex: 1,
               }}>
-              <Text.Title alignment="center">
-                Configuração de Faturamento
-              </Text.Title>
+              <Text.Title alignment="center">Configuração de Ganhos</Text.Title>
             </View>
           </RowGroup>
         </Header>
