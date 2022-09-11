@@ -2,7 +2,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 
 import Page from '../../components/Page';
 import {PageContainer} from '../../components/PageContainer';

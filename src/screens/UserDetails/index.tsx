@@ -4,12 +4,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-toast-message';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {makeConnectionRequest} from '../../store/modules/connections/actions';
 
 import {
-  Content,
   CardHeader,
   BackButton,
   CardCotent,

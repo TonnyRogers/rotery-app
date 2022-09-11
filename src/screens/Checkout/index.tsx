@@ -14,6 +14,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import LottieView from 'lottie-react-native';
 
+import {paymentToken} from '../../providers/payment';
+
 import {BackButton, Header, Container} from './styles';
 import Text from '../../components/Text';
 import Page from '../../components/Page';
@@ -54,6 +56,7 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {subscriptionCheckoutGuideImages} from '../../utils/constants';
 import {hideSubscriptionCheckoutGuide} from '../../store/modules/guides/actions';
+
 const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 const processingAnimation = require('../../../assets/animations/animation_processing_card.json');
 const blockAnimation = require('../../../assets/animations/animation_block.json');
@@ -90,12 +93,6 @@ interface CheckoutProps {
     params: CheckoutRouteParamsProps;
   };
 }
-
-const paymentToken = {
-  prod: 'APP_USR-dbb42677-45aa-4d3d-9786-94b2ea4ddcf8',
-  dev: 'TEST-53f31d5a-bca4-4713-bfc4-1852f76d5fa5',
-  subscription: 'APP_USR-c69183da-d723-4eed-977d-071de85b4c9e',
-}; // production
 
 const Checkout = ({route}: CheckoutProps) => {
   const dispatch = useDispatch();
@@ -166,6 +163,7 @@ const Checkout = ({route}: CheckoutProps) => {
   const cardConfirmWebViewCb = (e: WebViewMessageEvent) => {
     const dataParse = JSON.parse(e.nativeEvent.data);
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
+    console.tron.log('CARD', cardTokenPayload);
     if (dataParse.message === 'ok' && customer !== null) {
       if (selectedCard && cardTokenPayload.id) {
         switch (paymentType) {
@@ -205,7 +203,7 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const selectCard = (card: CheckoutCustomerCardResponse, amount: number) => {
     injectCardconfirmJs.current = `
-      mp = new MercadoPago('${paymentToken.subscription}');
+      mp = new MercadoPago('${paymentToken.dev}');
       document.querySelector('#cardId').value = ${card.id};
       document.querySelector('#transactionAmmount').value = ${amount.toFixed(
         2,
@@ -220,7 +218,7 @@ const Checkout = ({route}: CheckoutProps) => {
   };
 
   const injectCheckoutJs = `
-    mp = new MercadoPago('${paymentToken.subscription}');
+    mp = new MercadoPago('${paymentToken.dev}');
     document.querySelector('#transactionAmmount').value = ${itineraryAmount.total.toFixed(
       2,
     )};
@@ -231,7 +229,8 @@ const Checkout = ({route}: CheckoutProps) => {
     if (profile?.user.customerId && !customer) {
       dispatch(getCustomerRequest(profile?.user.customerId));
     }
-  }, [customer, dispatch, profile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     return () => {

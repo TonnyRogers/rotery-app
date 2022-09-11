@@ -33,7 +33,7 @@ import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
 import Alert from '../../components/Alert';
 import {formatPrice} from '../../lib/utils';
-import api from '../../services/api';
+import api from '../../providers/api';
 import Tag from '../../components/Tag';
 import {HelpRequestRouteParamsProps} from '../HelpRequest';
 

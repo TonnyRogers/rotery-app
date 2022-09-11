@@ -2,7 +2,7 @@ import React, {useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 
 import {
   Container,

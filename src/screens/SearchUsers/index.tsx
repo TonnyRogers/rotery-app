@@ -3,7 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 
 import {
   Container,

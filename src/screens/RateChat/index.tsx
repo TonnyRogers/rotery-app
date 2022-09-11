@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 
-import api from '../../services/api';
-import NetInfo from '../../services/netinfo';
+import api from '../../providers/api';
+import NetInfo from '../../providers/netinfo';
 import * as RootNavigation from '../../RootNavigation';
 
 import Page from '../../components/Page';

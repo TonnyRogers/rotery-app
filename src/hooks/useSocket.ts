@@ -1,5 +1,5 @@
 import {useRef, useEffect} from 'react';
-import websocket, {SocketClient} from '../services/websocket';
+import websocket, {SocketClient} from '../providers/websocket';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootStateProps} from '../store/modules/rootReducer';
 import {

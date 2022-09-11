@@ -15,9 +15,9 @@ import {
   updateBankAccountSuccess,
 } from './actions';
 import {BankAccount} from '../../../utils/types';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {translateError} from '../../../lib/utils';
-import NetInfo from '../../../services/netinfo';
+import NetInfo from '../../../providers/netinfo';
 
 export function* createBankAccount({
   payload,

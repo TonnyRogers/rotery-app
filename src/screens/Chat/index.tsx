@@ -42,8 +42,8 @@ import {useUserIsHost} from '../../hooks/useUserIsHost';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {beginChatGuide} from '../../utils/constants';
-import api from '../../services/api';
-import netConnection from '../../services/netinfo';
+import api from '../../providers/api';
+import netConnection from '../../providers/netinfo';
 import Toast from 'react-native-toast-message';
 import ColumnGroup from '../../components/ColumnGroup';
 

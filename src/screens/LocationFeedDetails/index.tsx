@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 
 import * as RootNavigation from '../../RootNavigation';
-import api from '../../services/api';
+import api from '../../providers/api';
 
 import Page from '../../components/Page';
 import {PageContainer} from '../../components/PageContainer';

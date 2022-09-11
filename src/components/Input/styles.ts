@@ -33,7 +33,7 @@ export const Content = styled.View<ContentViewProps>`
     props.hasError ? theme.colors.red : theme.colors.borderBottom};
   position: relative;
   background: ${(props) =>
-    props.readOnly ? theme.colors.disabled : theme.colors.white};
+    props.readOnly ? theme.colors.disabled : theme.colors.transparent};
 `;
 
 export const ButtonIcon = styled.TouchableOpacity`

@@ -12,7 +12,7 @@ import {
   wsSendChatMessageSuccess,
 } from './actions';
 import {RootStateProps} from '../rootReducer';
-import websocket from '../../../services/websocket';
+import websocket from '../../../providers/websocket';
 import {formatChatName} from '../../../lib/utils';
 import {Subscription, ChatMessage} from '../../../utils/types';
 import {getSubscriptionSuccess} from '../subscription/actions';

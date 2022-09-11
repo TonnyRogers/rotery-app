@@ -2,8 +2,8 @@ import {call, put, all, takeLatest} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 import {AxiosResponse} from 'axios';
 
-import NetInfo from '../../../services/netinfo';
-import api from '../../../services/api';
+import NetInfo from '../../../providers/netinfo';
+import api from '../../../providers/api';
 
 import {
   ChatActions,

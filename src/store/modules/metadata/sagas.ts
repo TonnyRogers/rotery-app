@@ -6,8 +6,8 @@ import {
   getFirstStepsFailure,
   getFirstStepsSuccess,
 } from './actions';
-import NetInfo from '../../../services/netinfo';
-import api from '../../../services/api';
+import NetInfo from '../../../providers/netinfo';
+import api from '../../../providers/api';
 
 function* getFirstStep() {
   const info = yield call(NetInfo);

@@ -33,9 +33,9 @@ import {
 import WebView from '../../components/WebView';
 import {WebViewMessageEvent} from 'react-native-webview';
 import Toast from 'react-native-toast-message';
-import {paymentToken} from '../Checkout';
 import SplashScreen from '../../components/SplashScreen';
 import Alert from '../../components/Alert';
+import {paymentToken} from '../../providers/payment';
 
 const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
@@ -105,7 +105,7 @@ const Wallet = () => {
 
   return (
     <Page showHeader={false}>
-      <PageContainer isScrollable={false} bgColor="white">
+      <PageContainer isScrollable={false}>
         <Header>
           <RowGroup justify="space-between" align="center">
             <Button

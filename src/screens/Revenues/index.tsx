@@ -10,7 +10,7 @@ import Text from '../../components/Text';
 import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
 import Page from '../../components/Page';
-import api from '../../services/api';
+import api from '../../providers/api';
 import {TipRevenueResponse} from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
 import {formatPrice} from '../../lib/utils';

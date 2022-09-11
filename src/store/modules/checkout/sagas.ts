@@ -2,7 +2,7 @@ import {takeLatest, put, call, all} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 import {AxiosResponse} from 'axios';
 
-import NetInfo from '../../../services/netinfo';
+import NetInfo from '../../../providers/netinfo';
 import {
   CheckoutActions,
   getCustomerRequest,
@@ -25,7 +25,7 @@ import {
   processTipRequest,
   processTipSuccess,
 } from './actions';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {
   CheckoutCustomerResponse,
   CheckoutCustomerCardResponse,

@@ -3,8 +3,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 
 import {ConnectionsProps} from '../../utils/types';
-import api from '../../services/api';
-import NetInfo from '../../services/netinfo';
+import api from '../../providers/api';
+import NetInfo from '../../providers/netinfo';
 
 import {
   ConnectionList,

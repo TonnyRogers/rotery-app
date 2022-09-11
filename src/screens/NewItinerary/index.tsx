@@ -80,7 +80,7 @@ import SplashScreen from '../../components/SplashScreen';
 import {newGuideImages} from '../../utils/constants';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import {theme} from '../../utils/theme';
-import api from '../../services/api';
+import api from '../../providers/api';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 import {translateError} from '../../lib/utils';
 import {YupValidationMessages} from '../../utils/enums';

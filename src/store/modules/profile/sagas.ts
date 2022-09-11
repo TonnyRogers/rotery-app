@@ -2,8 +2,8 @@ import {all, takeLatest, put, call} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 import {AxiosResponse} from 'axios';
 
-import api from '../../../services/api';
-import NetInfo from '../../../services/netinfo';
+import api from '../../../providers/api';
+import NetInfo from '../../../providers/netinfo';
 import {
   getProfileSuccess,
   getProfileFail,

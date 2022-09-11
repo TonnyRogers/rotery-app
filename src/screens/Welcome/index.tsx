@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {AxiosResponse} from 'axios';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 import * as RootNavigation from '../../RootNavigation';
 const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 

@@ -9,8 +9,6 @@ import Toast from 'react-native-toast-message';
 
 import CodePush from 'react-native-code-push';
 
-import './services/window';
-
 import './config/ReactotronConfig';
 import {store, persistor} from './store';
 import Routes from './routes';

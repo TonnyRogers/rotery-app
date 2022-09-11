@@ -4,7 +4,7 @@ import * as RootNavigation from '../../RootNavigation';
 
 import Page from '../../components/Page';
 import {ItineraryProps} from '../../utils/types';
-import api from '../../services/api';
+import api from '../../providers/api';
 import SplashScreen from '../../components/SplashScreen';
 import DynamicFeedItineraryDetails from './feed';
 import Empty from '../../components/Empty';

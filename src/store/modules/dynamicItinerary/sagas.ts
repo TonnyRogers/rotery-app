@@ -2,8 +2,8 @@ import {takeLatest, put, call, all} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-toast-message';
 
-import api from '../../../services/api';
-import NetInfo from '../../../services/netinfo';
+import api from '../../../providers/api';
+import NetInfo from '../../../providers/netinfo';
 import * as RootNavigation from '../../../RootNavigation';
 import {
   getDetailsRequest,

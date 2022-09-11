@@ -9,7 +9,7 @@ import {Platform} from 'react-native';
 
 import {navigationRef} from '../RootNavigation';
 import * as RootNavigation from '../RootNavigation';
-import api from '../services/api';
+import api from '../providers/api';
 const Stack = createStackNavigator();
 
 import SignIn from '../screens/SignIn';

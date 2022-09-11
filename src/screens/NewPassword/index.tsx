@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 import {TextInput} from 'react-native';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 import * as RootNavigation from '../../RootNavigation';
 
 import {

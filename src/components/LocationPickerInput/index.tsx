@@ -11,7 +11,7 @@ import {
 } from './styles';
 import Text from '../Text';
 import Input from '../Input';
-import tomtomApi from '../../services/tomtomApi';
+import tomtomApi from '../../providers/tomtomApi';
 import {TomTomResult, PlacesSearchGeo} from '../../utils/types';
 import DismissKeyboad from '../DismissKeyboad';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';

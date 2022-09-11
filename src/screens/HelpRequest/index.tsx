@@ -18,7 +18,7 @@ import DismissKeyboad from '../../components/DismissKeyboad';
 import Divider from '../../components/Divider';
 import TextArea from '../../components/TextArea';
 import Tag from '../../components/Tag';
-import api from '../../services/api';
+import api from '../../providers/api';
 import {
   EmailHelpRequestTypeTypes,
   Revenue,

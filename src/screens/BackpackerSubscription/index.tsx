@@ -32,7 +32,7 @@ import Divider from '../../components/Divider';
 import ImageContainer from '../../components/ImageContainer';
 import Card from '../../components/Card';
 import {SimpleList} from '../../components/SimpleList';
-import api from '../../services/api';
+import api from '../../providers/api';
 
 export function BackpackerSubscription() {
   const dispatch = useDispatch();

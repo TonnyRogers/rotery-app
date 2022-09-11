@@ -13,8 +13,6 @@ import Text from '../../components/Text';
 import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
 import Page from '../../components/Page';
-// import api from '../../services/api';
-// import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
 import Input from '../../components/Input';
 import PickerInput from '../../components/PickerInput';

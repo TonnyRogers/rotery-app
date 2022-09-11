@@ -123,7 +123,7 @@ const SignUp: React.FC = () => {
 
   return (
     <Page showHeader={false}>
-      <PageContainer bgColor="white" isScrollable={false}>
+      <PageContainer isScrollable={false}>
         {isFirstStepVisible && (
           <>
             <Header>

@@ -6,7 +6,7 @@ import {
   NotificationsProps,
   ItineraryMemberAcceptWsResponse,
 } from '../../../utils/types';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {
   getNotificationsSuccess,
   setNoticationReadedRequest,

@@ -3,9 +3,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-toast-message';
 import messaging from '@react-native-firebase/messaging';
 
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {RootStateProps} from '../rootReducer';
-import NetInfo from '../../../services/netinfo';
+import NetInfo from '../../../providers/netinfo';
 import {translateError} from '../../../lib/utils';
 import * as RootNavigation from '../../../RootNavigation';
 

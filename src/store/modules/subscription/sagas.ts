@@ -18,7 +18,7 @@ import {
 } from './actions';
 import {AxiosResponse} from 'axios';
 import {Subscription} from '../../../utils/types';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {showRevenueGuideSuccess} from '../guides/actions';
 
 export function* getSubscription() {

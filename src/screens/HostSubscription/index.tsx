@@ -36,7 +36,7 @@ import {
 } from '../../store/modules/subscription/actions';
 import Alert from '../../components/Alert';
 import Tag from '../../components/Tag';
-import api from '../../services/api';
+import api from '../../providers/api';
 import {AxiosResponse} from 'axios';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
