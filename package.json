@@ -1,6 +1,6 @@
 {
   "name": "roteryApp",
-  "version": "1.8.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -39,6 +39,7 @@
     "react-hook-form": "^7.11.0",
     "react-native": "0.66.4",
     "react-native-code-push": "^6.3.0",
+    "react-native-dotenv": "^3.3.1",
     "react-native-dropdown-picker": "^5.1.21",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-image-crop-picker": "^0.37.2",
@@ -68,6 +69,7 @@
     "@react-native-community/eslint-config": "^1.1.0",
     "@types/jest": "^25.2.3",
     "@types/react-native": "^0.63.2",
+    "@types/react-native-dotenv": "^0.2.0",
     "@types/react-native-vector-icons": "^6.4.5",
     "@types/react-redux": "^7.1.9",
     "@types/react-test-renderer": "^16.9.2",
