@@ -17,8 +17,8 @@
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
-      android:icon="@mipmap/icon"
-      android:roundIcon="@mipmap/icon"
+      android:icon="@drawable/icon"
+      android:roundIcon="@drawable/icon"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:requestLegacyExternalStorage="true"
@@ -26,7 +26,7 @@
       >
       <meta-data
         android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@mipmap/ic_notification" 
+        android:resource="@drawable/ic_notification" 
       />
 
       <meta-data
@@ -36,18 +36,23 @@
       />
 
       <activity
+        android:name=".SplashActivity"
         android:theme="@style/SplashTheme"
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-        android:launchMode="singleTop"
-        android:windowSoftInputMode="adjustResize"
-      >
+        android:label="@string/app_name">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="true"
+      />
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
 

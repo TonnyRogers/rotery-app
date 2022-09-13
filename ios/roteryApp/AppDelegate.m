@@ -5,6 +5,7 @@
 #import <AppCenterAnalytics/AppCenterAnalytics.h>
 #import <AppCenterCrashes/AppCenterCrashes.h>
 #import "AppDelegate.h"
+#import "RNSplashScreen.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -84,6 +85,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     [MSACAnalytics class],
     [MSACCrashes class]
   ]];
+  [RNSplashScreen show];
   return YES;
 }
 

@@ -1,9 +1,10 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, LogBox} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import {ThemeProvider} from 'styled-native-components';
+import SplashScreen from 'react-native-splash-screen';
 
 import Toast from 'react-native-toast-message';
 
@@ -34,6 +35,10 @@ const App = () => {
       zIndex: value,
     }),
   };
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   return (
     <Provider store={store}>
