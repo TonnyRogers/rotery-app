@@ -1,5 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect, useCallback, useRef, useMemo} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+  useContext,
+} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcons from 'react-native-vector-icons/FontAwesome';
 import {WebViewMessageEvent} from 'react-native-webview';
@@ -41,7 +48,6 @@ import {
   removeCustomerCardRequest,
   addCustomerCardRequest,
 } from '../../store/modules/checkout/actions';
-import SplashScreen from '../../components/SplashScreen';
 import PickerInput from '../../components/PickerInput';
 import Modal from '../../components/Modal';
 import CheckoutItinerary from './itinerary';
@@ -56,6 +62,7 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {subscriptionCheckoutGuideImages} from '../../utils/constants';
 import {hideSubscriptionCheckoutGuide} from '../../store/modules/guides/actions';
+import {LoadingContext} from '../../context/loading/context';
 
 const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 const processingAnimation = require('../../../assets/animations/animation_processing_card.json');
@@ -95,6 +102,7 @@ interface CheckoutProps {
 }
 
 const Checkout = ({route}: CheckoutProps) => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const injectCardconfirmJs = useRef('');
   const {
@@ -237,6 +245,20 @@ const Checkout = ({route}: CheckoutProps) => {
       dispatch(resetCheckoutStatus());
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading !== subscriptionLoading) {
+      setLoading(subscriptionLoading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscriptionLoading]);
 
   const checkoutResponseText = useMemo(() => {
     const textFormated = {
@@ -664,8 +686,6 @@ const Checkout = ({route}: CheckoutProps) => {
           Remover
         </Button>
       </Modal>
-      <SplashScreen visible={loading} />
-      <SplashScreen visible={subscriptionLoading} />
       <Ads
         visible={subscriptionCheckoutGuide}
         onRequestClose={() => {}}

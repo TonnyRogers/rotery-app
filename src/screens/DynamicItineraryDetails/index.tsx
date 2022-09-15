@@ -1,13 +1,13 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, {useEffect, useCallback, useState, useContext} from 'react';
 
 import * as RootNavigation from '../../RootNavigation';
 
 import Page from '../../components/Page';
 import {ItineraryProps} from '../../utils/types';
 import api from '../../providers/api';
-import SplashScreen from '../../components/SplashScreen';
 import DynamicFeedItineraryDetails from './feed';
 import Empty from '../../components/Empty';
+import {LoadingContext} from '../../context/loading/context';
 
 interface DynamicItineraryDetaisProps {
   route: {
@@ -19,21 +19,21 @@ const DynamicItineraryDetais: React.FC<DynamicItineraryDetaisProps> = ({
   route,
 }) => {
   const {id} = route.params;
-
+  const {setLoading} = useContext(LoadingContext);
   const [currentItinerary, setCurrentItinerary] = useState<ItineraryProps>();
-  const [isOnLoading, setIsOnLoading] = useState<boolean>(false);
   const getItinerary = useCallback(async () => {
     try {
-      setIsOnLoading(true);
+      setLoading(true);
       const response = await api.get<ItineraryProps>(
         `/itineraries/${id}/details`,
       );
 
-      setIsOnLoading(false);
+      setLoading(false);
       setCurrentItinerary(response.data);
     } catch (error) {
-      setIsOnLoading(false);
+      setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -47,7 +47,6 @@ const DynamicItineraryDetais: React.FC<DynamicItineraryDetaisProps> = ({
       ) : (
         <Empty onPressTo={() => RootNavigation.goBack()} buttonText="Voltar" />
       )}
-      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

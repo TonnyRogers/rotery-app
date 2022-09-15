@@ -1,5 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useRef, useCallback, useEffect} from 'react';
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Animated, View} from 'react-native';
@@ -28,13 +34,13 @@ import HighlightCarousel from '../../components/HighlightCarousel';
 import Page from '../../components/Page';
 import DismissKeyboad from '../../components/DismissKeyboad';
 import {RootStateProps} from '../../store/modules/rootReducer';
-import SplashScreen from '../../components/SplashScreen';
 import {homeImagesCarousel} from '../../utils/constants';
 import Text from '../../components/Text';
 import Button from '../../components/Button';
 import RowGroupComponent from '../../components/RowGroup';
 import BottomSheet from '../../components/BottomSheet';
 import {YupValidationMessages} from '../../utils/enums';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -45,6 +51,7 @@ const validationSchema = yup.object().shape({
 });
 
 const SignIn: React.FC = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [loginVisible, setLoginVisible] = useState(false);
@@ -104,6 +111,13 @@ const SignIn: React.FC = () => {
   const handleLogin = (data: any) => {
     dispatch(loginRequest(data.email, data.password));
   };
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -187,7 +201,6 @@ const SignIn: React.FC = () => {
           </Actions>
         </LoginContent>
       </BottomSheet>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

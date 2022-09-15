@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -16,7 +16,6 @@ import Button from '../../components/Button';
 import {theme} from '../../utils/theme';
 import Tag from '../../components/Tag';
 import {RootStateProps} from '../../store/modules/rootReducer';
-import SplashScreen from '../../components/SplashScreen';
 import Alert from '../../components/Alert';
 import {
   cancelSubscriptionRequest,
@@ -33,8 +32,10 @@ import ImageContainer from '../../components/ImageContainer';
 import Card from '../../components/Card';
 import {SimpleList} from '../../components/SimpleList';
 import api from '../../providers/api';
+import {LoadingContext} from '../../context/loading/context';
 
 export function BackpackerSubscription() {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const {data, loading} = useSelector(
     (state: RootStateProps) => state.subscription,
@@ -119,6 +120,13 @@ export function BackpackerSubscription() {
       getPlan();
     }
   }, [data, plan]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -285,7 +293,6 @@ export function BackpackerSubscription() {
           </>
         )}
       </PageContainer>
-      <SplashScreen visible={loading} />
       <Alert
         title="Cancelar Assinatura!"
         message={'você deseja realmente cancelar sua assinatura?'}

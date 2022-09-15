@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useForm} from 'react-hook-form';
@@ -21,7 +21,6 @@ import Page from '../../components/Page';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
-import SplashScreen from '../../components/SplashScreen';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {YupValidationMessages} from '../../utils/enums';
 import {PageContainer} from '../../components/PageContainer';
@@ -29,6 +28,7 @@ import Divider from '../../components/Divider';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {LoadingContext} from '../../context/loading/context';
 
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
@@ -49,6 +49,7 @@ const validationSchema = yup.object().shape({
 });
 
 const SignUp: React.FC = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [policyModalVisible, setPolicyModalVisible] = useState(false);
@@ -120,6 +121,13 @@ const SignUp: React.FC = () => {
     setValue('email', '');
     setValue('isHost', false);
   };
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -447,7 +455,6 @@ const SignUp: React.FC = () => {
           </SubmitButton>
         </ScrollView>
       </Modal>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

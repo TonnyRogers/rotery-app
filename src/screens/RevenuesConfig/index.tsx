@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm} from 'react-hook-form';
@@ -22,12 +22,12 @@ import {AccountOptions, bankList} from '../../utils/constants';
 import Divider from '../../components/Divider';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootStateProps} from '../../store/modules/rootReducer';
-import SplashScreen from '../../components/SplashScreen';
 import {
   createBankAccountRequest,
   updateBankAccountRequest,
 } from '../../store/modules/bankAccount/actions';
 import {YupValidationMessages} from '../../utils/enums';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
   bank: yup.string().required(YupValidationMessages.REQUIRED),
@@ -57,6 +57,7 @@ const RevenuesConfig = () => {
     watch,
     formState: {errors},
   } = useForm<formData>({resolver: yupResolver(validationSchema)});
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const [bankIsOpen, setBankIsOpen] = useState(false);
   const [accountTypeIsOpen, setAccountTypeIsOpen] = useState(false);
   const {data, loading} = useSelector(
@@ -101,6 +102,13 @@ const RevenuesConfig = () => {
       dispatch(updateBankAccountRequest(bankPayload));
     }
   };
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -201,7 +209,6 @@ const RevenuesConfig = () => {
           </DismissKeyboad>
         </Card>
       </Container>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

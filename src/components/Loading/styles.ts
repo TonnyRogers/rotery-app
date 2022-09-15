@@ -12,7 +12,7 @@ const metricW = Platform.OS === 'ios' ? 'vw' : '%';
 export const Container = styled.View`
   flex: 1;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 100;
+  z-index: 999;
   position: absolute;
   height: ${'100' + metricH};
   width: ${'100' + metricW};
@@ -27,7 +27,7 @@ export const Content = styled.View.attrs({})`
   background: #fff;
   padding: 5rem;
   margin: 2rem;
-  border-radius: 0.8rem;
+  border-radius: 2rem;
   margin-top: 15rem;
   ${shadow}
 `;

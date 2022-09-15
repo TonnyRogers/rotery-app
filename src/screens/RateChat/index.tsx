@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 
 import api from '../../providers/api';
 import NetInfo from '../../providers/netinfo';
@@ -21,13 +21,13 @@ import {
 } from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
 import Toast from 'react-native-toast-message';
-import SplashScreen from '../../components/SplashScreen';
 import Input from '../../components/Input';
 import {formatBRL, realToUSCash} from '../../lib/mask';
 import {CardConfirm} from '../../components/CardConfirm';
 import {useDispatch, useSelector} from 'react-redux';
 import {processTipRequest} from '../../store/modules/checkout/actions';
 import {RootStateProps} from '../../store/modules/rootReducer';
+import {LoadingContext} from '../../context/loading/context';
 
 export interface RateChatRouteParams extends RateChatNotificationJsonData {}
 
@@ -42,6 +42,7 @@ export function RateChat({
     params: {guide, location},
   },
 }: RateChatProps) {
+  const {setLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const [guideRating, setGuideRating] = useState(0);
   const [guideReview, setGuideReview] = useState('');
@@ -49,7 +50,6 @@ export function RateChat({
   const [locationReview, setLocationReview] = useState('');
   const [webCardConfirmVisible, setWebCardConfirmVisible] = useState(false);
   const [tipValue, setTipValue] = useState('');
-  const [loading, setLoading] = useState(false);
   const validatedCard = useRef<CardTokenResponse>();
   const {defaultCard} = useSelector((state: RootStateProps) => state.checkout);
   const {user} = useSelector((state: RootStateProps) => state.auth);
@@ -263,7 +263,6 @@ export function RateChat({
           setWebCardConfirmVisible(false);
         }}
       />
-      <SplashScreen visible={loading} />
     </Page>
   );
 }

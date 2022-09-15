@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 
@@ -18,7 +18,7 @@ import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import DismissKeyboad from '../../components/DismissKeyboad';
-import SplashScreen from '../../components/SplashScreen';
+import {LoadingContext} from '../../context/loading/context';
 
 interface RecoverPasswordProps {
   navigation: {
@@ -29,8 +29,8 @@ interface RecoverPasswordProps {
 }
 
 const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
+  const {setLoading} = useContext(LoadingContext);
   const [email, setEmail] = useState('');
-  const [isOnLoading, setIsOnLoading] = useState(false);
   const emailRef = useRef<any>();
 
   async function handleRecoverPassword() {
@@ -39,7 +39,7 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
     }
 
     try {
-      setIsOnLoading(true);
+      setLoading(true);
       await api.post('/users/reset-password', {
         email,
       });
@@ -50,10 +50,10 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
       });
       setEmail('');
 
-      setIsOnLoading(false);
+      setLoading(false);
       navigation.navigate('NewPassword');
     } catch (error) {
-      setIsOnLoading(false);
+      setLoading(false);
       Toast.show({
         text1: 'Erro ao solicitar recuperação.',
         position: 'bottom',
@@ -94,7 +94,6 @@ const RecoverPassword: React.FC<RecoverPasswordProps> = ({navigation}) => {
           </SubmitButton>
         </Container>
       </DismissKeyboad>
-      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

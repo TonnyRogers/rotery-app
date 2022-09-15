@@ -1,9 +1,10 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, LogBox} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import {ThemeProvider} from 'styled-native-components';
+import SplashScreen from 'react-native-splash-screen';
 
 import Toast from 'react-native-toast-message';
 
@@ -12,6 +13,8 @@ import CodePush from 'react-native-code-push';
 import './config/ReactotronConfig';
 import {store, persistor} from './store';
 import Routes from './routes';
+import {GlobalContext} from './context';
+import {Loading} from './components/Loading';
 
 if (__DEV__) {
   LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -35,17 +38,24 @@ const App = () => {
     }),
   };
 
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
         <ThemeProvider theme={theme}>
-          <Routes />
-          <Toast
-            ref={(ref) => Toast.setRef(ref)}
-            visibilityTime={3000}
-            autoHide
-          />
+          <GlobalContext>
+            <Routes />
+            <Toast
+              ref={(ref) => Toast.setRef(ref)}
+              visibilityTime={3000}
+              autoHide
+            />
+            <Loading />
+          </GlobalContext>
         </ThemeProvider>
       </PersistGate>
     </Provider>
