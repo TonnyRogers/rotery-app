@@ -13,6 +13,8 @@ import CodePush from 'react-native-code-push';
 import './config/ReactotronConfig';
 import {store, persistor} from './store';
 import Routes from './routes';
+import {GlobalContext} from './context';
+import {Loading} from './components/Loading';
 
 if (__DEV__) {
   LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -45,12 +47,15 @@ const App = () => {
       <PersistGate persistor={persistor}>
         <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
         <ThemeProvider theme={theme}>
-          <Routes />
-          <Toast
-            ref={(ref) => Toast.setRef(ref)}
-            visibilityTime={3000}
-            autoHide
-          />
+          <GlobalContext>
+            <Routes />
+            <Toast
+              ref={(ref) => Toast.setRef(ref)}
+              visibilityTime={3000}
+              autoHide
+            />
+            <Loading />
+          </GlobalContext>
         </ThemeProvider>
       </PersistGate>
     </Provider>

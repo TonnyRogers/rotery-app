@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useState, useMemo, useEffect} from 'react';
+import React, {useRef, useState, useMemo, useEffect, useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -38,7 +38,6 @@ import FileInput from '../../components/FileInput';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {hideProfileGuide} from '../../store/modules/guides/actions';
-import SplashScreen from '../../components/SplashScreen';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import {
   sexOptions,
@@ -58,6 +57,7 @@ import {useUserIsHost} from '../../hooks/useUserIsHost';
 import {YupValidationMessages} from '../../utils/enums';
 import RowGroup from '../../components/RowGroup';
 import {SimpleList} from '../../components/SimpleList';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(YupValidationMessages.REQUIRED),
@@ -75,6 +75,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Profile: React.FC = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {isHost, conditionalRender} = useUserIsHost();
@@ -205,6 +206,13 @@ const Profile: React.FC = () => {
   const handleNew = (value: any) => {
     locationJson.current = value;
   };
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -450,7 +458,6 @@ const Profile: React.FC = () => {
           onClose={() => dispatch(hideProfileGuide())}
         />
       </Ads>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

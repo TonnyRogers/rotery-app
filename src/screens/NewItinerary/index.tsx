@@ -1,4 +1,10 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useContext,
+} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -76,7 +82,6 @@ import Page from '../../components/Page';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import ShadowBox from '../../components/ShadowBox';
-import SplashScreen from '../../components/SplashScreen';
 import {newGuideImages} from '../../utils/constants';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import {theme} from '../../utils/theme';
@@ -84,6 +89,7 @@ import api from '../../providers/api';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 import {translateError} from '../../lib/utils';
 import {YupValidationMessages} from '../../utils/enums';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(YupValidationMessages.REQUIRED),
@@ -110,6 +116,7 @@ interface ValidateCreationReponse {
 
 const NewItinerary: React.FC = () => {
   const todayDate = new Date();
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {isAndroid, isIOs} = useIsAndroid();
@@ -459,6 +466,13 @@ const NewItinerary: React.FC = () => {
     optionTypeJson.current = data;
   };
 
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
   return (
     <Page showHeader={false}>
       <Container
@@ -781,7 +795,6 @@ const NewItinerary: React.FC = () => {
           onClose={() => handleCloseNewGuide()}
         />
       </Ads>
-      <SplashScreen visible={loading} />
       <LocationPickerInput
         visible={locationIsOpen}
         setLocationJson={(json) => handleNewLocation(json)}

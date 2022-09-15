@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AwesomeIcons from 'react-native-vector-icons/FontAwesome';
@@ -33,9 +33,9 @@ import {
 import WebView from '../../components/WebView';
 import {WebViewMessageEvent} from 'react-native-webview';
 import Toast from 'react-native-toast-message';
-import SplashScreen from '../../components/SplashScreen';
 import Alert from '../../components/Alert';
 import {paymentToken} from '../../providers/payment';
+import {LoadingContext} from '../../context/loading/context';
 
 const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
@@ -54,6 +54,7 @@ true;
 `;
 
 const Wallet = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const [cardBottomSheeVisible, setCardBottomSheeVisible] = useState(false);
   const [webCheckouVisible, setWebCheckouVisible] = useState(false);
@@ -102,6 +103,13 @@ const Wallet = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer?.cards]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -244,7 +252,6 @@ const Wallet = () => {
         onMessageCallback={(event) => checkoutWebViewCb(event)}
         title="Novo"
       />
-      <SplashScreen visible={loading} />
       <Alert
         title="Remover Cartão"
         message={'você deseja realmente remover este cartão?'}

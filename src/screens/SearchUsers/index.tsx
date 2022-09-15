@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,29 +20,29 @@ import Card from '../../components/Card';
 import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
-import SplashScreen from '../../components/SplashScreen';
 import {FlatList} from 'react-native-gesture-handler';
 import Empty from '../../components/Empty';
 import {ListRenderItemInfo} from 'react-native';
 import {UserProps} from '../../utils/types';
 import formatLocale from '../../providers/dayjs-format-locale';
+import {LoadingContext} from '../../context/loading/context';
 
 const SearchUsers: React.FC = () => {
+  const {setLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
-  const [isOnLoading, setIsOnLoading] = useState(false);
   const [userList, setUserList] = useState([]);
 
   const searchRef = useRef();
 
   async function searchUser() {
     try {
-      setIsOnLoading(true);
+      setLoading(true);
       const response = await api.get(`/users?username=${search}`);
-      setIsOnLoading(false);
+      setLoading(false);
       setUserList(response.data);
     } catch (error) {
-      setIsOnLoading(false);
+      setLoading(false);
       Toast.show({
         text1: 'Erro ao buscar usuários.',
         position: 'bottom',
@@ -78,7 +78,6 @@ const SearchUsers: React.FC = () => {
             <Text.Title>Amplie suas conexões</Text.Title>
           </TitleContent>
         </ContentHeader>
-
         <Card>
           <CardContent>
             <Input
@@ -124,7 +123,6 @@ const SearchUsers: React.FC = () => {
           </CardContent>
         </Card>
       </Container>
-      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

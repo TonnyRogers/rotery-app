@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useContext} from 'react';
 import {View, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LottieView from 'lottie-react-native';
@@ -26,7 +26,6 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {useSelector, useDispatch} from 'react-redux';
 import Card from '../../components/Card';
 import ShadowBox from '../../components/ShadowBox';
-import SplashScreen from '../../components/SplashScreen';
 import {CheckoutRouteParamsProps} from '../Checkout';
 import Divider from '../../components/Divider';
 import ImageContainer from '../../components/ImageContainer';
@@ -42,8 +41,10 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {subscriptionGuideImages} from '../../utils/constants';
 import {hideSubscriptionGuide} from '../../store/modules/guides/actions';
+import {LoadingContext} from '../../context/loading/context';
 
 const HostSubscription = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const [cancelSubscriptionAlertVisible, setCancelSubscriptionAlertVisible] =
     useState(false);
@@ -101,6 +102,13 @@ const HostSubscription = () => {
       getPlan();
     }
   }, [data, plan]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const renderSubscriptionStatusTag = useCallback(() => {
     switch (data?.status) {
@@ -321,7 +329,6 @@ const HostSubscription = () => {
           </>
         )}
       </Container>
-      <SplashScreen visible={loading} />
       <Alert
         title="Cancelar Assinatura!"
         message={'você deseja realmente cancelar sua assinatura?'}

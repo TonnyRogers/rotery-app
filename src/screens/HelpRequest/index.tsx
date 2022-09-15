@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useCallback, useState} from 'react';
+import React, {useEffect, useCallback, useContext} from 'react';
 import {View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm} from 'react-hook-form';
@@ -27,10 +27,10 @@ import {
 } from '../../utils/types';
 import {formatPrice} from '../../lib/utils';
 import Toast from 'react-native-toast-message';
-import SplashScreen from '../../components/SplashScreen';
 import {YupValidationMessages} from '../../utils/enums';
 import {HelpRevenue} from './revenue';
 import {PageContainer} from '../../components/PageContainer';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
   reportMessage: yup
@@ -75,8 +75,8 @@ const HelpRequest = ({route}: HelpRequestProps) => {
     register('reportMessage');
   }, [register, setValue]);
 
+  const {setLoading} = useContext(LoadingContext);
   const watchReportMessage = watch('reportMessage');
-  const [isLoading, setIsLoading] = useState(false);
   const {
     params: {item, type},
   } = route;
@@ -84,7 +84,7 @@ const HelpRequest = ({route}: HelpRequestProps) => {
   const handleRequestHelp = useCallback(
     async (data: formData) => {
       try {
-        setIsLoading(true);
+        setLoading(true);
 
         if (type === 'revenue') {
           await api.post('/communications/help', {
@@ -112,7 +112,7 @@ const HelpRequest = ({route}: HelpRequestProps) => {
           });
         }
 
-        setIsLoading(false);
+        setLoading(false);
         Toast.show({
           text1: 'Solicitação envida, aguarde o contato.',
           position: 'bottom',
@@ -120,7 +120,7 @@ const HelpRequest = ({route}: HelpRequestProps) => {
         });
         RootNavigation.goBack();
       } catch (error) {
-        setIsLoading(false);
+        setLoading(false);
         Toast.show({
           text1: 'Erro ao enviar solicitação, tente novamente.',
           position: 'bottom',
@@ -128,6 +128,7 @@ const HelpRequest = ({route}: HelpRequestProps) => {
         });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [item, type],
   );
 
@@ -186,7 +187,6 @@ const HelpRequest = ({route}: HelpRequestProps) => {
         </Card>
         <Divider />
       </PageContainer>
-      <SplashScreen visible={isLoading} />
     </Page>
   );
 };

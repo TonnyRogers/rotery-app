@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 import {TextInput} from 'react-native';
@@ -24,7 +24,7 @@ import Input from '../../components/Input';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
 import DismissKeyboad from '../../components/DismissKeyboad';
-import SplashScreen from '../../components/SplashScreen';
+import {LoadingContext} from '../../context/loading/context';
 
 interface NewPasswordProps {
   navigation: {
@@ -35,6 +35,7 @@ interface NewPasswordProps {
 }
 
 const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
+  const {setLoading} = useContext(LoadingContext);
   const [isValid, setIsValid] = useState(false);
   const [numberOne, setNumberOne] = useState('');
   const [numberTwo, setNumberTwo] = useState('');
@@ -45,7 +46,6 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [isOnLoading, setIsOnLoading] = useState(false);
 
   const numberOneRef = useRef<TextInput>();
   const numberTwoRef = useRef<TextInput>();
@@ -86,7 +86,7 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
     }
 
     try {
-      setIsOnLoading(true);
+      setLoading(true);
       await api.put(`/users/reset-password/${code}`, {
         password,
         passwordConfirmation: confirmPassword,
@@ -96,10 +96,10 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
         position: 'bottom',
         type: 'success',
       });
-      setIsOnLoading(false);
+      setLoading(false);
       RootNavigation.replace('SignIn');
     } catch (error) {
-      setIsOnLoading(false);
+      setLoading(false);
       Toast.show({
         text1: 'Erro ao alterar senha, revise.',
         position: 'bottom',
@@ -119,12 +119,12 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
       numberSix;
 
     try {
-      setIsOnLoading(true);
+      setLoading(true);
       await api.get(`/users/reset-password/${code}`);
-      setIsOnLoading(false);
+      setLoading(false);
       setIsValid(true);
     } catch (error) {
-      setIsOnLoading(false);
+      setLoading(false);
       Toast.show({
         text1: 'Código inválido ou expirado.',
         text2: 'Solicite outro.',
@@ -297,7 +297,6 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
           )}
         </Container>
       </DismissKeyboad>
-      <SplashScreen visible={isOnLoading} />
     </Page>
   );
 };

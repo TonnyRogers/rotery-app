@@ -1,5 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useMemo, useEffect, useCallback} from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useContext,
+} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {View} from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -21,7 +27,6 @@ import RowGroup from '../../components/RowGroup';
 import * as RootNavigation from '../../RootNavigation';
 import {theme, ColorsType} from '../../utils/theme';
 import {ItineraryProps, Revenue, PaymentStatus} from '../../utils/types';
-import SplashScreen from '../../components/SplashScreen';
 import formatLocale from '../../providers/dayjs-format-locale';
 import {formatBRL} from '../../lib/mask';
 import Button from '../../components/Button';
@@ -29,6 +34,7 @@ import ColumnGroup from '../../components/ColumnGroup';
 import {formatPrice} from '../../lib/utils';
 import api from '../../providers/api';
 import Tag from '../../components/Tag';
+import {LoadingContext} from '../../context/loading/context';
 
 interface RevenueDetailProps {
   route: {
@@ -40,7 +46,7 @@ interface RevenueDetailProps {
 }
 
 const RevenueDetail = ({route}: RevenueDetailProps) => {
-  const [isLoadign, setIsLoading] = useState(false);
+  const {setLoading} = useContext(LoadingContext);
   const [itinerary, setItinerary] = useState<ItineraryProps>();
   const {
     params: {revenue},
@@ -49,24 +55,25 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
   useEffect(() => {
     const getTransacionHistory = async () => {
       try {
-        setIsLoading(true);
+        setLoading(true);
         const response = await api.get<ItineraryProps>(
           `/itineraries/${revenue.itinerary.id}/details`,
         );
 
         setItinerary(response.data);
-        setIsLoading(false);
+        setLoading(false);
       } catch (error) {
         Toast.show({
           text1: 'Erro ao buscar roteiro, tente novamente.',
           position: 'bottom',
           type: 'error',
         });
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     getTransacionHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [revenue.itinerary.id]);
 
   const formattedDated = useMemo(() => {
@@ -281,7 +288,6 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
           </ColumnGroup>
         </Button>
       </Container>
-      <SplashScreen visible={isLoadign} />
     </Page>
   );
 };
