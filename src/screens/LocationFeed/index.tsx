@@ -3,6 +3,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import api from '../../providers/api';
+import * as RootNavigation from '../../RootNavigation';
 
 import Page from '../../components/Page';
 import {PageContainer} from '../../components/PageContainer';
@@ -31,7 +32,7 @@ import CustomIcon from '../../components/CustomIcon';
 
 interface PageFilters {
   region?: string;
-  activity?: number;
+  activity?: {id: number; name: string};
   type?: LocationType;
   state?: string;
   city?: string;
@@ -88,7 +89,6 @@ export function LocationFeed({route}: LocationFeedProps) {
   }
 
   const clearFeed = () => {
-    console.tron.log('clearFeed');
     alternated();
     clearFilters();
     handleGetFeedWithFilters();
@@ -96,7 +96,6 @@ export function LocationFeed({route}: LocationFeedProps) {
   };
 
   const nextPageFeed = () => {
-    console.tron.log('loadFeed');
     if (locations && locations.length > 4) {
       handleGetPaginatedFeedWithFilters();
     }
@@ -117,6 +116,7 @@ export function LocationFeed({route}: LocationFeedProps) {
         page: page.current,
         limit: 10,
         ...pageFilter.current,
+        activity: pageFilter.current.activity?.id,
       }),
     );
   }
@@ -128,12 +128,13 @@ export function LocationFeed({route}: LocationFeedProps) {
         page: page.current,
         limit: 10,
         ...pageFilter.current,
+        region,
+        activity: activity?.id,
       }),
     );
   }
 
   useEffect(() => {
-    console.tron.log('useEffect');
     handleGetFeedWithFilters();
     getFeedFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,9 +145,14 @@ export function LocationFeed({route}: LocationFeedProps) {
       <PageContainer isScrollable={false}>
         <View style={{height: 40, width: '100%', marginBottom: 12}}>
           <RowGroup isFlex justify="space-between" align="center">
-            <Text textColor="primaryText" textWeight="bold">
-              Busca por: {activity ?? region}
-            </Text>
+            <View>
+              <Text textColor="primaryText" textWeight="bold">
+                Busca principal por:
+              </Text>
+              <Text textColor="secondaryText" textWeight="bold">
+                {activity?.name ?? region}
+              </Text>
+            </View>
             <Button
               onPress={() => setIsFilterVisible(true)}
               onLongPress={clearFeed}
@@ -165,6 +171,8 @@ export function LocationFeed({route}: LocationFeedProps) {
           onRefresh={handleGetFeedWithFilters}
           emptySubtitle="tente mudar sua pesquisa"
           emptyTitle="Sem locais"
+          emptyButtonText="Voltar para Explore"
+          emptyOnPressButton={() => RootNavigation.replace('ExploreLocations')}
           loading={loading}
           itemRender={(item) => <LocationItem location={item} />}
         />
@@ -174,7 +182,9 @@ export function LocationFeed({route}: LocationFeedProps) {
         onRequestClose={() => setIsFilterVisible(false)}
         onFilter={() => {
           pageFilter.current = {
-            activity: locationActivity ?? undefined,
+            activity: locationActivity
+              ? {id: locationActivity, name: ''}
+              : undefined,
             city: locationJson.current?.value.address.municipality ?? undefined,
             state:
               locationJson.current?.value.address.countrySubdivision ??

@@ -265,7 +265,7 @@ interface FeedItineraryDetailsProps {
 //   );
 
 //   const renderJoinButton = useCallback(() => {
-//     if (itinerary && !user?.isHost) {
+//     if (itinerary && !user.isGuide) {
 //       function handleJoinItinerary() {
 //         if (itinerary?.requestPayment) {
 //           if (Date.parse(itinerary.deadlineForJoin) > Date.now()) {
@@ -305,7 +305,7 @@ interface FeedItineraryDetailsProps {
 //   }, [dispatch, id, isMember, itinerary, user]);
 
 //   const renderQuestionForm = useCallback(() => {
-//     if (itinerary && !user?.isHost) {
+//     if (itinerary && !user.isGuide) {
 //       const handleMakeQuestion = (data: any) => {
 //         if (itinerary) {
 //           dispatch(makeQuestionRequest(itinerary?.id, data.question));

@@ -154,7 +154,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
             <Icon name="account-voice" size={24} color="#FFF" />
           </ConnectButton>
         )}
-        {profile?.user && profile?.user.isHost && (
+        {profile?.user && profile?.user.isGuide && (
           <Card marginHorizontal={0} marginVertical={8}>
             <TitleContent>
               <Text.Title alignment="center">Avaliações</Text.Title>

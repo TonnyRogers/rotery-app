@@ -32,6 +32,7 @@ export enum WsActions {
   SEND_CHAT_MESSAGE_REQUEST = '@ws/SEND_CHAT_MESSAGE_REQUEST',
   SEND_CHAT_MESSAGE_SUCCESS = '@ws/SEND_CHAT_MESSAGE_SUCCESS',
   LISTEN_SUBSCRIPTIONS = '@ws/LISTEN_SUBSCRIPTIONS',
+  GUIDE_ACTIVATED = '@ws/GUIDE_ACTIVATED',
 }
 
 export function wsNotifications() {
@@ -235,6 +236,15 @@ export function wsLocationRateNotification(
 ) {
   return {
     type: WsActions.LOCATION_RATE_NOTIFICATION,
+    payload: {notification},
+  };
+}
+
+export function wsGuideActivatedNotivication(
+  notification: NotificationsProps<any>,
+) {
+  return {
+    type: WsActions.GUIDE_ACTIVATED,
     payload: {notification},
   };
 }

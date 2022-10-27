@@ -83,7 +83,8 @@ export interface UserProps {
   profile: ProfileProps;
   createdAt: string;
   isActive: boolean;
-  isHost: boolean;
+  isGuide: boolean;
+  canRelateLocation: boolean;
   ratings?: UserRateProps[];
   customerId?: string;
   ratingAvg?: number;
@@ -273,6 +274,7 @@ export enum NotificationAlias {
   MEMBER_PROMOTED = 'itinerary_member_promoted',
   MEMBER_DEMOTED = 'itinerary_member_demoted',
   HOST_SUBSCRIPTION = 'subscription',
+  GUIDE_ACTIVATED = 'guide_activated',
 }
 
 export interface ImageListProps {
@@ -1013,7 +1015,7 @@ export type WelcomeStepItem = {
   type: WelcomeStepListType;
   title: string;
   text: string;
-  appNavigationTarget: AppRoutes;
+  appNavigationTarget: AppRoutes | null;
   done: boolean;
 };
 
@@ -1037,4 +1039,9 @@ export type Tip = {
   paymentId: string;
   paymentStatus: string;
   user: UserProps;
+};
+
+export type GuideRelateValidation = {
+  isActive: boolean;
+  message: string;
 };

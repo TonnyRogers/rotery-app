@@ -97,8 +97,10 @@ export default function notifications(
       case AuthActions.LOGOUT: {
         draft.counter = INITAL_STATE.counter;
         draft.data = INITAL_STATE.data;
+        break;
       }
       default:
+        break;
     }
   });
 }

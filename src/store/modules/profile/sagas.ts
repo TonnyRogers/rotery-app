@@ -15,9 +15,12 @@ import {
   updateProfileImageFailure,
   removeUserSuccess,
   removeUserFailure,
+  validateGuideRelateToLocationSuccess,
+  validateGuideRelateToLocationFailure,
+  ProfileActions,
 } from './actions';
 import {logout} from '../auth/actions';
-import {ProfileProps} from '../../../utils/types';
+import {ProfileProps, GuideRelateValidation} from '../../../utils/types';
 
 import {getFirstStepsRequest} from '../metadata/actions';
 
@@ -138,9 +141,33 @@ export function* deleteUser() {
   }
 }
 
+export function* valideGuideLocationRelate() {
+  try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(getProfileFail());
+      return;
+    }
+
+    const response: AxiosResponse<GuideRelateValidation> = yield call(
+      api.get,
+      '/users/guide/is-active',
+    );
+
+    yield put(validateGuideRelateToLocationSuccess(response.data));
+  } catch (error) {
+    yield put(validateGuideRelateToLocationFailure());
+  }
+}
+
 export default all([
-  takeLatest('@profile/REMOVE_USER_REQUEST', deleteUser),
-  takeLatest('@profile/UPDATE_PROFILE_IMAGE_REQUEST', updateProfileImage),
-  takeLatest('@profile/UPDATE_PROFILE_REQUEST', updateProfile),
-  takeLatest('@profile/GET_PROFILE_REQUEST', getProfile),
+  takeLatest(ProfileActions.REMOVE_USER_REQUEST, deleteUser),
+  takeLatest(ProfileActions.UPDATE_PROFILE_IMAGE_REQUEST, updateProfileImage),
+  takeLatest(ProfileActions.UPDATE_PROFILE_REQUEST, updateProfile),
+  takeLatest(ProfileActions.GET_PROFILE_REQUEST, getProfile),
+  takeLatest(
+    ProfileActions.GUIDE_VALIDATE_RELATE_TO_LOCATION_REQUEST,
+    valideGuideLocationRelate,
+  ),
 ]);

@@ -53,7 +53,6 @@ export function CardConfirm({
       if (cardTokenPayload.id) {
         onRequestClose();
         onValidateCard(cardTokenPayload);
-        console.tron.log('cardTokenPayload:', cardTokenPayload);
         // setSubmitButtonActive(true);
       }
     } else {

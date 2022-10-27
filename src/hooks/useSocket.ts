@@ -18,6 +18,7 @@ import {
   wsListenSubscriptions,
   wsNewChatNotification,
   wsLocationRateNotification,
+  wsGuideActivatedNotivication,
 } from '../store/modules/websocket/actions';
 import {
   NotificationsProps,
@@ -50,65 +51,63 @@ export const useSocket = () => {
           `notify:${user.id}`,
           (payload: NotificationsProps<any>) => {
             alternated();
-            switch (payload.alias) {
-              case NotificationAlias.NEW_CONNECTION:
-                dispatch(wsNewConnectionNotification(payload));
-                break;
-              case NotificationAlias.CONNECTION_ACCEPTED:
-                dispatch(wsConnectionAcceptedNotification(payload));
-                break;
-              case NotificationAlias.NEW_MESSAGE:
-                dispatch(wsNewMessageNotification(payload));
-                break;
-              case NotificationAlias.NEW_CHAT:
-                dispatch(wsNewChatNotification(payload));
-                break;
-              case NotificationAlias.NEW_MEMBER:
-                dispatch(wsNewItineraryMemeberNotification(payload));
-                break;
-              case NotificationAlias.MEMBER_ACCEPTED:
-                const payloadResponse: ItineraryMemberAcceptWsResponse =
-                  payload.jsonData;
-                dispatch(getFeedDetailRequest(payloadResponse.itineraryId));
-                dispatch(
-                  getNextItineraryDetailsRequest(payloadResponse.itineraryId),
-                );
-                break;
-              case NotificationAlias.MEMBER_REJECTED:
-                dispatch(wsRejectedItineraryMemeberNotification(payload));
-                break;
-              case NotificationAlias.NEW_QUESTION:
-                dispatch(wsItineraryQuestionNotification(payload));
-                break;
-              case NotificationAlias.NEW_ANSWER:
-                dispatch(wsItineraryAnswerNotification(payload));
-                break;
-              case NotificationAlias.ITINERARY_UPDATED:
-                dispatch(wsItineraryUpdateNotification(payload));
-                break;
-              case NotificationAlias.ITINERARY_DELETED:
-                dispatch(wsItineraryDeleteNotification(payload));
-                break;
-              case NotificationAlias.RATE_ITINERARY:
-                dispatch(wsItineraryRateNotification(payload));
-                break;
-              case NotificationAlias.RATE_LOCATION:
-                dispatch(wsLocationRateNotification(payload));
-                break;
-              case NotificationAlias.CONNECTION_BLOCK:
-                dispatch(wsConnectionBlockedNotification(payload));
-                break;
-              case NotificationAlias.CONNECTION_UNBLOCK:
-                dispatch(wsConnectionUnblockedNotification(payload));
-                break;
-
-              default:
-                break;
+            if (payload.alias === NotificationAlias.NEW_CONNECTION) {
+              dispatch(wsNewConnectionNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.CONNECTION_ACCEPTED) {
+              dispatch(wsConnectionAcceptedNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.NEW_MESSAGE) {
+              dispatch(wsNewMessageNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.NEW_CHAT) {
+              dispatch(wsNewChatNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.NEW_MEMBER) {
+              dispatch(wsNewItineraryMemeberNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.MEMBER_ACCEPTED) {
+              const payloadResponse: ItineraryMemberAcceptWsResponse =
+                payload.jsonData;
+              dispatch(getFeedDetailRequest(payloadResponse.itineraryId));
+              dispatch(
+                getNextItineraryDetailsRequest(payloadResponse.itineraryId),
+              );
+            }
+            if (payload.alias === NotificationAlias.MEMBER_REJECTED) {
+              dispatch(wsRejectedItineraryMemeberNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.NEW_QUESTION) {
+              dispatch(wsItineraryQuestionNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.NEW_ANSWER) {
+              dispatch(wsItineraryAnswerNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.ITINERARY_UPDATED) {
+              dispatch(wsItineraryUpdateNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.ITINERARY_DELETED) {
+              dispatch(wsItineraryDeleteNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.RATE_ITINERARY) {
+              dispatch(wsItineraryRateNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.RATE_LOCATION) {
+              dispatch(wsLocationRateNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.CONNECTION_BLOCK) {
+              dispatch(wsConnectionBlockedNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.CONNECTION_UNBLOCK) {
+              dispatch(wsConnectionUnblockedNotification(payload));
+            }
+            if (payload.alias === NotificationAlias.GUIDE_ACTIVATED) {
+              dispatch(wsGuideActivatedNotivication(payload));
             }
           },
         );
 
-        if (user.isHost) {
+        if (user.isGuide) {
           socket.current.emit(NotificationAlias.HOST_SUBSCRIPTION, user.id);
           dispatch(wsListenSubscriptions());
         }

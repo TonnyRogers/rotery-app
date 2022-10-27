@@ -21,7 +21,7 @@ import {RootStateProps} from '../../store/modules/rootReducer';
 import {getChatMessagesRequest} from '../../store/modules/chats/actions';
 import {ChatRouteParams} from '../Chat';
 import {UserProps} from '../../utils/types';
-import {useUserIsHost} from '../../hooks/useUserIsHost';
+import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {hideChatsGuide} from '../../store/modules/guides/actions';
@@ -36,11 +36,10 @@ export function ChatMessages() {
   const {chats} = useSelector((state: RootStateProps) => state.chats);
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {chatsGuide} = useSelector((state: RootStateProps) => state.guides);
-  const {conditionalRender} = useUserIsHost();
+  const {conditionalRender} = useUserIsGuide();
 
   function toChat(target: UserProps) {
     RootNavigation.navigate<ChatRouteParams>('Chat', {target});
-    console.tron.log('ALooo');
   }
 
   function renderChats() {
@@ -112,7 +111,7 @@ export function ChatMessages() {
       <Ads visible={chatsGuide} onRequestClose={() => {}} key="guide-welcome">
         <GuideCarousel
           data={
-            user?.isHost ? guideChatsGuideImages : backpackerChatsGuideImages
+            user?.isGuide ? guideChatsGuideImages : backpackerChatsGuideImages
           }
           onClose={() => dispatch(hideChatsGuide())}
         />

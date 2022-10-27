@@ -5,6 +5,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import {ThemeProvider} from 'styled-native-components';
 import SplashScreen from 'react-native-splash-screen';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 import Toast from 'react-native-toast-message';
 
@@ -15,6 +16,7 @@ import {store, persistor} from './store';
 import Routes from './routes';
 import {GlobalContext} from './context';
 import {Loading} from './components/Loading';
+import {GAUTH_IOS, GAUTH_WEB} from '@env';
 
 if (__DEV__) {
   LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -37,6 +39,11 @@ const App = () => {
       zIndex: value,
     }),
   };
+
+  GoogleSignin.configure({
+    iosClientId: GAUTH_IOS,
+    webClientId: GAUTH_WEB,
+  });
 
   useEffect(() => {
     SplashScreen.hide();

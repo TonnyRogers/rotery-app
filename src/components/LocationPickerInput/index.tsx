@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback} from 'react';
 import {FlatList, TouchableOpacityProps, Keyboard, View} from 'react-native';
+import {TOMTOM_KEY} from '@env';
 
 import {
   Container,
@@ -75,7 +76,7 @@ const LocationPickerInput = ({
           `${location}.json`,
           {
             params: {
-              key: 'xA6NMpC44OEmVh7sAVimkWd08NTU7ACs',
+              key: TOMTOM_KEY,
               limit: responseLimit || '5',
               language: 'pt-BR',
               idxSet: searchType || undefined,

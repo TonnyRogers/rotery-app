@@ -27,6 +27,7 @@ import {AxiosResponse} from 'axios';
 import {UserProps} from '../../../utils/types';
 import {getNotificationsRequest} from '../notifications/actions';
 import {getBankAccountRequest} from '../bankAccount/actions';
+import {unauthenticate} from '../../../providers/google-oauth';
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -68,7 +69,7 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
     // yield put(getNextItinerariesRequest());
     // yield put(getMessagesRequest());
 
-    if (user.isHost) {
+    if (user.isGuide) {
       // yield put(getItinerariesRequest());
       yield put(getBankAccountRequest());
     }
@@ -98,6 +99,7 @@ export function* setToken({payload}: any) {
 export function* logout() {
   yield call([AsyncStorage, 'removeItem'], '@auth:token');
   api.defaults.headers.common.Authorization = 'Bearer ';
+  unauthenticate();
   // cancelNotifications();
 }
 
@@ -110,13 +112,13 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   }
 
   try {
-    const {username, email, password, isHost} = payload;
+    const {username, email, password, isGuide} = payload;
 
     const response = yield call(api.post, '/users', {
       username,
       email,
       password,
-      isHost,
+      isGuide,
     });
 
     const {id} = response.data;

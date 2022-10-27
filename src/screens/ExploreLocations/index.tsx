@@ -53,7 +53,7 @@ const exploreBrazilRegions = [
       'https://rotery-filestore.nyc3.digitaloceanspaces.com/region-sul.jpeg',
   },
   {
-    title: 'Suldeste',
+    title: 'Sudeste',
     imageUrl:
       'https://rotery-filestore.nyc3.digitaloceanspaces.com/region-suldeste.jpeg',
   },
@@ -88,7 +88,14 @@ export function ExploreLocations() {
           {activities.map((val, index) => (
             <Button
               key={index}
-              onPress={() => {}}
+              onPress={() => {
+                RootNavigation.replace<LocationFeedFilterParams>(
+                  'LocationFeed',
+                  {
+                    activity: {id: val.id, name: val.name},
+                  },
+                );
+              }}
               customContent
               sizeHeight={7}
               sizeWidth={7}

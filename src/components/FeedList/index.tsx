@@ -21,6 +21,8 @@ interface FeedListProps<T> {
   onEndReached?: () => void;
   emptyTitle: string;
   emptySubtitle: string;
+  emptyOnPressButton?: () => void;
+  emptyButtonText?: string;
   loading: boolean;
 }
 
@@ -32,6 +34,8 @@ export function FeedList<T>({
   itemRender,
   onEndReached,
   onRefresh,
+  emptyButtonText,
+  emptyOnPressButton,
 }: FeedListProps<T>) {
   return (
     <PerformaticList
@@ -41,7 +45,12 @@ export function FeedList<T>({
       keyExtractor={(item: any) => String(item.id)}
       renderItem={({item}: ListRenderItemInfo<T>) => itemRender(item)}
       ListEmptyComponent={() => (
-        <Empty title={emptyTitle} subTitle={emptySubtitle} />
+        <Empty
+          title={emptyTitle}
+          subTitle={emptySubtitle}
+          onPressTo={emptyOnPressButton}
+          buttonText={emptyButtonText}
+        />
       )}
       onRefresh={() => {
         onRefresh && onRefresh();

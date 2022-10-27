@@ -29,8 +29,17 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {LoadingContext} from '../../context/loading/context';
+import {authenticate} from '../../providers/google-oauth';
+import {gOAuthPasswordGen} from '../../utils/helpers';
 
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
+
+interface UseFormFields {
+  username: string;
+  password: string;
+  email: string;
+  isGuide: boolean;
+}
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(YupValidationMessages.REQUIRED),
@@ -42,7 +51,7 @@ const validationSchema = yup.object().shape({
     .string()
     .required(YupValidationMessages.REQUIRED)
     .min(8, 'a senha deve ter mais de 8 digitos'),
-  isHost: yup
+  isGuide: yup
     .boolean()
     .required()
     .default(() => false),
@@ -58,22 +67,24 @@ const SignUp: React.FC = () => {
   const [isBackpackerVisible, setBackpackerVisible] = useState(false);
   const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const [isGoogleOauth, setIsGoogleOauth] = useState(false);
   const {loading} = useSelector((state: RootStateProps) => state.auth);
   const {
     register,
     setValue,
+    getValues,
     handleSubmit,
     watch,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<UseFormFields>({resolver: yupResolver(validationSchema)});
 
   useEffect(() => {
     register('username');
     register('password');
     register('email');
-    register('isHost');
+    register('isGuide');
 
-    setValue('isHost', false);
+    setValue('isGuide', false);
   }, [register, setValue]);
 
   const usernameRef = useRef<any>();
@@ -102,25 +113,42 @@ const SignUp: React.FC = () => {
   function handleGuide() {
     setFirstStepVisible(false);
     setGuideVisible(true);
-    setValue('isHost', true);
+    setValue('isGuide', true);
   }
 
   function handleBackpacker() {
     setFirstStepVisible(false);
     setBackpackerVisible(true);
-    setValue('isHost', false);
+    setValue('isGuide', false);
   }
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: UseFormFields) => {
     dispatch(
-      registerRequest(data.username, data.email, data.password, data.isHost),
+      registerRequest(data.username, data.email, data.password, data.isGuide),
     );
     setPolicyModalVisible(false);
     setValue('username', '');
     setValue('password', '');
     setValue('email', '');
-    setValue('isHost', false);
+    setValue('isGuide', false);
   };
+
+  async function handleOAuthSignup() {
+    const authUser = await authenticate();
+    if (authUser) {
+      onSubmit({
+        email: authUser.user.email,
+        isGuide: getValues().isGuide,
+        username: `${authUser.user.givenName}${authUser.user.familyName}`,
+        password: gOAuthPasswordGen(authUser.user.email),
+      });
+    }
+  }
+
+  async function handleOpenPolicyModalOAuth() {
+    openPolicyModal();
+    setIsGoogleOauth(true);
+  }
 
   useEffect(() => {
     if (loading !== isLoading) {
@@ -251,6 +279,18 @@ const SignUp: React.FC = () => {
               bgColor={isBackpackerVisible ? 'green' : 'blue'}
               sizeMargin="1rem 0 0 0">
               Cadastrar-se
+            </Button>
+            <Divider />
+            <Text alignment="center">Outras opções de cadastro</Text>
+            <Button
+              onPress={
+                isPolicyAccepted
+                  ? handleOAuthSignup
+                  : handleOpenPolicyModalOAuth
+              }
+              bgColor="red"
+              sizeMargin="1rem 0 0 0">
+              Cadastrar com Google
             </Button>
             <Button
               hasShadow={false}
@@ -446,13 +486,23 @@ const SignUp: React.FC = () => {
             textWeight="light">
             Ultima atualização 15/07/2021
           </Text>
-          <SubmitButton
-            onPress={handleSubmit(onSubmit, () => {
-              setPolicyModalVisible(false);
-              setIsPolicyAccepted(true);
-            })}>
-            <SubmitButtonText>Aceito os Termos</SubmitButtonText>
-          </SubmitButton>
+          {isGoogleOauth ? (
+            <SubmitButton
+              onPress={() => {
+                setPolicyModalVisible(false);
+                handleOAuthSignup();
+              }}>
+              <SubmitButtonText>Aceito os Termos</SubmitButtonText>
+            </SubmitButton>
+          ) : (
+            <SubmitButton
+              onPress={handleSubmit(onSubmit, () => {
+                setPolicyModalVisible(false);
+                setIsPolicyAccepted(true);
+              })}>
+              <SubmitButtonText>Aceito os Termos</SubmitButtonText>
+            </SubmitButton>
+          )}
         </ScrollView>
       </Modal>
     </Page>

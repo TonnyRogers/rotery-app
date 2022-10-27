@@ -41,6 +41,14 @@ import RowGroupComponent from '../../components/RowGroup';
 import BottomSheet from '../../components/BottomSheet';
 import {YupValidationMessages} from '../../utils/enums';
 import {LoadingContext} from '../../context/loading/context';
+import Divider from '../../components/Divider';
+import {authenticate} from '../../providers/google-oauth';
+import {gOAuthPasswordGen} from '../../utils/helpers';
+
+interface UseFormFields {
+  email: string;
+  password: string;
+}
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -66,7 +74,9 @@ const SignIn: React.FC = () => {
     handleSubmit,
     setValue,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<UseFormFields>({
+    resolver: yupResolver(validationSchema),
+  });
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -108,9 +118,17 @@ const SignIn: React.FC = () => {
     navigation.navigate('RecoverPassword');
   }
 
-  const handleLogin = (data: any) => {
+  const handleLogin = (data: UseFormFields) => {
     dispatch(loginRequest(data.email, data.password));
   };
+
+  async function handleGOAuthLogin() {
+    const authUser = await authenticate();
+    if (authUser) {
+      const hashedPassword = gOAuthPasswordGen(authUser.user.email);
+      handleLogin({email: authUser.user.email, password: hashedPassword});
+    }
+  }
 
   useEffect(() => {
     if (loading !== isLoading) {
@@ -199,6 +217,12 @@ const SignIn: React.FC = () => {
               </ForgotPasswordButton>
             </RowGroup>
           </Actions>
+          <Divider />
+          <Text alignment="center">Outras opções de login</Text>
+          <Divider />
+          <Button bgColor="red" onPress={handleGOAuthLogin}>
+            Logar com Google
+          </Button>
         </LoginContent>
       </BottomSheet>
     </Page>

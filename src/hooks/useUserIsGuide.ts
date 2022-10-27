@@ -1,21 +1,21 @@
 import {useSelector} from 'react-redux';
 import {RootStateProps} from '../store/modules/rootReducer';
 
-export const useUserIsHost = () => {
+export const useUserIsGuide = () => {
   const {user} = useSelector((state: RootStateProps) => state.auth);
 
-  const isHost = user?.isHost;
+  const isGuide = user?.isGuide;
 
   const conditionalRender = (
-    renderIsHost?: React.ReactNode,
+    renderisGuide?: React.ReactNode,
     renderIsNotHost?: React.ReactNode,
   ) => {
-    if (isHost) {
-      return renderIsHost;
+    if (isGuide) {
+      return renderisGuide;
     } else {
       return renderIsNotHost;
     }
   };
 
-  return {conditionalRender, isHost};
+  return {conditionalRender, isGuide};
 };

@@ -65,6 +65,7 @@ import {
   pushNotificationConnectionUnblock,
   pushNotificationConnectionBlock,
   pushNotificationNewChat,
+  pushNotificationGuideActivated,
 } from '../store/modules/pushNotifications/actions';
 import {
   MessageProps,
@@ -148,133 +149,98 @@ const Routes = () => {
 
     if (token && notification) {
       // called when user click in pushNotification
-      switch (notification.data.alias) {
-        case NotificationAlias.NEW_MESSAGE: {
-          const jsonData: MessageProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationNewMessage(jsonData));
-          RootNavigation.replace('DirectMessagesTabs');
-          break;
-        }
-        case NotificationAlias.NEW_CHAT: {
-          const jsonData: ChatMessage = JSON.parse(notification.data.json_data);
-          dispatch(pushNotificationNewChat(jsonData));
-          RootNavigation.replace('ChatMessages');
-          break;
-        }
-        case NotificationAlias.RATE_ITINERARY: {
-          const jsonData: {id: number} = JSON.parse(
-            notification.data.json_data,
-          );
-          RootNavigation.navigate('ItineraryRate', {
-            id: jsonData.id,
-          });
-          break;
-        }
-        case NotificationAlias.RATE_LOCATION: {
-          const jsonData: RateChatNotificationJsonData = JSON.parse(
-            notification.data.json_data,
-          );
-          RootNavigation.navigate<RateChatNotificationJsonData>(
-            'RateChat',
-            jsonData,
-          );
-          break;
-        }
-        case NotificationAlias.NEW_CONNECTION: {
-          const jsonData: InvitesProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationNewConnection(jsonData));
-          RootNavigation.replace('Connections');
-          break;
-        }
-        case NotificationAlias.CONNECTION_ACCEPTED: {
-          const jsonData: InvitesProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationConnectionAccepted(jsonData));
-          RootNavigation.replace('Connections');
-          break;
-        }
-        case NotificationAlias.NEW_QUESTION: {
-          const jsonData: QuestionProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationItineraryQuestion(jsonData));
-          RootNavigation.navigate('MyItineraryDetails', {
-            id: jsonData.itinerary,
-          });
-          break;
-        }
-        case NotificationAlias.NEW_MEMBER: {
-          const jsonData: MemberProps = JSON.parse(notification.data.json_data);
-          dispatch(pushNotificationItineraryNewMember(jsonData));
-          RootNavigation.navigate('MyItineraryDetails', {
-            id: jsonData.itinerary,
-          });
-          break;
-        }
-        case NotificationAlias.NEW_ANSWER: {
-          const jsonData: QuestionProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationItineraryAnswer(jsonData));
-          RootNavigation.navigate('FeedItineraryDetails', {
-            id: jsonData.itinerary,
-          });
-          break;
-        }
-        case NotificationAlias.MEMBER_ACCEPTED: {
-          const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(getNextItineraryDetailsRequest(jsonData.itineraryId));
-          RootNavigation.navigate('NextItineraryDetails', {
-            id: jsonData.itineraryId,
-          });
-          break;
-        }
-        case NotificationAlias.MEMBER_REJECTED: {
-          const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationItineraryRejectMember(jsonData));
-          break;
-        }
-        case NotificationAlias.ITINERARY_UPDATED: {
-          const jsonData: {id: number} = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(getNextItineraryDetailsRequest(jsonData.id));
-          RootNavigation.navigate('NextItineraryDetails', {
-            id: jsonData.id,
-          });
-          break;
-        }
-        case NotificationAlias.ITINERARY_DELETED: {
-          const jsonData: {id: number} = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationItineraryDeleted(jsonData));
-          break;
-        }
-        case NotificationAlias.CONNECTION_UNBLOCK: {
-          const jsonData: InvitesProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationConnectionUnblock(jsonData));
-          break;
-        }
-        case NotificationAlias.CONNECTION_BLOCK: {
-          const jsonData: InvitesProps = JSON.parse(
-            notification.data.json_data,
-          );
-          dispatch(pushNotificationConnectionBlock(jsonData));
-          break;
-        }
-        default:
+      if (notification.data.alias === NotificationAlias.NEW_MESSAGE) {
+        const jsonData: MessageProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationNewMessage(jsonData));
+        RootNavigation.replace('DirectMessagesTabs');
+      }
+      if (notification.data.alias === NotificationAlias.NEW_CHAT) {
+        const jsonData: ChatMessage = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationNewChat(jsonData));
+        RootNavigation.replace('ChatMessages');
+      }
+      if (notification.data.alias === NotificationAlias.RATE_ITINERARY) {
+        const jsonData: {id: number} = JSON.parse(notification.data.json_data);
+        RootNavigation.navigate('ItineraryRate', {
+          id: jsonData.id,
+        });
+      }
+      if (notification.data.alias === NotificationAlias.RATE_LOCATION) {
+        const jsonData: RateChatNotificationJsonData = JSON.parse(
+          notification.data.json_data,
+        );
+        RootNavigation.navigate<RateChatNotificationJsonData>(
+          'RateChat',
+          jsonData,
+        );
+      }
+      if (notification.data.alias === NotificationAlias.NEW_CONNECTION) {
+        const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationNewConnection(jsonData));
+        RootNavigation.replace('Connections');
+      }
+      if (notification.data.alias === NotificationAlias.CONNECTION_ACCEPTED) {
+        const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationConnectionAccepted(jsonData));
+        RootNavigation.replace('Connections');
+      }
+      if (notification.data.alias === NotificationAlias.NEW_QUESTION) {
+        const jsonData: QuestionProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationItineraryQuestion(jsonData));
+        RootNavigation.navigate('MyItineraryDetails', {
+          id: jsonData.itinerary,
+        });
+      }
+      if (notification.data.alias === NotificationAlias.NEW_MEMBER) {
+        const jsonData: MemberProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationItineraryNewMember(jsonData));
+        RootNavigation.navigate('MyItineraryDetails', {
+          id: jsonData.itinerary,
+        });
+      }
+      if (notification.data.alias === NotificationAlias.NEW_ANSWER) {
+        const jsonData: QuestionProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationItineraryAnswer(jsonData));
+        RootNavigation.navigate('FeedItineraryDetails', {
+          id: jsonData.itinerary,
+        });
+      }
+      if (notification.data.alias === NotificationAlias.MEMBER_ACCEPTED) {
+        const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
+          notification.data.json_data,
+        );
+        dispatch(getNextItineraryDetailsRequest(jsonData.itineraryId));
+        RootNavigation.navigate('NextItineraryDetails', {
+          id: jsonData.itineraryId,
+        });
+      }
+      if (notification.data.alias === NotificationAlias.MEMBER_REJECTED) {
+        const jsonData: ItineraryMemberAcceptWsResponse = JSON.parse(
+          notification.data.json_data,
+        );
+        dispatch(pushNotificationItineraryRejectMember(jsonData));
+      }
+      if (notification.data.alias === NotificationAlias.ITINERARY_UPDATED) {
+        const jsonData: {id: number} = JSON.parse(notification.data.json_data);
+        dispatch(getNextItineraryDetailsRequest(jsonData.id));
+        RootNavigation.navigate('NextItineraryDetails', {
+          id: jsonData.id,
+        });
+      }
+      if (notification.data.alias === NotificationAlias.ITINERARY_DELETED) {
+        const jsonData: {id: number} = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationItineraryDeleted(jsonData));
+      }
+      if (notification.data.alias === NotificationAlias.CONNECTION_UNBLOCK) {
+        const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationConnectionUnblock(jsonData));
+      }
+      if (notification.data.alias === NotificationAlias.CONNECTION_BLOCK) {
+        const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
+        dispatch(pushNotificationConnectionBlock(jsonData));
+      }
+      if (notification.data.alias === NotificationAlias.GUIDE_ACTIVATED) {
+        dispatch(pushNotificationGuideActivated());
       }
     }
   }

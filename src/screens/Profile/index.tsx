@@ -53,7 +53,7 @@ import {
 import formatLocale from '../../providers/dayjs-format-locale';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
-import {useUserIsHost} from '../../hooks/useUserIsHost';
+import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 import {YupValidationMessages} from '../../utils/enums';
 import RowGroup from '../../components/RowGroup';
 import {SimpleList} from '../../components/SimpleList';
@@ -78,7 +78,7 @@ const Profile: React.FC = () => {
   const {setLoading, isLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {isHost, conditionalRender} = useUserIsHost();
+  const {isGuide, conditionalRender} = useUserIsGuide();
   const {
     register,
     handleSubmit,
@@ -155,7 +155,7 @@ const Profile: React.FC = () => {
   }
 
   function financialNavigation() {
-    if (isHost) {
+    if (isGuide) {
       navigation.navigate('Revenues');
     } else {
       navigation.navigate('Wallet');
@@ -286,7 +286,7 @@ const Profile: React.FC = () => {
                   </ColumnGroup>
                 </Button>,
               )}
-              {!isHost && (
+              {!isGuide && (
                 <Button
                   onPress={() => navigation.navigate('BackpackerSubscription')}
                   customContent
@@ -422,6 +422,7 @@ const Profile: React.FC = () => {
               sizeMargin="1rem"
               customContent
               bgColor="red"
+              sizePadding={10}
               sizeHeight={4.4}
               textColor="white">
               <RowGroup>
@@ -454,7 +455,7 @@ const Profile: React.FC = () => {
       />
       <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
-          data={isHost ? hostProfileGuideImages : travelerProfileGuideImages}
+          data={isGuide ? hostProfileGuideImages : travelerProfileGuideImages}
           onClose={() => dispatch(hideProfileGuide())}
         />
       </Ads>

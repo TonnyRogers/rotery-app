@@ -38,7 +38,7 @@ import {
 } from '../../store/modules/websocket/actions';
 import Empty from '../../components/Empty';
 import formatLocale from '../../providers/dayjs-format-locale';
-import {useUserIsHost} from '../../hooks/useUserIsHost';
+import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {beginChatGuide} from '../../utils/constants';
@@ -73,7 +73,7 @@ export function Chat({
   const [chatLocationGuideVisible, setChatLocationGuideVisible] =
     useState(false);
   const [chatLimitMessageVisible, setChatLimitMessageVisible] = useState(false);
-  const {isHost} = useUserIsHost();
+  const {isGuide} = useUserIsGuide();
 
   const {currentChat, loading} = useSelector(
     (state: RootStateProps) => state.chats,
@@ -104,7 +104,7 @@ export function Chat({
       }),
     );
 
-    if (!user?.isHost && location) {
+    if (!user?.isGuide && location) {
       RootNavigation.replace<RateChatNotificationJsonData>('RateChat', {
         guide: {
           id: target.id,
@@ -286,8 +286,8 @@ export function Chat({
             refreshing={loading}
           />
         </Card>
-        {((!lastChatItem && !isHost) ||
-          (lastChatItem?.type === ChatType.END && !isHost)) && (
+        {((!lastChatItem && !isGuide) ||
+          (lastChatItem?.type === ChatType.END && !isGuide)) && (
           <RowGroup justify="flex-end" isFlex={false}>
             <Button
               onPress={handleBeginChat}

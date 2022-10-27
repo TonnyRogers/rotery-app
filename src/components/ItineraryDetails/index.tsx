@@ -65,6 +65,10 @@ import {useForm} from 'react-hook-form';
 import {YupValidationMessages} from '../../utils/enums';
 import {yupResolver} from '@hookform/resolvers/yup';
 
+interface UseFromFields {
+  question: string;
+}
+
 interface OnMakeQuestionParams {
   itineraryId: number;
   text: string;
@@ -114,7 +118,7 @@ const ItineraryDetails = ({
     setValue,
     watch,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<UseFromFields>({resolver: yupResolver(validationSchema)});
 
   const watchQuestion = watch('question');
 
@@ -254,7 +258,7 @@ const ItineraryDetails = ({
   );
 
   const renderJoinButton = useCallback(() => {
-    if (itinerary && !user?.isHost) {
+    if (itinerary && !user?.isGuide) {
       function handleJoinItinerary() {
         if (itinerary?.requestPayment) {
           if (Date.parse(itinerary.deadlineForJoin) > Date.now()) {
@@ -297,8 +301,8 @@ const ItineraryDetails = ({
   }, [isMember, itinerary, onJoinSuccess, user]);
 
   const renderQuestionForm = useCallback(() => {
-    if (itinerary && !user?.isHost) {
-      const handleMakeQuestion = (data: {question: string}) => {
+    if (itinerary && !user?.isGuide) {
+      const handleMakeQuestion = (data: UseFromFields) => {
         if (itinerary) {
           // dispatch(makeQuestionRequest(itinerary?.id, data.question));
           if (onMakeQuestion) {

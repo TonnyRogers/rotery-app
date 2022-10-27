@@ -1,6 +1,13 @@
 import produce from 'immer';
 import {AuthActions} from './actions';
-import {UserProps} from '../../../utils/types';
+import {UserProps, GuideRelateValidation} from '../../../utils/types';
+import {ProfileActions} from '../profile/actions';
+import {PushNotificationsActions} from '../pushNotifications/actions';
+import {WsActions} from '../websocket/actions';
+
+export interface AuthUser extends Omit<UserProps, 'profile'> {
+  profile: number;
+}
 
 interface InitialStateProps {
   token: string | null;
@@ -8,7 +15,7 @@ interface InitialStateProps {
   loading: boolean;
   authChecked: boolean;
   signed: boolean;
-  user: UserProps | null;
+  user: AuthUser | null;
 }
 
 const INITIAL_STATE: InitialStateProps = {
@@ -25,7 +32,8 @@ export interface ActionProps {
   payload: {
     access_token: string;
     refreshToken: string;
-    user: UserProps;
+    user: AuthUser;
+    guideLocationValidation: GuideRelateValidation;
   };
 }
 
@@ -88,6 +96,35 @@ export default function auth(state = INITIAL_STATE, action: ActionProps) {
       }
       case AuthActions.SET_LOADING_FALSE: {
         draft.loading = false;
+        break;
+      }
+      case WsActions.GUIDE_ACTIVATED: {
+        if (draft.user) {
+          draft.user = {
+            ...draft.user,
+            canRelateLocation: true,
+          };
+        }
+        break;
+      }
+      case PushNotificationsActions.GUIDE_ACTIVATED: {
+        if (draft.user) {
+          draft.user = {
+            ...draft.user,
+            canRelateLocation: true,
+          };
+        }
+        break;
+      }
+      case ProfileActions.GUIDE_VALIDATE_RELATE_TO_LOCATION_SUCCESS: {
+        const {isActive} = action.payload.guideLocationValidation;
+
+        if (draft.user) {
+          draft.user = {
+            ...draft.user,
+            canRelateLocation: isActive,
+          };
+        }
         break;
       }
       default:

@@ -24,6 +24,7 @@ export enum PushNotificationsActions {
   ITINERARY_ANSWER = '@push/ITINERARY_ANSWER',
   ITINERARY_UPDATED = '@push/ITINERARY_UPDATED',
   ITINERARY_DELETED = '@push/ITINERARY_DELETED',
+  GUIDE_ACTIVATED = '@push/GUIDE_ACTIVATED',
 }
 
 export function pushNotificationNewMessage(message: MessageProps) {
@@ -133,6 +134,12 @@ export function pushNotificationItineraryUpdated(itinerary: {id: number}) {
   return {
     type: PushNotificationsActions.ITINERARY_UPDATED,
     payload: {itinerary},
+  };
+}
+
+export function pushNotificationGuideActivated() {
+  return {
+    type: PushNotificationsActions.GUIDE_ACTIVATED,
   };
 }
 

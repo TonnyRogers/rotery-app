@@ -2,6 +2,9 @@
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {AxiosResponse} from 'axios';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {useForm} from 'react-hook-form';
+import * as yup from 'yup';
 
 import api from '../../providers/api';
 import * as RootNavigation from '../../RootNavigation';
@@ -27,7 +30,11 @@ import {
   WelcomeBackpackerMetadata,
   WelcomeGuideMetadata,
 } from '../../utils/types';
-import {AppRoutes} from '../../utils/enums';
+import {
+  AppRoutes,
+  WelcomeStepListType,
+  YupValidationMessages,
+} from '../../utils/enums';
 import {AnimationContent} from '../../components/AnimationContent';
 import {getFirstStepsRequest} from '../../store/modules/metadata/actions';
 import Ads from '../../components/Ads';
@@ -38,22 +45,45 @@ import {
   backpackerWelcomeGuideImages,
 } from '../../utils/constants';
 import ColumnGroup from '../../components/ColumnGroup';
+import BottomSheet from '../../components/BottomSheet';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import {phoneBR} from '../../lib/mask';
+import DismissKeyboad from '../../components/DismissKeyboad';
+import Toast from 'react-native-toast-message';
+
+const validationSchema = yup.object().shape({
+  phone: yup
+    .string()
+    .required(YupValidationMessages.REQUIRED)
+    .min(11, 'telefone incompleto'),
+});
 
 export function Welcome() {
   const dispatch = useDispatch();
   const {user} = useSelector((state: RootStateProps) => state.auth);
   const {firstStep} = useSelector((state: RootStateProps) => state.metadata);
   const {welcomeGuide} = useSelector((state: RootStateProps) => state.guides);
+  const [isGuideActivateVisible, setIsGuideActivateVisible] = useState(false);
   const [welcomeMeta, setWelcomeMeta] = useState<
     WelcomeBackpackerMetadata | WelcomeGuideMetadata
   >();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(validationSchema)});
+
+  const watchPhone = watch('phone', '');
 
   useEffect(() => {
     async function getWelcomeMetadata() {
       const response: AxiosResponse<
         WelcomeBackpackerMetadata | WelcomeGuideMetadata
       > = await api.get(
-        `metadata/${user?.isHost ? 'guide' : 'backpacker'}-welcome`,
+        `metadata/${user?.isGuide ? 'guide' : 'backpacker'}-welcome`,
       );
 
       setWelcomeMeta(response.data);
@@ -64,6 +94,7 @@ export function Welcome() {
 
   useEffect(() => {
     dispatch(getFirstStepsRequest());
+    register('phone');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -73,6 +104,45 @@ export function Welcome() {
     } else {
       RootNavigation.navigate(target);
     }
+  }
+
+  function handleStepClickSideAction(type: WelcomeStepListType) {
+    if (type === WelcomeStepListType.GUIDE_LOCATION_RELATE_VALIDATION) {
+      setIsGuideActivateVisible(true);
+    }
+  }
+
+  async function handleRequestGuideValidation() {
+    try {
+      await api.post('/communications/help', {
+        data: {
+          Tipo: 'Ativação de Guia',
+          'Solicitado Em': new Date(),
+          Contato: watchPhone,
+          UserId: user?.id,
+        },
+        message: 'gostaria de solicitar minha ativação como guia',
+        type: 'guideActivation',
+      });
+
+      Toast.show({
+        text1: 'Verificação solicitada !',
+        text2: 'entraremos em contato.',
+        position: 'bottom',
+        type: 'success',
+        visibilityTime: 3000,
+      });
+    } catch (error) {
+      Toast.show({
+        text1: 'Erro ao solicitar verificação',
+        text2: 'tente mais tarde.',
+        position: 'bottom',
+        type: 'error',
+      });
+    }
+
+    setIsGuideActivateVisible(false);
+    setValue('phone', '');
   }
 
   function renderStepList() {
@@ -87,7 +157,11 @@ export function Welcome() {
               <StepItemCircle />
             </StepItemCircleContainer>
             <TouchableOpacity
-              onPress={() => handleStepNavigation(item.appNavigationTarget)}
+              onPress={() =>
+                item.appNavigationTarget
+                  ? handleStepNavigation(item.appNavigationTarget)
+                  : handleStepClickSideAction(item.type)
+              }
               disabled={item.done}>
               <Text textWeight="bold" textColor="primaryText">
                 {item.title}
@@ -112,7 +186,7 @@ export function Welcome() {
           OLÁ, {user && user.username.toLocaleUpperCase()} 🤙
         </Text>
         <Divider />
-        {!user?.isHost ? (
+        {!user?.isGuide ? (
           <>
             <Text textWeight="bold" textColor="primaryText">
               Contribuições
@@ -234,13 +308,60 @@ export function Welcome() {
       <Ads visible={welcomeGuide} onRequestClose={() => {}} key="guide-welcome">
         <GuideCarousel
           data={
-            user?.isHost
+            user?.isGuide
               ? guideWelcomeGuideImages
               : backpackerWelcomeGuideImages
           }
           onClose={() => dispatch(hideWelcomeGuide())}
         />
       </Ads>
+      <BottomSheet
+        visible={isGuideActivateVisible}
+        title="Verificar usuário"
+        onRequestClose={() => setIsGuideActivateVisible(false)}>
+        <DismissKeyboad>
+          <SimpleList>
+            <Divider />
+            <Text.Title textColor="primaryText">
+              Solicite sua ativação e comece a ajudar mochileiros
+            </Text.Title>
+            <Text.Paragraph textWeight="regular" textColor="secondaryText">
+              Neste processo vamos entrar em contato com você (por mensagem ou
+              vídeo) para explicar nossa visão, diretrizes da comunidade e
+              conhecer mais sobre você.
+            </Text.Paragraph>
+            <Divider />
+            <Text.Paragraph textWeight="regular" textColor="secondaryText">
+              Se tudo der certo você será verificado e poderá ajudar mochileiros
+              se vinculando a locais onde podem te achar, esse é um contato
+              muito importante para nós, buscamos esse tipo de proximidade com
+              os usuários do app.
+            </Text.Paragraph>
+            <Divider />
+            <Text textWeight="regular" textColor="secondaryText">
+              Obs: sem essa etapa você não poderá se vincular a locais.
+            </Text>
+
+            <Input
+              icon="cellphone-iphone"
+              label="Telefone"
+              placeholder="Digite o telefone (Whatsapp)"
+              maxLength={14}
+              value={watchPhone}
+              onChange={(value: string) => setValue('phone', phoneBR(value))}
+              returnKeyType="done"
+              error={errors.phone?.message}
+              keyboardType="number-pad"
+              onSubmitEditing={handleSubmit(handleRequestGuideValidation)}
+            />
+            <Button
+              bgColor="green"
+              onPress={handleSubmit(handleRequestGuideValidation)}>
+              Solicitar Verificação
+            </Button>
+          </SimpleList>
+        </DismissKeyboad>
+      </BottomSheet>
     </Page>
   );
 }

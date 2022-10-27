@@ -1,4 +1,8 @@
-import {ProfileProps, ProfileLocationJson} from '../../../utils/types';
+import {
+  ProfileProps,
+  ProfileLocationJson,
+  GuideRelateValidation,
+} from '../../../utils/types';
 
 export enum ProfileActions {
   GET_PROFILE_REQUEST = '@profile/GET_PROFILE_REQUEST',
@@ -13,6 +17,9 @@ export enum ProfileActions {
   REMOVE_USER_REQUEST = '@profile/REMOVE_USER_REQUEST',
   REMOVE_USER_SUCCESS = '@profile/REMOVE_USER_SUCCESS',
   REMOVE_USER_FAILURE = '@profile/REMOVE_USER_FAILURE',
+  GUIDE_VALIDATE_RELATE_TO_LOCATION_REQUEST = '@profile/GUIDE_VALIDATE_RELATE_TO_LOCATION_REQUEST',
+  GUIDE_VALIDATE_RELATE_TO_LOCATION_SUCCESS = '@profile/GUIDE_VALIDATE_RELATE_TO_LOCATION_SUCCESS',
+  GUIDE_VALIDATE_RELATE_TO_LOCATION_FAILURE = '@profile/GUIDE_VALIDATE_RELATE_TO_LOCATION_FAILURE',
 }
 
 export function getProfileRequest(userId: number) {
@@ -108,5 +115,26 @@ export function removeUserSuccess() {
 export function removeUserFailure() {
   return {
     type: ProfileActions.REMOVE_USER_FAILURE,
+  };
+}
+
+export function validateGuideRelateToLocationRequest() {
+  return {
+    type: ProfileActions.GUIDE_VALIDATE_RELATE_TO_LOCATION_REQUEST,
+  };
+}
+
+export function validateGuideRelateToLocationSuccess(
+  guideLocationValidation: GuideRelateValidation,
+) {
+  return {
+    type: ProfileActions.GUIDE_VALIDATE_RELATE_TO_LOCATION_SUCCESS,
+    payload: {guideLocationValidation},
+  };
+}
+
+export function validateGuideRelateToLocationFailure() {
+  return {
+    type: ProfileActions.GUIDE_VALIDATE_RELATE_TO_LOCATION_FAILURE,
   };
 }

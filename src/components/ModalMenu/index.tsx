@@ -21,7 +21,7 @@ import {
   CloseButton,
 } from './styles';
 import Text from '../Text';
-// import {useUserIsHost} from '../../hooks/useUserIsHost';
+// import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 
 interface ModalMenuProps {
   visible: boolean;
@@ -33,7 +33,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
   // const {user} = useSelector((state: RootStateProps) => state.auth);
-  // const {conditionalRender} = useUserIsHost();
+  // const {conditionalRender} = useUserIsGuide();
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -90,7 +90,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   }
 
   // function toItineraries() {
-  //   if (user?.isHost) {
+  //   if (user.isGuide) {
   //     onRequestClose();
   //     RootNavigation.replace('MyItineraries');
   //   }
@@ -183,15 +183,15 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
             </CounterContent>
           </MenuButton> */}
           {/* <MenuButton
-            active={user?.isHost}
+            active={user.isGuide}
             onPress={toItineraries}
-            disabled={!user?.isHost}>
+            disabled={!user.isGuide}>
             <Icon
               name="map-outline"
               size={24}
-              color={user?.isHost ? '#FFF' : '#999'}
+              color={user.isGuide ? '#FFF' : '#999'}
             />
-            <MenuButtonText active={user?.isHost}>
+            <MenuButtonText active={user.isGuide}>
               Meus{'\n'}Roteiros
             </MenuButtonText>
           </MenuButton> */}

@@ -272,19 +272,18 @@ export function LocationFeedDetails({
             />
           ))}
 
-          {user?.isHost &&
+          {user?.isGuide &&
             !locationGuides?.find(
               (guideItem) => guideItem.user.id === user.id,
             ) && (
               <Button
+                isEnabled={user.canRelateLocation}
                 onPress={joinLocation}
-                customContent
                 sizeHeight={4.4}
                 sizeMargin="1rem 0"
+                sizePadding={0}
                 bgColor="blue">
-                <Text.Paragraph textWeight="bold" textColor="white">
-                  Vincular Local a Você
-                </Text.Paragraph>
+                Vincular Local a Você
               </Button>
             )}
         </Card>
@@ -310,7 +309,7 @@ export function LocationFeedDetails({
         key="guide-welcome">
         <GuideCarousel
           data={
-            user?.isHost
+            user?.isGuide
               ? guideLocationDetailsGuideImages
               : backpackerLocationDetailsGuideImages
           }

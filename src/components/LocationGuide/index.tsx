@@ -17,7 +17,7 @@ import StarRate from '../StarRate';
 
 import {MemberDetails, UserImage, UserButton} from './styles';
 import {ChatRouteParams} from '../../screens/Chat';
-import {useUserIsHost} from '../../hooks/useUserIsHost';
+import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 interface LocationGuideProps {
   guide: UserProps;
   location: Location;
@@ -26,7 +26,7 @@ interface LocationGuideProps {
 export function LocationGuide({guide, location}: LocationGuideProps) {
   // const dispatch = useDispatch();
   const createAtDateFormated = useRef('');
-  const {isHost} = useUserIsHost();
+  const {isGuide} = useUserIsGuide();
 
   useMemo(() => {
     createAtDateFormated.current = formatLocale(
@@ -80,7 +80,7 @@ export function LocationGuide({guide, location}: LocationGuideProps) {
             </Text>
           </View>
         </MemberDetails>
-        {!isHost && (
+        {!isGuide && (
           <Button
             onPress={toGuideChat}
             customContent

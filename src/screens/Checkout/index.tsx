@@ -171,7 +171,6 @@ const Checkout = ({route}: CheckoutProps) => {
   const cardConfirmWebViewCb = (e: WebViewMessageEvent) => {
     const dataParse = JSON.parse(e.nativeEvent.data);
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
-    console.tron.log('CARD', cardTokenPayload);
     if (dataParse.message === 'ok' && customer !== null) {
       if (selectedCard && cardTokenPayload.id) {
         switch (paymentType) {
