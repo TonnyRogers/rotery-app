@@ -27,7 +27,7 @@ import {
 import {MemberProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
 import isOpen from '../../guards/itineraryStatus';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 
 interface ItineraryMemberProps {
   member: MemberProps;

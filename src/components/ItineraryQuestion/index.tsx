@@ -25,7 +25,7 @@ import TextArea from '../TextArea';
 
 import {QuestionProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({

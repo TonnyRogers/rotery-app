@@ -50,7 +50,7 @@ import {
   LocationPickerInputSetItem,
   FileProps,
 } from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
 import {useUserIsGuide} from '../../hooks/useUserIsGuide';

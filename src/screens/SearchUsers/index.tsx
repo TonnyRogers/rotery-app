@@ -24,7 +24,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import Empty from '../../components/Empty';
 import {ListRenderItemInfo} from 'react-native';
 import {UserProps} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {LoadingContext} from '../../context/loading/context';
 
 const SearchUsers: React.FC = () => {

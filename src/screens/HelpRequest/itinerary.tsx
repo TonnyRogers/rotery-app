@@ -6,7 +6,7 @@ import Text from '../../components/Text';
 import ImageContainer from '../../components/ImageContainer';
 import Divider from '../../components/Divider';
 import {formatPrice} from '../../lib/utils';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {CustomRevenue} from '.';
 
 interface HelpItineraryProps {

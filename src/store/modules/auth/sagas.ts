@@ -17,17 +17,25 @@ import {
   registerSuccess,
   registerFailure,
   refreshTokenSuccess,
-  refreshTokenFailure,
+  // refreshTokenFailure,
   setDeviceTokenRequest,
   setDeviceTokenSuccess,
+  logout as logoutAction,
 } from './actions';
 import {getProfileRequest} from '../profile/actions';
 import {getConnectionsRequest} from '../connections/actions';
 import {AxiosResponse} from 'axios';
-import {UserProps} from '../../../utils/types';
 import {getNotificationsRequest} from '../notifications/actions';
 import {getBankAccountRequest} from '../bankAccount/actions';
 import {unauthenticate} from '../../../providers/google-oauth';
+import {RefreshUser, AuthUser} from './reducer';
+import {LocalStorageKeys} from '../../../utils/enums';
+
+type AuthLoginResponse = {
+  access_token: string;
+  user: AuthUser;
+  expires: number;
+};
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -40,10 +48,13 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const {email, password} = payload;
 
-    const response: AxiosResponse<{access_token: string; user: UserProps}> =
-      yield call(api.post, '/auth/login', {email, password});
+    const response: AxiosResponse<AuthLoginResponse> = yield call(
+      api.post,
+      '/auth/login',
+      {email, password},
+    );
 
-    const {user, access_token} = response.data;
+    const {user, access_token, expires} = response.data;
 
     if (!access_token) {
       Toast.show({
@@ -56,11 +67,21 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
       return;
     }
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', access_token);
-    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', '');
+    yield call(
+      [AsyncStorage, 'setItem'],
+      LocalStorageKeys.AUTH_TOKEN,
+      access_token,
+    );
+
+    yield call(
+      [AsyncStorage, 'setItem'],
+      LocalStorageKeys.AUTH_REFRESH_USER,
+      JSON.stringify({email, password}),
+    );
+
     api.defaults.headers.Authorization = `Bearer ${access_token}`;
 
-    yield put(loginSuccess(access_token, user));
+    yield put(loginSuccess(access_token, user, expires));
     RootNavigation.replace('Welcome');
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
@@ -97,7 +118,8 @@ export function* setToken({payload}: any) {
 }
 
 export function* logout() {
-  yield call([AsyncStorage, 'removeItem'], '@auth:token');
+  yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_TOKEN);
+  yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_REFRESH_USER);
   api.defaults.headers.common.Authorization = 'Bearer ';
   unauthenticate();
   // cancelNotifications();
@@ -163,34 +185,44 @@ export function* handleRefreshToken() {
   }
 
   try {
-    const response = yield call(api.get, '/sessions');
-
-    if (response.status === 401) {
-      yield put(refreshTokenFailure());
-    }
-
-    yield put(refreshTokenFailure());
+    yield call(api.get, '/profile');
   } catch (error) {
-    const refreshTokenSTR = yield call(
-      [AsyncStorage, 'getItem'],
-      '@auth:refreshToken',
+    const renewToken: RefreshUser = JSON.parse(
+      yield call([AsyncStorage, 'getItem'], LocalStorageKeys.AUTH_REFRESH_USER),
     );
 
-    const renewToken = yield call(api.put, '/sessions', {
-      refresh_token: refreshTokenSTR,
-    });
+    try {
+      const response: AxiosResponse<AuthLoginResponse> = yield call(
+        api.post,
+        '/auth/login',
+        {
+          email: renewToken.email,
+          password: renewToken.password,
+        },
+      );
 
-    const {token: responseToken, refreshToken} = renewToken.data;
+      const {access_token, expires} = response.data;
 
-    yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
-    yield call([AsyncStorage, 'removeItem'], '@auth:token');
+      yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_TOKEN);
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', responseToken);
-    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
+      yield call(
+        [AsyncStorage, 'setItem'],
+        LocalStorageKeys.AUTH_TOKEN,
+        access_token,
+      );
 
-    yield put(refreshTokenSuccess(responseToken, refreshToken));
+      yield put(refreshTokenSuccess(access_token, expires));
 
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+    } catch (error1) {
+      yield put(logoutAction());
+      Toast.show({
+        text1: 'Erro de autenticação',
+        text2: 'faça o login novamente.',
+        position: 'bottom',
+        type: 'error',
+      });
+    }
   }
 }
 
@@ -219,9 +251,9 @@ export function* setDeviceToken() {
 }
 
 export default all([
-  takeLatest('persist/REHYDRATE', setToken),
+  takeLatest('persist/REHYDRATE', handleRefreshToken),
   takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
-  // takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
+  takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),

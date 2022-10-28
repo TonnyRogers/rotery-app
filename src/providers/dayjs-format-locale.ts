@@ -11,4 +11,6 @@ function formatLocale(date: string | Date, format: string) {
   return dayjs(date).format(format);
 }
 
-export default formatLocale;
+const dayjsPlugins = dayjs;
+
+export {formatLocale, dayjsPlugins};

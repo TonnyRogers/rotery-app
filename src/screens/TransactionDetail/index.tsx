@@ -32,7 +32,7 @@ import {
   ItineraryProps,
   PaymentRefundResponse,
 } from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import { formatLocale } from '../../providers/dayjs-format-locale';
 import {formatBRL} from '../../lib/mask';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';

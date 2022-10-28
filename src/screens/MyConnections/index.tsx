@@ -33,7 +33,7 @@ import Card from '../../components/Card';
 import Page from '../../components/Page';
 import FloatButton from '../../components/FloatButton';
 import Text from '../../components/Text';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {UserConversationParams} from '../UserConversation';
 
 const MyConnections: React.FC = () => {

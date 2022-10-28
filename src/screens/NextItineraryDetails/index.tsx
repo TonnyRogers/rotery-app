@@ -60,7 +60,7 @@ import Page from '../../components/Page';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
 import isOpen from '../../guards/itineraryStatus';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
 import {YupValidationMessages} from '../../utils/enums';
 import StarRate from '../../components/StarRate';

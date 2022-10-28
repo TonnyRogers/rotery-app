@@ -10,7 +10,7 @@ import StarRate from '../StarRate';
 
 import {UserButton} from './styles';
 import {LocationRating} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 
 interface LocationRatingItemProps {
   rating: LocationRating;

@@ -27,7 +27,7 @@ import RowGroup from '../../components/RowGroup';
 import * as RootNavigation from '../../RootNavigation';
 import {theme, ColorsType} from '../../utils/theme';
 import {ItineraryProps, Revenue, PaymentStatus} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {formatBRL} from '../../lib/mask';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';

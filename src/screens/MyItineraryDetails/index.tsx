@@ -60,7 +60,7 @@ import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 // import ShadowBox from '../../components/ShadowBox';
 import {myGuideImages} from '../../utils/constants';
-// import formatLocale from '../../providers/dayjs-format-locale';
+// import { formatLocale } from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
 // import DividerComponent from '../../components/Divider';
 // import StarRate from '../../components/StarRate';

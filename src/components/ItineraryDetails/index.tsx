@@ -5,7 +5,7 @@ import {NavigationProp} from '@react-navigation/native';
 import * as yup from 'yup';
 
 import {formatBRL} from '../../lib/mask';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {
   ItineraryProps,
   ItineraryStatusTranlated,

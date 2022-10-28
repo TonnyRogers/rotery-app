@@ -24,7 +24,7 @@ import {
 import ShadowBox from '../../components/ShadowBox';
 import {AnimationContent} from '../../components/AnimationContent';
 import {SearchSubscriptionResult, Plan} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {formatPrice} from '../../lib/utils';
 import {CheckoutRouteParamsProps} from '../Checkout';
 import Divider from '../../components/Divider';

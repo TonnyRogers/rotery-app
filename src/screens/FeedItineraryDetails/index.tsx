@@ -62,7 +62,7 @@ import Page from '../../components/Page';
 import Share from '../../components/Share';
 // import Text from '../../components/Text';
 // import ShadowBox from '../../components/ShadowBox';
-// import formatLocale from '../../providers/dayjs-format-locale';
+// import { formatLocale } from '../../providers/dayjs-format-locale';
 import Empty from '../../components/Empty';
 // import Toast from 'react-native-toast-message';
 // import {CheckoutRouteParamsProps} from '../Checkout';

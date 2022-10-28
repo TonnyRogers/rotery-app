@@ -7,7 +7,7 @@ import DateTimePicker, {Event} from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label} from './styles';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 
 interface DateInputProps {

@@ -12,7 +12,7 @@ import Button from '../../components/Button';
 import Page from '../../components/Page';
 import api from '../../providers/api';
 import {TipRevenueResponse} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
 import ColumnGroup from '../../components/ColumnGroup';

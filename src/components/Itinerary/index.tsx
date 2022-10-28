@@ -27,7 +27,7 @@ import ImageCarousel from '../ImageCarousel';
 import {ItineraryProps, ItineraryStatusTranlated} from '../../utils/types';
 import Card from '../Card';
 import Text from '../Text';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Divider from '../Divider';
 
 interface ItineraryItemProps {

@@ -25,7 +25,7 @@ import {
   DateText,
   NotificationButton,
 } from './styles';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 interface NotificationItemProps {
   notification: NotificationsProps<any>;
   close: () => void;

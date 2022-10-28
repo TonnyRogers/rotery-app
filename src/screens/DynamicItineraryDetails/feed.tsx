@@ -58,7 +58,7 @@ import TextArea from '../../components/TextArea';
 import Share from '../../components/Share';
 import Text from '../../components/Text';
 import ShadowBox from '../../components/ShadowBox';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {YupValidationMessages} from '../../utils/enums';
 import StarRate from '../../components/StarRate';
 

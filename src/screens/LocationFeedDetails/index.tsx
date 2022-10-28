@@ -28,7 +28,7 @@ import {LocationGuide} from '../../components/LocationGuide';
 import {LocationRatingItem} from '../../components/LocationRatingItem';
 import ShadowBox from '../../components/ShadowBox';
 import {theme} from '../../utils/theme';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import Toast from 'react-native-toast-message';

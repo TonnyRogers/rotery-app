@@ -24,7 +24,7 @@ import {
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
 import Page from '../../components/Page';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Text from '../../components/Text';
 
 interface ItineraryRateProps {

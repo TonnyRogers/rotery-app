@@ -19,7 +19,7 @@ import Text from '../../components/Text';
 import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
 import Page from '../../components/Page';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
 import {RootStateProps} from '../../store/modules/rootReducer';

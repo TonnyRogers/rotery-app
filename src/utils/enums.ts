@@ -59,3 +59,8 @@ export enum TipPaymentStatus {
   REFUNDED = 'refunded',
   REFUSED = 'refused',
 }
+
+export enum LocalStorageKeys {
+  AUTH_REFRESH_USER = '@auth:refreshUser',
+  AUTH_TOKEN = '@auth:token',
+}

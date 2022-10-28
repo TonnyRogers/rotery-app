@@ -49,7 +49,7 @@ import TextArea from '../../components/TextArea';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import Page from '../../components/Page';
 import ShadowBox from '../../components/ShadowBox';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {YupValidationMessages} from '../../utils/enums';
 
 const validationSchema = yup.object().shape({

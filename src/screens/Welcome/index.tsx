@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
@@ -51,6 +52,8 @@ import Input from '../../components/Input';
 import {phoneBR} from '../../lib/mask';
 import DismissKeyboad from '../../components/DismissKeyboad';
 import Toast from 'react-native-toast-message';
+import {dayjsPlugins} from '../../providers/dayjs-format-locale';
+import {refreshTokenRequest} from '../../store/modules/auth/actions';
 
 const validationSchema = yup.object().shape({
   phone: yup
@@ -61,7 +64,7 @@ const validationSchema = yup.object().shape({
 
 export function Welcome() {
   const dispatch = useDispatch();
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {user, expires} = useSelector((state: RootStateProps) => state.auth);
   const {firstStep} = useSelector((state: RootStateProps) => state.metadata);
   const {welcomeGuide} = useSelector((state: RootStateProps) => state.guides);
   const [isGuideActivateVisible, setIsGuideActivateVisible] = useState(false);
@@ -89,13 +92,16 @@ export function Welcome() {
       setWelcomeMeta(response.data);
     }
 
-    getWelcomeMetadata();
-  }, [user]);
+    if (expires > dayjsPlugins().valueOf()) {
+      getWelcomeMetadata();
+      dispatch(getFirstStepsRequest());
+    } else {
+      dispatch(refreshTokenRequest());
+    }
+  }, [user?.isGuide, expires]);
 
   useEffect(() => {
-    dispatch(getFirstStepsRequest());
     register('phone');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleStepNavigation(target: AppRoutes) {

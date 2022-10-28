@@ -9,7 +9,7 @@ import * as RootNavigation from '../../RootNavigation';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import {UserProps, Location} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Text from '../Text';
 import RowGroup from '../RowGroup';
 import Button from '../Button';

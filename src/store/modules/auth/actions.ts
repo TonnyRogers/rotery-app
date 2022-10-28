@@ -24,10 +24,14 @@ export function loginRequest(email: string, password: string) {
   };
 }
 
-export function loginSuccess(access_token: string, user: AuthUser) {
+export function loginSuccess(
+  access_token: string,
+  user: AuthUser,
+  expires: number,
+) {
   return {
     type: AuthActions.LOGIN_SUCCESS,
-    payload: {access_token, user},
+    payload: {access_token, user, expires},
   };
 }
 
@@ -74,10 +78,10 @@ export function refreshTokenRequest() {
   };
 }
 
-export function refreshTokenSuccess(token: string, refreshToken: string) {
+export function refreshTokenSuccess(access_token: string, expires: number) {
   return {
     type: AuthActions.REFRESH_TOKEN_SUCCESS,
-    payload: {token, refreshToken},
+    payload: {access_token, expires},
   };
 }
 

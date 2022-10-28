@@ -23,7 +23,7 @@ import {
 import Card from '../../components/Card';
 import Page from '../../components/Page';
 import Text from '../../components/Text';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {ConnectionsProps} from '../../utils/types';
 import {UserConversationParams} from '../UserConversation';
 

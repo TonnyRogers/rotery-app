@@ -19,7 +19,7 @@ import {
   RateChatNotificationJsonData,
   CardTokenResponse,
 } from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Toast from 'react-native-toast-message';
 import Input from '../../components/Input';
 import {formatBRL, realToUSCash} from '../../lib/mask';

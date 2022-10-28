@@ -27,7 +27,7 @@ import Card from '../../components/Card';
 import Text from '../../components/Text';
 import Page from '../../components/Page';
 import {ProfileProps} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import StarRate from '../../components/StarRate';
 import {PageContainer} from '../../components/PageContainer';
 

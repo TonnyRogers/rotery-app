@@ -37,7 +37,7 @@ import {
   wsCloseChatChannel,
 } from '../../store/modules/websocket/actions';
 import Empty from '../../components/Empty';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
