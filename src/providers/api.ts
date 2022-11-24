@@ -22,7 +22,7 @@ export const injectStore = (_store: any) => {
   store = _store;
 };
 
-export const apiBaseUrl = __DEV__ ? '127.0.0.1:3333' : API_URL;
+export const apiBaseUrl = API_URL;
 
 const httpType = __DEV__ ? 'http://' : 'https://';
 
