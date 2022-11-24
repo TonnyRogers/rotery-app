@@ -113,7 +113,7 @@ export const useSocket = () => {
           },
         );
 
-        if (user.isGuide) {
+        if (!user.isGuide) {
           socket.current.emit(NotificationAlias.HOST_SUBSCRIPTION, user.id);
           dispatch(wsListenSubscriptions());
 

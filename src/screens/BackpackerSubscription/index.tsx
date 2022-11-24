@@ -106,7 +106,7 @@ export function BackpackerSubscription() {
 
   useEffect(() => {
     const getPlan = async () => {
-      const response = await api.get<Plan>('/subscriptions/plan/4');
+      const response = await api.get<Plan>('/subscriptions/plan/1');
 
       setPlan(response.data);
     };

@@ -215,7 +215,7 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const selectCard = (card: CheckoutCustomerCardResponse, amount: number) => {
     injectCardconfirmJs.current = `
-      mp = new MercadoPago('${paymentToken.dev}');
+      mp = new MercadoPago('${paymentToken.prod}');
       document.querySelector('#cardId').value = ${card.id};
       document.querySelector('#transactionAmmount').value = ${amount.toFixed(
         2,
@@ -230,7 +230,7 @@ const Checkout = ({route}: CheckoutProps) => {
   };
 
   const injectCheckoutJs = `
-    mp = new MercadoPago('${paymentToken.dev}');
+    mp = new MercadoPago('${paymentToken.prod}');
     document.querySelector('#transactionAmmount').value = ${itineraryAmount.total.toFixed(
       2,
     )};
