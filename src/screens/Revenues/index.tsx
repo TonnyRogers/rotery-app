@@ -17,23 +17,25 @@ import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
 import ColumnGroup from '../../components/ColumnGroup';
 import ShadowBox from '../../components/ShadowBox';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {useSelector, useDispatch} from 'react-redux';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {revenuesGuideImages} from '../../utils/constants';
-import {hideRevenueGuide} from '../../store/modules/guides/actions';
-import {TipPaymentStatus} from '../../utils/enums';
+import {viewedGuide} from '../../store2/guides';
+import {TipPaymentStatus, GuideEnum} from '../../utils/enums';
 import {PageContainer} from '../../components/PageContainer';
 import Divider from '../../components/Divider';
 import {SimpleList} from '../../components/SimpleList';
 import {HelpRequestRouteParamsProps} from '../HelpRequest';
 import Tag from '../../components/Tag';
+import {RootState} from '../../providers/store';
 
 const Revenues = () => {
   const [revenuesList, setRevenuesList] = useState<TipRevenueResponse>();
-  const {data} = useSelector((state: RootStateProps) => state.bankAccount);
-  const {revenuesGuide} = useSelector((state: RootStateProps) => state.guides);
+  const {data} = useSelector((state: RootState) => state.bankAccount);
+  const {
+    revenuesGuide,
+    data: {revenuesContent},
+  } = useSelector((state: RootState) => state.guides);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,6 +49,14 @@ const Revenues = () => {
 
     getRevenuesHistory();
   }, []);
+
+  const guideContent = revenuesContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   return (
     <Page showHeader={false}>
@@ -191,8 +201,8 @@ const Revenues = () => {
         onRequestClose={() => {}}
         key="guide-revenues">
         <GuideCarousel
-          data={revenuesGuideImages}
-          onClose={() => dispatch(hideRevenueGuide())}
+          data={guideContent}
+          onClose={() => dispatch(viewedGuide({key: GuideEnum.REVENUES}))}
         />
       </Ads>
     </Page>

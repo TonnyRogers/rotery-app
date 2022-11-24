@@ -16,8 +16,7 @@ import {LocationItem} from '../../components/LocationItem';
 import FilterInput from '../../components/FilterInput';
 import {LocationType} from '../../utils/enums';
 import {useDispatch, useSelector} from 'react-redux';
-import {getLocationFeedRequest} from '../../store/modules/locations/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
+import {getLocationFeed} from '../../store2/locations';
 import {
   Location,
   LocationFeedFilterResponse,
@@ -29,6 +28,7 @@ import LocationPickerInput from '../../components/LocationPickerInput';
 import PickerInput from '../../components/PickerInput';
 import {Activity, ActivityList} from './styles';
 import CustomIcon from '../../components/CustomIcon';
+import {RootState} from '../../providers/store';
 
 interface PageFilters {
   region?: string;
@@ -70,7 +70,7 @@ export function LocationFeed({route}: LocationFeedProps) {
   const pageFilter = useRef<PageFilters>({});
 
   const {locations, loading} = useSelector(
-    (state: RootStateProps) => state.locations,
+    (state: RootState) => state.locations,
   );
 
   const handleSetLocation = (value: any) => {
@@ -112,7 +112,7 @@ export function LocationFeed({route}: LocationFeedProps) {
   function handleGetPaginatedFeedWithFilters() {
     page.current = page.current + 1;
     dispatch(
-      getLocationFeedRequest({
+      getLocationFeed({
         page: page.current,
         limit: 10,
         ...pageFilter.current,
@@ -124,7 +124,7 @@ export function LocationFeed({route}: LocationFeedProps) {
   function handleGetFeedWithFilters() {
     page.current = 1;
     dispatch(
-      getLocationFeedRequest({
+      getLocationFeed({
         page: page.current,
         limit: 10,
         ...pageFilter.current,

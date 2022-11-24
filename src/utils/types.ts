@@ -5,6 +5,7 @@ import {
   ChatType,
   WelcomeStepListType,
   AppRoutes,
+  ContentType,
 } from './enums';
 import {
   TransportProps,
@@ -1044,4 +1045,22 @@ export type Tip = {
 export type GuideRelateValidation = {
   isActive: boolean;
   message: string;
+};
+
+export type ContentList = {
+  id: number;
+  file: FileProps | null;
+  externalUrl: string | null;
+  title: string | null;
+  content: string | null;
+  redirectLink: string | null;
+  action: string | null;
+  type: ContentType;
+  key: string | null;
+  icon: string | null;
+  isList: boolean;
+  withInfo: boolean;
+  isAnimation: boolean;
+  createdAt: string;
+  updatedAt: string;
 };

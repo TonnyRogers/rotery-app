@@ -12,14 +12,16 @@ import Toast from 'react-native-toast-message';
 import CodePush from 'react-native-code-push';
 
 import './config/ReactotronConfig';
-import {store, persistor} from './store';
+import {store, persistor} from './providers/store';
 import Routes from './routes';
 import {GlobalContext} from './context';
 import {Loading} from './components/Loading';
 import {GAUTH_IOS, GAUTH_WEB} from '@env';
+import {injectStore} from './providers/api';
+injectStore(store);
 
 if (__DEV__) {
-  LogBox.ignoreLogs(['new NativeEventEmitter']);
+  LogBox.ignoreLogs(['new NativeEventEmitter', 'Require cycle:']);
 }
 
 const App = () => {

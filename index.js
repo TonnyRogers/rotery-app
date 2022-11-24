@@ -1,16 +1,23 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * @format
  */
 
+import React from 'react';
 import {AppRegistry} from 'react-native';
 import App from './src';
 import {name as appName} from './app.json';
-import firebase from '@react-native-firebase/app';
+import messaging from '@react-native-firebase/messaging';
 
-//   'Notification when app is in background ou terminated'
-firebase.messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  //   Ex: utilizar o payload da notificação para atualizar o store
-  //   evitando a necessidade de fazer um get para pegar novos dados
-});
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {});
 
-AppRegistry.registerComponent(appName, () => App);
+function HeadlessCheck({isHeadless}) {
+  if (isHeadless) {
+    // App has been launched in the background by iOS, ignore
+    return null;
+  }
+
+  return <App />;
+}
+
+AppRegistry.registerComponent(appName, () => HeadlessCheck);

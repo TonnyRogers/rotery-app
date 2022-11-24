@@ -3,7 +3,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
-import {RootStateProps} from '../../store/modules/rootReducer';
 // import {hideBottomSheet} from '../../store/modules/bottomsheet/actions';
 
 import {
@@ -22,18 +21,17 @@ interface HeaderProps {
 
 import Notification from '../Notification';
 import ModalMenu from '../ModalMenu';
-import BottomSheet from '../BottomSheet';
-import ConnectionShareList from '../ConnectionShareList';
 import {theme} from '../../utils/theme';
+import {RootState} from '../../providers/store';
 
 const Header: React.FC<HeaderProps> = () => {
   const navigation = useNavigation();
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const {counter} = useSelector((state: RootStateProps) => state.notifications);
+  const {counter} = useSelector((state: RootState) => state.notifications);
 
-  const bottomSheet = useSelector((state: RootStateProps) => state.bottomSheet);
+  // const bottomSheet = useSelector((state: RootState) => state.bottomSheet);
   function toggleNotifications() {
     setNotificationVisible(!notificationVisible);
   }
@@ -56,19 +54,19 @@ const Header: React.FC<HeaderProps> = () => {
     navigation.navigate('Profile');
   }
 
-  const renderBottomSheet = useCallback(() => {
-    switch (bottomSheet.componentType) {
-      case 'connectionShareList': {
-        return (
-          <ConnectionShareList
-            data={{id: bottomSheet.data?.id, type: bottomSheet.data?.type}}
-          />
-        );
-      }
-      default:
-        break;
-    }
-  }, [bottomSheet.componentType, bottomSheet.data]);
+  // const renderBottomSheet = useCallback(() => {
+  //   switch (bottomSheet.componentType) {
+  //     case 'connectionShareList': {
+  //       return (
+  //         <ConnectionShareList
+  //           data={{id: bottomSheet.data?.id, type: bottomSheet.data?.type}}
+  //         />
+  //       );
+  //     }
+  //     default:
+  //       break;
+  //   }
+  // }, [bottomSheet.componentType, bottomSheet.data]);
 
   return (
     <>
@@ -105,9 +103,9 @@ const Header: React.FC<HeaderProps> = () => {
         visible={menuVisible}
         onRequestClose={() => setMenuVisible(false)}
       />
-      <BottomSheet title="" visible={false} onRequestClose={() => {}}>
+      {/* <BottomSheet title="" visible={false} onRequestClose={() => {}}>
         {renderBottomSheet()}
-      </BottomSheet>
+      </BottomSheet> */}
     </>
   );
 };

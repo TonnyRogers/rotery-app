@@ -1,7 +1,7 @@
 import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-toast-message';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
 import api from '../../../providers/api';
 import {RootStateProps} from '../rootReducer';
@@ -17,7 +17,6 @@ import {
   registerSuccess,
   registerFailure,
   refreshTokenSuccess,
-  // refreshTokenFailure,
   setDeviceTokenRequest,
   setDeviceTokenSuccess,
   logout as logoutAction,
@@ -28,7 +27,7 @@ import {AxiosResponse} from 'axios';
 import {getNotificationsRequest} from '../notifications/actions';
 import {getBankAccountRequest} from '../bankAccount/actions';
 import {unauthenticate} from '../../../providers/google-oauth';
-import {RefreshUser, AuthUser} from './reducer';
+import {AuthUser} from './reducer';
 import {LocalStorageKeys} from '../../../utils/enums';
 
 type AuthLoginResponse = {
@@ -75,11 +74,9 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     yield call(
       [AsyncStorage, 'setItem'],
-      LocalStorageKeys.AUTH_REFRESH_USER,
-      JSON.stringify({email, password}),
+      LocalStorageKeys.AUTH_REFRESH,
+      response.headers['set-cookie'][0],
     );
-
-    api.defaults.headers.Authorization = `Bearer ${access_token}`;
 
     yield put(loginSuccess(access_token, user, expires));
     RootNavigation.replace('Welcome');
@@ -104,23 +101,13 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   }
 }
 
-export function* setToken({payload}: any) {
-  if (!payload || !payload.auth) {
-    return;
-  }
-
-  const {token} = payload.auth;
-
-  if (token) {
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    // yield put(refreshTokenRequest());
-  }
-}
-
 export function* logout() {
+  try {
+    yield call(api.get, '/auth/logout');
+  } catch (error) {}
+
   yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_TOKEN);
-  yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_REFRESH_USER);
-  api.defaults.headers.common.Authorization = 'Bearer ';
+  yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_REFRESH);
   unauthenticate();
   // cancelNotifications();
 }
@@ -184,22 +171,19 @@ export function* handleRefreshToken() {
     return;
   }
 
+  const info = yield call(NetInfo);
+
+  if (!info.status) {
+    yield put(loginFailure());
+    return;
+  }
+
   try {
     yield call(api.get, '/profile');
   } catch (error) {
-    const renewToken: RefreshUser = JSON.parse(
-      yield call([AsyncStorage, 'getItem'], LocalStorageKeys.AUTH_REFRESH_USER),
-    );
-
     try {
-      const response: AxiosResponse<AuthLoginResponse> = yield call(
-        api.post,
-        '/auth/login',
-        {
-          email: renewToken.email,
-          password: renewToken.password,
-        },
-      );
+      const response: AxiosResponse<Omit<AuthLoginResponse, 'user'>> =
+        yield call(api.post, '/auth/refresh');
 
       const {access_token, expires} = response.data;
 
@@ -212,8 +196,6 @@ export function* handleRefreshToken() {
       );
 
       yield put(refreshTokenSuccess(access_token, expires));
-
-      api.defaults.headers.common.Authorization = `Bearer ${access_token}`;
     } catch (error1) {
       yield put(logoutAction());
       Toast.show({
@@ -221,6 +203,7 @@ export function* handleRefreshToken() {
         text2: 'faça o login novamente.',
         position: 'bottom',
         type: 'error',
+        visibilityTime: 3000,
       });
     }
   }
@@ -234,7 +217,7 @@ export function* setDeviceToken() {
     );
 
     if (!deviceToken) {
-      deviceToken = yield call([messaging(), 'getToken']);
+      // deviceToken = yield call([messaging(), 'getToken']);
     }
 
     yield call(api.put, '/users/device', {
@@ -251,7 +234,7 @@ export function* setDeviceToken() {
 }
 
 export default all([
-  takeLatest('persist/REHYDRATE', handleRefreshToken),
+  // takeLatest('persist/REHYDRATE', handleRefreshToken),
   takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
   takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),

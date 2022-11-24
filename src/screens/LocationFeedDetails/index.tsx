@@ -2,13 +2,15 @@
 import React, {useMemo, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
+import {useSelector, useDispatch} from 'react-redux';
+import {View} from 'react-native';
 
 import * as RootNavigation from '../../RootNavigation';
 import api from '../../providers/api';
 
 import Page from '../../components/Page';
 import {PageContainer} from '../../components/PageContainer';
-import {View} from 'react-native';
 import Card from '../../components/Card';
 import ImageCarousel from '../../components/ImageCarousel';
 import RowGroup from '../../components/RowGroup';
@@ -29,16 +31,11 @@ import {LocationRatingItem} from '../../components/LocationRatingItem';
 import ShadowBox from '../../components/ShadowBox';
 import {theme} from '../../utils/theme';
 import {formatLocale} from '../../providers/dayjs-format-locale';
-import {useSelector, useDispatch} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import Toast from 'react-native-toast-message';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {hideLocationDetailsGuide} from '../../store/modules/guides/actions';
-import {
-  guideLocationDetailsGuideImages,
-  backpackerLocationDetailsGuideImages,
-} from '../../utils/constants';
+import {viewedGuide} from '../../store2/guides';
+import {RootState} from '../../providers/store';
+import {GuideEnum} from '../../utils/enums';
 interface LocationFeedDetailsProps {
   route: {
     params: {
@@ -53,10 +50,11 @@ export function LocationFeedDetails({
   },
 }: LocationFeedDetailsProps) {
   const dispatch = useDispatch();
-  const {user} = useSelector((state: RootStateProps) => state.auth);
-  const {locationDetailsGuide} = useSelector(
-    (state: RootStateProps) => state.guides,
-  );
+  const {user} = useSelector((state: RootState) => state.auth);
+  const {
+    locationDetailsGuide,
+    data: {locationDetailsContent},
+  } = useSelector((state: RootState) => state.guides);
 
   const updatedAtFormatted = useMemo(() => {
     return formatLocale(location.updatedAt, 'DD MMM YYYY');
@@ -126,6 +124,28 @@ export function LocationFeedDetails({
     ));
   }, [location.activities]);
 
+  useEffect(() => {
+    async function getGuides() {
+      const response = await api.get<GuideLocation[]>(
+        `/guide-locations/${location.id}`,
+      );
+
+      if (response.data.length) {
+        setLocationGuides(response.data);
+      }
+    }
+
+    getGuides();
+  }, [location.id]);
+
+  const guideContent = locationDetailsContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
+
   const renderDetailings = () =>
     location.detailings.map((detailing, index) => {
       if ('icon' in detailing) {
@@ -164,20 +184,6 @@ export function LocationFeedDetails({
       });
     }
   }
-
-  useEffect(() => {
-    async function getGuides() {
-      const response = await api.get<GuideLocation[]>(
-        `/guide-locations/${location.id}`,
-      );
-
-      if (response.data.length) {
-        setLocationGuides(response.data);
-      }
-    }
-
-    getGuides();
-  }, [location.id]);
 
   return (
     <Page showHeader={false}>
@@ -308,12 +314,10 @@ export function LocationFeedDetails({
         onRequestClose={() => {}}
         key="guide-welcome">
         <GuideCarousel
-          data={
-            user?.isGuide
-              ? guideLocationDetailsGuideImages
-              : backpackerLocationDetailsGuideImages
+          data={guideContent}
+          onClose={() =>
+            dispatch(viewedGuide({key: GuideEnum.LOCATION_DETALING}))
           }
-          onClose={() => dispatch(hideLocationDetailsGuide())}
         />
       </Ads>
     </Page>

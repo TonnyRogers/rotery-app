@@ -16,12 +16,11 @@ import Button from '../../components/Button';
 import Page from '../../components/Page';
 import {theme} from '../../utils/theme';
 import {
-  getCustomerRequest,
-  removeCustomerCardRequest,
-  addCustomerCardRequest,
-  setDefaultCard,
-} from '../../store/modules/checkout/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
+  getCustomer,
+  deleteCustomerCard,
+  addCustomerCard,
+  checkoutActions,
+} from '../../store2/checkout';
 import {SimpleList} from '../../components/SimpleList';
 import {AnimationContent} from '../../components/AnimationContent';
 import {PageContainer} from '../../components/PageContainer';
@@ -36,6 +35,7 @@ import Toast from 'react-native-toast-message';
 import Alert from '../../components/Alert';
 import {paymentToken} from '../../providers/payment';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
@@ -60,13 +60,13 @@ const Wallet = () => {
   const [webCheckouVisible, setWebCheckouVisible] = useState(false);
   const [removeCardAlertVisible, setRemoveCardAlertVisible] = useState(false);
   const {customer, loading, defaultCard} = useSelector(
-    (state: RootStateProps) => state.checkout,
+    (state: RootState) => state.checkout,
   );
   const [cardOnEdition, setCardOnEdition] =
     useState<CustomCardResponse | null>();
   const {
     data: {...profile},
-  } = useSelector((state: RootStateProps) => state.profile);
+  } = useSelector((state: RootState) => state.profile);
 
   const onEditCard = (card: CheckoutCustomerCardResponse) => {
     setCardOnEdition(card);
@@ -76,7 +76,12 @@ const Wallet = () => {
   const handleRemoveCard = () => {
     if (customer?.id && cardOnEdition?.id) {
       setCardBottomSheeVisible(false);
-      dispatch(removeCustomerCardRequest(customer?.id, cardOnEdition?.id));
+      dispatch(
+        deleteCustomerCard({
+          customerId: customer?.id,
+          cardId: cardOnEdition?.id,
+        }),
+      );
       setCardOnEdition(null);
     }
   };
@@ -86,7 +91,12 @@ const Wallet = () => {
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
 
     if (dataParse.message === 'ok' && customer !== null) {
-      dispatch(addCustomerCardRequest(cardTokenPayload.id, customer?.id));
+      dispatch(
+        addCustomerCard({
+          cardToken: cardTokenPayload.id,
+          customerId: customer?.id,
+        }),
+      );
       setWebCheckouVisible(false);
     } else {
       Toast.show({
@@ -99,7 +109,7 @@ const Wallet = () => {
 
   useEffect(() => {
     if (profile?.user.customerId && !customer) {
-      dispatch(getCustomerRequest(profile?.user.customerId));
+      dispatch(getCustomer(profile?.user.customerId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer?.cards]);
@@ -229,7 +239,9 @@ const Wallet = () => {
           bgColor="blueTransparent"
           onPress={() => {
             dispatch(
-              setDefaultCard(cardOnEdition as CheckoutCustomerCardResponse),
+              checkoutActions.setDefaultCard(
+                cardOnEdition as CheckoutCustomerCardResponse,
+              ),
             );
             setCardBottomSheeVisible(false);
           }}

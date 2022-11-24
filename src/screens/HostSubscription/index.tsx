@@ -22,26 +22,23 @@ import Page from '../../components/Page';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {useSelector, useDispatch} from 'react-redux';
 import Card from '../../components/Card';
 import ShadowBox from '../../components/ShadowBox';
 import {CheckoutRouteParamsProps} from '../Checkout';
 import Divider from '../../components/Divider';
 import ImageContainer from '../../components/ImageContainer';
-import {
-  getSubscriptionRequest,
-  cancelSubscriptionRequest,
-} from '../../store/modules/subscription/actions';
+import {getSubscription, cancelSubscription} from '../../store2/subscription';
 import Alert from '../../components/Alert';
 import Tag from '../../components/Tag';
 import api from '../../providers/api';
 import {AxiosResponse} from 'axios';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {subscriptionGuideImages} from '../../utils/constants';
-import {hideSubscriptionGuide} from '../../store/modules/guides/actions';
+import {viewedGuide} from '../../store2/guides';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
+import {GuideEnum} from '../../utils/enums';
 
 const HostSubscription = () => {
   const {setLoading, isLoading} = useContext(LoadingContext);
@@ -52,23 +49,22 @@ const HostSubscription = () => {
     useState<SearchSubscriptionResult | null>(null);
   const [plan, setPlan] = useState<Plan>();
 
-  const {data, loading} = useSelector(
-    (state: RootStateProps) => state.subscription,
-  );
+  const {data, loading} = useSelector((state: RootState) => state.subscription);
 
-  const {subscriptionGuide} = useSelector(
-    (state: RootStateProps) => state.guides,
-  );
+  const {
+    subscriptionGuide,
+    data: {subscriptionContent},
+  } = useSelector((state: RootState) => state.guides);
 
   const handleCancelSubscription = () => {
     if (data?.id) {
-      dispatch(cancelSubscriptionRequest(data?.id));
+      dispatch(cancelSubscription(data?.id));
     }
   };
 
   useEffect(() => {
     if (!data) {
-      dispatch(getSubscriptionRequest());
+      dispatch(getSubscription());
     }
   }, [dispatch, data]);
 
@@ -109,6 +105,14 @@ const HostSubscription = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
+
+  const guideContent = subscriptionContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   const renderSubscriptionStatusTag = useCallback(() => {
     switch (data?.status) {
@@ -344,8 +348,8 @@ const HostSubscription = () => {
           onRequestClose={() => {}}
           key="guide-feed">
           <GuideCarousel
-            data={subscriptionGuideImages}
-            onClose={() => dispatch(hideSubscriptionGuide())}
+            data={guideContent}
+            onClose={() => dispatch(viewedGuide({key: GuideEnum.SUBSCRIPTION}))}
           />
         </Ads>
       )}

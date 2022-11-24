@@ -6,7 +6,6 @@ import {View} from 'react-native';
 
 import * as RootNavigation from '../../RootNavigation';
 
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {UserProps, Location} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
 import {formatLocale} from '../../providers/dayjs-format-locale';
@@ -18,6 +17,7 @@ import StarRate from '../StarRate';
 import {MemberDetails, UserImage, UserButton} from './styles';
 import {ChatRouteParams} from '../../screens/Chat';
 import {useUserIsGuide} from '../../hooks/useUserIsGuide';
+import {RootState} from '../../providers/store';
 interface LocationGuideProps {
   guide: UserProps;
   location: Location;
@@ -35,7 +35,7 @@ export function LocationGuide({guide, location}: LocationGuideProps) {
     );
   }, [guide.createdAt]);
 
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {user} = useSelector((state: RootState) => state.auth);
 
   function viewProfile(userId: number) {
     if (userId === user?.id) {

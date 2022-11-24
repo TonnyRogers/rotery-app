@@ -25,9 +25,9 @@ import Input from '../../components/Input';
 import {formatBRL, realToUSCash} from '../../lib/mask';
 import {CardConfirm} from '../../components/CardConfirm';
 import {useDispatch, useSelector} from 'react-redux';
-import {processTipRequest} from '../../store/modules/checkout/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
+import {processTip} from '../../store2/checkout';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 export interface RateChatRouteParams extends RateChatNotificationJsonData {}
 
@@ -51,8 +51,8 @@ export function RateChat({
   const [webCardConfirmVisible, setWebCardConfirmVisible] = useState(false);
   const [tipValue, setTipValue] = useState('');
   const validatedCard = useRef<CardTokenResponse>();
-  const {defaultCard} = useSelector((state: RootStateProps) => state.checkout);
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {defaultCard} = useSelector((state: RootState) => state.checkout);
+  const {user} = useSelector((state: RootState) => state.auth);
 
   function handleTipProcess() {
     if (Number(realToUSCash(tipValue)) > 0) {
@@ -114,7 +114,7 @@ export function RateChat({
       user
     ) {
       dispatch(
-        processTipRequest({
+        processTip({
           cardInfo: {
             issuerId: String(defaultCard?.issuer.id),
             paymentMethod: defaultCard?.payment_method.id,

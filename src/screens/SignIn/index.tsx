@@ -1,19 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  useContext,
-} from 'react';
+import React, {useState, useRef, useEffect, useContext, useMemo} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Animated, View} from 'react-native';
+import {View} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {loginRequest} from '../../store/modules/auth/actions';
+import {loginRequest} from '../../store2/auth';
 
 import {
   Container,
@@ -33,8 +27,6 @@ import Input from '../../components/Input';
 import HighlightCarousel from '../../components/HighlightCarousel';
 import Page from '../../components/Page';
 import DismissKeyboad from '../../components/DismissKeyboad';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {homeImagesCarousel} from '../../utils/constants';
 import Text from '../../components/Text';
 import Button from '../../components/Button';
 import RowGroupComponent from '../../components/RowGroup';
@@ -44,6 +36,8 @@ import {LoadingContext} from '../../context/loading/context';
 import Divider from '../../components/Divider';
 import {authenticate} from '../../providers/google-oauth';
 import {gOAuthPasswordGen} from '../../utils/helpers';
+import {RootState} from '../../providers/store';
+import {getLoginBannerList} from '../../store2/contents';
 
 interface UseFormFields {
   email: string;
@@ -64,11 +58,11 @@ const SignIn: React.FC = () => {
   const dispatch = useDispatch();
   const [loginVisible, setLoginVisible] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
-  const {loading} = useSelector((state: RootStateProps) => state.auth);
+  const {loading} = useSelector((state: RootState) => state.auth);
+  const {loginBanners} = useSelector((state: RootState) => state.contents);
 
   const emailRef = useRef() as any;
   const passwordRef = useRef() as any;
-  const panY = useRef(new Animated.ValueXY({x: 0, y: 400})).current;
   const {
     register,
     handleSubmit,
@@ -78,35 +72,26 @@ const SignIn: React.FC = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const handleOpen = useCallback(() => {
-    Animated.timing(panY.y, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  }, [panY.y]);
+  const bannerList = useMemo(() => {
+    const formatedList = loginBanners.map((banner) => ({
+      url: banner.externalUrl ?? '',
+      message: banner.content ?? '',
+      title: banner.title ?? '',
+      withInfo: banner.withInfo,
+    }));
 
-  const handleDismiss = useCallback(() => {
-    Animated.timing(panY.y, {
-      toValue: 400,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-    setLoginVisible(false);
-  }, [panY.y]);
+    return formatedList ?? [];
+  }, [loginBanners]);
+
+  useEffect(() => {
+    dispatch(getLoginBannerList());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     register('email');
     register('password');
   }, [register]);
-
-  useEffect(() => {
-    if (loginVisible === true) {
-      handleOpen();
-    } else {
-      handleDismiss();
-    }
-  }, [handleDismiss, handleOpen, loginVisible, dispatch]);
 
   function signUpNavigate() {
     setLoginVisible(false);
@@ -119,7 +104,7 @@ const SignIn: React.FC = () => {
   }
 
   const handleLogin = (data: UseFormFields) => {
-    dispatch(loginRequest(data.email, data.password));
+    dispatch(loginRequest({email: data.email, password: data.password}));
   };
 
   async function handleGOAuthLogin() {
@@ -134,6 +119,10 @@ const SignIn: React.FC = () => {
     if (loading !== isLoading) {
       setLoading(loading);
     }
+
+    return function cleanUp() {
+      setLoading(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
@@ -144,7 +133,7 @@ const SignIn: React.FC = () => {
           <Logo source={horizontalLogo} resizeMode="contain" />
         </Header>
         <Text.Title alignment="center">Destaques {'&'} Informações</Text.Title>
-        <HighlightCarousel data={homeImagesCarousel} />
+        <HighlightCarousel data={bannerList} />
         <TipContent>
           <Text textColor="green" textWeight="bold">
             Arraste para ver mais

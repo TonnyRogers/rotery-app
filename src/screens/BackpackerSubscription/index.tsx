@@ -15,12 +15,8 @@ import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
 import {theme} from '../../utils/theme';
 import Tag from '../../components/Tag';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import Alert from '../../components/Alert';
-import {
-  cancelSubscriptionRequest,
-  getSubscriptionRequest,
-} from '../../store/modules/subscription/actions';
+import {cancelSubscription, getSubscription} from '../../store2/subscription';
 import ShadowBox from '../../components/ShadowBox';
 import {AnimationContent} from '../../components/AnimationContent';
 import {SearchSubscriptionResult, Plan} from '../../utils/types';
@@ -33,13 +29,12 @@ import Card from '../../components/Card';
 import {SimpleList} from '../../components/SimpleList';
 import api from '../../providers/api';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 export function BackpackerSubscription() {
   const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
-  const {data, loading} = useSelector(
-    (state: RootStateProps) => state.subscription,
-  );
+  const {data, loading} = useSelector((state: RootState) => state.subscription);
 
   const [cancelSubscriptionAlertVisible, setCancelSubscriptionAlertVisible] =
     useState(false);
@@ -49,7 +44,7 @@ export function BackpackerSubscription() {
 
   function handleCancelSubscription() {
     if (data?.id) {
-      dispatch(cancelSubscriptionRequest(data?.id));
+      dispatch(cancelSubscription(data?.id));
       setCancelSubscriptionAlertVisible(false);
     }
   }
@@ -87,7 +82,7 @@ export function BackpackerSubscription() {
 
   useEffect(() => {
     if (!data) {
-      dispatch(getSubscriptionRequest());
+      dispatch(getSubscription());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);

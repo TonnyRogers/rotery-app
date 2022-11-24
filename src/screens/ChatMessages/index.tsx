@@ -17,25 +17,24 @@ import ImageContainer from '../../components/ImageContainer';
 import {ChatButton, MessageCounter, Header} from './styles';
 import {SimpleList} from '../../components/SimpleList';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {getChatMessagesRequest} from '../../store/modules/chats/actions';
+import {getChats} from '../../store2/chats';
 import {ChatRouteParams} from '../Chat';
 import {UserProps} from '../../utils/types';
 import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {hideChatsGuide} from '../../store/modules/guides/actions';
-import {
-  guideChatsGuideImages,
-  backpackerChatsGuideImages,
-} from '../../utils/constants';
+import {viewedGuide} from '../../store2/guides';
+import {RootState} from '../../providers/store';
+import {GuideEnum} from '../../utils/enums';
 
 export function ChatMessages() {
   const dispatch = useDispatch();
 
-  const {chats} = useSelector((state: RootStateProps) => state.chats);
-  const {user} = useSelector((state: RootStateProps) => state.auth);
-  const {chatsGuide} = useSelector((state: RootStateProps) => state.guides);
+  const {chats} = useSelector((state: RootState) => state.chats);
+  const {
+    chatsGuide,
+    data: {chatsContent},
+  } = useSelector((state: RootState) => state.guides);
   const {conditionalRender} = useUserIsGuide();
 
   function toChat(target: UserProps) {
@@ -81,9 +80,17 @@ export function ChatMessages() {
   }
 
   useEffect(() => {
-    dispatch(getChatMessagesRequest());
+    dispatch(getChats());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const guideContent = chatsContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   return (
     <Page>
@@ -110,10 +117,8 @@ export function ChatMessages() {
       </PageContainer>
       <Ads visible={chatsGuide} onRequestClose={() => {}} key="guide-welcome">
         <GuideCarousel
-          data={
-            user?.isGuide ? guideChatsGuideImages : backpackerChatsGuideImages
-          }
-          onClose={() => dispatch(hideChatsGuide())}
+          data={guideContent}
+          onClose={() => dispatch(viewedGuide({key: GuideEnum.CHAT}))}
         />
       </Ads>
     </Page>

@@ -3,7 +3,7 @@ import {Dimensions, PanResponder, Animated} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {logout} from '../../store/modules/auth/actions';
+import {logout} from '../../store2/auth';
 import {RootStateProps} from '../../store/modules/rootReducer';
 import * as RootNavigation from '../../RootNavigation';
 
@@ -21,7 +21,8 @@ import {
   CloseButton,
 } from './styles';
 import Text from '../Text';
-// import {useUserIsGuide} from '../../hooks/useUserIsGuide';
+import {RootState} from '../../providers/store';
+import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 
 interface ModalMenuProps {
   visible: boolean;
@@ -32,8 +33,8 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
   const dispatch = useDispatch();
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
-  // const {user} = useSelector((state: RootStateProps) => state.auth);
-  // const {conditionalRender} = useUserIsGuide();
+  const {user} = useSelector((state: RootState) => state.auth);
+  const {conditionalRender} = useUserIsGuide();
 
   const handleOpen = useCallback(() => {
     Animated.timing(panY.y, {
@@ -82,7 +83,7 @@ const ModalMenu: React.FC<ModalMenuProps> = ({visible, onRequestClose}) => {
     }
   }, [handleDismiss, handleOpen, visible]);
 
-  const {unreadCounter} = useSelector((state: RootStateProps) => state.chats);
+  const {unreadCounter} = useSelector((state: RootState) => state.chats);
 
   async function handleLogout() {
     onRequestClose();

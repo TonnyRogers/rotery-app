@@ -1,7 +1,7 @@
 import io, {Socket} from 'socket.io-client';
 import {apiBaseUrl} from './api';
 
-const wsConnectionType = __DEV__ ? 'ws://' : 'wss://';
+export const wsConnectionType = __DEV__ ? 'ws://' : 'wss://';
 
 export type SocketClient = Socket;
 

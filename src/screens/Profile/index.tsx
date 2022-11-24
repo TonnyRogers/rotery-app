@@ -9,11 +9,10 @@ import * as yup from 'yup';
 
 import {phoneBR, cpfCnpj, clearValue} from '../../lib/mask';
 import {
-  updateProfileRequest,
-  updateProfileImageRequest,
-} from '../../store/modules/profile/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {removeUserRequest} from '../../store/modules/profile/actions';
+  updateProfile,
+  updateProfileImage,
+  deleteUser,
+} from '../../store2/profile';
 
 import {
   Container,
@@ -37,13 +36,9 @@ import Text from '../../components/Text';
 import FileInput from '../../components/FileInput';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {hideProfileGuide} from '../../store/modules/guides/actions';
+import {viewedGuide} from '../../store2/guides';
 import LocationPickerInput from '../../components/LocationPickerInput';
-import {
-  sexOptions,
-  travelerProfileGuideImages,
-  hostProfileGuideImages,
-} from '../../utils/constants';
+import {sexOptions} from '../../utils/constants';
 import {
   TomTomApiResponse,
   ProfileLocationJson,
@@ -54,10 +49,11 @@ import {formatLocale} from '../../providers/dayjs-format-locale';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
 import {useUserIsGuide} from '../../hooks/useUserIsGuide';
-import {YupValidationMessages} from '../../utils/enums';
+import {YupValidationMessages, GuideEnum} from '../../utils/enums';
 import RowGroup from '../../components/RowGroup';
 import {SimpleList} from '../../components/SimpleList';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(YupValidationMessages.REQUIRED),
@@ -86,8 +82,26 @@ const Profile: React.FC = () => {
     watch,
     formState: {errors},
   } = useForm({resolver: yupResolver(validationSchema)});
-  const {data, loading} = useSelector((state: RootStateProps) => state.profile);
-  const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
+  const {data, loading} = useSelector((state: RootState) => state.profile);
+  const {
+    profileGuide,
+    data: {profileContent},
+  } = useSelector((state: RootState) => state.guides);
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [genderIsOpen, setGenderIsOpen] = useState(false);
+  const [cityIsOpen, setCityIsOpen] = useState(false);
+  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
+  const [profileImage, setProfileImage] = useState<{uri: string | undefined}>({
+    uri: undefined,
+  });
+
+  const nameRef = useRef<any>();
+  const emailRef = useRef<any>();
+  const phoneRef = useRef<any>();
+  const cpfRef = useRef<any>();
+  const stateRef = useRef<any>();
+  const profissionRef = useRef<any>();
 
   useEffect(() => {
     if (data?.file && data.file?.url) {
@@ -110,11 +124,18 @@ const Profile: React.FC = () => {
     setValue('gender', data?.gender || '');
     setValue('email', data?.user?.email || '');
     setValue('phone', data?.phone || '');
-    setValue('document', cpfCnpj(String(data?.document)) || '1');
+    setValue('document', cpfCnpj(String(data?.document)) || '');
     setValue('profission', data?.profission || '');
     setValue('birthDate', data?.birth);
     setValue('city', data?.location || '');
   }, [data, register, setValue]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const watchBirthDate = watch('birthDate');
   const watchGender = watch('gender');
@@ -125,20 +146,13 @@ const Profile: React.FC = () => {
   const watchCpf = watch('document', '');
   const watchProfission = watch('profission');
 
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [genderIsOpen, setGenderIsOpen] = useState(false);
-  const [cityIsOpen, setCityIsOpen] = useState(false);
-  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
-  const [profileImage, setProfileImage] = useState<{uri: string | undefined}>({
-    uri: undefined,
-  });
-
-  const nameRef = useRef<any>();
-  const emailRef = useRef<any>();
-  const phoneRef = useRef<any>();
-  const cpfRef = useRef<any>();
-  const stateRef = useRef<any>();
-  const profissionRef = useRef<any>();
+  const guideContent = profileContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   const useSinceDate = useMemo(
     () =>
@@ -172,21 +186,21 @@ const Profile: React.FC = () => {
     };
 
     dispatch(
-      updateProfileRequest(
-        profileData.name,
-        profileData.gender,
-        profileData.birthDate.toDateString(),
-        String(clearValue(profileData.document)),
-        profileData.profission,
-        String(clearValue(profileData.phone)),
-        profileData.city,
-        locationJson.current ? jsonContent : undefined,
-      ),
+      updateProfile({
+        name: profileData.name,
+        gender: profileData.gender,
+        birth: profileData.birthDate.toDateString(),
+        document: String(clearValue(profileData.document)),
+        profission: profileData.profission,
+        phone: String(clearValue(profileData.phone)),
+        location: profileData.city,
+        location_json: locationJson.current ? jsonContent : undefined,
+      }),
     );
   };
 
   function handleDeleteUser() {
-    dispatch(removeUserRequest());
+    dispatch(deleteUser());
     setAlertVisible(false);
   }
 
@@ -199,20 +213,13 @@ const Profile: React.FC = () => {
   function handleProfileImage(image: FileProps) {
     if (image.id) {
       setProfileImage({uri: image.url});
-      dispatch(updateProfileImageRequest(image.id));
+      dispatch(updateProfileImage(image.id));
     }
   }
 
   const handleNew = (value: any) => {
     locationJson.current = value;
   };
-
-  useEffect(() => {
-    if (loading !== isLoading) {
-      setLoading(loading);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -455,8 +462,8 @@ const Profile: React.FC = () => {
       />
       <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
-          data={isGuide ? hostProfileGuideImages : travelerProfileGuideImages}
-          onClose={() => dispatch(hideProfileGuide())}
+          data={guideContent}
+          onClose={() => dispatch(viewedGuide({key: GuideEnum.PROFILE}))}
         />
       </Ads>
     </Page>

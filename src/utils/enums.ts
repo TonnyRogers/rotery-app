@@ -61,6 +61,52 @@ export enum TipPaymentStatus {
 }
 
 export enum LocalStorageKeys {
-  AUTH_REFRESH_USER = '@auth:refreshUser',
+  AUTH_REFRESH = '@auth:refreshToken',
   AUTH_TOKEN = '@auth:token',
+  NOTIFICATION_TOKEN = '@notification:token',
+}
+
+export enum GuideEnum {
+  FEED = 'feedGuide',
+  WELCOME = 'welcomeGuide',
+  NEW_ITINERARY = 'newItineraryGuide',
+  MY_ITINERARY = 'myItineraryGuide',
+  PROFILE = 'profileGuide',
+  REVENUES = 'revenuesGuide',
+  SUBSCRIPTION = 'subscriptionGuide',
+  SUBSCRIPTION_CHECKOUT = 'subscriptionCheckoutGuide',
+  EXPLORE_LOCATIONS = 'exploreLocationsGuide',
+  LOCATION_DETALING = 'locationDetailsGuide',
+  CHAT = 'chatsGuide',
+}
+
+export enum ContentType {
+  LOGIN_LIST = 'login_list',
+  WELCOME_SEASON_BANNER = 'welcome_season',
+  SITE_NEWS = 'site_news',
+  APP_ADS = 'app_ads',
+  APP_GUIDED_TOUR = 'app_tour',
+  BACKPACKER_SUBSCRIPTION = 'backpacker_subs',
+  GUIDE_SUBSCRIPTION = 'guide_subs',
+  GENERIC = 'generic',
+}
+
+export enum ContentGuideTourKeys {
+  FEED = 'feed_guide',
+  BACKPACKER_WELCOME = 'backpacker_welcome_guide',
+  GUIDE_WELCOME = 'guide_welcome_guide',
+  NEW_ITINERARY = 'new_itinerary_guide',
+  MY_ITINERARY = 'my_itinerary_guide',
+  BACKPACKER_PROFILE = 'backpacker_profile_guide',
+  GUIDE_PROFILE = 'guide_profile_guide',
+  REVENUES = 'revenues_guide',
+  BACKPACKER_SUBSCRIPTION = 'backpacker_subscription_guide',
+  GUIDE_SUBSCRIPTION = 'guide_subscription_guide',
+  SUBSCRIPTION_CHECKOUT = 'subscription_checkout_guide',
+  EXPLORE_LOCATIONS = 'explore_locations_guide',
+  BACKPACKER_LOCATION_DETALING = 'backpacker_location_details_guide',
+  GUIDE_LOCATION_DETALING = 'guide_location_details_guide',
+  BACKPACKER_CHAT = 'backpacker_chats_guide',
+  GUIDE_CHAT = 'guide_chats_guide',
+  BEGIN_CHAT = 'begin_chats_guide',
 }

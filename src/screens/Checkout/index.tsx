@@ -39,30 +39,29 @@ import {
   ItineraryProps,
   PayerCosts,
 } from '../../utils/types';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {
-  getCustomerRequest,
-  resetCheckoutStatus,
-  createCustomerRequest,
-  processJoinItineraryPaymentRequest,
-  removeCustomerCardRequest,
-  addCustomerCardRequest,
-} from '../../store/modules/checkout/actions';
+  getCustomer,
+  createCustomer,
+  deleteCustomerCard,
+  addCustomerCard,
+  checkoutActions,
+} from '../../store2/checkout';
 import PickerInput from '../../components/PickerInput';
 import Modal from '../../components/Modal';
 import CheckoutItinerary from './itinerary';
 import CheckoutSubscription from './subscription';
 import SubscriptionCardChange from './subscription-card-change';
 import {
-  createSubscriptionRequest,
-  changeSubscriptionCardRequest,
-} from '../../store/modules/subscription/actions';
+  createSubscription,
+  changeSubscriptionCard,
+} from '../../store2/subscription';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {subscriptionCheckoutGuideImages} from '../../utils/constants';
-import {hideSubscriptionCheckoutGuide} from '../../store/modules/guides/actions';
+import {viewedGuide} from '../../store2/guides';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
+import {GuideEnum} from '../../utils/enums';
 
 const confirmAnimation = require('../../../assets/animations/animation_confirm.json');
 const processingAnimation = require('../../../assets/animations/animation_processing_card.json');
@@ -110,16 +109,17 @@ const Checkout = ({route}: CheckoutProps) => {
   } = route;
   const {isAndroid} = useIsAndroid();
 
-  const {data: profile} = useSelector((state: RootStateProps) => state.profile);
+  const {data: profile} = useSelector((state: RootState) => state.profile);
   const {customer, loading, checkoutStatus} = useSelector(
-    (state: RootStateProps) => state.checkout,
+    (state: RootState) => state.checkout,
   );
   const {loading: subscriptionLoading, data: subscriptionData} = useSelector(
-    (state: RootStateProps) => state.subscription,
+    (state: RootState) => state.subscription,
   );
-  const {subscriptionCheckoutGuide} = useSelector(
-    (state: RootStateProps) => state.guides,
-  );
+  const {
+    subscriptionCheckoutGuide,
+    data: {subscriptionCheckoutContent},
+  } = useSelector((state: RootState) => state.guides);
 
   const [webCardConfirmVisible, setWebCardConfirmVisible] = useState(false);
   const [webCheckouVisible, setWebCheckouVisible] = useState(false);
@@ -157,7 +157,12 @@ const Checkout = ({route}: CheckoutProps) => {
     const cardTokenPayload: CardTokenResponse = dataParse.payload;
 
     if (dataParse.message === 'ok' && customer !== null) {
-      dispatch(addCustomerCardRequest(cardTokenPayload.id, customer?.id));
+      dispatch(
+        addCustomerCard({
+          cardToken: cardTokenPayload.id,
+          customerId: customer?.id,
+        }),
+      );
       setWebCheckouVisible(false);
     } else {
       Toast.show({
@@ -232,32 +237,34 @@ const Checkout = ({route}: CheckoutProps) => {
     true;
   `;
 
-  useEffect(() => {
-    if (profile?.user.customerId && !customer) {
-      dispatch(getCustomerRequest(profile?.user.customerId));
+  const renderCheckoutHead = useCallback(() => {
+    switch (paymentType) {
+      case 'itinerary':
+        if ('lodgings' in data && data) {
+          return (
+            <CheckoutItinerary
+              itinerary={data}
+              itineraryAmount={itineraryAmount}
+            />
+          );
+        }
+        break;
+      case 'subscription':
+        if ('amount' in data) {
+          return (
+            <CheckoutSubscription amount={data?.amount} name={data.name} />
+          );
+        }
+        break;
+      case 'subscription-card-change':
+        if ('amount' in data) {
+          return (
+            <SubscriptionCardChange amount={data?.amount} name={data.name} />
+          );
+        }
+        break;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetCheckoutStatus());
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (loading !== isLoading) {
-      setLoading(loading);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
-
-  useEffect(() => {
-    if (loading !== subscriptionLoading) {
-      setLoading(subscriptionLoading);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscriptionLoading]);
+  }, [data, itineraryAmount, paymentType]);
 
   const checkoutResponseText = useMemo(() => {
     const textFormated = {
@@ -316,7 +323,7 @@ const Checkout = ({route}: CheckoutProps) => {
   const verifyCustomer = useCallback(() => {
     if (!profile?.user.customerId && !customer) {
       dispatch(
-        createCustomerRequest({
+        createCustomer({
           email: String(profile?.user.email),
           fullName: profile?.name ? profile?.name : undefined,
           phone: profile?.phone ? Number(profile?.phone) : undefined,
@@ -381,58 +388,93 @@ const Checkout = ({route}: CheckoutProps) => {
     [selectedCard, verifyCustomer],
   );
 
+  useEffect(() => {
+    if (profile?.user.customerId && !customer) {
+      dispatch(getCustomer(profile?.user.customerId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      dispatch(checkoutActions.resetCheckoutStatus());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading !== subscriptionLoading) {
+      setLoading(subscriptionLoading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscriptionLoading]);
+
+  const guideContent = subscriptionCheckoutContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
+
   const changeIntallmenteValue = (value: string) => {
     setInstallment(value);
     setSubmitButtonActive(true);
   };
 
   const processPayment = () => {
-    const selectedInstallment = installmentsListOptions.find(
-      (item) => item.installments === Number(installment),
-    );
+    // const selectedInstallment = installmentsListOptions.find(
+    //   (item) => item.installments === Number(installment),
+    // );
     if (customer && selectedCard && selectedCard.token) {
       switch (paymentType) {
-        case 'itinerary':
-          if ('lodgings' in data) {
-            dispatch(
-              processJoinItineraryPaymentRequest(data.id, {
-                description: `Cobrança de valores referente ao roteiro ${data.name}`,
-                external_reference: `Roteiro: RT0${data.id}`,
-                installments: Number(selectedInstallment?.installments),
-                issuer_id: selectedCard.issuer.id,
-                payer: {
-                  id: customer?.id,
-                  email: customer.email,
-                  entity_type: 'individual',
-                  type: 'customer',
-                },
-                payment_method_id: selectedCard.payment_method.id,
-                statement_descriptor: `Rotery - Pagamento do Roteiro RT0${data.id}`,
-                token: selectedCard?.token,
-                transaction_amount: Number(selectedInstallment?.total_amount),
-              }),
-            );
-          }
-          break;
+        // case 'itinerary':
+        //   if ('lodgings' in data) {
+        //     dispatch(
+        //       processJoinItineraryPaymentRequest(data.id, {
+        //         description: `Cobrança de valores referente ao roteiro ${data.name}`,
+        //         external_reference: `Roteiro: RT0${data.id}`,
+        //         installments: Number(selectedInstallment?.installments),
+        //         issuer_id: selectedCard.issuer.id,
+        //         payer: {
+        //           id: customer?.id,
+        //           email: customer.email,
+        //           entity_type: 'individual',
+        //           type: 'customer',
+        //         },
+        //         payment_method_id: selectedCard.payment_method.id,
+        //         statement_descriptor: `Rotery - Pagamento do Roteiro RT0${data.id}`,
+        //         token: selectedCard?.token,
+        //         transaction_amount: Number(selectedInstallment?.total_amount),
+        //       }),
+        //     );
+        //   }
+        //   break;
         case 'subscription':
           if ('reference_id' in data) {
             dispatch(
-              createSubscriptionRequest(
-                data.reference_id,
-                selectedCard.token,
-                customer.email,
-                data.id,
-              ),
+              createSubscription({
+                preapproval_plan_id: data.reference_id,
+                card_token_id: selectedCard.token,
+                payer_email: customer.email,
+                planId: data.id,
+              }),
             );
           }
           break;
         case 'subscription-card-change':
           if ('subscriptionId' in data) {
             dispatch(
-              changeSubscriptionCardRequest(
-                data.subscriptionId,
-                selectedCard.token,
-              ),
+              changeSubscriptionCard({
+                subscriptionId: data.subscriptionId,
+                card_token_id: selectedCard.token,
+              }),
             );
           }
           break;
@@ -459,40 +501,16 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const handleRemoveCard = () => {
     if (customer?.id && onEditionCard?.id) {
-      dispatch(removeCustomerCardRequest(customer?.id, onEditionCard?.id));
+      dispatch(
+        deleteCustomerCard({
+          customerId: customer?.id,
+          cardId: onEditionCard?.id,
+        }),
+      );
       setOnEditionCard(null);
       setEditCardVisible(false);
     }
   };
-
-  const renderCheckoutHead = useCallback(() => {
-    switch (paymentType) {
-      case 'itinerary':
-        if ('lodgings' in data && data) {
-          return (
-            <CheckoutItinerary
-              itinerary={data}
-              itineraryAmount={itineraryAmount}
-            />
-          );
-        }
-        break;
-      case 'subscription':
-        if ('amount' in data) {
-          return (
-            <CheckoutSubscription amount={data?.amount} name={data.name} />
-          );
-        }
-        break;
-      case 'subscription-card-change':
-        if ('amount' in data) {
-          return (
-            <SubscriptionCardChange amount={data?.amount} name={data.name} />
-          );
-        }
-        break;
-    }
-  }, [data, itineraryAmount, paymentType]);
 
   return (
     <Page showHeader={false}>
@@ -690,8 +708,10 @@ const Checkout = ({route}: CheckoutProps) => {
         onRequestClose={() => {}}
         key="guide-feed">
         <GuideCarousel
-          data={subscriptionCheckoutGuideImages}
-          onClose={() => dispatch(hideSubscriptionCheckoutGuide())}
+          data={guideContent}
+          onClose={() =>
+            dispatch(viewedGuide({key: GuideEnum.SUBSCRIPTION_CHECKOUT}))
+          }
         />
       </Ads>
     </Page>

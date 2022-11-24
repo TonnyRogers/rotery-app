@@ -2,8 +2,6 @@ import React, {useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
-import {RootStateProps} from '../../store/modules/rootReducer';
-
 import {
   Container,
   CardContent,
@@ -26,6 +24,7 @@ import Text from '../../components/Text';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import {ConnectionsProps} from '../../utils/types';
 import {UserConversationParams} from '../UserConversation';
+import {RootState} from '../../providers/store';
 
 const DirectMessages: React.FC = () => {
   const navigation = useNavigation();
@@ -34,9 +33,9 @@ const DirectMessages: React.FC = () => {
     return formatLocale(date, 'DD MMM YYYY H[h]');
   }, []);
 
-  const {messages} = useSelector((state: RootStateProps) => state.messages);
+  const {messages} = useSelector((state: RootState) => state.messages);
   const {connections, invites} = useSelector(
-    (state: RootStateProps) => state.connections,
+    (state: RootState) => state.connections,
   );
 
   const getUserConversation = useCallback(

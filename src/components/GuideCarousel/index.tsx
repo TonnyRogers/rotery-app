@@ -14,7 +14,7 @@ import GuideItem from '../GuideItem';
 import Text from '../Text';
 
 interface dataProps {
-  id: number;
+  id?: number;
   url: string;
   withInfo?: boolean;
   title?: string;

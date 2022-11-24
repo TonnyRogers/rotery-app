@@ -24,6 +24,7 @@ interface OverlayedProps extends Pick<ImageContainerProps, 'url'> {
   height?: number;
   width?: number;
   isTouchable?: boolean;
+  blurLevel?: number;
 }
 
 const ImageContainer = ({url, size, fit = 'cover'}: ImageContainerProps) => {
@@ -75,12 +76,13 @@ const Overlayed = ({
   height,
   width,
   isTouchable,
+  blurLevel,
 }: OverlayedProps) => {
   if (!isTouchable) {
     return (
       <View style={{height, width, marginVertical: 8}}>
         <OverlayedContainer>
-          <OverlayedImage source={{uri: url}} />
+          <OverlayedImage source={{uri: url}} blurRadius={blurLevel} />
           <BackgroundOverlay />
           <OverlayedTextContainer>{children}</OverlayedTextContainer>
         </OverlayedContainer>
@@ -91,7 +93,7 @@ const Overlayed = ({
   return (
     <View style={{height, width, marginVertical: 8}}>
       <OverlayedTouchableContainer>
-        <OverlayedImage source={{uri: url}} />
+        <OverlayedImage source={{uri: url}} blurRadius={blurLevel} />
         <BackgroundOverlay />
         <OverlayedTextContainer>{children}</OverlayedTextContainer>
       </OverlayedTouchableContainer>

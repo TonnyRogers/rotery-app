@@ -6,7 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {registerRequest} from '../../store/modules/auth/actions';
+import {registerUser} from '../../store2/auth';
 
 import {
   Fields,
@@ -21,7 +21,6 @@ import Page from '../../components/Page';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {YupValidationMessages} from '../../utils/enums';
 import {PageContainer} from '../../components/PageContainer';
 import Divider from '../../components/Divider';
@@ -31,6 +30,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {LoadingContext} from '../../context/loading/context';
 import {authenticate} from '../../providers/google-oauth';
 import {gOAuthPasswordGen} from '../../utils/helpers';
+import {RootState} from '../../providers/store';
 
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
@@ -68,7 +68,7 @@ const SignUp: React.FC = () => {
   const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [isGoogleOauth, setIsGoogleOauth] = useState(false);
-  const {loading} = useSelector((state: RootStateProps) => state.auth);
+  const {loading} = useSelector((state: RootState) => state.auth);
   const {
     register,
     setValue,
@@ -124,7 +124,12 @@ const SignUp: React.FC = () => {
 
   const onSubmit = (data: UseFormFields) => {
     dispatch(
-      registerRequest(data.username, data.email, data.password, data.isGuide),
+      registerUser({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        isGuide: data.isGuide,
+      }),
     );
     setPolicyModalVisible(false);
     setValue('username', '');
@@ -159,7 +164,7 @@ const SignUp: React.FC = () => {
 
   return (
     <Page showHeader={false}>
-      <PageContainer isScrollable={false}>
+      <PageContainer isScrollable={true}>
         {isFirstStepVisible && (
           <>
             <Header>

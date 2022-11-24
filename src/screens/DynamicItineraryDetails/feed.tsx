@@ -21,7 +21,6 @@ import {
   makeQuestionRequest,
   joinRequest,
 } from '../../store/modules/feed/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import * as RootNavigation from '../../RootNavigation';
 
 import {
@@ -61,6 +60,7 @@ import ShadowBox from '../../components/ShadowBox';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import {YupValidationMessages} from '../../utils/enums';
 import StarRate from '../../components/StarRate';
+import {RootState} from '../../providers/store';
 
 const validationSchema = yup.object().shape({
   question: yup.string().required(YupValidationMessages.REQUIRED),
@@ -72,7 +72,7 @@ interface DynamicFeedItineraryDetailsProps {
 const DynamicFeedItineraryDetails: React.FC<
   DynamicFeedItineraryDetailsProps
 > = ({itinerary}) => {
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {user} = useSelector((state: RootState) => state.auth);
   const {
     register,
     handleSubmit,

@@ -24,7 +24,6 @@ import {
 import {SimpleList} from '../../components/SimpleList';
 import Tag from '../../components/Tag';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import RowGroup from '../../components/RowGroup';
 import ImageContainer from '../../components/ImageContainer';
 import {
@@ -35,16 +34,13 @@ import {
   AppRoutes,
   WelcomeStepListType,
   YupValidationMessages,
+  GuideEnum,
 } from '../../utils/enums';
 import {AnimationContent} from '../../components/AnimationContent';
-import {getFirstStepsRequest} from '../../store/modules/metadata/actions';
+import {getFirstSteps} from '../../store2/metadata';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {hideWelcomeGuide} from '../../store/modules/guides/actions';
-import {
-  guideWelcomeGuideImages,
-  backpackerWelcomeGuideImages,
-} from '../../utils/constants';
+import {viewedGuide} from '../../store2/guides';
 import ColumnGroup from '../../components/ColumnGroup';
 import BottomSheet from '../../components/BottomSheet';
 import Button from '../../components/Button';
@@ -52,8 +48,8 @@ import Input from '../../components/Input';
 import {phoneBR} from '../../lib/mask';
 import DismissKeyboad from '../../components/DismissKeyboad';
 import Toast from 'react-native-toast-message';
-import {dayjsPlugins} from '../../providers/dayjs-format-locale';
-import {refreshTokenRequest} from '../../store/modules/auth/actions';
+import {RootState} from '../../providers/store';
+import {getSeasonBanner} from '../../store2/contents';
 
 const validationSchema = yup.object().shape({
   phone: yup
@@ -64,9 +60,15 @@ const validationSchema = yup.object().shape({
 
 export function Welcome() {
   const dispatch = useDispatch();
-  const {user, expires} = useSelector((state: RootStateProps) => state.auth);
-  const {firstStep} = useSelector((state: RootStateProps) => state.metadata);
-  const {welcomeGuide} = useSelector((state: RootStateProps) => state.guides);
+  const {user} = useSelector((state: RootState) => state.auth);
+  const {firstStep} = useSelector((state: RootState) => state.metadata);
+  const {
+    welcomeGuide,
+    data: {welcomeContent},
+  } = useSelector((state: RootState) => state.guides);
+  const {welcomeSeasonBanner} = useSelector(
+    (state: RootState) => state.contents,
+  );
   const [isGuideActivateVisible, setIsGuideActivateVisible] = useState(false);
   const [welcomeMeta, setWelcomeMeta] = useState<
     WelcomeBackpackerMetadata | WelcomeGuideMetadata
@@ -91,18 +93,22 @@ export function Welcome() {
 
       setWelcomeMeta(response.data);
     }
-
-    if (expires > dayjsPlugins().valueOf()) {
-      getWelcomeMetadata();
-      dispatch(getFirstStepsRequest());
-    } else {
-      dispatch(refreshTokenRequest());
-    }
-  }, [user?.isGuide, expires]);
+    getWelcomeMetadata();
+    dispatch(getFirstSteps());
+    dispatch(getSeasonBanner());
+  }, []);
 
   useEffect(() => {
     register('phone');
   }, []);
+
+  const guideContent = welcomeContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   function handleStepNavigation(target: AppRoutes) {
     if (target === AppRoutes.EXPLORE_LOCATIONS) {
@@ -296,29 +302,26 @@ export function Welcome() {
           )}
         </Card>
         <ImageContainer.Overlayed
+          blurLevel={3}
           height={110}
-          url="https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg">
+          url={welcomeSeasonBanner?.externalUrl ?? ''}>
           <>
             <Text.Title textWeight="bold" textColor="white">
-              Principais Destinos de Inverno
+              {welcomeSeasonBanner?.title}
             </Text.Title>
             <Text textWeight="regular" textColor="white">
-              Confira os locais mais procurados nesta estação do ano...
+              {welcomeSeasonBanner?.content}
             </Text>
             <Text textWeight="bold" textColor="white">
-              🚧 Indisponivel no momento 🚧
+              {welcomeSeasonBanner?.action ?? '🚧 Indisponivel no momento 🚧'}
             </Text>
           </>
         </ImageContainer.Overlayed>
       </PageContainer>
       <Ads visible={welcomeGuide} onRequestClose={() => {}} key="guide-welcome">
         <GuideCarousel
-          data={
-            user?.isGuide
-              ? guideWelcomeGuideImages
-              : backpackerWelcomeGuideImages
-          }
-          onClose={() => dispatch(hideWelcomeGuide())}
+          data={guideContent}
+          onClose={() => dispatch(viewedGuide({key: GuideEnum.WELCOME}))}
         />
       </Ads>
       <BottomSheet

@@ -21,13 +21,10 @@ import DismissKeyboad from '../../components/DismissKeyboad';
 import {AccountOptions, bankList} from '../../utils/constants';
 import Divider from '../../components/Divider';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {
-  createBankAccountRequest,
-  updateBankAccountRequest,
-} from '../../store/modules/bankAccount/actions';
+import {createBankAccount, updateBankAccount} from '../../store2/bankAccount';
 import {YupValidationMessages} from '../../utils/enums';
 import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 const validationSchema = yup.object().shape({
   bank: yup.string().required(YupValidationMessages.REQUIRED),
@@ -60,9 +57,7 @@ const RevenuesConfig = () => {
   const {setLoading, isLoading} = useContext(LoadingContext);
   const [bankIsOpen, setBankIsOpen] = useState(false);
   const [accountTypeIsOpen, setAccountTypeIsOpen] = useState(false);
-  const {data, loading} = useSelector(
-    (state: RootStateProps) => state.bankAccount,
-  );
+  const {data, loading} = useSelector((state: RootState) => state.bankAccount);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -97,9 +92,9 @@ const RevenuesConfig = () => {
       payDay: Number(dataForm.payDay),
     };
     if (!data) {
-      dispatch(createBankAccountRequest(bankPayload));
+      dispatch(createBankAccount(bankPayload));
     } else {
-      dispatch(updateBankAccountRequest(bankPayload));
+      dispatch(updateBankAccount(bankPayload));
     }
   };
 

@@ -18,7 +18,6 @@ import TextArea from '../../components/TextArea';
 import Alert from '../../components/Alert';
 import {theme} from '../../utils/theme';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {
   ChatMessage,
   UserProps,
@@ -26,26 +25,22 @@ import {
   CanBeginChatResponse,
 } from '../../utils/types';
 import {
-  getCurrentChatRequest,
-  beginChatRequest,
-  finishChatRequest,
-} from '../../store/modules/chats/actions';
+  getCurrentChat,
+  beginChat,
+  finishChat,
+  chatActions,
+} from '../../store2/chats';
 import {ChatType} from '../../utils/enums';
-import {
-  wsSendChatMessageRequest,
-  wsChatSubscribe,
-  wsCloseChatChannel,
-} from '../../store/modules/websocket/actions';
 import Empty from '../../components/Empty';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import {useUserIsGuide} from '../../hooks/useUserIsGuide';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {beginChatGuide} from '../../utils/constants';
 import api from '../../providers/api';
 import netConnection from '../../providers/netinfo';
 import Toast from 'react-native-toast-message';
 import ColumnGroup from '../../components/ColumnGroup';
+import {RootState} from '../../providers/store';
 
 export interface ChatRouteParams {
   target: UserProps;
@@ -74,12 +69,11 @@ export function Chat({
     useState(false);
   const [chatLimitMessageVisible, setChatLimitMessageVisible] = useState(false);
   const {isGuide} = useUserIsGuide();
-
-  const {currentChat, loading} = useSelector(
-    (state: RootStateProps) => state.chats,
-  );
-  const {user} = useSelector((state: RootStateProps) => state.auth);
-
+  const {currentChat, loading} = useSelector((state: RootState) => state.chats);
+  const {
+    data: {beginChatContent},
+  } = useSelector((state: RootState) => state.guides);
+  const {user} = useSelector((state: RootState) => state.auth);
   const lastChatItem = useMemo(() => currentChat[0], [currentChat]);
   const currentLocation = useMemo(() => {
     return {
@@ -90,13 +84,37 @@ export function Chat({
     };
   }, [lastChatItem, location]);
 
+  useEffect(() => {
+    dispatch(getCurrentChat({targetId: target.id}));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target.id]);
+
+  useEffect(() => {
+    dispatch(
+      chatActions.startConnecting({
+        ownerId: Number(user?.id),
+        targetId: target.id,
+      }),
+    );
+
+    return () => {
+      dispatch(
+        chatActions.endConnection({
+          ownerId: Number(user?.id),
+          targetId: target.id,
+        }),
+      );
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target.id, user]);
+
   function closeChatAlert() {
     setFinishChatAlertVisible(false);
   }
 
   function handleFinishChat() {
     dispatch(
-      finishChatRequest({
+      finishChat({
         locationCityState: currentLocation.locationCityState,
         locationId: currentLocation.locationId,
         locationName: currentLocation.locationName,
@@ -104,7 +122,7 @@ export function Chat({
       }),
     );
 
-    if (!user?.isGuide && location) {
+    if (!user?.isGuide && currentLocation) {
       RootNavigation.replace<RateChatNotificationJsonData>('RateChat', {
         guide: {
           id: target.id,
@@ -112,7 +130,11 @@ export function Chat({
           profile: target.profile,
           username: target.username,
         },
-        location,
+        location: {
+          id: currentLocation.locationId,
+          name: currentLocation.locationName,
+          state: currentLocation.locationCityState,
+        },
       });
     }
     setFinishChatAlertVisible(false);
@@ -120,12 +142,7 @@ export function Chat({
 
   function handleSendMessage() {
     Keyboard.dismiss();
-    dispatch(
-      wsSendChatMessageRequest({
-        receiver: {id: target.id},
-        message: message,
-      }),
-    );
+    dispatch(chatActions.sendChatMessage({message, receiver: {id: target.id}}));
     setMessage('');
   }
 
@@ -148,7 +165,7 @@ export function Chat({
         }
 
         dispatch(
-          beginChatRequest({
+          beginChat({
             locationCityState: currentLocation.locationCityState,
             locationId: currentLocation.locationId,
             locationName: currentLocation.locationName,
@@ -189,18 +206,13 @@ export function Chat({
     RootNavigation.navigate('BackpackerSubscription');
   }
 
-  useEffect(() => {
-    dispatch(getCurrentChatRequest(target.id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target.id]);
-
-  useEffect(() => {
-    user && dispatch(wsChatSubscribe(user?.id, target.id));
-
-    return () => {
-      user && dispatch(wsCloseChatChannel(user?.id, target.id));
-    };
-  }, [dispatch, target.id, user]);
+  const guideContent = beginChatContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   if (!user?.id || !currentChat) {
     return (
@@ -360,7 +372,7 @@ export function Chat({
         onRequestClose={() => {}}
         key="chat-guide">
         <GuideCarousel
-          data={beginChatGuide}
+          data={guideContent}
           onClose={() => setChatLocationGuideVisible(false)}
         />
       </Ads>

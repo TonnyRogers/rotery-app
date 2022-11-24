@@ -26,10 +26,10 @@ import {LocationFeedFilterParams} from '../LocationFeed';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {useDispatch, useSelector} from 'react-redux';
-import {hideExploreLocationsGuide} from '../../store/modules/guides/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {exploreLocationsGuideImages} from '../../utils/constants';
-import {getActivitiesRequest} from '../../store/modules/options/actions';
+import {viewedGuide} from '../../store2/guides';
+import {getActivities} from '../../store2/options';
+import {RootState} from '../../providers/store';
+import {GuideEnum} from '../../utils/enums';
 
 const exploreBrazilRegions = [
   {
@@ -62,15 +62,24 @@ const exploreBrazilRegions = [
 
 export function ExploreLocations() {
   const dispatch = useDispatch();
-  const {exploreLocationsGuide} = useSelector(
-    (state: RootStateProps) => state.guides,
-  );
-  const {activities} = useSelector((state: RootStateProps) => state.options);
+  const {
+    exploreLocationsGuide,
+    data: {exploreLocationsContent},
+  } = useSelector((state: RootState) => state.guides);
+  const {activities} = useSelector((state: RootState) => state.options);
 
   useEffect(() => {
-    dispatch(getActivitiesRequest());
+    dispatch(getActivities());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const guideContent = exploreLocationsContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   return (
     <Page showHeader={false}>
@@ -103,7 +112,6 @@ export function ExploreLocations() {
               bgColor="green"
               textColor="white">
               <ColumnGroup>
-                {/* <Icon name="menu" size={24} color={theme.colors.white} /> */}
                 <CustomIcon name={val.icon} size={30} color="#FFF" />
                 <Text.Small
                   alignment="center"
@@ -154,8 +162,10 @@ export function ExploreLocations() {
         onRequestClose={() => {}}
         key="guide-welcome">
         <GuideCarousel
-          data={exploreLocationsGuideImages}
-          onClose={() => dispatch(hideExploreLocationsGuide())}
+          data={guideContent}
+          onClose={() =>
+            dispatch(viewedGuide({key: GuideEnum.EXPLORE_LOCATIONS}))
+          }
         />
       </Ads>
     </Page>

@@ -3,13 +3,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {
-  acceptConnectionRequest,
-  rejectConnectionRequest,
-  blockConnectionRequest,
-  unblockConnectionRequest,
-} from '../../store/modules/connections/actions';
+  acceptConnection,
+  rejectConnection,
+  blockUserConnection,
+  unblockUserConnection,
+} from '../../store2/connections';
 import {ConnectionsProps, InvitesProps} from '../../utils/types';
 import {theme} from '../../utils/theme';
 
@@ -35,12 +34,13 @@ import FloatButton from '../../components/FloatButton';
 import Text from '../../components/Text';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import {UserConversationParams} from '../UserConversation';
+import {RootState} from '../../providers/store';
 
 const MyConnections: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {connections, invites} = useSelector(
-    (state: RootStateProps) => state.connections,
+    (state: RootState) => state.connections,
   );
 
   const toUserProfile = useCallback(
@@ -54,7 +54,7 @@ const MyConnections: React.FC = () => {
 
   const handleRejectConnection = useCallback(
     (userId: number) => {
-      dispatch(rejectConnectionRequest(userId));
+      dispatch(rejectConnection(userId));
     },
     [dispatch],
   );
@@ -90,7 +90,7 @@ const MyConnections: React.FC = () => {
 
   const renderInvites = useCallback(() => {
     function handleAcceptConnection(userId: number) {
-      dispatch(acceptConnectionRequest(userId));
+      dispatch(acceptConnection(userId));
     }
 
     return myInvites?.map((item) => (
@@ -127,11 +127,11 @@ const MyConnections: React.FC = () => {
 
   const renderConnections = useCallback(() => {
     function handleBlockConnection(userId: number) {
-      dispatch(blockConnectionRequest(userId));
+      dispatch(blockUserConnection(userId));
     }
 
     function handleUnblockConnection(userId: number) {
-      dispatch(unblockConnectionRequest(userId));
+      dispatch(unblockUserConnection(userId));
     }
 
     function getUserConversation({

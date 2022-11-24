@@ -8,7 +8,6 @@ import {
   acceptMemberRequest,
   removeMemberRequest,
 } from '../../store/modules/itineraries/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
 
 import {
   RowGroupSpaced,
@@ -28,6 +27,7 @@ import {MemberProps, ItineraryProps} from '../../utils/types';
 import ShadowBox from '../ShadowBox';
 import isOpen from '../../guards/itineraryStatus';
 import {formatLocale} from '../../providers/dayjs-format-locale';
+import {RootState} from '../../providers/store';
 
 interface ItineraryMemberProps {
   member: MemberProps;
@@ -43,7 +43,7 @@ const ItineraryMember: React.FC<ItineraryMemberProps> = ({
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {user} = useSelector((state: RootState) => state.auth);
 
   let createDateFormated = useRef('');
   useMemo(() => {

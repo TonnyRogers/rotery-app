@@ -5,8 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-toast-message';
 
 import api from '../../providers/api';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {makeConnectionRequest} from '../../store/modules/connections/actions';
+import {makeConnection} from '../../store2/connections';
 
 import {
   CardHeader,
@@ -30,6 +29,7 @@ import {ProfileProps} from '../../utils/types';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import StarRate from '../../components/StarRate';
 import {PageContainer} from '../../components/PageContainer';
+import {RootState} from '../../providers/store';
 
 interface UserDetailsProps {
   route: {
@@ -73,10 +73,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
     );
   }, [profile]);
 
-  const {connections} = useSelector(
-    (state: RootStateProps) => state.connections,
-  );
-  const {user} = useSelector((state: RootStateProps) => state.auth);
+  const {connections} = useSelector((state: RootState) => state.connections);
+  const {user} = useSelector((state: RootState) => state.auth);
 
   const isConnection = connections?.find((connection) => {
     if (connection.owner.id === user?.id && connection.target.id === userId) {
@@ -85,7 +83,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   });
 
   function askConnection() {
-    dispatch(makeConnectionRequest(userId));
+    dispatch(makeConnection(userId));
   }
 
   function formatDate(date: string) {

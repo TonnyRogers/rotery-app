@@ -8,14 +8,13 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {getConversationRequest} from '../../store/modules/messages/actions';
+import {getConversation} from '../../store2/messages';
 import {
   wsChatSubscribe,
   wsCloseChatChannel,
   wsSendChatMessageRequest,
 } from '../../store/modules/websocket/actions';
 import {MessageProps} from '../../utils/types';
-import * as RootNavigation from '../../RootNavigation';
 
 import {
   Container,
@@ -40,17 +39,15 @@ import {
   SendButtonText,
   ShareTitle,
   ShareSubTitle,
-  ShareButton,
-  ShareButtonText,
 } from './styles';
 
 import Card from '../../components/Card';
 import TextArea from '../../components/TextArea';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import Page from '../../components/Page';
 import ShadowBox from '../../components/ShadowBox';
 import {formatLocale} from '../../providers/dayjs-format-locale';
 import {YupValidationMessages} from '../../utils/enums';
+import {RootState} from '../../providers/store';
 
 const validationSchema = yup.object().shape({
   message: yup.string().required(YupValidationMessages.REQUIRED),
@@ -83,21 +80,21 @@ const UserConversation: React.FC<UserConversationRouteParams> = ({route}) => {
   const scrollViewRef = useRef<ScrollView>();
   const messageRef = useRef<any>();
   const {userId, username, avatarUrl} = route.params;
-  const {user} = useSelector((state: RootStateProps) => state.auth);
-  const {conversation} = useSelector((state: RootStateProps) => state.messages);
-  const {itineraries} = useSelector(
-    (state: RootStateProps) => state.itineraries,
-  );
-  const {itineraries: nextItineraries} = useSelector(
-    (state: RootStateProps) => state.nextItineraries,
-  );
+  const {user} = useSelector((state: RootState) => state.auth);
+  const {conversation} = useSelector((state: RootState) => state.messages);
+  // const {itineraries} = useSelector(
+  //   (state: RootStateProps) => state.itineraries,
+  // );
+  // const {itineraries: nextItineraries} = useSelector(
+  //   (state: RootStateProps) => state.nextItineraries,
+  // );
 
   useEffect(() => {
     register('message');
   }, [register]);
 
   useEffect(() => {
-    dispatch(getConversationRequest(userId));
+    dispatch(getConversation(userId));
   }, [dispatch, userId]);
 
   useEffect(() => {
@@ -133,27 +130,27 @@ const UserConversation: React.FC<UserConversationRouteParams> = ({route}) => {
     setValue('message', '');
   };
 
-  const handleMessageNavigation = useCallback(
-    (itineraryId: number) => {
-      const isMember = nextItineraries?.find((item) => item.id === itineraryId);
-      const isOwner = itineraries?.find((item) => item.id === itineraryId);
+  // const handleMessageNavigation = useCallback(
+  //   (itineraryId: number) => {
+  //     const isMember = nextItineraries?.find((item) => item.id === itineraryId);
+  //     const isOwner = itineraries?.find((item) => item.id === itineraryId);
 
-      if (isMember) {
-        RootNavigation.navigate('NextItineraryDetails', {id: itineraryId});
-      }
+  //     if (isMember) {
+  //       RootNavigation.navigate('NextItineraryDetails', {id: itineraryId});
+  //     }
 
-      if (isOwner) {
-        RootNavigation.navigate('MyItineraryDetails', {id: itineraryId});
-      }
+  //     if (isOwner) {
+  //       RootNavigation.navigate('MyItineraryDetails', {id: itineraryId});
+  //     }
 
-      if (!isMember && !isOwner) {
-        RootNavigation.navigate('DynamicItineraryDetails', {
-          id: itineraryId,
-        });
-      }
-    },
-    [itineraries, nextItineraries],
-  );
+  //     if (!isMember && !isOwner) {
+  //       RootNavigation.navigate('DynamicItineraryDetails', {
+  //         id: itineraryId,
+  //       });
+  //     }
+  //   },
+  //   [itineraries, nextItineraries],
+  // );
 
   const renderMessage: Function = (item: MessageProps) => {
     switch (item.type) {
@@ -183,12 +180,12 @@ const UserConversation: React.FC<UserConversationRouteParams> = ({route}) => {
                 {formatDate(item.jsonData?.begin, false)}
               </ShareSubTitle>
             </RowGroupSpaced>
-            <ShareButton
+            {/* <ShareButton
               onPress={() =>
                 handleMessageNavigation(Number(item.jsonData?.id))
               }>
               <ShareButtonText>Ver Mais</ShareButtonText>
-            </ShareButton>
+            </ShareButton> */}
           </ShadowBox>
         );
       default:

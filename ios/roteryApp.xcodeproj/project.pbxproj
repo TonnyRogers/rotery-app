@@ -697,9 +697,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = roteryApp/roteryApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 3U2R52GN5U;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3U2R52GN5U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = roteryApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -714,6 +716,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rotery.rotery;
 				PRODUCT_NAME = roteryApp;
 				PROVISIONING_PROFILE_SPECIFIER = Development;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Development;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -730,9 +736,11 @@
 				CODEPUSH_KEY = uxqIBimi5uTPnQAHpKEdxK_kCfPGxIxO98J6l;
 				CODE_SIGN_ENTITLEMENTS = roteryApp/roteryApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 3U2R52GN5U;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3U2R52GN5U;
 				INFOPLIST_FILE = roteryApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.5;
@@ -746,6 +754,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rotery.rotery;
 				PRODUCT_NAME = roteryApp;
 				PROVISIONING_PROFILE_SPECIFIER = Development;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Development;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -818,9 +830,11 @@
 				CODEPUSH_KEY = "7q6YLoZ_qGC8rJofaX4soeXV319tf_IRmY-ad";
 				CODE_SIGN_ENTITLEMENTS = roteryApp/roteryApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 3U2R52GN5U;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3U2R52GN5U;
 				INFOPLIST_FILE = roteryApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.5;
@@ -834,6 +848,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rotery.rotery;
 				PRODUCT_NAME = roteryApp;
 				PROVISIONING_PROFILE_SPECIFIER = AdHoc;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Development;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";

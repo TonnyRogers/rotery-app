@@ -1,7 +1,6 @@
 import React, {useRef} from 'react';
 import WebView from '../WebView';
 import {useSelector} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
 import {WebViewMessageEvent} from 'react-native-webview';
 import {
   CardTokenResponse,
@@ -9,6 +8,7 @@ import {
 } from '../../utils/types';
 import Toast from 'react-native-toast-message';
 import {paymentToken} from '../../providers/payment';
+import {RootState} from '../../providers/store';
 
 interface CardConfirmProps {
   amount: number;
@@ -26,7 +26,7 @@ export function CardConfirm({
   onRequestClose,
 }: CardConfirmProps) {
   const injectCardconfirmJs = useRef('');
-  const {defaultCard} = useSelector((state: RootStateProps) => state.checkout);
+  const {defaultCard} = useSelector((state: RootState) => state.checkout);
 
   if (!card && defaultCard?.id) {
     injectCardconfirmJs.current = `
