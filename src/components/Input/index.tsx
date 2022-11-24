@@ -14,6 +14,7 @@ interface InputProps extends TextInputProps {
   secureTextEntry?: boolean;
   buttonIcon?: boolean;
   onClickButtonIcon?(): void;
+  readOnly?: boolean;
 }
 
 const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
@@ -26,6 +27,7 @@ const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
     buttonIcon,
     secureTextEntry,
     onClickButtonIcon,
+    readOnly = false,
     ...props
   }: InputProps,
   ref,
@@ -33,11 +35,12 @@ const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
   return (
     <Container>
       {label && <Label>{label}</Label>}
-      <Content hasError={!!error}>
+      <Content hasError={!!error} readOnly={readOnly}>
         <Field
           placeholder={placeholder}
           onChangeText={onChange}
           secureTextEntry={secureTextEntry}
+          editable={!readOnly}
           placeholderTextColor="#808080"
           ref={ref}
           {...props}
@@ -56,6 +59,11 @@ const Input: ForwardRefRenderFunction<TextInput, InputProps> = (
       {error && (
         <Text textColor="red" textWeight="light">
           {error}
+        </Text>
+      )}
+      {readOnly && (
+        <Text textColor="disabledText" textWeight="light">
+          campo bloqueado
         </Text>
       )}
     </Container>

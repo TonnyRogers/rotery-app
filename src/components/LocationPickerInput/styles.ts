@@ -2,8 +2,7 @@ import styled from 'styled-native-components';
 import {theme} from '../../utils/theme';
 
 export const Container = styled.View`
-  margin-bottom: 2rem;
-  height: 6.5rem;
+  margin: 0.8rem 0.2rem 1.6rem 0.2rem;
 `;
 
 export const TextLimitter = styled.View`
@@ -31,5 +30,4 @@ export const LocationButton = styled.TouchableOpacity<{hasError: boolean}>`
   flex-direction: row;
   justify-content: space-between;
   height: 4.4rem;
-  margin: 1rem 0;
 `;

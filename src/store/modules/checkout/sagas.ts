@@ -2,7 +2,7 @@ import {takeLatest, put, call, all} from 'redux-saga/effects';
 import Toast from 'react-native-toast-message';
 import {AxiosResponse} from 'axios';
 
-import NetInfo from '../../../services/netinfo';
+import NetInfo from '../../../providers/netinfo';
 import {
   CheckoutActions,
   getCustomerRequest,
@@ -22,13 +22,16 @@ import {
   processJoinItineraryPaymentRequest,
   processJoinItinerarySuccess,
   processJoinItineraryFailure,
+  processTipRequest,
+  processTipSuccess,
 } from './actions';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {
   CheckoutCustomerResponse,
   CheckoutCustomerCardResponse,
   ProcessPaymentReponse,
   JoinItineraryWithPaymentResponse,
+  Tip,
 } from '../../../utils/types';
 import {translateError} from '../../../lib/utils';
 
@@ -53,7 +56,7 @@ export function* getCustomer({payload}: ReturnType<typeof getCustomerRequest>) {
 }
 
 export function* createCustomer({
-  payload,
+  payload: {cratePayload},
 }: ReturnType<typeof createCustomerRequest>) {
   try {
     const info = yield call(NetInfo);
@@ -63,11 +66,21 @@ export function* createCustomer({
       return;
     }
 
-    const {email} = payload;
+    const {email, fullName, phone} = cratePayload;
+    const firstName = fullName?.split(' ')[0];
+    const lastName = fullName?.split(' ').splice(1).join(' ');
+    const phoneArea = String(phone).slice(0, 2);
+    const phoneNumber = String(phone).slice(2);
+
     const response: AxiosResponse<CheckoutCustomerResponse> = yield call(
       api.post,
       '/payments/customer',
-      {email},
+      {
+        email,
+        ...(fullName ? {first_name: firstName, last_name: lastName} : {}),
+        ...(phone ? {phone: {area_code: phoneArea, number: phoneNumber}} : {}),
+        description: 'Mochilee App Payment User',
+      },
     );
     yield put(createCustomerSuccess(response.data));
   } catch (error) {
@@ -190,6 +203,37 @@ export function* processJoinItinerary({
   }
 }
 
+export function* processTip({payload}: ReturnType<typeof processTipRequest>) {
+  try {
+    const info = yield call(NetInfo);
+
+    if (!info.status) {
+      yield put(getCustomerFailure());
+      return;
+    }
+
+    const {processTipPayload} = payload;
+    const response: AxiosResponse<Tip> = yield call(api.post, '/tips', {
+      ...processTipPayload,
+    });
+    yield put(processTipSuccess(response.data));
+
+    Toast.show({
+      text1: 'Contribuição enviada ✅.',
+      text2: 'Obrigado',
+      position: 'bottom',
+      type: 'success',
+    });
+  } catch (error) {
+    yield put(processPaymentFailure());
+    Toast.show({
+      text1: 'Erro ao processar pagamento, tente novamente.',
+      position: 'bottom',
+      type: 'error',
+    });
+  }
+}
+
 export default all([
   takeLatest(CheckoutActions.GET_CUSTOMER_REQUEST, getCustomer),
   takeLatest(CheckoutActions.CREATE_CUSTOMER_REQUEST, createCustomer),
@@ -200,4 +244,5 @@ export default all([
     processJoinItinerary,
   ),
   takeLatest(CheckoutActions.REMOVE_CUSTOMER_CARD_REQUEST, removeCustomerCard),
+  takeLatest(CheckoutActions.PROCESS_TIP_REQUEST, processTip),
 ]);

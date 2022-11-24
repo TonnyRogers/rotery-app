@@ -71,12 +71,10 @@ const PickerInput: React.FC<PickerInputProps> = ({
           borderBottomColor: error
             ? theme.colors.red
             : theme.colors.borderBottom,
-          zIndex: 3,
         }}
         dropDownContainerStyle={{
           backgroundColor: '#fafafa',
           borderColor: theme.colors.borderBottom,
-          zIndex: 10,
         }}
         searchContainerStyle={{
           borderBottomColor: '#dfdfdf',

@@ -1,18 +1,15 @@
-import React, {useState, useRef, useEffect} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useRef, useEffect, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import {registerRequest} from '../../store/modules/auth/actions';
+import {registerUser} from '../../store2/auth';
 
 import {
-  Container,
   Fields,
-  Actions,
-  BackButton,
-  BackButtonText,
   SubmitButton,
   SubmitButtonText,
   Header,
@@ -24,46 +21,70 @@ import Page from '../../components/Page';
 import Modal from '../../components/Modal';
 import Text from '../../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
-import SplashScreen from '../../components/SplashScreen';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import SwitchInput from '../../components/SwitchInput';
+import {YupValidationMessages} from '../../utils/enums';
+import {PageContainer} from '../../components/PageContainer';
+import Divider from '../../components/Divider';
+import Card from '../../components/Card';
+import Button from '../../components/Button';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {LoadingContext} from '../../context/loading/context';
+import {authenticate} from '../../providers/google-oauth';
+import {gOAuthPasswordGen} from '../../utils/helpers';
+import {RootState} from '../../providers/store';
+
 const horizontalLogo = require('../../../assets/horizontal-logo.png');
 
+interface UseFormFields {
+  username: string;
+  password: string;
+  email: string;
+  isGuide: boolean;
+}
+
 const validationSchema = yup.object().shape({
-  username: yup.string().required('campo obrigatório'),
-  email: yup.string().email('e-mail inválido').required('campo obrigatório'),
+  username: yup.string().required(YupValidationMessages.REQUIRED),
+  email: yup
+    .string()
+    .email('e-mail inválido')
+    .required(YupValidationMessages.REQUIRED),
   password: yup
     .string()
-    .required('campo obrigatório')
+    .required(YupValidationMessages.REQUIRED)
     .min(8, 'a senha deve ter mais de 8 digitos'),
-  isHost: yup
+  isGuide: yup
     .boolean()
     .required()
     .default(() => false),
 });
 
 const SignUp: React.FC = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [policyModalVisible, setPolicyModalVisible] = useState(false);
+  const [isFirstStepVisible, setFirstStepVisible] = useState(true);
+  const [isGuideVisible, setGuideVisible] = useState(false);
+  const [isBackpackerVisible, setBackpackerVisible] = useState(false);
   const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
-  const {loading} = useSelector((state: RootStateProps) => state.auth);
+  const [isGoogleOauth, setIsGoogleOauth] = useState(false);
+  const {loading} = useSelector((state: RootState) => state.auth);
   const {
     register,
     setValue,
+    getValues,
     handleSubmit,
     watch,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<UseFormFields>({resolver: yupResolver(validationSchema)});
 
   useEffect(() => {
     register('username');
     register('password');
     register('email');
-    register('isHost');
+    register('isGuide');
 
-    setValue('isHost', false);
+    setValue('isGuide', false);
   }, [register, setValue]);
 
   const usernameRef = useRef<any>();
@@ -72,7 +93,6 @@ const SignUp: React.FC = () => {
   const watchUsername = watch('username');
   const watchPassword = watch('password');
   const watchEmail = watch('email');
-  const watchIsHost = watch('isHost');
 
   function goBack() {
     if (navigation.canGoBack()) {
@@ -84,92 +104,219 @@ const SignUp: React.FC = () => {
     setPolicyModalVisible(true);
   }
 
-  const onSubmit = (data: any) => {
+  function handleInitialStep() {
+    setFirstStepVisible(true);
+    setGuideVisible(false);
+    setBackpackerVisible(false);
+  }
+
+  function handleGuide() {
+    setFirstStepVisible(false);
+    setGuideVisible(true);
+    setValue('isGuide', true);
+  }
+
+  function handleBackpacker() {
+    setFirstStepVisible(false);
+    setBackpackerVisible(true);
+    setValue('isGuide', false);
+  }
+
+  const onSubmit = (data: UseFormFields) => {
     dispatch(
-      registerRequest(data.username, data.email, data.password, data.isHost),
+      registerUser({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        isGuide: data.isGuide,
+      }),
     );
     setPolicyModalVisible(false);
     setValue('username', '');
     setValue('password', '');
     setValue('email', '');
-    setValue('isHost', false);
+    setValue('isGuide', false);
   };
+
+  async function handleOAuthSignup() {
+    const authUser = await authenticate();
+    if (authUser) {
+      onSubmit({
+        email: authUser.user.email,
+        isGuide: getValues().isGuide,
+        username: `${authUser.user.givenName}${authUser.user.familyName}`,
+        password: gOAuthPasswordGen(authUser.user.email),
+      });
+    }
+  }
+
+  async function handleOpenPolicyModalOAuth() {
+    openPolicyModal();
+    setIsGoogleOauth(true);
+  }
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
-      {/* <DismissKeyboad> */}
-      <Container>
-        <Header>
-          <Logo source={horizontalLogo} resizeMode="contain" />
-          <Text.Title alignment="center">Faça parte da Rotery</Text.Title>
-        </Header>
-        <Fields>
-          <Input
-            icon="account-box-outline"
-            label="Usuário"
-            placeholder="nome de usuário"
-            ref={usernameRef.current}
-            value={watchUsername}
-            onChange={(value: String) => setValue('username', value)}
-            returnKeyType="next"
-            onSubmitEditing={() => emailRef.current?.focus()}
-            error={errors.username?.message}
-          />
-          <Input
-            icon="email-outline"
-            label="Email"
-            keyboardType="email-address"
-            placeholder="seu e-mail"
-            autoCapitalize="none"
-            ref={emailRef.current}
-            onChange={(value: String) => setValue('email', value)}
-            returnKeyType="next"
-            onSubmitEditing={() => passwordRef.current?.focus()}
-            error={errors.email?.message}
-            value={watchEmail}
-          />
-          <Input
-            label="Senha"
-            placeholder="sua senha"
-            ref={passwordRef.current}
-            onChange={(value: String) => setValue('password', value)}
-            secureTextEntry={passwordVisible}
-            buttonIcon
-            onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
-            onSubmitEditing={() => setPolicyModalVisible(true)}
-            returnKeyType="done"
-            error={errors.password?.message}
-            value={watchPassword}
-          />
-          <SwitchInput
-            label="Voce deseja:"
-            trueOptionName="Criar Roteiros"
-            falseOption2Name="Encontrar Roteiros"
-            value={watchIsHost}
-            onValueSet={(value) => setValue('isHost', value)}
-          />
-        </Fields>
+      <PageContainer isScrollable={true}>
+        {isFirstStepVisible && (
+          <>
+            <Header>
+              <Logo source={horizontalLogo} resizeMode="contain" />
+              <Text.Title alignment="center">
+                Faça parte da comunidade
+              </Text.Title>
+            </Header>
+            <Divider />
+            <Divider />
+            <Text.Big
+              textWeight="bold"
+              textColor="primaryText"
+              alignment="center">
+              Você é um(a)
+            </Text.Big>
+            <Card containerStyle={{flex: undefined, height: 180}}>
+              <Text.Title alignment="center">Guia</Text.Title>
+              <Text.Paragraph alignment="center">
+                Você deseja ajudar os mochileiros dando dicas, auxiliando em
+                locais que você conhece e recebendo por isso.
+              </Text.Paragraph>
+              <Button onPress={handleGuide} bgColor="blue" sizeMargin="2rem 0 ">
+                Esse(a) sou eu
+              </Button>
+            </Card>
+            <Card containerStyle={{flex: undefined, height: 180}}>
+              <Text.Title alignment="center">Mochileiro</Text.Title>
+              <Text.Paragraph alignment="center">
+                Você viaja explorando o país, buscando aventuras e desafios,
+                seja sozinho ou acompanhado.
+              </Text.Paragraph>
+              <Button
+                onPress={handleBackpacker}
+                bgColor="green"
+                sizeMargin="2rem 0 ">
+                Esse(a) sou eu
+              </Button>
+            </Card>
+            <Button
+              hasShadow={false}
+              customContent
+              onPress={goBack}
+              bgColor="transparent"
+              sizeMargin="1rem 0 0 0">
+              <Text.Paragraph textWeight="bold" textColor="green">
+                Ja sou cadastrado
+              </Text.Paragraph>
+            </Button>
+          </>
+        )}
+        {(isGuideVisible || isBackpackerVisible) && (
+          <>
+            <Button
+              onPress={handleInitialStep}
+              customContent
+              sizeHeight={4}
+              sizeWidth={4}
+              sizeBorderRadius={20}
+              sizePadding={0}
+              sizeMargin="1rem 0 0 0"
+              bgColor="greenTransparent"
+              textColor="white">
+              <Icon name="chevron-left" size={24} color="#3dc77b" />
+            </Button>
+            <Header>
+              <Logo source={horizontalLogo} resizeMode="contain" />
+              <Text.Title alignment="center">
+                Você esta quase la {isBackpackerVisible ? 'Mochileiro' : 'Guia'}
+                !
+              </Text.Title>
+            </Header>
+            <Fields>
+              <Input
+                icon="account-box-outline"
+                label="Usuário"
+                placeholder="seu nome de usuário"
+                ref={usernameRef.current}
+                value={watchUsername}
+                onChange={(value: String) => setValue('username', value)}
+                returnKeyType="next"
+                onSubmitEditing={() => emailRef.current?.focus()}
+                error={errors.username?.message}
+              />
+              <Input
+                icon="email-outline"
+                label="Email"
+                keyboardType="email-address"
+                placeholder="seu e-mail"
+                autoCapitalize="none"
+                ref={emailRef.current}
+                onChange={(value: String) => setValue('email', value)}
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+                error={errors.email?.message}
+                value={watchEmail}
+              />
+              <Input
+                label="Senha"
+                placeholder="sua senha"
+                ref={passwordRef.current}
+                onChange={(value: String) => setValue('password', value)}
+                secureTextEntry={passwordVisible}
+                buttonIcon
+                onClickButtonIcon={() => setPasswordVisible(!passwordVisible)}
+                onSubmitEditing={() => setPolicyModalVisible(true)}
+                returnKeyType="done"
+                error={errors.password?.message}
+                value={watchPassword}
+              />
+            </Fields>
 
-        <Actions>
-          <SubmitButton
-            onPress={
-              isPolicyAccepted ? handleSubmit(onSubmit) : openPolicyModal
-            }>
-            <SubmitButtonText>Cadastrar-se</SubmitButtonText>
-          </SubmitButton>
-        </Actions>
-        <BackButton onPress={goBack}>
-          <BackButtonText>Ja sou cadastrado</BackButtonText>
-        </BackButton>
-      </Container>
-      {/* </DismissKeyboad> */}
+            <Button
+              onPress={
+                isPolicyAccepted ? handleSubmit(onSubmit) : openPolicyModal
+              }
+              bgColor={isBackpackerVisible ? 'green' : 'blue'}
+              sizeMargin="1rem 0 0 0">
+              Cadastrar-se
+            </Button>
+            <Divider />
+            <Text alignment="center">Outras opções de cadastro</Text>
+            <Button
+              onPress={
+                isPolicyAccepted
+                  ? handleOAuthSignup
+                  : handleOpenPolicyModalOAuth
+              }
+              bgColor="red"
+              sizeMargin="1rem 0 0 0">
+              Cadastrar com Google
+            </Button>
+            <Button
+              hasShadow={false}
+              customContent
+              onPress={goBack}
+              bgColor="transparent"
+              sizeMargin="1rem 0 0 0">
+              <Text.Paragraph textWeight="bold" textColor="green">
+                Ja sou cadastrado
+              </Text.Paragraph>
+            </Button>
+          </>
+        )}
+      </PageContainer>
       <Modal
         visible={policyModalVisible}
         title="Termos de Uso"
         onCloseRequest={() => setPolicyModalVisible(false)}>
         <ScrollView>
           <Text.Paragraph alignment="start" withLineBreak textWeight="light">
-            Bem-vindo(a) aventureiro(a)! <Text.Title>🏔🛤</Text.Title>
+            Bem-vindo(a) {isBackpackerVisible ? 'mochileiro(a)' : 'guia'}! 🏔🛤
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
@@ -182,7 +329,7 @@ const SignUp: React.FC = () => {
 
           <Text withLineBreak textWeight="light">
             **Poucas pessoas param para ler os termos, então dá essa força pra a
-            gente aí! <Text.Title>😎👍</Text.Title>
+            gente aí! 😎👍
           </Text>
 
           <Text.Paragraph
@@ -196,30 +343,26 @@ const SignUp: React.FC = () => {
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Somos um app que conecta pessoas que buscam atividades radicais,
             turismo, encontros em grupos relacionados a esportes ou aventuras,
-            viagens e passeios, essas atividades podem ser gratuitas ou pagas e
-            os próprios usuários denominados como Host são os responsáveis por
-            promover estes eventos dentro do app.
+            viagens e passeios, essas atividades podem ser gratuitas ou pagas.
           </Text.Paragraph>
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Os Hosts também detêm toda a responsabilidade sobre o que ocorre nos
-            seus Roteiros, por isso se você deseja promover atividades no app,
-            tenha muito cuidado, deixe as informações o mais claro possível,
-            trabalhe com segurança e atenção, em caso de dúvida não deixe de nos
-            mandar um e-mail (contato@rotery.com.br) estamos aqui para ajudar.
+            Os usuários denomidaos como Guias oferecem ajuda através do chat
+            para auxiliar os Mochileiros em locais desconhecidos, ou afim de
+            tirar duvidas, informações privilegiadas e situações semelhantes.
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Nossa missão é tornar o acesso a essas atividades muito mais fácil,
             confiável para o máximo de pessoas possível, através deste app,
             criando um ambiente seguro e saudável, por isso se você aceitar os
-            termos contamos com sua colaboração para manter o ambiente dentro do
-            app assim.
+            termos contamos com sua colaboração para manter o ambiente na
+            comunidade assim.
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Acreditamos na comunidade que estamos criando e sabemos que essa não
-            é uma tarefa fácil e nem barata, agora vamos falar um pouco mais
-            sobre o que esperamos de você como nosso usuário.
+            é uma tarefa fácil, vamos falar um pouco mais sobre o que esperamos
+            de você como usuário.
           </Text.Paragraph>
 
           <Text.Paragraph
@@ -227,39 +370,37 @@ const SignUp: React.FC = () => {
             textColor="primaryText"
             textWeight="bold"
             withLineBreak>
-            2. Seus compromissos com a Rotery
+            2. Seus compromissos com a Mochilee
           </Text.Paragraph>
 
           <Text.Paragraph textWeight="light" alignment="start">
             Primeiramente, quem pode usar nosso app:
           </Text.Paragraph>
-          <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Você deve ser maior de 18 (dezoito) anos para criar roteiros, pois
-            neste caso você estará responsável por aqueles que participarem e
-            poderá responder legalmente em caso de ação judicial e afins.
-          </Text.Paragraph>
 
-          <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Para participar de roteiros você deve ser maior de 16 (dezesseis)
-            anos e acompanhado(a) de um maior (que não seja o próprio dono do
-            roteiro) ou com autorização reconhecida por cartório em nome de seu
-            responsável.
-          </Text.Paragraph>
+          {isGuideVisible && (
+            <Text.Paragraph withLineBreak textWeight="light" alignment="start">
+              Você deve ser maior de 18 (dezoito) anos se quiser ser um Guia,
+              além de ter experiência com atividades a céu aberto (trilha,
+              camping e etc...), aquilo que você disser nos chats será salvo e
+              pode ser utilizado como prova contra assédio, racismo, preconceito
+              e afins.
+            </Text.Paragraph>
+          )}
 
-          <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Em caso de roteiros pagos, no presente momento estão sendo feitos
-            diretamente para o host por fora do app, mas para trazer mais
-            segurança estamos trabalhando para trazer essas transações para
-            dentro e com isso por hora o reembolso e afins devem ser tratados
-            diretamente com o dono do roteiro (o host).
-          </Text.Paragraph>
+          {isBackpackerVisible && (
+            <Text.Paragraph withLineBreak textWeight="light" alignment="start">
+              Para participar dos chats com Guias você deve ser maior de 16
+              (dezesseis) anos ou pode solicitar para seu responsável interagir
+              por você (necessário que ele crie uma conta neste caso).
+            </Text.Paragraph>
+          )}
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
             Como usuário você deve o respeito a todos os outros membros do app,
-            descriminação, racismo, agressões físicas e qualquer outro tipo de
-            agressão não será tolerado dentro da comunidade podendo resultar no
-            bloqueio ou remoção da sua conta, deixe fora todas as palavras
-            ofensivas e desrespeitosas.
+            descriminação, racismo, qualquer outro tipo de agressão não será
+            tolerado dentro da comunidade podendo resultar no bloqueio ou
+            remoção da sua conta, deixe fora todas as palavras ofensivas e
+            desrespeitosas.
           </Text.Paragraph>
 
           <Text.Paragraph
@@ -267,16 +408,14 @@ const SignUp: React.FC = () => {
             textColor="primaryText"
             textWeight="bold"
             withLineBreak>
-            3. Sua segurança nos Roteiros
+            3. Sua segurança
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Dentro das atividades que podem ser promovidas no app é necessário
-            ter o máximo de cuidado possível, rotineiramente acontecem diversos
-            acidentes com pessoas no meio de trilhas ou viagens por não terem um
-            bom senso, descuido ou uma má gerência de "guias", portanto tenha
-            cautela, temos um recurso de avaliação e então considere a nota do
-            host e suas avaliações antes de ir para o roteiro.
+            Dentro do mundo digital é necessário ter o maior cuidado possivel,
+            por isso nunca fornerça seus dados (telefone, endereço e etc...)
+            para os usuário toda interação dentro do app deve ser segura e se
+            limitar a suas duvidas sobre o local, atividade e etc...
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
@@ -300,7 +439,7 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Outro motivo em que criamos a Rotery foi auxiliar na preservação e
+            Outro motivo em que criamos a Mochilee foi auxiliar na preservação e
             manutenção das trilhas e ambientes em meio a natureza, gostaríamos
             de contar com você para isso, se encontrar lixo nas trilhas, viagens
             ou passeios, colete por favor e nos mande uma foto com o que foi
@@ -313,18 +452,18 @@ const SignUp: React.FC = () => {
             textColor="primaryText"
             textWeight="bold"
             withLineBreak>
-            5. Como a Rotery se mantém
+            5. Como a Mochilee se mantém
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Até o momento somos uma “startup” com poucas pessoas e com custo
+            Até o momento somos uma "iniciativa" com poucas pessoas e com custo
             reduzido, mas com crescimento do app, os custos sobem e se torna
             inviável se manter por conta própria e então a exibição de
             propagandas e anúncio relacionados aos roteiros podem aparecer para
             você. {'\n'} Como não temos nenhum anuncio no app até o momento, não
-            utilizamos seus dados pessoais para te mostrar anúncios mais
-            relevantes, mas se isso acontecer vamos te notificar e não se
-            preocupe prezamos pela segurança e transparência com você.
+            utilizamos seus dados para te mostrar anúncios mais relevantes, mas
+            se isso acontecer vamos te notificar e não se preocupe, prezamos
+            pela segurança e transparência com você.
           </Text.Paragraph>
 
           <Text.Paragraph
@@ -336,9 +475,9 @@ const SignUp: React.FC = () => {
           </Text.Paragraph>
 
           <Text.Paragraph withLineBreak textWeight="light" alignment="start">
-            Os termos da Rotery podem ser alterados a qualquer momento sem
-            aviso, mas todos os usuários serão notificados por e-mail da
-            atualização de qualquer palavra em qualquer uma de nossas políticas.
+            Os termos do app podem ser alterados a qualquer momento sem aviso,
+            mas todos os usuários serão notificados por e-mail da atualização de
+            qualquer palavra em qualquer uma de nossas políticas.
           </Text.Paragraph>
 
           <CenteredView>
@@ -352,16 +491,25 @@ const SignUp: React.FC = () => {
             textWeight="light">
             Ultima atualização 15/07/2021
           </Text>
-          <SubmitButton
-            onPress={handleSubmit(onSubmit, () => {
-              setPolicyModalVisible(false);
-              setIsPolicyAccepted(true);
-            })}>
-            <SubmitButtonText>Aceito os Termos</SubmitButtonText>
-          </SubmitButton>
+          {isGoogleOauth ? (
+            <SubmitButton
+              onPress={() => {
+                setPolicyModalVisible(false);
+                handleOAuthSignup();
+              }}>
+              <SubmitButtonText>Aceito os Termos</SubmitButtonText>
+            </SubmitButton>
+          ) : (
+            <SubmitButton
+              onPress={handleSubmit(onSubmit, () => {
+                setPolicyModalVisible(false);
+                setIsPolicyAccepted(true);
+              })}>
+              <SubmitButtonText>Aceito os Termos</SubmitButtonText>
+            </SubmitButton>
+          )}
         </ScrollView>
       </Modal>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

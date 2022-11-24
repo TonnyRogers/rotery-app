@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useCallback, useMemo, useState} from 'react';
+import React, {useEffect, useCallback, useContext} from 'react';
 import {View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm} from 'react-hook-form';
@@ -7,7 +7,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import * as RootNavigation from '../../RootNavigation';
-import {Container, Header, Content} from './styles';
+import {Header, Content} from './styles';
 import Text from '../../components/Text';
 import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
@@ -18,28 +18,32 @@ import DismissKeyboad from '../../components/DismissKeyboad';
 import Divider from '../../components/Divider';
 import TextArea from '../../components/TextArea';
 import Tag from '../../components/Tag';
-import api from '../../services/api';
+import api from '../../providers/api';
 import {
   EmailHelpRequestTypeTypes,
   Revenue,
   ItineraryProps,
   MemberWithPaymentResponse,
 } from '../../utils/types';
-import ImageContainer from '../../components/ImageContainer';
 import {formatPrice} from '../../lib/utils';
-import formatLocale from '../../providers/dayjs-format-locale';
 import Toast from 'react-native-toast-message';
-import SplashScreen from '../../components/SplashScreen';
+import {YupValidationMessages} from '../../utils/enums';
+import {HelpRevenue} from './revenue';
+import {PageContainer} from '../../components/PageContainer';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
-  reportMessage: yup.string().required('campo obrigatório'),
+  reportMessage: yup
+    .string()
+    .required(YupValidationMessages.REQUIRED)
+    .max(255, 'limite de caracteres 255'),
 });
 
 interface formData {
   reportMessage: string;
 }
 
-interface CustomRevenue extends Revenue {
+export interface CustomRevenue extends Revenue {
   itinerary: ItineraryProps;
 }
 interface CustomMemberWithPaymentResponse
@@ -48,7 +52,7 @@ interface CustomMemberWithPaymentResponse
 }
 
 export interface HelpRequestRouteParamsProps {
-  item: CustomRevenue | CustomMemberWithPaymentResponse;
+  item: CustomRevenue | CustomMemberWithPaymentResponse | null;
   type: EmailHelpRequestTypeTypes;
 }
 
@@ -65,96 +69,79 @@ const HelpRequest = ({route}: HelpRequestProps) => {
     setValue,
     watch,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<formData>({resolver: yupResolver(validationSchema)});
 
   useEffect(() => {
     register('reportMessage');
   }, [register, setValue]);
 
+  const {setLoading} = useContext(LoadingContext);
   const watchReportMessage = watch('reportMessage');
-  const [isLoading, setIsLoading] = useState(false);
   const {
     params: {item, type},
   } = route;
 
-  const formattedDated = useMemo(() => {
-    const begin = formatLocale(
-      String(item.itinerary?.begin),
-      'DD MMM YY HH:mm',
-    );
-    const paymentDateCreated =
-      formatLocale(item?.createdAt, 'DD MMM YY HH:mm') || null;
+  const handleRequestHelp = useCallback(
+    async (data: formData) => {
+      try {
+        setLoading(true);
 
-    return {begin, paymentDateCreated};
-  }, [item]);
+        if (type === 'revenue') {
+          await api.post('/communications/help', {
+            data: {
+              Tipo: 'Faturamento',
+            },
+            message: data.reportMessage,
+            type,
+          });
+        } else if (type === 'itinerary' && item) {
+          await api.post('/communications/help', {
+            data: {
+              Tipo: 'Roteiro',
+              Nome: item.itinerary.name,
+              Id_membro: item?.id,
+              Id_roteiro: item.itinerary.id,
+              Status_pagamento: item?.paymentStatus,
+              Valor:
+                'amount' in item
+                  ? formatPrice(item?.amount * 100)
+                  : formatPrice(item?.payment.transaction_amount * 100),
+            },
+            message: data.reportMessage,
+            type,
+          });
+        }
 
-  const handleRequestHelp = async (data: formData) => {
-    try {
-      setIsLoading(true);
-      await api.post('/communications/help', {
-        data: {
-          Tipo: 'Roteiro',
-          Nome: item.itinerary.name,
-          Id_membro: item?.id,
-          Id_roteiro: item.itinerary.id,
-          Status_pagamento: item?.paymentStatus,
-          Valor:
-            'amount' in item
-              ? formatPrice(item?.amount * 100)
-              : formatPrice(item?.payment.transaction_amount * 100),
-        },
-        message: data.reportMessage,
-        type,
-      });
-
-      setIsLoading(false);
-      Toast.show({
-        text1: 'Solicitação envida, aguarde o contato.',
-        position: 'bottom',
-        type: 'success',
-      });
-      RootNavigation.goBack();
-    } catch (error) {
-      setIsLoading(false);
-      Toast.show({
-        text1: 'Erro ao enviar solicitação, tente novamente.',
-        position: 'bottom',
-        type: 'error',
-      });
-    }
-  };
-
-  const renderHelpTitle = useCallback(() => {
-    let titleText = '';
-    switch (type) {
-      case 'itinerary':
-        titleText = 'Roteiro';
-        break;
-      case 'payment':
-        titleText = 'Pagamento';
-        break;
-      case 'revenue':
-        titleText = 'Faturamento';
-        break;
-      case 'itinerary':
-        break;
-
-      default:
-        break;
-    }
-    return <Text.Title>{titleText}</Text.Title>;
-  }, [type]);
+        setLoading(false);
+        Toast.show({
+          text1: 'Solicitação envida, aguarde o contato.',
+          position: 'bottom',
+          type: 'success',
+        });
+        RootNavigation.goBack();
+      } catch (error) {
+        setLoading(false);
+        Toast.show({
+          text1: 'Erro ao enviar solicitação, tente novamente.',
+          position: 'bottom',
+          type: 'error',
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [item, type],
+  );
 
   return (
     <Page showHeader={false}>
-      <Container>
+      <PageContainer isScrollable>
         <Header>
           <RowGroup justify="space-between" align="center">
             <Button
               bgColor="greenTransparent"
               onPress={() => RootNavigation.goBack()}
-              sizeHeight={40}
-              sizeWidth={40}
+              sizeHeight={4}
+              sizeWidth={4}
               sizeBorderRadius={20}
               sizePadding={0}
               customContent>
@@ -168,7 +155,7 @@ const HelpRequest = ({route}: HelpRequestProps) => {
             </View>
           </RowGroup>
         </Header>
-        <Card>
+        <Card marginHorizontal={0}>
           <DismissKeyboad>
             <Content>
               <Divider />
@@ -178,70 +165,14 @@ const HelpRequest = ({route}: HelpRequestProps) => {
                 </Text>
               </Tag>
               <Text alignment="start" textWeight="light">
-                Você será respondido por uma pessoa da equipe que entrara em
+                você será respondido por uma pessoa da equipe que entrará em
                 contato por e-mail ou telefone para dar continuidade ao
                 atendimento.
               </Text>
               <Divider />
               <Text.Title alignment="start">Detalhes</Text.Title>
               <Divider />
-              {renderHelpTitle()}
-              <RowGroup>
-                <View>
-                  <Text
-                    textColor="primaryText"
-                    textWeight="bold"
-                    limitter={14}
-                    maxLines={1}>
-                    {item.itinerary.name}
-                  </Text>
-                  <Text limitter={14} maxLines={1} textWeight="light">
-                    {item.itinerary.location}
-                  </Text>
-                  <Text textWeight="light">{formattedDated.begin}</Text>
-                </View>
-                <View>
-                  <RowGroup justify="flex-start">
-                    <ImageContainer
-                      size="small"
-                      url={('member' in item && item.member.avatar) || ''}
-                    />
-                    <View>
-                      <Text
-                        limitter={12}
-                        maxLines={1}
-                        alignment="start"
-                        textColor="primaryText"
-                        textWeight="bold">
-                        {'member' in item ? 'Viajante' : 'Host'}
-                      </Text>
-                      <Text
-                        limitter={12}
-                        maxLines={1}
-                        textColor="secondaryText"
-                        textWeight="light">
-                        {'member' in item
-                          ? item.member.username
-                          : item.itinerary.owner.username}
-                      </Text>
-                    </View>
-                  </RowGroup>
-                  <Text textWeight="light">
-                    {formattedDated.paymentDateCreated}
-                  </Text>
-                  <Divider />
-                  <RowGroup justify="flex-start">
-                    <Text textColor="primaryText" textWeight="light">
-                      Total
-                    </Text>
-                    <Text.Title>
-                      {'amount' in item
-                        ? formatPrice(item?.amount * 100)
-                        : formatPrice(item?.payment.transaction_amount * 100)}
-                    </Text.Title>
-                  </RowGroup>
-                </View>
-              </RowGroup>
+              {type === 'revenue' && <HelpRevenue />}
               <TextArea
                 value={watchReportMessage}
                 error={errors.reportMessage?.message}
@@ -254,8 +185,8 @@ const HelpRequest = ({route}: HelpRequestProps) => {
             </Content>
           </DismissKeyboad>
         </Card>
-      </Container>
-      <SplashScreen visible={isLoading} />
+        <Divider />
+      </PageContainer>
     </Page>
   );
 };

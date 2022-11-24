@@ -1,6 +1,11 @@
 import styled from 'styled-native-components';
 import {theme} from '../../utils/theme';
 
+interface ContentViewProps {
+  hasError: boolean;
+  readOnly: boolean;
+}
+
 export const Container = styled.View`
   margin: 0.8rem 0.2rem 1.6rem 0.2rem;
   align-self: stretch;
@@ -19,7 +24,7 @@ export const Field = styled.TextInput`
   height: 4.4rem;
 `;
 
-export const Content = styled.View<{hasError: boolean}>`
+export const Content = styled.View<ContentViewProps>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -27,6 +32,8 @@ export const Content = styled.View<{hasError: boolean}>`
   border-bottom-color: ${(props) =>
     props.hasError ? theme.colors.red : theme.colors.borderBottom};
   position: relative;
+  background: ${(props) =>
+    props.readOnly ? theme.colors.disabled : theme.colors.transparent};
 `;
 
 export const ButtonIcon = styled.TouchableOpacity`

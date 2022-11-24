@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useState, useMemo, useEffect} from 'react';
+import React, {useRef, useState, useMemo, useEffect, useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -9,27 +9,21 @@ import * as yup from 'yup';
 
 import {phoneBR, cpfCnpj, clearValue} from '../../lib/mask';
 import {
-  updateProfileRequest,
-  updateProfileImageRequest,
-} from '../../store/modules/profile/actions';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import {removeUserRequest} from '../../store/modules/profile/actions';
+  updateProfile,
+  updateProfileImage,
+  deleteUser,
+} from '../../store2/profile';
 
 import {
   Container,
   User,
   Avatar,
-  ChangeAvatarButton,
-  ChangeAvatarButtonText,
   Reputation,
   InputContent,
   ActionContent,
-  SubmitButton,
-  SubmitButtonText,
-  DeleteAccountButton,
-  DeleteAccountButtonText,
   CardHeader,
   BackButton,
+  ChangeImageView,
 } from './styles';
 
 import Card from '../../components/Card';
@@ -42,47 +36,45 @@ import Text from '../../components/Text';
 import FileInput from '../../components/FileInput';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
-import {hideProfileGuide} from '../../store/modules/guides/actions';
-import SplashScreen from '../../components/SplashScreen';
+import {viewedGuide} from '../../store2/guides';
 import LocationPickerInput from '../../components/LocationPickerInput';
-import {
-  sexOptions,
-  travelerProfileGuideImages,
-  hostProfileGuideImages,
-} from '../../utils/constants';
+import {sexOptions} from '../../utils/constants';
 import {
   TomTomApiResponse,
   ProfileLocationJson,
   LocationPickerInputSetItem,
+  FileProps,
 } from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
-import {ScrollView} from 'react-native';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
-import {useUserIsHost} from '../../hooks/useUserIsHost';
+import {useUserIsGuide} from '../../hooks/useUserIsGuide';
+import {YupValidationMessages, GuideEnum} from '../../utils/enums';
+import RowGroup from '../../components/RowGroup';
+import {SimpleList} from '../../components/SimpleList';
+import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 const validationSchema = yup.object().shape({
-  name: yup.string().required('campo obrigatório'),
-  gender: yup.string().required('campo obrigatório'),
-  email: yup.string().required('campo obrigatório'),
-  phone: yup
-    .string()
-    .required('campo obrigatório')
-    .min(11, 'telefone incompleto'),
+  name: yup.string().required(YupValidationMessages.REQUIRED),
+  gender: yup.string(),
+  email: yup.string().required(YupValidationMessages.REQUIRED),
+  phone: yup.string().min(11, 'telefone incompleto'),
   document: yup
     .string()
-    .required('campo obrigatório')
+    .required(YupValidationMessages.REQUIRED)
     .min(14, 'cpf incompleto'),
   state: yup.string(),
   city: yup.string(),
-  profission: yup.string().required('campo obrigatório'),
-  birthDate: yup.date().required('campo obrigatório'),
+  profission: yup.string(),
+  birthDate: yup.date().required(YupValidationMessages.REQUIRED),
 });
 
 const Profile: React.FC = () => {
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {isHost, conditionalRender} = useUserIsHost();
+  const {isGuide, conditionalRender} = useUserIsGuide();
   const {
     register,
     handleSubmit,
@@ -90,11 +82,26 @@ const Profile: React.FC = () => {
     watch,
     formState: {errors},
   } = useForm({resolver: yupResolver(validationSchema)});
-  const {data, loading} = useSelector((state: RootStateProps) => state.profile);
-  const {profileGuide} = useSelector((state: RootStateProps) => state.guides);
-  const {data: subscriptionData} = useSelector(
-    (state: RootStateProps) => state.subscription,
-  );
+  const {data, loading} = useSelector((state: RootState) => state.profile);
+  const {
+    profileGuide,
+    data: {profileContent},
+  } = useSelector((state: RootState) => state.guides);
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [genderIsOpen, setGenderIsOpen] = useState(false);
+  const [cityIsOpen, setCityIsOpen] = useState(false);
+  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
+  const [profileImage, setProfileImage] = useState<{uri: string | undefined}>({
+    uri: undefined,
+  });
+
+  const nameRef = useRef<any>();
+  const emailRef = useRef<any>();
+  const phoneRef = useRef<any>();
+  const cpfRef = useRef<any>();
+  const stateRef = useRef<any>();
+  const profissionRef = useRef<any>();
 
   useEffect(() => {
     if (data?.file && data.file?.url) {
@@ -111,42 +118,41 @@ const Profile: React.FC = () => {
     register('state');
     register('city');
     register('profission');
-    register('birthDate', {value: new Date(), valueAsDate: true});
+    register('birthDate', {valueAsDate: true});
 
     setValue('name', data?.name || '');
     setValue('gender', data?.gender || '');
     setValue('email', data?.user?.email || '');
     setValue('phone', data?.phone || '');
-    setValue('document', data?.document || '');
+    setValue('document', cpfCnpj(String(data?.document)) || '');
     setValue('profission', data?.profission || '');
     setValue('birthDate', data?.birth);
-    setValue('city', data?.location);
+    setValue('city', data?.location || '');
   }, [data, register, setValue]);
 
-  const watchBirthDate = watch('birthDate', new Date());
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
+  const watchBirthDate = watch('birthDate');
   const watchGender = watch('gender');
-  const watchCity = watch('city');
+  const watchCity = watch('city', '');
   const watchName = watch('name');
   const watchEmail = watch('email');
   const watchPhone = watch('phone', '');
   const watchCpf = watch('document', '');
   const watchProfission = watch('profission');
 
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [genderIsOpen, setGenderIsOpen] = useState(false);
-  const [cityIsOpen, setCityIsOpen] = useState(false);
-  const locationJson = useRef<LocationPickerInputSetItem<TomTomApiResponse>>();
-  const [profileImage, setProfileImage] = useState<{uri: string | undefined}>({
-    uri: undefined,
-  });
-
-  const nameRef = useRef<any>();
-  const emailRef = useRef<any>();
-  const phoneRef = useRef<any>();
-  const cpfRef = useRef<any>();
-  const stateRef = useRef<any>();
-  // const cityRef = useRef<any>();
-  const profissionRef = useRef<any>();
+  const guideContent = profileContent.map((content) => ({
+    isAnimation: content.isAnimation,
+    url: content.externalUrl ?? '',
+    message: content.content ?? '',
+    title: content.title ?? '',
+    withInfo: content.withInfo,
+  }));
 
   const useSinceDate = useMemo(
     () =>
@@ -163,7 +169,7 @@ const Profile: React.FC = () => {
   }
 
   function financialNavigation() {
-    if (isHost) {
+    if (isGuide) {
       navigation.navigate('Revenues');
     } else {
       navigation.navigate('Wallet');
@@ -180,21 +186,21 @@ const Profile: React.FC = () => {
     };
 
     dispatch(
-      updateProfileRequest(
-        profileData.name,
-        profileData.gender,
-        profileData.birthDate.toDateString(),
-        String(clearValue(profileData.document)),
-        profileData.profission,
-        String(clearValue(profileData.phone)),
-        profileData.city,
-        locationJson.current ? jsonContent : undefined,
-      ),
+      updateProfile({
+        name: profileData.name,
+        gender: profileData.gender,
+        birth: profileData.birthDate.toDateString(),
+        document: String(clearValue(profileData.document)),
+        profission: profileData.profission,
+        phone: String(clearValue(profileData.phone)),
+        location: profileData.city,
+        location_json: locationJson.current ? jsonContent : undefined,
+      }),
     );
   };
 
   function handleDeleteUser() {
-    dispatch(removeUserRequest());
+    dispatch(deleteUser());
     setAlertVisible(false);
   }
 
@@ -204,10 +210,10 @@ const Profile: React.FC = () => {
     }
   }
 
-  function handleProfileImage(imageList: any) {
-    if (imageList !== undefined) {
-      setProfileImage({uri: imageList[0].uri});
-      dispatch(updateProfileImageRequest(imageList[0].id));
+  function handleProfileImage(image: FileProps) {
+    if (image.id) {
+      setProfileImage({uri: image.url});
+      dispatch(updateProfileImage(image.id));
     }
   }
 
@@ -233,11 +239,11 @@ const Profile: React.FC = () => {
                   style={{borderColor: '#e1e1e1'}}
                 />
                 <FileInput onSelect={handleProfileImage}>
-                  <ChangeAvatarButton>
-                    <ChangeAvatarButtonText>
+                  <ChangeImageView>
+                    <Text textWeight="bold" textColor="white">
                       Alterar imagem
-                    </ChangeAvatarButtonText>
-                  </ChangeAvatarButton>
+                    </Text>
+                  </ChangeImageView>
                 </FileInput>
                 <Text.Title alignment="center">
                   {data?.user.username}
@@ -254,33 +260,28 @@ const Profile: React.FC = () => {
                 </Text>
               </User>
             </Card>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{height: 70, margin: 10}}>
+            <SimpleList isHorizontal>
               {conditionalRender(
-                subscriptionData && (
-                  <Button
-                    onPress={() => financialNavigation()}
-                    customContent
-                    sizeHeight={70}
-                    sizeWidth={70}
-                    sizeMargin="0 2rem 0 0"
-                    bgColor="blueTransparent"
-                    textColor="white">
-                    <ColumnGroup>
-                      <Icon name="wallet-outline" size={24} color="#4885fd" />
-                      <Text.Small textColor="blue" textWeight="bold">
-                        Carteira
-                      </Text.Small>
-                    </ColumnGroup>
-                  </Button>
-                ),
                 <Button
                   onPress={() => financialNavigation()}
                   customContent
-                  sizeHeight={70}
-                  sizeWidth={70}
+                  sizeHeight={7}
+                  sizeWidth={7}
+                  sizeMargin="0 2rem 0 0"
+                  bgColor="blueTransparent"
+                  textColor="white">
+                  <ColumnGroup>
+                    <Icon name="wallet-outline" size={24} color="#4885fd" />
+                    <Text.Small textColor="blue" textWeight="bold">
+                      Ganhos
+                    </Text.Small>
+                  </ColumnGroup>
+                </Button>,
+                <Button
+                  onPress={() => financialNavigation()}
+                  customContent
+                  sizeHeight={7}
+                  sizeWidth={7}
                   sizeMargin="0 2rem 0 0"
                   bgColor="blueTransparent"
                   textColor="white">
@@ -292,12 +293,12 @@ const Profile: React.FC = () => {
                   </ColumnGroup>
                 </Button>,
               )}
-              {isHost && (
+              {!isGuide && (
                 <Button
-                  onPress={() => navigation.navigate('HostSubscription')}
+                  onPress={() => navigation.navigate('BackpackerSubscription')}
                   customContent
-                  sizeHeight={70}
-                  sizeWidth={70}
+                  sizeHeight={7}
+                  sizeWidth={7}
                   bgColor="blueTransparent"
                   sizeMargin="0 2rem 0 0"
                   textColor="white">
@@ -309,7 +310,7 @@ const Profile: React.FC = () => {
                   </ColumnGroup>
                 </Button>
               )}
-            </ScrollView>
+            </SimpleList>
             <Card>
               <InputContent>
                 <Input
@@ -330,14 +331,9 @@ const Profile: React.FC = () => {
                   options={sexOptions}
                   byValue={true}
                   error={errors.gender?.message}
-                  categorySelectable={true}
                   open={genderIsOpen}
                   setOpen={setGenderIsOpen}
-                  onOpen={() => {}}
-                  zIndex={200}
-                  zIndexInverse={100}
                   key="gender"
-                  listMode="SCROLLVIEW"
                 />
                 <Input
                   icon="email-outline"
@@ -345,7 +341,11 @@ const Profile: React.FC = () => {
                   placeholder="Digite seu e-mail"
                   ref={emailRef}
                   value={watchEmail}
-                  onChange={(value: string) => setValue('email', value)}
+                  onChange={(value: string) =>
+                    setValue('email', value.trim().toLocaleLowerCase())
+                  }
+                  readOnly
+                  editable={false}
                   returnKeyType="next"
                   onSubmitEditing={() => phoneRef.current?.focus()}
                   error={errors.email?.message}
@@ -399,21 +399,46 @@ const Profile: React.FC = () => {
                 />
                 <DateInput
                   label="Nascimento"
-                  date={watchBirthDate}
+                  date={watchBirthDate || new Date()}
                   onChange={(value: Date) => setValue('birthDate', value)}
                 />
               </InputContent>
               <ActionContent>
-                <SubmitButton onPress={handleSubmit(updateProfileHandle)}>
-                  <SubmitButtonText>Atualizar</SubmitButtonText>
-                </SubmitButton>
+                <Button
+                  onPress={handleSubmit(updateProfileHandle)}
+                  textColor="white"
+                  bgColor="green"
+                  sizeHeight={4.4}
+                  customContent
+                  sizePadding={0}
+                  sizeWidth={12}
+                  cornerRadius={{
+                    bottomL: 12,
+                    bottomR: 12,
+                    topL: 12,
+                    topR: 0,
+                  }}>
+                  <Text.Paragraph textWeight="bold" textColor="white">
+                    Atualizar
+                  </Text.Paragraph>
+                </Button>
               </ActionContent>
             </Card>
-
-            <DeleteAccountButton onPress={alertToggle}>
-              <Icon name="delete-forever-outline" size={24} color="#FFF" />
-              <DeleteAccountButtonText>Desativar Conta</DeleteAccountButtonText>
-            </DeleteAccountButton>
+            <Button
+              onPress={alertToggle}
+              sizeMargin="1rem"
+              customContent
+              bgColor="red"
+              sizePadding={10}
+              sizeHeight={4.4}
+              textColor="white">
+              <RowGroup>
+                <Icon name="delete-forever-outline" size={24} color="#FFF" />
+                <Text.Paragraph textWeight="bold" textColor="white">
+                  Desativar Conta
+                </Text.Paragraph>
+              </RowGroup>
+            </Button>
           </>
         )}
       />
@@ -437,11 +462,10 @@ const Profile: React.FC = () => {
       />
       <Ads visible={profileGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
-          data={isHost ? hostProfileGuideImages : travelerProfileGuideImages}
-          onClose={() => dispatch(hideProfileGuide())}
+          data={guideContent}
+          onClose={() => dispatch(viewedGuide({key: GuideEnum.PROFILE}))}
         />
       </Ads>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

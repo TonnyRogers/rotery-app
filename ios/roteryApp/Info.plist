@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Rotery</string>
+	<string>Mochilee</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,6 +20,17 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.56267981095-1fcbjgf5r4p33ckppho0gpgdluv5t19p</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CodePushDeploymentKey</key>
@@ -40,11 +51,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Enable Rotery to take photos with your camera to change your profile photo and add photos to itineraries.</string>
+	<string>Enable Mochilee to take photos with your camera to change your profile photo and add photos to itineraries.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Rotery needs your location during the activity to handle with emergencies like lost of an person or something else.</string>
+	<string>Mochilee needs your location during the activity to handle with emergencies like lost of an person or something else.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Enable Rotery to access your photo galery to upload photos to your profile or itineraries preview.</string>
+	<string>Enable Mochilee to access your photo galery to upload photos to your profile or itineraries preview.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -77,6 +88,7 @@
 		<string>Roboto-Thin.ttf</string>
 		<string>Roboto-ThinItalic.ttf</string>
 		<string>Pacifico-Regular.ttf</string>
+		<string>icomoon.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

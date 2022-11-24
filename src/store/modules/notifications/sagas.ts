@@ -6,7 +6,7 @@ import {
   NotificationsProps,
   ItineraryMemberAcceptWsResponse,
 } from '../../../utils/types';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {
   getNotificationsSuccess,
   setNoticationReadedRequest,
@@ -25,6 +25,8 @@ import {
   wsItineraryUpdateNotification,
   wsItineraryDeleteNotification,
   wsItineraryAnswerNotification,
+  wsNewChatNotification,
+  wsGuideActivatedNotivication,
 } from '../websocket/actions';
 import {NotificationsActions} from './actions';
 import {RootStateProps} from '../rootReducer';
@@ -47,47 +49,47 @@ export function* getNotifications() {
       response.data.filter((item) => item.isReaded === false);
 
     for (const iterator of nonReadedNotifications) {
-      switch (iterator.alias) {
-        case NotificationAlias.CONNECTION_ACCEPTED:
-          yield put(wsConnectionAcceptedNotification(iterator));
-          break;
-        case NotificationAlias.NEW_MEMBER:
-          yield put(wsNewItineraryMemeberNotification(iterator));
-          break;
-        case NotificationAlias.NEW_MESSAGE:
-          yield put(wsNewMessageNotification(iterator));
-          break;
-        case NotificationAlias.NEW_QUESTION:
-          yield put(wsItineraryQuestionNotification(iterator));
-          break;
-        case NotificationAlias.MEMBER_ACCEPTED:
-          const payloadResponse: ItineraryMemberAcceptWsResponse =
-            iterator.jsonData;
-          yield put(getFeedDetailRequest(payloadResponse.itineraryId));
-          yield put(
-            getNextItineraryDetailsRequest(payloadResponse.itineraryId),
-          );
-          break;
-        case NotificationAlias.MEMBER_REJECTED:
-          yield put(wsRejectedItineraryMemeberNotification(iterator));
-          break;
-        case NotificationAlias.NEW_CONNECTION:
-          yield put(wsNewConnectionNotification(iterator));
-          break;
-        case NotificationAlias.RATE_ITINERARY:
-          yield put(wsItineraryRateNotification(iterator));
-          break;
-        case NotificationAlias.ITINERARY_UPDATED:
-          yield put(wsItineraryUpdateNotification(iterator));
-          break;
-        case NotificationAlias.ITINERARY_DELETED:
-          yield put(wsItineraryDeleteNotification(iterator));
-          break;
-        case NotificationAlias.NEW_ANSWER:
-          yield put(wsItineraryAnswerNotification(iterator));
-          break;
-        default:
-          break;
+      if (iterator.alias === NotificationAlias.CONNECTION_ACCEPTED) {
+        yield put(wsConnectionAcceptedNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.NEW_MEMBER) {
+        yield put(wsNewItineraryMemeberNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.NEW_MESSAGE) {
+        yield put(wsNewMessageNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.NEW_CHAT) {
+        yield put(wsNewChatNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.NEW_QUESTION) {
+        yield put(wsItineraryQuestionNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.MEMBER_ACCEPTED) {
+        const payloadResponse: ItineraryMemberAcceptWsResponse =
+          iterator.jsonData;
+        yield put(getFeedDetailRequest(payloadResponse.itineraryId));
+        yield put(getNextItineraryDetailsRequest(payloadResponse.itineraryId));
+      }
+      if (iterator.alias === NotificationAlias.MEMBER_REJECTED) {
+        yield put(wsRejectedItineraryMemeberNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.NEW_CONNECTION) {
+        yield put(wsNewConnectionNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.RATE_ITINERARY) {
+        yield put(wsItineraryRateNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.ITINERARY_UPDATED) {
+        yield put(wsItineraryUpdateNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.ITINERARY_DELETED) {
+        yield put(wsItineraryDeleteNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.NEW_ANSWER) {
+        yield put(wsItineraryAnswerNotification(iterator));
+      }
+      if (iterator.alias === NotificationAlias.GUIDE_ACTIVATED) {
+        yield put(wsGuideActivatedNotivication(iterator));
       }
     }
 
@@ -115,9 +117,9 @@ export function* setNewNotification({
 export default all([
   takeLatest('persist/REHYDRATE', getNotifications),
   takeLatest(NotificationsActions.SET_READED_REQUEST, setNotificationReaded),
-  takeLatest(WsActions.NOTIFICATIONS, getNotifications),
   takeLatest(NotificationsActions.GET_REQUEST, getNotifications),
   takeLatest(WsActions.NEW_MESSAGE, setNewNotification),
+  takeLatest(WsActions.NEW_CHAT_NOTIFICATION, setNewNotification),
   takeLatest(WsActions.NEW_ITINERARY_MEMBER, setNewNotification),
   takeLatest(WsActions.MEMBER_ACCEPTED, setNewNotification),
   takeLatest(WsActions.MEMBER_REJECTED, setNewNotification),
@@ -128,4 +130,5 @@ export default all([
   takeLatest(WsActions.ITINERARY_UPDATE, setNewNotification),
   takeLatest(WsActions.ITINERARY_DELETE, setNewNotification),
   takeLatest(WsActions.ITINERARY_RATE, setNewNotification),
+  takeLatest(WsActions.GUIDE_ACTIVATED, setNewNotification),
 ]);

@@ -42,10 +42,6 @@ export const Avatar = styled.Image`
   background: #eee;
 `;
 
-export const RateStars = styled.View`
-  flex-direction: row;
-`;
-
 export const Name = styled.Text`
   font-family: 'Roboto';
   font-size: 2rem;

@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {ReactNode} from 'react';
 
 import Header from '../Header';
 import {StatusBar} from 'react-native';
@@ -8,9 +8,10 @@ import {Container} from './styles';
 
 interface PageProps {
   showHeader?: boolean;
+  children: ReactNode;
 }
 
-const Page: React.FC<PageProps> = ({children, showHeader = true}) => {
+const Page = ({children, showHeader = true}: PageProps) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />

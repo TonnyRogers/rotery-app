@@ -1,5 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useMemo, useEffect, useCallback} from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useContext,
+} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcons from 'react-native-vector-icons/FontAwesome';
 import {View} from 'react-native';
@@ -26,16 +32,16 @@ import {
   ItineraryProps,
   PaymentRefundResponse,
 } from '../../utils/types';
-import SplashScreen from '../../components/SplashScreen';
-import formatLocale from '../../providers/dayjs-format-locale';
+import { formatLocale } from '../../providers/dayjs-format-locale';
 import {formatBRL} from '../../lib/mask';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
 import Alert from '../../components/Alert';
 import {formatPrice} from '../../lib/utils';
-import api from '../../services/api';
+import api from '../../providers/api';
 import Tag from '../../components/Tag';
 import {HelpRequestRouteParamsProps} from '../HelpRequest';
+import {LoadingContext} from '../../context/loading/context';
 
 const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
@@ -53,8 +59,8 @@ interface CheckoutProps {
 }
 
 const TransactionDetail = ({route}: CheckoutProps) => {
+  const {setLoading} = useContext(LoadingContext);
   const [isShowRefundAlert, setIsShowRefundAlert] = useState(false);
-  const [isLoadign, setIsLoading] = useState(false);
   const [itinerary, setItinerary] = useState<ItineraryProps>();
   const {
     params: {memberPayment},
@@ -69,29 +75,30 @@ const TransactionDetail = ({route}: CheckoutProps) => {
   useEffect(() => {
     const getTransacionHistory = async () => {
       try {
-        setIsLoading(true);
+        setLoading(true);
         const response = await api.get<ItineraryProps>(
           `/itineraries/${memberPayment.itinerary}/details`,
         );
 
         setItinerary(response.data);
-        setIsLoading(false);
+        setLoading(false);
       } catch (error) {
         Toast.show({
           text1: 'Erro ao buscar roteiro, tente novamente.',
           position: 'bottom',
           type: 'error',
         });
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     getTransacionHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberPayment.itinerary]);
 
   const handleRefund = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await api.post<PaymentRefundResponse>(
         `/itineraries/member/${memberPayment.id}/refund`,
       );
@@ -101,9 +108,9 @@ const TransactionDetail = ({route}: CheckoutProps) => {
         position: 'bottom',
         type: 'error',
       });
-      setIsLoading(false);
+      setLoading(false);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
       setIsShowRefundAlert(false);
       RootNavigation.goBack();
     }
@@ -336,8 +343,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
             bgColor="blueTransparent"
             onPress={() => showPaymentRefund()}
             customContent
-            sizeHeight={60}
-            sizeWidth={60}
+            sizeHeight={6}
+            sizeWidth={6}
             sizeMargin="2rem 1rem"
             isFlex>
             <ColumnGroup>
@@ -369,8 +376,8 @@ const TransactionDetail = ({route}: CheckoutProps) => {
             )
           }
           customContent
-          sizeHeight={60}
-          sizeWidth={60}
+          sizeHeight={6}
+          sizeWidth={6}
           sizeMargin="2rem 1rem"
           isFlex>
           <ColumnGroup>
@@ -389,7 +396,6 @@ const TransactionDetail = ({route}: CheckoutProps) => {
         onConfirm={() => handleRefund()}
         message="Voce deseja realmente estornar este pagamento?"
       />
-      <SplashScreen visible={isLoadign} />
     </Page>
   );
 };

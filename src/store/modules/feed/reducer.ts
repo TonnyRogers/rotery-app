@@ -55,6 +55,7 @@ export default function feed(state = INITIAL_STATE, action: ActionProps) {
             draft.itineraries = itineraryList;
           }
         }
+        draft.loading = false;
         break;
       }
       case FeedActions.GET_FEED_DETAIL_FAILURE: {

@@ -1,13 +1,11 @@
 import styled from 'styled-native-components';
 
 export const Container = styled.View`
+  margin: 0.8rem 0.2rem 1.6rem 0.2rem;
   align-self: stretch;
-  margin: 1rem 0.2rem;
 `;
 
-export const Content = styled.View`
-  margin: 0.5rem 0;
-`;
+export const Content = styled.View``;
 
 export const Label = styled.Text`
   font-family: 'Roboto';

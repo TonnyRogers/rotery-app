@@ -14,10 +14,11 @@ import {
   changeSubscriptionCardRequest,
   changeSubscriptionCardSuccess,
   changeSubscriptionCardFailure,
+  getSubscriptionRequest,
 } from './actions';
 import {AxiosResponse} from 'axios';
 import {Subscription} from '../../../utils/types';
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {showRevenueGuideSuccess} from '../guides/actions';
 
 export function* getSubscription() {
@@ -90,6 +91,7 @@ export function* changeSubscriptionCard({
     });
 
     yield put(changeSubscriptionCardSuccess());
+    yield put(getSubscriptionRequest());
     Toast.show({
       text1: 'Cartão alterado!',
       position: 'bottom',

@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback} from 'react';
 import {FlatList, TouchableOpacityProps, Keyboard, View} from 'react-native';
+import {TOMTOM_KEY} from '@env';
 
 import {
   Container,
@@ -11,7 +12,7 @@ import {
 } from './styles';
 import Text from '../Text';
 import Input from '../Input';
-import tomtomApi from '../../services/tomtomApi';
+import tomtomApi from '../../providers/tomtomApi';
 import {TomTomResult, PlacesSearchGeo} from '../../utils/types';
 import DismissKeyboad from '../DismissKeyboad';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -64,19 +65,22 @@ const LocationPickerInput = ({
 }: LocationPickerInputProps) => {
   const [list, setList] = useState<any>(null);
   const [location, setLocation] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSearchPlace = useCallback(async () => {
     Keyboard.dismiss();
     if (location.length > 3) {
       try {
+        setIsLoading(true);
         const response = await tomtomApi.get<TomTomResult<PlacesSearchGeo>>(
           `${location}.json`,
           {
             params: {
-              key: 'xA6NMpC44OEmVh7sAVimkWd08NTU7ACs',
+              key: TOMTOM_KEY,
               limit: responseLimit || '5',
               language: 'pt-BR',
               idxSet: searchType || undefined,
+              countrySet: 'BR',
             },
           },
         );
@@ -87,10 +91,12 @@ const LocationPickerInput = ({
           value: item,
         }));
 
+        setIsLoading(false);
         if (formated) {
           setList(formated);
         }
       } catch (error) {
+        setIsLoading(false);
         Toast.show({
           text1: 'Erro ao buscar localização.',
           text2: error.message,
@@ -157,7 +163,14 @@ const LocationPickerInput = ({
                 </Text.Paragraph>
               </ListItem>
             )}
-            ListEmptyComponent={() => <Text alignment="center">Vazio</Text>}
+            refreshing={isLoading}
+            ListEmptyComponent={() =>
+              isLoading ? (
+                <Text alignment="center">Buscando...</Text>
+              ) : (
+                <Text alignment="center">Vazio</Text>
+              )
+            }
           />
         </>
       </DismissKeyboad>

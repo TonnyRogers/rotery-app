@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Container, DateButton, DateText, Label, RowGroup} from './styles';
 import Text from '../Text';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
 
 interface DateTimeInputProps {

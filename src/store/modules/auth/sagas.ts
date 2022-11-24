@@ -1,11 +1,11 @@
 import {all, takeLatest, call, put, select} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-toast-message';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
-import api from '../../../services/api';
+import api from '../../../providers/api';
 import {RootStateProps} from '../rootReducer';
-import NetInfo from '../../../services/netinfo';
+import NetInfo from '../../../providers/netinfo';
 import {translateError} from '../../../lib/utils';
 import * as RootNavigation from '../../../RootNavigation';
 
@@ -17,18 +17,24 @@ import {
   registerSuccess,
   registerFailure,
   refreshTokenSuccess,
-  refreshTokenFailure,
   setDeviceTokenRequest,
   setDeviceTokenSuccess,
+  logout as logoutAction,
 } from './actions';
 import {getProfileRequest} from '../profile/actions';
-import {getItinerariesRequest} from '../itineraries/actions';
 import {getConnectionsRequest} from '../connections/actions';
-import {getMessagesRequest} from '../messages/actions';
-import {getNextItinerariesRequest} from '../nextItineraries/actions';
-import {getBankAccountRequest} from '../bankAccount/actions';
 import {AxiosResponse} from 'axios';
-import {UserProps} from '../../../utils/types';
+import {getNotificationsRequest} from '../notifications/actions';
+import {getBankAccountRequest} from '../bankAccount/actions';
+import {unauthenticate} from '../../../providers/google-oauth';
+import {AuthUser} from './reducer';
+import {LocalStorageKeys} from '../../../utils/enums';
+
+type AuthLoginResponse = {
+  access_token: string;
+  user: AuthUser;
+  expires: number;
+};
 
 export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   try {
@@ -41,10 +47,13 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
 
     const {email, password} = payload;
 
-    const response: AxiosResponse<{access_token: string; user: UserProps}> =
-      yield call(api.post, '/auth/login', {email, password});
+    const response: AxiosResponse<AuthLoginResponse> = yield call(
+      api.post,
+      '/auth/login',
+      {email, password},
+    );
 
-    const {user, access_token} = response.data;
+    const {user, access_token, expires} = response.data;
 
     if (!access_token) {
       Toast.show({
@@ -57,19 +66,29 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
       return;
     }
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', access_token);
-    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', '');
-    api.defaults.headers.Authorization = `Bearer ${access_token}`;
+    yield call(
+      [AsyncStorage, 'setItem'],
+      LocalStorageKeys.AUTH_TOKEN,
+      access_token,
+    );
 
-    yield put(loginSuccess(access_token, user));
+    yield call(
+      [AsyncStorage, 'setItem'],
+      LocalStorageKeys.AUTH_REFRESH,
+      response.headers['set-cookie'][0],
+    );
+
+    yield put(loginSuccess(access_token, user, expires));
+    RootNavigation.replace('Welcome');
     yield put(setDeviceTokenRequest());
     yield put(getProfileRequest(user.id));
     yield put(getConnectionsRequest());
-    yield put(getNextItinerariesRequest());
-    yield put(getMessagesRequest());
+    yield put(getNotificationsRequest());
+    // yield put(getNextItinerariesRequest());
+    // yield put(getMessagesRequest());
 
-    if (user.isHost) {
-      yield put(getItinerariesRequest());
+    if (user.isGuide) {
+      // yield put(getItinerariesRequest());
       yield put(getBankAccountRequest());
     }
   } catch (error) {
@@ -82,22 +101,14 @@ export function* logUser({payload}: ReturnType<typeof loginRequest>) {
   }
 }
 
-export function* setToken({payload}: any) {
-  if (!payload || !payload.auth) {
-    return;
-  }
-
-  const {token} = payload.auth;
-
-  if (token) {
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    // yield put(refreshTokenRequest());
-  }
-}
-
 export function* logout() {
-  yield call([AsyncStorage, 'removeItem'], '@auth:token');
-  api.defaults.headers.common.Authorization = 'Bearer ';
+  try {
+    yield call(api.get, '/auth/logout');
+  } catch (error) {}
+
+  yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_TOKEN);
+  yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_REFRESH);
+  unauthenticate();
   // cancelNotifications();
 }
 
@@ -110,13 +121,13 @@ export function* registerUser({payload}: ReturnType<typeof registerRequest>) {
   }
 
   try {
-    const {username, email, password, isHost} = payload;
+    const {username, email, password, isGuide} = payload;
 
     const response = yield call(api.post, '/users', {
       username,
       email,
       password,
-      isHost,
+      isGuide,
     });
 
     const {id} = response.data;
@@ -160,35 +171,41 @@ export function* handleRefreshToken() {
     return;
   }
 
+  const info = yield call(NetInfo);
+
+  if (!info.status) {
+    yield put(loginFailure());
+    return;
+  }
+
   try {
-    const response = yield call(api.get, '/sessions');
-
-    if (response.status === 401) {
-      yield put(refreshTokenFailure());
-    }
-
-    yield put(refreshTokenFailure());
+    yield call(api.get, '/profile');
   } catch (error) {
-    const refreshTokenSTR = yield call(
-      [AsyncStorage, 'getItem'],
-      '@auth:refreshToken',
-    );
+    try {
+      const response: AxiosResponse<Omit<AuthLoginResponse, 'user'>> =
+        yield call(api.post, '/auth/refresh');
 
-    const renewToken = yield call(api.put, '/sessions', {
-      refresh_token: refreshTokenSTR,
-    });
+      const {access_token, expires} = response.data;
 
-    const {token: responseToken, refreshToken} = renewToken.data;
+      yield call([AsyncStorage, 'removeItem'], LocalStorageKeys.AUTH_TOKEN);
 
-    yield call([AsyncStorage, 'removeItem'], '@auth:refreshToken');
-    yield call([AsyncStorage, 'removeItem'], '@auth:token');
+      yield call(
+        [AsyncStorage, 'setItem'],
+        LocalStorageKeys.AUTH_TOKEN,
+        access_token,
+      );
 
-    yield call([AsyncStorage, 'setItem'], '@auth:token', responseToken);
-    yield call([AsyncStorage, 'setItem'], '@auth:refreshToken', refreshToken);
-
-    yield put(refreshTokenSuccess(responseToken, refreshToken));
-
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      yield put(refreshTokenSuccess(access_token, expires));
+    } catch (error1) {
+      yield put(logoutAction());
+      Toast.show({
+        text1: 'Erro de autenticação',
+        text2: 'faça o login novamente.',
+        position: 'bottom',
+        type: 'error',
+        visibilityTime: 3000,
+      });
+    }
   }
 }
 
@@ -200,7 +217,7 @@ export function* setDeviceToken() {
     );
 
     if (!deviceToken) {
-      deviceToken = yield call([messaging(), 'getToken']);
+      // deviceToken = yield call([messaging(), 'getToken']);
     }
 
     yield call(api.put, '/users/device', {
@@ -217,9 +234,9 @@ export function* setDeviceToken() {
 }
 
 export default all([
-  takeLatest('persist/REHYDRATE', setToken),
+  // takeLatest('persist/REHYDRATE', handleRefreshToken),
   takeLatest('@auth/SET_DEVICE_TOKEN_REQUEST', setDeviceToken),
-  // takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
+  takeLatest('@auth/REFRESH_TOKEN_REQUEST', handleRefreshToken),
   takeLatest('@auth/LOGIN_REQUEST', logUser),
   takeLatest('@auth/LOGOUT', logout),
   takeLatest('@auth/REGISTER_REQUEST', registerUser),

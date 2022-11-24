@@ -17,7 +17,7 @@ import {
 } from './styles';
 import {formatBRL} from '../../lib/mask';
 import {ItineraryProps} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 
 interface CheckoutItineraryProps {
   itinerary: ItineraryProps;

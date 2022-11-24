@@ -20,8 +20,7 @@ export const TransactionContainer = styled.ScrollView.attrs({
 `;
 
 export const Header = styled.View`
-  height: 6rem;
-  padding: 1rem;
+  height: 4rem;
   justify-content: center;
 `;
 

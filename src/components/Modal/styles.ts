@@ -22,9 +22,8 @@ export const ModalContent = styled.View.attrs({})`
   min-height: ${'70' + metricHeight};
   background: #fff;
   padding: 1rem;
-  margin: 2rem;
+  margin: 10rem 1rem 2rem 1rem;
   border-radius: 0.8rem;
-  margin-top: 8rem;
 `;
 
 export const Logo = styled.Image`

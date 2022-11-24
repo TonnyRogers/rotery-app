@@ -4,9 +4,7 @@ import {theme} from '../../utils/theme';
 
 // const metric = Platform.OS === 'ios' ? '%' : 'vh';
 
-export const Container = styled.View`
-  margin-top: 1rem;
-`;
+export const Container = styled.View``;
 
 export const Menu = styled.View`
   flex-direction: row;
@@ -16,7 +14,7 @@ export const Menu = styled.View`
 `;
 
 export const ProfileButton = styled.TouchableOpacity`
-  background: ${theme.colors.blueDark};
+  background: ${theme.colors.blueTransparent};
   border-top-right-radius: 0.8rem;
   border-bottom-right-radius: 0.8rem;
   width: 4rem;
@@ -52,7 +50,7 @@ export const Counter = styled.Text`
 `;
 
 export const MenuButton = styled.TouchableOpacity`
-  background: ${theme.colors.blueDark};
+  background: ${theme.colors.blueTransparent};
   border-top-left-radius: 0.8rem;
   border-bottom-left-radius: 0.8rem;
   width: 4rem;

@@ -1,59 +1,136 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
-import {View, Platform} from 'react-native';
+import React, {useEffect, useState, useContext} from 'react';
+import {View, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import LottieView from 'lottie-react-native';
+import AwesomeIcons from 'react-native-vector-icons/FontAwesome';
+import {useSelector, useDispatch} from 'react-redux';
 
 import * as RootNavigation from '../../RootNavigation';
 const cardsAnimation = require('../../../assets/animations/animation_cards.json');
 
-import {
-  Container,
-  Header,
-  TransactionContainer,
-  ItemContainer,
-  ItemIconHover,
-} from './styles';
+import {Header} from './styles';
 import Card from '../../components/Card';
 import Text from '../../components/Text';
 import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
 import Page from '../../components/Page';
-import api from '../../services/api';
-import {MemberWithPaymentResponse} from '../../utils/types';
-import formatLocale from '../../providers/dayjs-format-locale';
-import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
+import {
+  getCustomer,
+  deleteCustomerCard,
+  addCustomerCard,
+  checkoutActions,
+} from '../../store2/checkout';
+import {SimpleList} from '../../components/SimpleList';
+import {AnimationContent} from '../../components/AnimationContent';
+import {PageContainer} from '../../components/PageContainer';
+import BottomSheet from '../../components/BottomSheet';
+import {
+  CheckoutCustomerCardResponse,
+  CardTokenResponse,
+} from '../../utils/types';
+import WebView from '../../components/WebView';
+import {WebViewMessageEvent} from 'react-native-webview';
+import Toast from 'react-native-toast-message';
+import Alert from '../../components/Alert';
+import {paymentToken} from '../../providers/payment';
+import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
+
+const cardIconName: Record<string, string> = {
+  Mastercard: 'cc-mastercard',
+  'American Express': 'cc-amex',
+  Visa: 'cc-visa',
+};
+
+interface CustomCardResponse extends CheckoutCustomerCardResponse {
+  token?: string;
+}
+
+const injectCheckoutJs = `
+mp = new MercadoPago('${paymentToken.dev}');
+document.querySelector('#transactionAmmount').value = 0.00;
+true;
+`;
 
 const Wallet = () => {
-  const [transactionList, setTransactionList] = useState<
-    MemberWithPaymentResponse[]
-  >([]);
+  const {setLoading, isLoading} = useContext(LoadingContext);
+  const dispatch = useDispatch();
+  const [cardBottomSheeVisible, setCardBottomSheeVisible] = useState(false);
+  const [webCheckouVisible, setWebCheckouVisible] = useState(false);
+  const [removeCardAlertVisible, setRemoveCardAlertVisible] = useState(false);
+  const {customer, loading, defaultCard} = useSelector(
+    (state: RootState) => state.checkout,
+  );
+  const [cardOnEdition, setCardOnEdition] =
+    useState<CustomCardResponse | null>();
+  const {
+    data: {...profile},
+  } = useSelector((state: RootState) => state.profile);
+
+  const onEditCard = (card: CheckoutCustomerCardResponse) => {
+    setCardOnEdition(card);
+    setCardBottomSheeVisible(true);
+  };
+
+  const handleRemoveCard = () => {
+    if (customer?.id && cardOnEdition?.id) {
+      setCardBottomSheeVisible(false);
+      dispatch(
+        deleteCustomerCard({
+          customerId: customer?.id,
+          cardId: cardOnEdition?.id,
+        }),
+      );
+      setCardOnEdition(null);
+    }
+  };
+
+  const checkoutWebViewCb = (e: WebViewMessageEvent) => {
+    const dataParse = JSON.parse(e.nativeEvent.data);
+    const cardTokenPayload: CardTokenResponse = dataParse.payload;
+
+    if (dataParse.message === 'ok' && customer !== null) {
+      dispatch(
+        addCustomerCard({
+          cardToken: cardTokenPayload.id,
+          customerId: customer?.id,
+        }),
+      );
+      setWebCheckouVisible(false);
+    } else {
+      Toast.show({
+        text1: 'Dados do cartão incorretos, verifique.',
+        position: 'bottom',
+        type: 'error',
+      });
+    }
+  };
 
   useEffect(() => {
-    const getTransacionHistory = async () => {
-      try {
-        const response = await api.get<MemberWithPaymentResponse[]>(
-          '/itineraries/member-with-payment',
-        );
+    if (profile?.user.customerId && !customer) {
+      dispatch(getCustomer(profile?.user.customerId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customer?.cards]);
 
-        setTransactionList(response.data);
-      } catch (error) {}
-    };
-
-    getTransacionHistory();
-  }, []);
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
-      <Container>
+      <PageContainer isScrollable={false}>
         <Header>
-          <RowGroup justify="space-between">
+          <RowGroup justify="space-between" align="center">
             <Button
               bgColor="greenTransparent"
               onPress={() => RootNavigation.goBack()}
-              sizeHeight={40}
-              sizeWidth={40}
+              sizeHeight={4}
+              sizeWidth={4}
               sizeBorderRadius={20}
               sizePadding={0}
               customContent>
@@ -63,76 +140,139 @@ const Wallet = () => {
               style={{
                 flex: 1,
                 justifyContent: 'center',
+                alignItems: 'center',
               }}>
               <Text.Title alignment="center">Carteira</Text.Title>
             </View>
           </RowGroup>
         </Header>
-        <Card>
-          <LottieView
-            source={cardsAnimation}
-            loop={true}
-            cacheStrategy="strong"
-            autoPlay
-            resizeMode="contain"
-            hardwareAccelerationAndroid={!!(Platform.OS === 'android')}
-            renderMode="AUTOMATIC"
-            style={{flex: 1}}
-          />
-        </Card>
-        <View style={{marginLeft: 10}}>
-          <Text.Title>Histórico de Compras</Text.Title>
-        </View>
-        <TransactionContainer renderToHardwareTextureAndroid>
-          {transactionList.map((item) => (
-            <ItemContainer
-              key={item.id}
-              onPress={() =>
-                RootNavigation.navigate('TransactionDetail', {
-                  memberPayment: item,
-                  paymentType: 'itinerary',
-                })
-              }>
-              <ItemIconHover>
-                <Icon name="map-outline" size={26} color={theme.colors.green} />
-              </ItemIconHover>
-              <RowGroup>
-                <View>
-                  <Text
-                    textColor="primaryText"
-                    limitter={15}
-                    textWeight="light"
-                    maxLines={1}>
-                    {String(item.payment.metadata.itinerary_name)}
-                  </Text>
-                  <Text>
-                    {formatLocale(
-                      String(item.payment.metadata.itinerary_begin),
-                      'DD MMM YY',
-                    )}
-                  </Text>
-                </View>
-                <View>
-                  <Text
-                    textColor={
-                      item.payment.status === 'approved' &&
-                      item.payment.status_detail !== 'partially_refunded'
-                        ? 'red'
-                        : 'green'
-                    }
-                    alignment="end"
-                    textWeight="bold">
-                    {formatPrice(item.payment.transaction_amount * 100)}
-                  </Text>
-                  <Text>
-                    {formatLocale(item.payment.date_created, 'DD MMM YY HH:mm')}
-                  </Text>
-                </View>
-              </RowGroup>
-            </ItemContainer>
+        <AnimationContent
+          animationJson={cardsAnimation}
+          height={140}
+          align="center"
+        />
+        <SimpleList isHorizontal={false}>
+          {customer?.cards.map((cardItem) => (
+            <TouchableOpacity
+              key={cardItem.id}
+              onPress={() => onEditCard(cardItem)}>
+              <Card
+                marginHorizontal={4}
+                contentStyle={{
+                  borderColor:
+                    defaultCard?.id === cardItem.id
+                      ? theme.colors.green
+                      : undefined,
+                  borderWidth: defaultCard?.id === cardItem.id ? 2 : undefined,
+                  borderStyle:
+                    defaultCard?.id === cardItem.id ? 'solid' : undefined,
+                }}>
+                <RowGroup>
+                  <View>
+                    <Text maxLines={1} limitter={20} textWeight="bold">
+                      {cardItem.cardholder.name.toUpperCase()}
+                    </Text>
+                    <Text.Paragraph textWeight="bold">
+                      **** **** **** {cardItem.last_four_digits} {'  '}
+                    </Text.Paragraph>
+                    <Text textWeight="light">
+                      {cardItem.expiration_month}/{cardItem.expiration_year}
+                    </Text>
+                  </View>
+                  <AwesomeIcons
+                    name={cardIconName?.[cardItem.issuer.name]}
+                    size={40}
+                    color={theme.colors.blue}
+                  />
+                </RowGroup>
+              </Card>
+            </TouchableOpacity>
           ))}
-        </TransactionContainer>
-      </Container>
+          <Card
+            marginHorizontal={4}
+            contentStyle={{
+              borderWidth: 2,
+              borderColor: '#CFCFCF',
+              borderStyle: 'dashed',
+              backgroundColor: '#CFCFCF09',
+            }}>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+              }}>
+              <TouchableOpacity
+                onPress={() => setWebCheckouVisible(true)}
+                style={{padding: 32}}>
+                <Text.Paragraph textWeight="bold">
+                  Adicionar Cartao
+                </Text.Paragraph>
+              </TouchableOpacity>
+            </View>
+          </Card>
+        </SimpleList>
+      </PageContainer>
+      <BottomSheet
+        topMargin={40}
+        title={`Cartão: **** **** **** ${cardOnEdition?.last_four_digits}`}
+        visible={cardBottomSheeVisible}
+        onRequestClose={() => setCardBottomSheeVisible(false)}>
+        <Button
+          bgColor="redTransparent"
+          onPress={() => {
+            setCardBottomSheeVisible(false);
+            setRemoveCardAlertVisible(true);
+          }}
+          sizePadding={0}
+          sizeMargin="1.6rem 0 0 0"
+          customContent>
+          <RowGroup isFlex={false} align="center">
+            <Icon name="credit-card-off" size={24} color={theme.colors.red} />
+            <Text.Paragraph textColor="red" textWeight="bold">
+              {' '}
+              Remover
+            </Text.Paragraph>
+          </RowGroup>
+        </Button>
+        <Button
+          bgColor="blueTransparent"
+          onPress={() => {
+            dispatch(
+              checkoutActions.setDefaultCard(
+                cardOnEdition as CheckoutCustomerCardResponse,
+              ),
+            );
+            setCardBottomSheeVisible(false);
+          }}
+          sizePadding={0}
+          sizeMargin="1.6rem 0 0 0"
+          customContent>
+          <RowGroup isFlex={false} align="center">
+            <Text.Paragraph textColor="blue" textWeight="bold">
+              Definir como principal
+            </Text.Paragraph>
+          </RowGroup>
+        </Button>
+      </BottomSheet>
+      <WebView
+        key="checkout"
+        injectScript={injectCheckoutJs}
+        url="https://www.rotery.com.br/mobile-checkout"
+        onRequestClose={() => setWebCheckouVisible(false)}
+        visible={webCheckouVisible}
+        onMessageCallback={(event) => checkoutWebViewCb(event)}
+        title="Novo"
+      />
+      <Alert
+        title="Remover Cartão"
+        message={'você deseja realmente remover este cartão?'}
+        icon="credit-card-off"
+        iconColor="#3dc77b"
+        visible={removeCardAlertVisible}
+        onRequestClose={() => setRemoveCardAlertVisible(false)}
+        onConfirm={handleRemoveCard}
+      />
     </Page>
   );
 };

@@ -4,13 +4,19 @@ import {
   QuestionProps,
   InvitesProps,
   ItineraryMemberAcceptWsResponse,
+  ChatMessage,
+  RateChatNotificationJsonData,
 } from '../../../utils/types';
 
 export enum PushNotificationsActions {
   NEW_MESSAGE = '@push/NEW_MESSAGE',
+  NEW_CHAT = '@push/NEW_CHAT',
   RATE_ITINERARY = '@push/RATE_ITINERARY',
+  RATE_LOCATION = '@push/RATE_LOCATION',
   NEW_CONNECTION = '@push/NEW_CONNECTION',
   CONNECTION_ACCEPTED = '@push/CONNECTION_ACCEPTED',
+  CONNECTION_BLOCK = '@push/CONNECTION_BLOCK',
+  CONNECTION_UNBLOCK = '@push/CONNECTION_UNBLOCK',
   ITINERARY_MEMBER = '@push/ITINERARY_MEMBER',
   ITINERARY_ACCEPT_MEMBER = '@push/ITINERARY_ACCEPT_MEMBER',
   ITINERARY_REJECT_MEMBER = '@push/ITINERARY_REJECT_MEMBER',
@@ -18,6 +24,7 @@ export enum PushNotificationsActions {
   ITINERARY_ANSWER = '@push/ITINERARY_ANSWER',
   ITINERARY_UPDATED = '@push/ITINERARY_UPDATED',
   ITINERARY_DELETED = '@push/ITINERARY_DELETED',
+  GUIDE_ACTIVATED = '@push/GUIDE_ACTIVATED',
 }
 
 export function pushNotificationNewMessage(message: MessageProps) {
@@ -27,9 +34,25 @@ export function pushNotificationNewMessage(message: MessageProps) {
   };
 }
 
+export function pushNotificationNewChat(chatMessage: ChatMessage) {
+  return {
+    type: PushNotificationsActions.NEW_CHAT,
+    payload: {chatMessage},
+  };
+}
+
 export function pushNotificationRateItinerary(payload: {id: number}) {
   return {
     type: PushNotificationsActions.RATE_ITINERARY,
+    payload: {payload},
+  };
+}
+
+export function pushNotificationRateLocation(
+  payload: RateChatNotificationJsonData,
+) {
+  return {
+    type: PushNotificationsActions.RATE_LOCATION,
     payload: {payload},
   };
 }
@@ -44,6 +67,20 @@ export function pushNotificationNewConnection(invite: InvitesProps) {
 export function pushNotificationConnectionAccepted(invite: InvitesProps) {
   return {
     type: PushNotificationsActions.CONNECTION_ACCEPTED,
+    payload: {invite},
+  };
+}
+
+export function pushNotificationConnectionBlock(invite: InvitesProps) {
+  return {
+    type: PushNotificationsActions.CONNECTION_BLOCK,
+    payload: {invite},
+  };
+}
+
+export function pushNotificationConnectionUnblock(invite: InvitesProps) {
+  return {
+    type: PushNotificationsActions.CONNECTION_UNBLOCK,
     payload: {invite},
   };
 }
@@ -97,6 +134,12 @@ export function pushNotificationItineraryUpdated(itinerary: {id: number}) {
   return {
     type: PushNotificationsActions.ITINERARY_UPDATED,
     payload: {itinerary},
+  };
+}
+
+export function pushNotificationGuideActivated() {
+  return {
+    type: PushNotificationsActions.GUIDE_ACTIVATED,
   };
 }
 

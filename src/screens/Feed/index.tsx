@@ -22,7 +22,7 @@ import {
 } from './styles';
 
 import Itinerary from '../../components/Itinerary';
-import FilterInput from '../../components/FilterInput';
+// import FilterInput from '../../components/FilterInput';
 import BottomSheet from '../../components/BottomSheet';
 import Page from '../../components/Page';
 import FloatButton from '../../components/FloatButton';
@@ -61,12 +61,12 @@ const Feed: React.FC = () => {
     );
   }
 
-  const removeDuplicatedActivities = itineraryActivities.filter(
-    (item, index, arr) =>
-      arr.findIndex(
-        (comparable) => comparable.activity.id === item.activity.id,
-      ) === index,
-  );
+  // const removeDuplicatedActivities = itineraryActivities.filter(
+  //   (item, index, arr) =>
+  //     arr.findIndex(
+  //       (comparable) => comparable.activity.id === item.activity.id,
+  //     ) === index,
+  // );
 
   function itineraryDetail(itineraryId: number) {
     navigation.navigate('FeedItineraryDetails', {id: itineraryId});
@@ -158,7 +158,7 @@ const Feed: React.FC = () => {
           />
         </Content>
       </Container>
-      {user?.isHost && (
+      {user?.isGuide && (
         <FloatButton
           alignment="center"
           shape="rounded"
@@ -171,14 +171,14 @@ const Feed: React.FC = () => {
         onRequestClose={() => setSheetVisible(false)}
         title="Anuncio"
       />
-      <FilterInput
+      {/* <FilterInput
         visible={filterVisible}
         onRequestClose={toggleFilter}
         onFiltered={({begin, end, location}) => {
           setFilter({begin: begin, end: end, location: location || undefined});
         }}
         activities={removeDuplicatedActivities}
-      />
+      /> */}
       <Ads visible={feedGuide} onRequestClose={() => {}} key="guide-feed">
         <GuideCarousel
           data={feedGuideImages}

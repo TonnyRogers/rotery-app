@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm} from 'react-hook-form';
@@ -13,8 +13,6 @@ import Text from '../../components/Text';
 import RowGroup from '../../components/RowGroup';
 import Button from '../../components/Button';
 import Page from '../../components/Page';
-// import api from '../../services/api';
-// import {formatPrice} from '../../lib/utils';
 import {theme} from '../../utils/theme';
 import Input from '../../components/Input';
 import PickerInput from '../../components/PickerInput';
@@ -23,23 +21,21 @@ import DismissKeyboad from '../../components/DismissKeyboad';
 import {AccountOptions, bankList} from '../../utils/constants';
 import Divider from '../../components/Divider';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootStateProps} from '../../store/modules/rootReducer';
-import SplashScreen from '../../components/SplashScreen';
-import {
-  createBankAccountRequest,
-  updateBankAccountRequest,
-} from '../../store/modules/bankAccount/actions';
+import {createBankAccount, updateBankAccount} from '../../store2/bankAccount';
+import {YupValidationMessages} from '../../utils/enums';
+import {LoadingContext} from '../../context/loading/context';
+import {RootState} from '../../providers/store';
 
 const validationSchema = yup.object().shape({
-  bank: yup.string().required('campo obrigatório'),
-  agency: yup.string().required('campo obrigatório'),
-  account: yup.string().required('campo obrigatório'),
-  accountType: yup.string().required('campo obrigatório'),
+  bank: yup.string().required(YupValidationMessages.REQUIRED),
+  agency: yup.string().required(YupValidationMessages.REQUIRED),
+  account: yup.string().required(YupValidationMessages.REQUIRED),
+  accountType: yup.string().required(YupValidationMessages.REQUIRED),
   payDay: yup
     .number()
     .min(1, 'o dia deve ser no minimo 1')
     .max(31, 'o dia deve ser no máximo 31')
-    .required('campo obrigatório'),
+    .required(YupValidationMessages.REQUIRED),
 });
 
 interface formData {
@@ -57,12 +53,11 @@ const RevenuesConfig = () => {
     setValue,
     watch,
     formState: {errors},
-  } = useForm({resolver: yupResolver(validationSchema)});
+  } = useForm<formData>({resolver: yupResolver(validationSchema)});
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const [bankIsOpen, setBankIsOpen] = useState(false);
   const [accountTypeIsOpen, setAccountTypeIsOpen] = useState(false);
-  const {data, loading} = useSelector(
-    (state: RootStateProps) => state.bankAccount,
-  );
+  const {data, loading} = useSelector((state: RootState) => state.bankAccount);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -97,11 +92,18 @@ const RevenuesConfig = () => {
       payDay: Number(dataForm.payDay),
     };
     if (!data) {
-      dispatch(createBankAccountRequest(bankPayload));
+      dispatch(createBankAccount(bankPayload));
     } else {
-      dispatch(updateBankAccountRequest(bankPayload));
+      dispatch(updateBankAccount(bankPayload));
     }
   };
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <Page showHeader={false}>
@@ -111,8 +113,8 @@ const RevenuesConfig = () => {
             <Button
               bgColor="greenTransparent"
               onPress={() => RootNavigation.goBack()}
-              sizeHeight={40}
-              sizeWidth={40}
+              sizeHeight={4}
+              sizeWidth={4}
               sizeBorderRadius={20}
               sizePadding={0}
               customContent>
@@ -122,9 +124,7 @@ const RevenuesConfig = () => {
               style={{
                 flex: 1,
               }}>
-              <Text.Title alignment="center">
-                Configuração de Faturamento
-              </Text.Title>
+              <Text.Title alignment="center">Configuração de Ganhos</Text.Title>
             </View>
           </RowGroup>
         </Header>
@@ -143,9 +143,9 @@ const RevenuesConfig = () => {
                 categorySelectable={true}
                 setOpen={setBankIsOpen}
                 onOpen={() => accountTypeIsOpen && setAccountTypeIsOpen(false)}
-                zIndex={200}
                 open={bankIsOpen}
-                zIndexInverse={100}
+                zIndex={10}
+                zIndexInverse={1}
                 listMode="SCROLLVIEW"
               />
               <RowGroup justify="space-between">
@@ -178,9 +178,9 @@ const RevenuesConfig = () => {
                 categorySelectable={true}
                 setOpen={setAccountTypeIsOpen}
                 onOpen={() => bankIsOpen && setBankIsOpen(false)}
-                zIndex={200}
                 open={accountTypeIsOpen}
-                zIndexInverse={100}
+                zIndex={1}
+                zIndexInverse={10}
                 listMode="SCROLLVIEW"
               />
 
@@ -204,7 +204,6 @@ const RevenuesConfig = () => {
           </DismissKeyboad>
         </Card>
       </Container>
-      <SplashScreen visible={loading} />
     </Page>
   );
 };

@@ -1,18 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {Shadow} from 'react-native-shadow-2';
 
 import {
   NotificationsProps,
-  QuestionProps,
-  MemberProps,
-  ItineraryProps,
-  ItineraryMemberResponse,
+  NotificationAlias,
+  RateChatNotificationJsonData,
 } from '../../utils/types';
-import {setNoticationReadedRequest} from '../../store/modules/notifications/actions';
+import {setNotificationReaded} from '../../store2/notifications';
 import * as RootNavigation from '../../RootNavigation';
 
 import {
@@ -24,7 +21,7 @@ import {
   DateText,
   NotificationButton,
 } from './styles';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 interface NotificationItemProps {
   notification: NotificationsProps<any>;
   close: () => void;
@@ -34,7 +31,6 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
   close,
 }) => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
 
   function formatDate(date: string) {
@@ -42,73 +38,74 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   }
 
   function notificationActionHandle(item: NotificationsProps<any>) {
-    dispatch(setNoticationReadedRequest(item.id));
-    switch (item.alias) {
-      case 'new_message': {
-        RootNavigation.replace('DirectMessagesTabs');
-        close();
-        break;
-      }
-      case 'rate_itinerary': {
-        const notificationItem: {id: number} = item.jsonData;
-        navigation.navigate('ItineraryRate', {
-          id: notificationItem.id,
-        });
-        close();
-        break;
-      }
-      case 'new_connection': {
-        RootNavigation.replace('Connections');
-        close();
-        break;
-      }
-      case 'new_connection_accepted': {
-        RootNavigation.replace('Connections');
-        close();
-        break;
-      }
-      case 'itinerary_question': {
-        const notificationItem: QuestionProps = item.jsonData;
-        navigation.navigate('MyItineraryDetails', {
-          id: notificationItem.itinerary,
-        });
-        close();
-        break;
-      }
-      case 'itinerary_member_request': {
-        const notificationItem: MemberProps = item.jsonData;
-        navigation.navigate('MyItineraryDetails', {
-          id: notificationItem.itinerary,
-        });
-        close();
-        break;
-      }
-      case 'itinerary_answer': {
-        const notificationItem: QuestionProps = item.jsonData;
-        navigation.navigate('FeedItineraryDetails', {
-          id: notificationItem.itinerary,
-        });
-        close();
-        break;
-      }
-      case 'itinerary_member_accepted': {
-        const notificationItem: ItineraryMemberResponse = item.jsonData;
-        navigation.navigate('NextItineraryDetails', {
-          id: notificationItem.itinerary.id,
-        });
-        close();
-        break;
-      }
-      case 'itinerary_updated': {
-        const notificationItem: ItineraryProps = item.jsonData;
-        navigation.navigate('NextItineraryDetails', {
-          id: notificationItem.id,
-        });
-        close();
-        break;
-      }
-      default:
+    dispatch(setNotificationReaded(item.id));
+    // called when user click in notification component
+    if (item.alias === NotificationAlias.NEW_MESSAGE) {
+      RootNavigation.replace('DirectMessagesTabs');
+      close();
     }
+    if (item.alias === NotificationAlias.NEW_CHAT) {
+      RootNavigation.replace('ChatMessages');
+      close();
+    }
+    if (item.alias === NotificationAlias.RATE_LOCATION) {
+      const notificationItem: RateChatNotificationJsonData = item.jsonData;
+      RootNavigation.navigate<RateChatNotificationJsonData>(
+        'RateChat',
+        notificationItem,
+      );
+      close();
+    }
+    if (item.alias === NotificationAlias.NEW_CONNECTION) {
+      RootNavigation.replace('Connections');
+      close();
+    }
+    if (item.alias === NotificationAlias.CONNECTION_ACCEPTED) {
+      RootNavigation.replace('Connections');
+      close();
+    }
+    // if (item.alias === NotificationAlias.RATE_ITINERARY) {
+    //   const notificationItem: {id: number} = item.jsonData;
+    //   navigation.navigate('ItineraryRate', {
+    //     id: notificationItem.id,
+    //   });
+    //   close();
+    // }
+    // if (item.alias === NotificationAlias.NEW_QUESTION) {
+    //   const notificationItem: QuestionProps = item.jsonData;
+    //   navigation.navigate('MyItineraryDetails', {
+    //     id: notificationItem.itinerary,
+    //   });
+    //   close();
+    // }
+    // if (item.alias === NotificationAlias.NEW_MEMBER) {
+    //   const notificationItem: MemberProps = item.jsonData;
+    //   navigation.navigate('MyItineraryDetails', {
+    //     id: notificationItem.itinerary,
+    //   });
+    //   close();
+    // }
+    // if (item.alias === NotificationAlias.NEW_ANSWER) {
+    //   const notificationItem: QuestionProps = item.jsonData;
+    //   navigation.navigate('FeedItineraryDetails', {
+    //     id: notificationItem.itinerary,
+    //   });
+    //   close();
+    // }
+    // if (item.alias === NotificationAlias.MEMBER_ACCEPTED) {
+    //   const notificationItem: MemberProps = item.jsonData;
+    //   navigation.navigate('NextItineraryDetails', {
+    //     id: notificationItem.itinerary,
+    //   });
+    //   close();
+    // }
+    // if (item.alias === NotificationAlias.ITINERARY_UPDATED) {
+    //   const notificationItem: ItineraryProps = item.jsonData;
+    //   navigation.navigate('NextItineraryDetails', {
+    //     id: notificationItem.id,
+    //   });
+    //   close();
+    // }
   }
 
   return (

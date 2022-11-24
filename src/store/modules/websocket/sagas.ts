@@ -7,36 +7,46 @@ import {
   wsChatMessage,
   wsSendChatMessageRequest,
   WsActions,
+  wsChatBegin,
+  wsChatFininsh,
+  wsSendChatMessageSuccess,
 } from './actions';
 import {RootStateProps} from '../rootReducer';
-import websocket from '../../../services/websocket';
+import websocket from '../../../providers/websocket';
 import {formatChatName} from '../../../lib/utils';
-import {MessageProps, Subscription} from '../../../utils/types';
-import {sendMessageSuccess} from '../messages/actions';
+import {Subscription, ChatMessage} from '../../../utils/types';
 import {getSubscriptionSuccess} from '../subscription/actions';
 
-export interface WsSendMessageResponse {
+export interface WsSendChatMessageResponse {
   message: string;
   statusCode: number;
-  payload: MessageProps;
+  payload: ChatMessage;
 }
 
 function* watchChat(socket: typeof websocket.client, roomName: string) {
   const {user} = yield select((state: RootStateProps) => state.auth);
 
   return eventChannel((emitter) => {
-    socket.on(roomName, async (response: MessageProps) => {
+    socket.on(roomName, async (response: ChatMessage) => {
       return emitter(wsChatMessage(response, user.id));
     });
 
     socket.on(
       `${roomName}:${user.id}sended`,
-      async (response: WsSendMessageResponse) => {
+      async (response: WsSendChatMessageResponse) => {
         if (response.statusCode === 201) {
-          return emitter(sendMessageSuccess(response.payload));
+          return emitter(wsSendChatMessageSuccess(response.payload));
         }
       },
     );
+
+    socket.on(`${roomName}:begin`, async (response: ChatMessage) => {
+      return emitter(wsChatBegin(response));
+    });
+
+    socket.on(`${roomName}:end`, async (response: ChatMessage) => {
+      return emitter(wsChatFininsh(response));
+    });
 
     return () => {
       socket.off(roomName);

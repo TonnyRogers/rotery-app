@@ -27,7 +27,7 @@ import ImageCarousel from '../ImageCarousel';
 import {ItineraryProps, ItineraryStatusTranlated} from '../../utils/types';
 import Card from '../Card';
 import Text from '../Text';
-import formatLocale from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import Divider from '../Divider';
 
 interface ItineraryItemProps {
@@ -75,7 +75,7 @@ const Itinerary: React.FC<ItineraryItemProps> = ({
             </StatusName>
           </Status>
         </StatusContent>
-        <ImageCarousel data={itinerary.photos} />
+        <ImageCarousel data={itinerary.photos.map((item) => item.file)} />
         <RowGroup>
           <Text.Paragraph textColor="primaryText" textWeight="bold">
             {itinerary.name}

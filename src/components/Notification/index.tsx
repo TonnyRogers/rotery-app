@@ -3,8 +3,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Dimensions, Animated, PanResponder} from 'react-native';
 import {useSelector} from 'react-redux';
 
-import {RootStateProps} from '../../store/modules/rootReducer';
-
 import {
   Container,
   Content,
@@ -22,6 +20,7 @@ interface NotificationProps {
 }
 import NotificationItem from '../NotificationItem';
 import Text from '../Text';
+import {RootState} from '../../providers/store';
 
 const Notification: React.FC<NotificationProps> = ({
   visible,
@@ -30,7 +29,7 @@ const Notification: React.FC<NotificationProps> = ({
   iconColor,
   title,
 }) => {
-  const {data} = useSelector((state: RootStateProps) => state.notifications);
+  const {data} = useSelector((state: RootState) => state.notifications);
   const {height} = Dimensions.get('screen');
   const panY = useRef(new Animated.ValueXY({x: 0, y: -height})).current;
 

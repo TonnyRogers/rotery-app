@@ -3,7 +3,7 @@ import ImagePicker, {Image, Options} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Modal, StatusBar} from 'react-native';
 
-import api from '../../services/api';
+import api from '../../providers/api';
 
 import {
   Container,

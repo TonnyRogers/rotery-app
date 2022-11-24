@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useMemo} from 'react';
+import React, {useState, useRef, useEffect, useMemo, useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -68,25 +68,26 @@ import PickerInput from '../../components/PickerInput';
 import TextArea from '../../components/TextArea';
 import Modal from '../../components/Modal';
 import Page from '../../components/Page';
-import SplashScreen from '../../components/SplashScreen';
 import ShadowBox from '../../components/ShadowBox';
 import LocationPickerInput from '../../components/LocationPickerInput';
 import {useIsAndroid} from '../../hooks/useIsAndroid';
+import {YupValidationMessages} from '../../utils/enums';
+import {LoadingContext} from '../../context/loading/context';
 
 const validationSchema = yup.object().shape({
-  name: yup.string().required('campo obrigatório'),
-  vacancies: yup.number().required('campo obrigatório'),
-  location: yup.string().required('campo obrigatório'),
-  description: yup.string().required('campo obrigatório'),
-  dateOut: yup.date().required('campo obrigatório'),
-  dateReturn: yup.date().required('campo obrigatório'),
-  dateLimit: yup.date().required('campo obrigatório'),
+  name: yup.string().required(YupValidationMessages.REQUIRED),
+  vacancies: yup.number().required(YupValidationMessages.REQUIRED),
+  location: yup.string().required(YupValidationMessages.REQUIRED),
+  description: yup.string().required(YupValidationMessages.REQUIRED),
+  dateOut: yup.date().required(YupValidationMessages.REQUIRED),
+  dateReturn: yup.date().required(YupValidationMessages.REQUIRED),
+  dateLimit: yup.date().required(YupValidationMessages.REQUIRED),
 });
 
 const validationOptionsSchema = yup.object().shape({
-  type: yup.string().required('campo obrigatório'),
-  price: yup.string().required('campo obrigatório'),
-  capacity: yup.string().required('campo obrigatório'),
+  type: yup.string().required(YupValidationMessages.REQUIRED),
+  price: yup.string().required(YupValidationMessages.REQUIRED),
+  capacity: yup.string().required(YupValidationMessages.REQUIRED),
   description: yup.string(),
 });
 
@@ -99,6 +100,8 @@ interface EditItineraryProps {
 }
 
 const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
+  const todayDate = new Date();
+  const {setLoading, isLoading} = useContext(LoadingContext);
   const dispatch = useDispatch();
   const {isAndroid, isIOs} = useIsAndroid();
   const {id} = route.params;
@@ -233,6 +236,13 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
       setPrivateItinerary(itinerary.isPrivate);
     }
   }, [dispatch, itinerary, setValue]);
+
+  useEffect(() => {
+    if (loading !== isLoading) {
+      setLoading(loading);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const options = useSelector((state: RootStateProps) => state.options);
 
@@ -564,6 +574,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               </DataContentHeader>
               <DateTimeInput
                 label="Saida"
+                dateLimiter={todayDate}
                 date={watchDateOut}
                 onChange={(value: Date) => setValue('dateOut', value)}
                 error={errors.dateOut?.message}
@@ -571,6 +582,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               />
               <DateTimeInput
                 label="Retorno"
+                dateLimiter={todayDate}
                 date={watchDateReturn}
                 onChange={(value: Date) => setValue('dateReturn', value)}
                 error={errors.dateReturn?.message}
@@ -578,6 +590,7 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
               />
               <DateTimeInput
                 label="Limite para inscrição"
+                dateLimiter={todayDate}
                 date={watchDateLimit}
                 onChange={(value: Date) => setValue('dateLimit', value)}
                 error={errors.dateLimit?.message}
@@ -790,7 +803,6 @@ const EditItinerary: React.FC<EditItineraryProps> = ({route}) => {
           </AddButton>
         </ModalContent>
       </Modal>
-      <SplashScreen visible={loading} />
       <LocationPickerInput
         visible={locationIsOpen}
         placeholder="Digite o endereço/local/cidade para buscar"

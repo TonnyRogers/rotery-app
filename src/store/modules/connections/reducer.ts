@@ -189,6 +189,34 @@ export default function connections(
         }
         break;
       }
+      case PushNotificationsActions.CONNECTION_BLOCK: {
+        const invite: InvitesProps = action.payload.invite;
+
+        const inviteList = draft.invites;
+        const inviteIndex = inviteList.findIndex(
+          (item) => item.id === invite.id,
+        );
+
+        if (inviteIndex !== -1) {
+          inviteList[inviteIndex].isBlocked = true;
+          draft.invites = inviteList;
+        }
+        break;
+      }
+      case PushNotificationsActions.CONNECTION_UNBLOCK: {
+        const invite: InvitesProps = action.payload.invite;
+
+        const inviteList = draft.invites;
+        const inviteIndex = inviteList.findIndex(
+          (item) => item.id === invite.id,
+        );
+
+        if (inviteIndex !== -1) {
+          inviteList[inviteIndex].isBlocked = false;
+          draft.invites = inviteList;
+        }
+        break;
+      }
       case PushNotificationsActions.NEW_CONNECTION: {
         const invite = action.payload.invite;
         const inviteIndex = draft.invites.findIndex(

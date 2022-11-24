@@ -1,6 +1,10 @@
 import styled from 'styled-native-components';
 
-export type JustifyTypes = 'space-between' | 'flex-start' | 'center';
+export type JustifyTypes =
+  | 'space-between'
+  | 'flex-start'
+  | 'flex-end'
+  | 'center';
 export type AlignTypes = 'flex-end' | 'flex-start' | 'center';
 
 export const Container = styled.View<{

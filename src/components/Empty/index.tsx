@@ -24,7 +24,7 @@ const Empty: React.FC<EmptyProps> = ({
 }) => {
   return (
     <Container>
-      <Card>
+      <Card marginHorizontal={0}>
         <CardContainer>
           <View style={{height: 125}}>
             <LottieView
