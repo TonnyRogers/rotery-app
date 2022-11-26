@@ -1,6 +1,6 @@
 #import <UserNotifications/UserNotifications.h>
 #import <CodePush/CodePush.h>
-#import <Firebase/Firebase.h>
+#import <Firebase.h>
 #import <AppCenter/AppCenter.h>
 #import <AppCenterAnalytics/AppCenterAnalytics.h>
 #import <AppCenterCrashes/AppCenterCrashes.h>
@@ -63,9 +63,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
-  if ([FIRApp defaultApp] == nil) {
-     [FIRApp configure];
-   }
+  [FIRApp configure];
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge

@@ -62,7 +62,6 @@ const Routes = () => {
     //   'Notification caused app to open from background state:'
     messaging().onNotificationOpenedApp(
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        console.log('From Background', remoteMessage);
         notificationDispatches(remoteMessage);
       },
     );
@@ -71,7 +70,6 @@ const Routes = () => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage: FirebaseMessagingTypes.RemoteMessage | null) => {
-        console.log('Quit State', remoteMessage);
         if (remoteMessage) {
           notificationDispatches(remoteMessage);
         }
@@ -86,6 +84,11 @@ const Routes = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  messaging().requestPermission({
+    sound: true,
+    alert: true,
+  });
 
   async function check() {
     const localToken = await AsyncStorage.getItem('@notification:token');
