@@ -65,29 +65,18 @@ function FilterInput({
               </ModalHeader>
               <ModalContent>{children}</ModalContent>
               <Actions>
-                <RowGroup>
+                <RowGroup justify="flex-end">
                   <Button
                     onPress={onClear}
+                    sizeMargin="0 1.6rem 0 0"
                     textColor="white"
-                    bgColor="green"
-                    cornerRadius={{
-                      bottomL: 12,
-                      bottomR: 12,
-                      topL: 0,
-                      topR: 12,
-                    }}>
+                    bgColor="green">
                     Limpar
                   </Button>
                   <Button
                     onPress={() => handleFilter()}
                     textColor="white"
-                    bgColor="blue"
-                    cornerRadius={{
-                      bottomL: 12,
-                      bottomR: 12,
-                      topL: 12,
-                      topR: 0,
-                    }}>
+                    bgColor="blue">
                     Filtrar
                   </Button>
                 </RowGroup>

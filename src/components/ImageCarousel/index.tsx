@@ -52,6 +52,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({data}) => {
     );
   }
 
+  if (!data.length) {
+    return null;
+  }
+
   return (
     <Container>
       <ImageList

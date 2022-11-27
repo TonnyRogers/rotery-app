@@ -157,10 +157,7 @@ const Profile: React.FC = () => {
   const useSinceDate = useMemo(
     () =>
       data?.user.createdAt &&
-      formatLocale(
-        new Date(Date.parse(data?.user.createdAt)),
-        'MMMM [de] YYYY',
-      ),
+      formatLocale(new Date(Date.parse(data?.user.createdAt)), 'MMM [de] YYYY'),
     [data],
   );
 
@@ -432,7 +429,7 @@ const Profile: React.FC = () => {
               sizePadding={10}
               sizeHeight={4.4}
               textColor="white">
-              <RowGroup>
+              <RowGroup align="center">
                 <Icon name="delete-forever-outline" size={24} color="#FFF" />
                 <Text.Paragraph textWeight="bold" textColor="white">
                   Desativar Conta

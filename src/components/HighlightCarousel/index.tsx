@@ -61,6 +61,10 @@ const HighlightCarousel: React.FC<HighlightCarouselProps> = ({data}) => {
     );
   }
 
+  if (!data.length) {
+    return null;
+  }
+
   return (
     <Container>
       <ImageList

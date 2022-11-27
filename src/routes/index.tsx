@@ -6,8 +6,10 @@ import messaging, {
   FirebaseMessagingTypes,
 } from '@react-native-firebase/messaging';
 import {useSelector, useDispatch} from 'react-redux';
+
 import {navigationRef} from '../RootNavigation';
 import api from '../providers/api';
+import * as RootNavigator from '../RootNavigation';
 const Stack = createStackNavigator();
 
 import SignIn from '../screens/SignIn';
@@ -44,17 +46,15 @@ import {RootState} from '../providers/store';
 import {chatActions} from '../store2/chats';
 import {conectionsActions} from '../store2/connections';
 import {profileActions} from '../store2/profile';
+import {LocalStorageKeys} from '../utils/enums';
 
 const Routes = () => {
   const {signed, token} = useSelector((state: RootState) => state.auth);
   const [isUIBlockedByNotification, setIsUIBlockedByNotification] =
     useState(true);
-  const [initialRoute, setInitialRoute] = useState('Welcome');
   const dispatch = useDispatch();
 
   useSocket();
-
-  // Bootstrap sequence function
 
   useEffect(() => {
     check();
@@ -62,17 +62,18 @@ const Routes = () => {
     //   'Notification caused app to open from background state:'
     messaging().onNotificationOpenedApp(
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        notificationDispatches(remoteMessage);
+        if (remoteMessage) {
+          console.log('onNotificationOpenedApp', remoteMessage);
+          notificationDispatches(remoteMessage);
+        }
       },
     );
 
     //   'Notification caused app to open from quit state:'
     messaging()
       .getInitialNotification()
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .then((remoteMessage: FirebaseMessagingTypes.RemoteMessage | null) => {
-        if (remoteMessage) {
-          notificationDispatches(remoteMessage);
-        }
         setIsUIBlockedByNotification(false);
       });
 
@@ -88,13 +89,19 @@ const Routes = () => {
   messaging().requestPermission({
     sound: true,
     alert: true,
+    badge: true,
   });
 
   async function check() {
-    const localToken = await AsyncStorage.getItem('@notification:token');
+    const localToken = await AsyncStorage.getItem(
+      LocalStorageKeys.NOTIFICATION_TOKEN,
+    );
     if (!localToken) {
       const deviceToken = await messaging().getToken();
-      await AsyncStorage.setItem('@notification:token', deviceToken);
+      await AsyncStorage.setItem(
+        LocalStorageKeys.NOTIFICATION_TOKEN,
+        deviceToken,
+      );
     }
   }
 
@@ -113,7 +120,7 @@ const Routes = () => {
         dispatch(
           chatActions.setChatNotificationMessage(chatMessageNotification),
         );
-        setInitialRoute('ChatMessages');
+        RootNavigator.replace('ChatMessages');
       }
       if (notification.data.alias === NotificationAlias.RATE_LOCATION) {
         //empty
@@ -122,13 +129,13 @@ const Routes = () => {
         const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
         // dispatch(pushNotificationNewConnection(jsonData));
         dispatch(conectionsActions.setNotificationConnection(jsonData));
-        setInitialRoute('Connections');
+        RootNavigator.replace('Connections');
       }
       if (notification.data.alias === NotificationAlias.CONNECTION_ACCEPTED) {
         const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
         // dispatch(pushNotificationConnectionAccepted(jsonData));
         dispatch(conectionsActions.setNotificationConnection(jsonData));
-        setInitialRoute('Connections');
+        RootNavigator.replace('Connections');
       }
       if (notification.data.alias === NotificationAlias.CONNECTION_UNBLOCK) {
         const jsonData: InvitesProps = JSON.parse(notification.data.json_data);
@@ -231,7 +238,7 @@ const Routes = () => {
             headerShown: false,
             gestureEnabled: false,
           }}
-          initialRouteName={signed ? initialRoute : 'SignIn'}>
+          initialRouteName={signed ? 'Welcome' : 'SignIn'}>
           {signed ? (
             <>
               <Stack.Screen name="Profile" component={Profile} />

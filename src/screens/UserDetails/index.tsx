@@ -30,6 +30,7 @@ import {formatLocale} from '../../providers/dayjs-format-locale';
 import StarRate from '../../components/StarRate';
 import {PageContainer} from '../../components/PageContainer';
 import {RootState} from '../../providers/store';
+import axios, {AxiosRequestConfig} from 'axios';
 
 interface UserDetailsProps {
   route: {
@@ -44,9 +45,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
   const {userId} = route.params;
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     async function getProfile() {
       try {
-        const response = await api.get(`/profile/${userId}`);
+        const response = await api.get(`/profile/${userId}`, config);
         setProfile(response.data);
       } catch (error) {
         Toast.show({
@@ -59,8 +62,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({route, navigation}) => {
 
     getProfile();
 
-    () => {
-      getProfile;
+    return () => {
+      sourceRequest.cancel();
     };
   }, [userId]);
 

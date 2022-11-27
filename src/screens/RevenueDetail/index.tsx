@@ -35,6 +35,7 @@ import {formatPrice} from '../../lib/utils';
 import api from '../../providers/api';
 import Tag from '../../components/Tag';
 import {LoadingContext} from '../../context/loading/context';
+import axios, {AxiosRequestConfig} from 'axios';
 
 interface RevenueDetailProps {
   route: {
@@ -53,11 +54,14 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
   } = route;
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getTransacionHistory = async () => {
       try {
         setLoading(true);
         const response = await api.get<ItineraryProps>(
           `/itineraries/${revenue.itinerary.id}/details`,
+          config,
         );
 
         setItinerary(response.data);
@@ -73,6 +77,10 @@ const RevenueDetail = ({route}: RevenueDetailProps) => {
     };
 
     getTransacionHistory();
+
+    return () => {
+      sourceRequest.cancel();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [revenue.itinerary.id]);
 

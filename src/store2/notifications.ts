@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction, Dispatch} from '@reduxjs/toolkit';
+// import {REHYDRATE} from 'redux-persist';
 
 import api from '../providers/api';
 import {
@@ -97,6 +98,7 @@ export const notificationSlice = createSlice({
       state.counter = initialState.counter;
       state.data = initialState.data;
     });
+    // builder.addCase(REHYDRATE, (state) => {});
   },
 });
 

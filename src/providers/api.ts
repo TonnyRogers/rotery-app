@@ -24,14 +24,11 @@ export const injectStore = (_store: any) => {
 
 export const apiBaseUrl = API_URL;
 
-const httpType = __DEV__ ? 'http://' : 'https://';
+const httpType = __DEV__ ? 'https://' : 'https://';
 
 const timezoneName = RNLocalize.getTimeZone();
 
-const sourceApi = axios.CancelToken.source();
-
 const api = axios.create({
-  cancelToken: sourceApi.token,
   baseURL: `${httpType}${apiBaseUrl}`,
   withCredentials: true,
   headers: {

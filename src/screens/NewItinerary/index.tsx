@@ -90,6 +90,7 @@ import {useIsAndroid} from '../../hooks/useIsAndroid';
 import {translateError} from '../../lib/utils';
 import {YupValidationMessages} from '../../utils/enums';
 import {LoadingContext} from '../../context/loading/context';
+import axios, {AxiosRequestConfig} from 'axios';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(YupValidationMessages.REQUIRED),
@@ -153,10 +154,13 @@ const NewItinerary: React.FC = () => {
   }, [getValues, optionRegister, register]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     async function verifyCreation() {
       try {
         const {data} = await api.get<ValidateCreationReponse>(
           '/itineraries/validate',
+          config,
         );
 
         if (data && !data.allowed) {
@@ -177,6 +181,10 @@ const NewItinerary: React.FC = () => {
     dispatch(getActivitiesRequest());
     dispatch(getLodgingsRequest());
     dispatch(getTransportsRequest());
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, [dispatch]);
 
   const options: InitialStateProps = useSelector(

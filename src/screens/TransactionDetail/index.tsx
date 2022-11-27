@@ -32,7 +32,7 @@ import {
   ItineraryProps,
   PaymentRefundResponse,
 } from '../../utils/types';
-import { formatLocale } from '../../providers/dayjs-format-locale';
+import {formatLocale} from '../../providers/dayjs-format-locale';
 import {formatBRL} from '../../lib/mask';
 import Button from '../../components/Button';
 import ColumnGroup from '../../components/ColumnGroup';
@@ -42,6 +42,7 @@ import api from '../../providers/api';
 import Tag from '../../components/Tag';
 import {HelpRequestRouteParamsProps} from '../HelpRequest';
 import {LoadingContext} from '../../context/loading/context';
+import axios, {AxiosRequestConfig} from 'axios';
 
 const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
@@ -73,11 +74,14 @@ const TransactionDetail = ({route}: CheckoutProps) => {
   };
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getTransacionHistory = async () => {
       try {
         setLoading(true);
         const response = await api.get<ItineraryProps>(
           `/itineraries/${memberPayment.itinerary}/details`,
+          config,
         );
 
         setItinerary(response.data);
@@ -93,6 +97,10 @@ const TransactionDetail = ({route}: CheckoutProps) => {
     };
 
     getTransacionHistory();
+
+    return () => {
+      sourceRequest.cancel();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberPayment.itinerary]);
 

@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {AxiosResponse} from 'axios';
+import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
@@ -84,11 +84,14 @@ export function Welcome() {
   const watchPhone = watch('phone', '');
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     async function getWelcomeMetadata() {
       const response: AxiosResponse<
         WelcomeBackpackerMetadata | WelcomeGuideMetadata
       > = await api.get(
         `metadata/${user?.isGuide ? 'guide' : 'backpacker'}-welcome`,
+        config,
       );
 
       setWelcomeMeta(response.data);
@@ -96,6 +99,10 @@ export function Welcome() {
     getWelcomeMetadata();
     dispatch(getFirstSteps());
     dispatch(getSeasonBanner());
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, []);
 
   useEffect(() => {

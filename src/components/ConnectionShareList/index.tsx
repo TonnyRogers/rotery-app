@@ -16,6 +16,7 @@ import {
   Actions,
   ShareButton,
 } from './styles';
+import axios, {AxiosRequestConfig} from 'axios';
 
 export type DataTypes = 'itinerary' | 'user';
 
@@ -30,12 +31,14 @@ const ConnectionShareList: React.FC<ConnectionShareListProps> = ({data}) => {
   const [connections, setConnections] = useState<SharedConnectionProps[]>([]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     async function getConnections() {
       const info = await NetInfo();
       if (!info) {
         return false;
       }
-      const response = await api.get('/connections');
+      const response = await api.get('/connections', config);
       if (response.data) {
         const sharedConnection = response.data.connections.map(
           (item: SharedConnectionProps) => ({
@@ -49,6 +52,10 @@ const ConnectionShareList: React.FC<ConnectionShareListProps> = ({data}) => {
     }
 
     getConnections();
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, [data]);
 
   const handleSendInvite = async (

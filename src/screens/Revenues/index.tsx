@@ -28,6 +28,7 @@ import {SimpleList} from '../../components/SimpleList';
 import {HelpRequestRouteParamsProps} from '../HelpRequest';
 import Tag from '../../components/Tag';
 import {RootState} from '../../providers/store';
+import axios, {AxiosRequestConfig} from 'axios';
 
 const Revenues = () => {
   const [revenuesList, setRevenuesList] = useState<TipRevenueResponse>();
@@ -39,15 +40,21 @@ const Revenues = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getRevenuesHistory = async () => {
       try {
-        const response = await api.get<TipRevenueResponse>('/revenues');
+        const response = await api.get<TipRevenueResponse>('/revenues', config);
 
         setRevenuesList(response.data);
       } catch (error) {}
     };
 
     getRevenuesHistory();
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, []);
 
   const guideContent = revenuesContent.map((content) => ({

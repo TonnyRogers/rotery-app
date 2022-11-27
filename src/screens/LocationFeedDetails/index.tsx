@@ -36,6 +36,7 @@ import GuideCarousel from '../../components/GuideCarousel';
 import {viewedGuide} from '../../store2/guides';
 import {RootState} from '../../providers/store';
 import {GuideEnum} from '../../utils/enums';
+import axios, {AxiosRequestConfig} from 'axios';
 interface LocationFeedDetailsProps {
   route: {
     params: {
@@ -125,9 +126,12 @@ export function LocationFeedDetails({
   }, [location.activities]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     async function getGuides() {
       const response = await api.get<GuideLocation[]>(
         `/guide-locations/${location.id}`,
+        config,
       );
 
       if (response.data.length) {
@@ -136,6 +140,10 @@ export function LocationFeedDetails({
     }
 
     getGuides();
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, [location.id]);
 
   const guideContent = locationDetailsContent.map((content) => ({

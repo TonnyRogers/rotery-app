@@ -30,6 +30,7 @@ import {SimpleList} from '../../components/SimpleList';
 import api from '../../providers/api';
 import {LoadingContext} from '../../context/loading/context';
 import {RootState} from '../../providers/store';
+import axios, {AxiosRequestConfig} from 'axios';
 
 export function BackpackerSubscription() {
   const {setLoading, isLoading} = useContext(LoadingContext);
@@ -88,9 +89,12 @@ export function BackpackerSubscription() {
   }, [dispatch]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getSubscriptionHistoricData = async () => {
       const response = await api.get<SearchSubscriptionResult[]>(
         `/subscriptions/details?ref=${data?.referenceId}`,
+        config,
       );
       setSubscriptionHistoric(response.data);
     };
@@ -101,12 +105,15 @@ export function BackpackerSubscription() {
 
     return () => {
       setSubscriptionHistoric([]);
+      sourceRequest.cancel();
     };
   }, [data]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getPlan = async () => {
-      const response = await api.get<Plan>('/subscriptions/plan/1');
+      const response = await api.get<Plan>('/subscriptions/plan/1', config);
 
       setPlan(response.data);
     };
@@ -114,6 +121,10 @@ export function BackpackerSubscription() {
     if (!plan) {
       getPlan();
     }
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, [data, plan]);
 
   useEffect(() => {

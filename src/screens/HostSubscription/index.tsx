@@ -32,7 +32,7 @@ import {getSubscription, cancelSubscription} from '../../store2/subscription';
 import Alert from '../../components/Alert';
 import Tag from '../../components/Tag';
 import api from '../../providers/api';
-import {AxiosResponse} from 'axios';
+import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
 import Ads from '../../components/Ads';
 import GuideCarousel from '../../components/GuideCarousel';
 import {viewedGuide} from '../../store2/guides';
@@ -69,9 +69,12 @@ const HostSubscription = () => {
   }, [dispatch, data]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getSubscriptionHistoricData = async () => {
       const response: AxiosResponse<SearchSubscriptionResult[]> = await api.get(
         `/subscriptions/details?ref=${data?.referenceId}`,
+        config,
       );
       setSubscriptionHistoric(response.data[0] || null);
     };
@@ -82,13 +85,17 @@ const HostSubscription = () => {
 
     return () => {
       setSubscriptionHistoric(null);
+      sourceRequest.cancel();
     };
   }, [data]);
 
   useEffect(() => {
+    const sourceRequest = axios.CancelToken.source();
+    const config: AxiosRequestConfig = {cancelToken: sourceRequest.token};
     const getPlan = async () => {
       const response: AxiosResponse<Plan> = await api.get(
         '/subscriptions/plan/1',
+        config,
       );
 
       setPlan(response.data);
@@ -97,6 +104,10 @@ const HostSubscription = () => {
     if (!plan) {
       getPlan();
     }
+
+    return () => {
+      sourceRequest.cancel();
+    };
   }, [data, plan]);
 
   useEffect(() => {
