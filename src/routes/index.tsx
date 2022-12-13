@@ -42,11 +42,12 @@ import {BackpackerSubscription} from '../screens/BackpackerSubscription';
 
 import {useSocket} from '../hooks/useSocket';
 import {InvitesProps, NotificationAlias, ChatMessage} from '../utils/types';
-import {RootState} from '../providers/store';
+import {RootState, store} from '../providers/store';
 import {chatActions} from '../store2/chats';
 import {conectionsActions} from '../store2/connections';
 import {profileActions} from '../store2/profile';
 import {LocalStorageKeys} from '../utils/enums';
+import {getNotifications} from '../store2/notifications';
 
 const Routes = () => {
   const {signed, token} = useSelector((state: RootState) => state.auth);
@@ -55,6 +56,12 @@ const Routes = () => {
   const dispatch = useDispatch();
 
   useSocket();
+
+  useEffect(() => {
+    if (store.getState().auth.signed) {
+      store.dispatch(getNotifications());
+    }
+  }, []);
 
   useEffect(() => {
     check();

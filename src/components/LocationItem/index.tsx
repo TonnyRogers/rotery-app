@@ -18,6 +18,10 @@ interface LocationItemProps {
 }
 
 export function LocationItem({location}: LocationItemProps) {
+  function formatIndicators(comparable: number) {
+    return comparable > 9 ? '9' + '+' : comparable;
+  }
+
   return (
     <Card marginHorizontal={0} marginVertical={8}>
       <ImageCarousel data={location.photos.map((photo) => photo.file)} />
@@ -51,19 +55,27 @@ export function LocationItem({location}: LocationItemProps) {
           <Badges>
             <Badge>
               <IconMaterial name="category" size={20} color="#FFF" />
-              <Text textColor="white">{location.activities.length}</Text>
+              <Text textColor="white">
+                {formatIndicators(location.activities.length)}
+              </Text>
             </Badge>
             <Badge>
               <Icon name="bed" size={20} color="#FFF" />
-              <Text textColor="white">{location.lodgings.length}</Text>
+              <Text textColor="white">
+                {formatIndicators(location.lodgings.length)}
+              </Text>
             </Badge>
             <Badge>
               <IconMaterial name="person-pin-circle" size={20} color="#FFF" />
-              <Text textColor="white">{location.transports.length}</Text>
+              <Text textColor="white">
+                {formatIndicators(location.guides.length)}
+              </Text>
             </Badge>
             <Badge>
               <Icon name="thumbs-up-down" size={20} color="#FFF" />
-              <Text textColor="white">{location.ratings.length}</Text>
+              <Text textColor="white">
+                {' ' + formatIndicators(location.ratings.length)}
+              </Text>
             </Badge>
           </Badges>
           <Button

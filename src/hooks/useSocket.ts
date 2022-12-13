@@ -15,12 +15,13 @@ import {notificationsActions} from '../store2/notifications';
 import {subscriptionsActions} from '../store2/subscription';
 import {conectionsActions} from '../store2/connections';
 import {chatActions} from '../store2/chats';
+import {profileActions} from '../store2/profile';
 
 export const useSocket = () => {
   const dispatch = useDispatch();
   const {alternated} = useVibration();
   const {user, signed, token} = useSelector((state: RootState) => state.auth);
-  const socket = useRef<SocketClient>(websocket.client);
+  const socket = useRef<SocketClient | null>(null);
 
   useEffect(() => {
     if (signed && user) {
@@ -77,6 +78,12 @@ export const useSocket = () => {
             }
             if (payload.alias === NotificationAlias.GUIDE_ACTIVATED) {
               dispatch(notificationsActions.setNotification(payload));
+              dispatch(
+                profileActions.setGuideValidateRelateToLocation({
+                  isActive: true,
+                  message: '',
+                }),
+              );
             }
             // if (payload.alias === NotificationAlias.NEW_MESSAGE) {
             //   dispatch(setNotificationsAction(payload));
@@ -129,7 +136,10 @@ export const useSocket = () => {
 
     return () => {
       if (socket.current && socket.current.connected) {
+        console.tron.log('CLOSE SOCKET');
         socket.current.close();
+        socket.current.removeAllListeners();
+        socket.current = null;
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

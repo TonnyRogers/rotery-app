@@ -28,6 +28,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {processTip} from '../../store2/checkout';
 import {LoadingContext} from '../../context/loading/context';
 import {RootState} from '../../providers/store';
+import {CardSelector} from '../../components/CardSelector';
 
 export interface RateChatRouteParams extends RateChatNotificationJsonData {}
 
@@ -49,14 +50,21 @@ export function RateChat({
   const [locationRating, setLocationRating] = useState(0);
   const [locationReview, setLocationReview] = useState('');
   const [webCardConfirmVisible, setWebCardConfirmVisible] = useState(false);
+  const [cardSelectorVisible, setCardSelectorVisible] = useState(false);
   const [tipValue, setTipValue] = useState('');
   const validatedCard = useRef<CardTokenResponse>();
-  const {defaultCard} = useSelector((state: RootState) => state.checkout);
+  const {defaultCard, customer} = useSelector(
+    (state: RootState) => state.checkout,
+  );
   const {user} = useSelector((state: RootState) => state.auth);
 
   function handleTipProcess() {
     if (Number(realToUSCash(tipValue)) > 0) {
-      setWebCardConfirmVisible(true);
+      if (!defaultCard) {
+        setCardSelectorVisible(true);
+      } else {
+        setWebCardConfirmVisible(true);
+      }
     } else {
       handleSendRatings();
     }
@@ -262,6 +270,15 @@ export function RateChat({
         onRequestClose={() => {
           setWebCardConfirmVisible(false);
         }}
+      />
+      <CardSelector
+        customer={customer}
+        onRequestClose={() => setCardSelectorVisible(false)}
+        onSelectCard={() => {
+          setCardSelectorVisible(false);
+          setWebCardConfirmVisible(true);
+        }}
+        visible={cardSelectorVisible}
       />
     </Page>
   );

@@ -25,6 +25,7 @@ import Page from '../../components/Page';
 import Text from '../../components/Text';
 import DismissKeyboad from '../../components/DismissKeyboad';
 import {LoadingContext} from '../../context/loading/context';
+import Divider from '../../components/Divider';
 
 interface NewPasswordProps {
   navigation: {
@@ -262,9 +263,10 @@ const NewPassword: React.FC<NewPasswordProps> = ({navigation}) => {
                   />
                 </InputField>
               </Fields>
-              <Text textWeight="light">
+              <Text alignment="center" textWeight="light">
                 digite o código enviado por e-mail para alterar a senha
               </Text>
+              <Divider />
               <SubmitButton onPress={checkCode}>
                 <SubmitButtonText>Enviar</SubmitButtonText>
               </SubmitButton>

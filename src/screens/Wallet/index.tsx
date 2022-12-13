@@ -48,7 +48,7 @@ interface CustomCardResponse extends CheckoutCustomerCardResponse {
 }
 
 const injectCheckoutJs = `
-mp = new MercadoPago('${paymentToken.dev}');
+mp = new MercadoPago('${paymentToken}');
 document.querySelector('#transactionAmmount').value = 0.00;
 true;
 `;
@@ -83,6 +83,7 @@ const Wallet = () => {
         }),
       );
       setCardOnEdition(null);
+      setRemoveCardAlertVisible(false);
     }
   };
 

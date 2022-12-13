@@ -17,7 +17,6 @@ import Routes from './routes';
 import {GlobalContext} from './context';
 import {Loading} from './components/Loading';
 import {injectStore} from './providers/api';
-import {getNotifications} from './store2/notifications';
 
 injectStore(store);
 
@@ -50,10 +49,6 @@ const App = () => {
 
   useEffect(() => {
     SplashScreen.hide();
-  }, []);
-
-  useEffect(() => {
-    store.dispatch(getNotifications());
   }, []);
 
   return (

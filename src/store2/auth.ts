@@ -13,6 +13,7 @@ import {getProfile, profileActions} from './profile';
 import {getConnections} from './connections';
 import {getNotifications} from './notifications';
 import {getGuides} from './guides';
+import {getBankAccount} from './bankAccount';
 
 export interface AuthUser extends Omit<UserProps, 'profile'> {
   profile: number;
@@ -150,6 +151,10 @@ export const loginRequest =
             : ContentGuideTourKeys.BACKPACKER_WELCOME,
         }) as any,
       );
+
+      if (response.data.user.isGuide) {
+        dispatch(getBankAccount() as any);
+      }
 
       dispatch(setDeviceToken() as any);
       dispatch(getProfile() as any);

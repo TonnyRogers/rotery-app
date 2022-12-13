@@ -30,7 +30,7 @@ export function CardConfirm({
 
   if (!card && defaultCard?.id) {
     injectCardconfirmJs.current = `
-      mp = new MercadoPago('${paymentToken.dev}');
+      mp = new MercadoPago('${paymentToken}');
       document.querySelector('#cardId').value = ${defaultCard.id};
       document.querySelector('#transactionAmmount').value = ${amount.toFixed(
         2,

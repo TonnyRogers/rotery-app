@@ -164,7 +164,10 @@ export function LocationFeedDetails({
             ) : (
               <IconMaterial name={detailing.icon} size={30} color="#3dc77b" />
             )}
-            <Text.SemiSmall alignment="center" textColor="primaryText">
+            <Text.SemiSmall
+              textWeight="regular"
+              alignment="center"
+              textColor="primaryText">
               {detailing.text}
             </Text.SemiSmall>
           </LocationDetailing>
@@ -237,14 +240,25 @@ export function LocationFeedDetails({
             <Divider />
             <Text textWeight="light">{location.description}</Text>
             <Divider />
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               <StarRate rate={location.ratingAvg || 0} />
               <Text textColor="primaryText">
                 {location.ratings.length} Avaliações
               </Text>
             </View>
             <Divider />
-            <View style={{flex: 1, flexWrap: 'wrap', flexDirection: 'row'}}>
+            <View
+              style={{
+                flex: 1,
+                flexWrap: 'wrap',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               {renderDetailings()}
             </View>
             <Divider />

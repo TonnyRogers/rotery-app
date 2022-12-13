@@ -895,6 +895,7 @@ export type Location = {
   activities: LocationActivity[];
   lodgings: LocationLodging[];
   ratings: LocationRating[];
+  guides: GuideLocation[];
   photos: LocationPhoto[];
 };
 

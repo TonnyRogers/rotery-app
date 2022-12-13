@@ -67,7 +67,7 @@ const confirmAnimation = require('../../../assets/animations/animation_confirm.j
 const processingAnimation = require('../../../assets/animations/animation_processing_card.json');
 const blockAnimation = require('../../../assets/animations/animation_block.json');
 
-const cardIconName: Record<string, string> = {
+export const cardIconName: Record<string, string> = {
   Mastercard: 'cc-mastercard',
   'American Express': 'cc-amex',
   Visa: 'cc-visa',
@@ -215,7 +215,7 @@ const Checkout = ({route}: CheckoutProps) => {
 
   const selectCard = (card: CheckoutCustomerCardResponse, amount: number) => {
     injectCardconfirmJs.current = `
-      mp = new MercadoPago('${paymentToken.prod}');
+      mp = new MercadoPago('${paymentToken}');
       document.querySelector('#cardId').value = ${card.id};
       document.querySelector('#transactionAmmount').value = ${amount.toFixed(
         2,
@@ -230,7 +230,7 @@ const Checkout = ({route}: CheckoutProps) => {
   };
 
   const injectCheckoutJs = `
-    mp = new MercadoPago('${paymentToken.prod}');
+    mp = new MercadoPago('${paymentToken}');
     document.querySelector('#transactionAmmount').value = ${itineraryAmount.total.toFixed(
       2,
     )};
